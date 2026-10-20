@@ -1,3 +1,4 @@
+temp/
 node_modules/
 dist/
 coverage/
@@ -7,3 +8,5 @@ playwright-report/
 .DS_Store
 *.protect.*
 /.e2e/
+/assets-src/*
+!/assets-src/PROMPTS.md

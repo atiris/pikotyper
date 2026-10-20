@@ -6,10 +6,13 @@
 - Deployed by GitHub Actions on every push to `main` (build + unit tests must pass).
 - No backend, no external runtime services, no third-party scripts, no analytics.
 - Rendering: HTML5 Canvas 2D for game scenes, DOM for menus, overlays and forms. No 3D.
-- All graphics are drawn procedurally (Canvas paths, gradients, CSS), so the app ships
-  complete without raster art. An optional `public/assets/` folder may later hold sprites
-  and sounds; when a file is missing, the procedural fallback is used.
-- Audio: synthesized with the Web Audio API; no audio files are required.
+- Graphics: illustrated sprites, backgrounds and background music are made by the owner in
+  Gemini from the prompts in [`../assets-src/PROMPTS.md`](../assets-src/PROMPTS.md). Raw
+  files go to `assets-src/` (not committed); a build-time script turns them into small web
+  files in `public/assets/` (committed). Every asset has a procedural fallback (Canvas
+  paths, gradients, CSS), so the app is complete and polished with any subset of assets.
+- Audio: sound effects are always synthesized with the Web Audio API; background music
+  uses the generated tracks when present, otherwise a synthesized calm loop.
 - Data: `localStorage` only, versioned schema, export/import as `.json`.
 - Language data (UI texts, word lists) are separate JSON files loaded on demand per
   language, so adding a language does not grow the main bundle.
@@ -17,8 +20,9 @@
 
 ## Why
 - GitHub Pages is free and needs no server, which also guarantees privacy.
-- Procedural graphics and synthesized audio: the implementing LLM cannot produce raster
-  art or audio files, and the game must still look polished and finished.
+- Generated art and music give a polished storybook look; procedural fallbacks keep the
+  game working while assets are missing or being redone, since the implementing LLM cannot
+  produce raster art or audio itself.
 - Lazy language files keep the first load small on school networks.
 
 ## Quality bar

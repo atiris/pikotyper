@@ -8,8 +8,11 @@ healthy session length, offline use and a full end-to-end check.
 
 ## Decisions
 - Audio `src/audio/`: Web Audio synth; SFX (key ok, gentle wrong, word done, reward,
-  UI click) as short envelopes; per-world calm loop (pentatonic sequencer, soft pad +
-  plucks, 70-90 BPM). AudioContext created on first user gesture. Music/SFX volumes from
+  UI click) as short envelopes. Music: `music-<world|menu|break>` tracks from
+  `public/assets/` when present (looped with a short crossfade at the loop point,
+  crossfade between screens), else a synthesized calm loop (pentatonic sequencer, soft
+  pad + plucks, 70-90 BPM). Music files are cached by the service worker only for the
+  current world. AudioContext created on first user gesture. Music/SFX volumes from
   profile; global mute button on every screen.
 - Fonts: bundle Lexend and Atkinson Hyperlegible (OFL, `public/fonts/`, woff2) and
   OpenDyslexic; default font Lexend. Large text = 125 % scale.

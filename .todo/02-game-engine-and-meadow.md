@@ -17,6 +17,18 @@ the same engine, so it must be general.
   wrong-letter wobble, completion, level timer, end-of-level results.
 - Targets resolve peacefully: they fly away, get pushed off screen, or become helpers.
   A target that reaches the player side just floats past with a smile (no penalty).
+- Asset pipeline: `npm run assets` runs `scripts/assets.mjs` (dev deps `sharp` and
+  `ffmpeg-static`). For every image in `assets-src/` (names from `assets-src/PROMPTS.md`):
+  detect the flat background color from the corner pixels, make it transparent with a
+  soft tolerance and 1-2 px edge feather (remove magenta/green fringe), trim, resize
+  (sprites max 512 px, backgrounds 1920 px wide), write `public/assets/<name>.webp`.
+  Backgrounds `*-far` keep their pixels (no keying). Music: convert to
+  `public/assets/<name>.mp3` (mono 96 kbps, loudness normalized). Write
+  `public/assets/manifest.json` listing what exists. Processed files are committed.
+- `src/gfx/assets.ts`: loads `manifest.json`, preloads the assets of the next world,
+  `sprite(name)` returns the image or `null`; every draw call falls back to the
+  procedural drawing when `null`. Look at any processed image with the Read tool to set
+  its anchor and scale data (`src/gfx/sprites.ts`).
 - `src/gfx/`: procedural drawing helpers (rounded blobs, eyes, soft shadows, gradients,
   parallax layers), one palette per world. Draw characters as composed vector shapes.
 - `src/ui/keyboard-guide.ts`: DOM on-screen keyboard from the layout data, finger colors
@@ -33,6 +45,8 @@ the same engine, so it must be general.
 
 ## Steps
 - [ ] engine loop, canvas, pause, tweens, particles, RNG + tests for pure parts
+- [ ] asset pipeline script + `npm run assets` + asset loader with procedural fallback;
+      process whatever is in `assets-src/` now and commit the results
 - [ ] LevelScene base with targets, lock-on, wobble, timer, results + tests for the
       state machine (no canvas)
 - [ ] keyboard guide component (sk + us layouts) with dead-key two-step hint

@@ -8,11 +8,15 @@ Piko is the emotional core (gentle feedback, rewards); statistics and parent con
 make progress visible and let adults tune the difficulty.
 
 ## Decisions
-- Piko drawn procedurally in `src/gfx/piko.ts`: kinds `fox`, `cat`, `bunny`, `owl`
-  (shared body shape, different ears/tail/colors), idle breathing + blinking, happy jump,
-  thinking pose, speech bubble (DOM overlay over the canvas).
-- Accessories (layered drawings): hats (cap, crown, wizard hat, flower), glasses
-  (round, star), wings (butterfly, dragon), scarves, body colors. Unlock table tied to
+- Piko in `src/gfx/piko.ts`: kinds `fox` (default), `cat`, `bunny`, `owl`. Uses the
+  `piko-<kind>-<pose>` sprites (poses idle/happy/thinking) when present, else a procedural
+  drawing (shared body shape, different ears/tail/colors). Motion is done in code on top
+  of the pose: breathing, bob, squash and stretch, happy jump; blinking only in the
+  procedural version. Speech bubble is a DOM overlay over the canvas.
+- Accessories (`acc-*` sprites or procedural fallback): hats (cap, crown, wizard hat,
+  flowers), glasses (round, star), wings (butterfly, dragon), scarf, body color tint
+  (procedural Piko only). Per kind and pose, anchor points (head top, eyes, back, neck)
+  and scale are set by looking at the processed sprites with the Read tool. Unlock table tied to
   levels, worlds and key mastery milestones; never random. Wardrobe screen to equip.
 - Piko messages: localized pools per situation (`correct_streak`, `mistake`, `hint`,
   `level_done`, `break`) mixed with the parent's custom messages; never repeat the same

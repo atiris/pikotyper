@@ -39,6 +39,7 @@ Every push to `main` builds the site and deploys it to GitHub Pages
 - [`.research/`](.research/) - research of similar products and proposed features
 - [`.todo/`](.todo/) - implementation plans, queue and backlog
 - [`.scenarios/`](.scenarios/) - end-to-end test scenarios
+- [`assets-src/PROMPTS.md`](assets-src/PROMPTS.md) - Gemini prompts for images and music
 
 ## License
 
