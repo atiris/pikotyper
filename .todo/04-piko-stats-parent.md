@@ -16,7 +16,7 @@ make progress visible and let adults tune the difficulty.
   back to a procedural drawing of the same template shape. Motion is done in code on
   the whole stack (companion + accessories): breathing, bob, squash and stretch, happy
   jump, gentle sway. Speech bubble is a DOM overlay over the canvas.
-- Accessories come from outfit sets `outfit-<a..g>.png`: the asset script splits each set
+- Accessories come from outfit sets `outfit-<a..g>.jpg`: the asset script splits each set
   into items by connected components and assigns a slot by centroid position on the
   template (`head`, `eyes`, `neck`, `body`, `back`, `hand-left`, `hand-right`, `feet`),
   keeping each item on the full square canvas (transparent elsewhere). Item ids and names
