@@ -65,7 +65,7 @@ Same style: cute, soft 2D children's storybook illustration, flat vector style w
 |---|---|
 | `piko-fox-idle.png` | Piko, a baby fox: soft orange fur, cream belly, muzzle and cheeks, small rounded triangle ears with dark tips, fluffy orange tail with a cream tip |
 | `piko-cat-idle.png` | a kitten: light grey fur with soft darker stripes on the head, white belly, muzzle and paws, small triangle ears, striped tail |
-| `piko-bunny-idle.png` | a lop-eared bunny: warm cream fur, ears hanging down along the sides of the head, pink nose, round fluffy white tail. Use **green #00FF00** instead of magenta as background |
+| `piko-bunny-idle.png` | a lop-eared bunny: warm cream fur, ears hanging down along the sides of the head, pink nose, round fluffy white tail |
 | `piko-owl-idle.png` | a baby owl: soft teal and cream feathers, small feather tufts as ears, big golden rings around the eyes, tiny orange beak, wing tips instead of hands |
 | `piko-dog-idle.png` | a puppy: golden-beige fur, white muzzle and belly, soft floppy brown ears, black round nose, short wagging tail |
 | `piko-bear-idle.png` | a teddy bear cub: warm brown fur, light tan muzzle and belly, small round ears |

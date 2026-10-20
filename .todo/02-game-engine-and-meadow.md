@@ -19,7 +19,10 @@ the same engine, so it must be general.
   A target that reaches the player side just floats past with a smile (no penalty).
 - Asset pipeline: `npm run assets` runs `scripts/assets.mjs` (dev deps `sharp` and
   `ffmpeg-static`). For every image in `assets-src/` (names from `assets-src/PROMPTS.md`):
-  detect the flat background color from the corner pixels, make it transparent with a
+  detect the flat background color from the corner pixels, flood-fill from the image
+  edges so only background connected to the border is removed (pink cheeks, noses and
+  other inner areas near the key color stay; enclosed background gaps, e.g. between an
+  arm and the body, are removed only when they match the key color closely), make it transparent with a
   soft tolerance and 1-2 px edge feather (remove magenta/green fringe), trim, resize
   (sprites max 512 px, backgrounds 1920 px wide), write `public/assets/<name>.webp`.
   Exception: `base-template`, `piko-*` and `outfit-*` are never trimmed; they are scaled
