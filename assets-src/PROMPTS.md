@@ -205,8 +205,12 @@ Cute, soft 2D children's game logo illustration, flat vector style, rounded frie
 ```
 
 ### ui-map-*.png (world map islands)
-Use the sprite prompt above with BG magenta, square image, front three-quarter view from
-slightly above:
+Replace ISLAND with the text from the table.
+```
+Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Calm and friendly, suitable for 6-year-old children. No text, no letters, no watermark, no characters.
+
+A single game map icon: ISLAND. The island floats in the air, with a rounded rocky bottom and a few small hanging roots. Seen from the front and slightly from above. Centered, the whole island visible, wide empty margin around it. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no clouds, no shadow, no other objects. Square image.
+```
 
 | File | OBJECT |
 |---|---|
