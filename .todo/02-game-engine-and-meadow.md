@@ -55,5 +55,7 @@ the same engine, so it must be general.
       items behind become reachable)
 - [ ] reward: "invitation to space" scene, meet Piko; progress saved, World 2 unlocked
 - [ ] world map + results screen; free practice moved to canvas style
+- [ ] preparation tip at the start of each training session (40+ tips sk + en in i18n,
+      random, no repeat of the last 5) + posture card on the first session
 - [ ] Playwright smoke test: create profile, play level 1 by typing, see results
 - [ ] build + tests green; drive it with the playwright MCP as a real user; push

@@ -8,8 +8,14 @@
   the child, or locked by the parent. Colors also carry a pattern or label (colorblind-safe).
 - Short posture card before the first session and at breaks: sit straight, wrists
   relaxed, index fingers on the `F` and `J` bumps, eyes on the screen.
+- Preparation tip: at the start of every training session one short, random tip about
+  getting ready to type well (posture, hands, fingers, eyes, rhythm, breaks), shown by
+  Piko for a few seconds and dismissed by any key. A pool of 40+ tips per language, no
+  repeat of the last few shown.
 
 ## Why
 - Weak finger guidance is a frequent complaint (Dance Mat); masking or fading the keyboard
   is standard teacher advice
   ([research](../../.research/features/on-screen-keyboard-finger-guide.md)).
+- Good habits (posture, hand position) are easier to build at the start than to fix
+  later; short varied tips remind the child without a boring lecture.
