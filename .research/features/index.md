@@ -13,3 +13,4 @@ Status: **in spec** = already in pikotyper.md, **extends** = builds on it, **new
 | parent-dashboard.md | Parent panel, heat map, progress card | extends | P2 |
 | accessibility.md | Fonts, colorblind, motion, sound, input | new | P2 |
 | offline-pwa.md | Installable, offline | new | P2 |
+| themed-variants.md | Magic (spells) and robot (machine parts) alternatives of each level | new | P3 |
