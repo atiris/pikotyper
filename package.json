@@ -1,0 +1,21 @@
+{
+  "name": "pikotyper",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Peaceful story-driven touch-typing adventure for children. Runs fully in the browser.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.5"
+  }
+}
