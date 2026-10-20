@@ -9,7 +9,7 @@ Images and background music for the game. Sound effects stay synthesized in code
    heading, for example `assets-src/piko-fox-idle.png`. Any image format is fine (png, jpg,
    webp); music as mp3, wav or m4a.
 3. Nothing else to do: `npm run assets` (added by the implementing session) removes the flat
-   background, trims, resizes and writes small web files to `public/assets/`. Raw files in
+   background, trims (except companions and outfits, which keep their square), resizes and writes small web files to `public/assets/`. Raw files in
    this folder are not committed, only the processed ones.
 
 The game works without any of these files (it draws simple shapes instead), so you can make
@@ -17,8 +17,7 @@ them in any order, skip some, or redo one later with the same name.
 
 ### Tips
 - **Same look everywhere:** every prompt carries the same style paragraph. Keep it.
-- **Character poses:** make the `idle` image first. Then, **in the same chat**, paste the
-  next pose prompt, so Gemini keeps the same character.
+- **Companions and accessories** always start from `base-template.png` (see section 1).
 - **Background must stay flat:** sprites ask for a flat single-color background
   (magenta or green). The script removes it. If Gemini adds a floor, shadow or gradient,
   ask: "Same image, but the background must be one flat color, no shadow."
@@ -28,65 +27,92 @@ them in any order, skip some, or redo one later with the same name.
 
 ---
 
-## 1. Piko (the companion)
+## 1. Piko and friends (companions)
 
-Piko kinds: fox (default), cat, bunny, owl. Each kind needs 3 poses: `idle`, `happy`,
-`thinking`. Start with the fox; the other kinds are optional.
+All companions and all accessories are built on **one shared body template**, drawn
+straight from the front and symmetrical. Every animal keeps exactly the same pose, size and
+position as the template, so every accessory fits every animal without any adjustment.
 
-### piko-fox-idle.png
+How it works:
+1. Make the template once (`base-template.png`).
+2. Make the accessories: dress the template in an outfit set, then ask Gemini to remove the
+   figure and keep only the clothes in place (section 2).
+3. Make each animal from the template (this section). Faces change only the eyes and mouth.
+
+**Always attach `base-template.png` to the chat** (new chat for each animal or outfit), so
+Gemini starts from the same figure. Image size: square, keep what Gemini gives (at least
+1024 x 1024). Do not crop the images; the empty space around the figure matters, because
+everything is placed by its position in the square.
+
+### base-template.png
 ```
-Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Calm, friendly, never scary, suitable for 6-year-old children. No text, no letters, no watermark.
+Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), light soft shading. No text, no letters, no watermark.
 
-Character: "Piko", a small chubby baby fox companion, big round head, very large shiny dark eyes with white highlights, tiny smile, small pink cheeks, soft orange fur with cream belly and cream tail tip, short rounded legs, fluffy tail. Pose: standing calmly, facing the viewer at a slight three-quarter angle, arms relaxed, looking friendly. Full body visible, centered, with wide empty margin around the character. Nothing on the head, no clothes, no accessories.
+A neutral character template for a children's game: a small chubby cute creature with no species features yet - no ears, no tail, no beak, no fur pattern, no clothes. Plain warm light-grey color. Strictly front view, facing the viewer directly, perfectly left-right symmetrical. Proportions like a plush toy: a big round head (about 45 % of the total height) with large shiny dark eyes with white highlights, a tiny smile and small pink cheeks; a short round body; short arms hanging down slightly away from the body, with round paw hands at hip height; two short legs with round feet, standing, feet slightly apart. Calm, friendly expression.
 
-Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no floor, no shadow, no other objects. Square image.
-```
-
-### piko-fox-happy.png
-```
-Same character, same style, same colors and proportions as the previous image. Pose: jumping happily with both arms up, eyes closed in joyful smile curves, tail swishing, small sparkles around. Full body visible, centered, wide empty margin. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow, no floor. Square image. No text.
-```
-
-### piko-fox-thinking.png
-```
-Same character, same style, same colors and proportions as the previous images. Pose: thinking kindly, one paw on the chin, head slightly tilted, eyes looking up, gentle smile, as if giving a helpful hint. Full body visible, centered, wide empty margin. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow, no floor. Square image. No text.
-```
-
-### Other kinds (optional): piko-cat-*, piko-bunny-*, piko-owl-*
-Use the three prompts above and change only the "Character" sentence in the idle prompt:
-- **cat** (`piko-cat-idle.png`, `-happy`, `-thinking`): "a small chubby kitten companion, big
-  round head, very large shiny dark eyes, tiny smile, light grey fur with white belly and
-  white paws, soft striped tail".
-- **bunny** (`piko-bunny-idle.png`, ...): "a small chubby bunny companion, big round head, long
-  soft ears, very large shiny dark eyes, tiny smile, warm cream fur with light brown ear
-  tips, round fluffy tail". Use **green #00FF00** instead of magenta as background.
-- **owl** (`piko-owl-idle.png`, ...): "a small round baby owl companion, big round head, very
-  large shiny eyes with golden rings, tiny beak, soft teal and cream feathers, small
-  rounded wings used like arms".
-
-## 2. Piko accessories
-
-All accessories in one consistent look, drawn alone (no character), front view, as if
-they would sit on a small cute animal.
-
-### Common prompt (replace ITEM)
-```
-Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. No text, no letters, no watermark.
-
-A single accessory for a small cute cartoon animal, shown alone without any character: ITEM. Front view, centered, wide empty margin. Background: one perfectly flat solid pure green color (#00FF00), no shadow, no floor, no other objects. Square image.
+Composition: square image, the figure is centered horizontally, the top of the head at about 15 % of the image height and the bottom of the feet at about 90 %, with empty space on both sides. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no floor, no shadow, no other objects.
 ```
 
-| File | ITEM |
+### Animals: piko-KIND-idle.png
+Attach `base-template.png` and use this prompt; replace ANIMAL with the text from the table.
+```
+Turn the attached character template into ANIMAL. Keep exactly the same front view, symmetry, pose, size, position in the image, head size and position, eye position, arm and leg positions and outline thickness. Only add the animal features: ears, fur colors and patterns, tail, muzzle or beak. Ears must stay close to the head (no long upright ears sticking far above it), so that a hat could still sit on top of the head. A tail may peek out from the side behind the body. No clothes, no accessories.
+
+Same style: cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft dark-brown outlines, light soft shading, friendly, suitable for 6-year-old children. No text. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow, no floor. Same square size as the template.
+```
+
+| File (KIND) | ANIMAL |
 |---|---|
-| `acc-hat-cap.png` | a small red baseball cap with a white star, seen from the front |
-| `acc-hat-crown.png` | a small golden crown with three round tips and blue gems |
-| `acc-hat-wizard.png` | a small purple wizard hat with yellow stars and a bent tip |
-| `acc-hat-flowers.png` | a flower wreath made of small yellow, white and blue flowers (no pink) |
-| `acc-glasses-round.png` | round orange children's glasses |
-| `acc-glasses-star.png` | star-shaped yellow party glasses |
-| `acc-wings-butterfly.png` | a pair of light blue and yellow butterfly wings, spread open, symmetrical |
-| `acc-wings-dragon.png` | a pair of small soft orange baby-dragon wings, rounded, spread open, symmetrical |
-| `acc-scarf.png` | a cozy knitted blue and white striped scarf, wrapped as if around a neck |
+| `piko-fox-idle.png` | Piko, a baby fox: soft orange fur, cream belly, muzzle and cheeks, small rounded triangle ears with dark tips, fluffy orange tail with a cream tip |
+| `piko-cat-idle.png` | a kitten: light grey fur with soft darker stripes on the head, white belly, muzzle and paws, small triangle ears, striped tail |
+| `piko-bunny-idle.png` | a lop-eared bunny: warm cream fur, ears hanging down along the sides of the head, pink nose, round fluffy white tail. Use **green #00FF00** instead of magenta as background |
+| `piko-owl-idle.png` | a baby owl: soft teal and cream feathers, small feather tufts as ears, big golden rings around the eyes, tiny orange beak, wing tips instead of hands |
+| `piko-dog-idle.png` | a puppy: golden-beige fur, white muzzle and belly, soft floppy brown ears, black round nose, short wagging tail |
+| `piko-bear-idle.png` | a teddy bear cub: warm brown fur, light tan muzzle and belly, small round ears |
+| `piko-panda-idle.png` | a baby panda: white fur with black round ears, black eye patches around the (still big and shiny) eyes, black arms and legs |
+| `piko-penguin-idle.png` | a baby penguin: dark blue-grey back and head, white face and belly, small orange beak and orange feet, flippers instead of hands, no ears |
+| `piko-lion-idle.png` | a lion cub: golden fur, small round ears, a short fluffy light-brown mane that stays close around the head, cream muzzle, tail with a brown tuft |
+
+### Faces: piko-KIND-happy.png and piko-KIND-thinking.png
+Attach that animal's `piko-KIND-idle.png` and use one of these. The body must not move;
+the game animates jumping and swaying itself.
+```
+Edit only the face of the attached character: change the eyes to happy closed upward curves and the mouth to a big open smile. Everything else must stay exactly the same: pose, arms, legs, ears, colors, position, size and the flat background.
+```
+```
+Edit only the face of the attached character: the eyes look up and to the side as if thinking kindly, the mouth is a small curious "o". Everything else must stay exactly the same: pose, arms, legs, ears, colors, position, size and the flat background.
+```
+
+## 2. Accessories (outfit sets)
+
+Each outfit set dresses the template in several items that do **not overlap** each other
+(one item per body area: top of head, eyes, neck, body, hand, back, feet). Two steps per
+set, in the same chat:
+
+1. Attach `base-template.png` and use the dress prompt with the set's ITEMS.
+   Save the result as `outfit-X-dressed.png` (it is only for checking).
+2. Use the remove prompt on that result. Save it as `outfit-X.png`. The game splits it into
+   single items by their position.
+
+### Dress prompt (replace ITEMS)
+```
+Dress the attached character template in these items, and nothing else: ITEMS. Keep exactly the same front view, symmetry, pose, size, position, colors and outline of the character. The items must fit the figure closely, be symmetrical where possible, must not overlap each other and must not hide the eyes (glasses are transparent in the middle). Same style: cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft dark-brown outlines. No text. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow. Same square size.
+```
+
+### Remove prompt
+```
+Remove the character completely and keep only the clothes and accessories, each one exactly where it was, same size, same shape and colors. Where the character's body was hidden behind an item, the item stays as it is; where the character was visible, now there is only the flat background. Background: one perfectly flat solid pure green color (#00FF00) everywhere, no shadow, no outline of the character. Same square size.
+```
+
+| Set | ITEMS |
+|---|---|
+| `outfit-a` | a red baseball cap with a white star on the top of the head; round orange glasses; a blue and white striped knitted scarf around the neck; red sneakers on the feet |
+| `outfit-b` | a small golden crown with blue gems on the top of the head; yellow star-shaped glasses; a red bow tie at the neck; light blue and yellow butterfly wings on the back, visible on both sides of the body |
+| `outfit-c` | a purple wizard hat with yellow stars on the top of the head; a dark blue cape with stars hanging from the shoulders behind the body, visible on both sides; a small magic wand with a star in the right hand; brown boots on the feet |
+| `outfit-d` | a flower wreath of yellow, white and blue flowers on the top of the head; a cozy green knitted vest on the body; yellow rain boots on the feet; a small orange backpack on the back, its straps visible over the shoulders |
+| `outfit-e` | a soft blue beanie with a white pompom on the top of the head; a yellow neckerchief with white dots tied at the neck; small soft orange baby-dragon wings on the back, visible on both sides; a red balloon on a string held in the left hand |
+| `outfit-f` | a big pink polka-dot hair bow on the top of the head; heart-shaped red glasses; a light purple t-shirt with a white star on the body; white sneakers with pink laces on the feet |
+| `outfit-g` | a green explorer hat on the top of the head; a light brown explorer vest with pockets on the body; a small lantern in the right hand; green boots on the feet |
 
 ## 3. World backgrounds
 

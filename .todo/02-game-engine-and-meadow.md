@@ -22,6 +22,8 @@ the same engine, so it must be general.
   detect the flat background color from the corner pixels, make it transparent with a
   soft tolerance and 1-2 px edge feather (remove magenta/green fringe), trim, resize
   (sprites max 512 px, backgrounds 1920 px wide), write `public/assets/<name>.webp`.
+  Exception: `base-template`, `piko-*` and `outfit-*` are never trimmed; they are scaled
+  to 512 x 512 as a whole so they stay aligned (outfit splitting is done in plan 04).
   Backgrounds `*-far` keep their pixels (no keying). Music: convert to
   `public/assets/<name>.mp3` (mono 96 kbps, loudness normalized). Write
   `public/assets/manifest.json` listing what exists. Processed files are committed.
