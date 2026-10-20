@@ -9,7 +9,8 @@ healthy session length, offline use and a full end-to-end check.
 ## Decisions
 - Audio `src/audio/`: Web Audio synth; SFX (key ok, gentle wrong, word done, reward,
   UI click) as short envelopes. Music: `music-<world|menu|break>` tracks from
-  `public/assets/` when present (looped with a short crossfade at the loop point,
+  `public/assets/` when present (`music-relaxing` is an extra calm track: alternate it
+  with `music-break` and `music-menu`) (looped with a short crossfade at the loop point,
   crossfade between screens), else a synthesized calm loop (pentatonic sequencer, soft
   pad + plucks, 70-90 BPM). Music files are cached by the service worker only for the
   current world. AudioContext created on first user gesture. Music/SFX volumes from

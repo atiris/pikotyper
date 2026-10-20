@@ -5,7 +5,7 @@ WHAT the product does and WHY, per feature. Source: the original brief
 [`../.research/`](../.research/index.md) (2026-10-20).
 
 PikoTyper is a free, peaceful, story-driven touch-typing game for children
-(about 6-12 years). It runs fully in the browser on GitHub Pages, with no backend.
+and young teens (about 10-15 years). It runs fully in the browser on GitHub Pages, with no backend.
 
 ## Product principles
 

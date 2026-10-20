@@ -1,6 +1,6 @@
 # PikoTyper Research: What Users Want From Kids Typing Tools
 
-Date: 2026-10-20. Scope: kids (6-12), parents, teachers. Spec read: `pikotyper.md`.
+Date: 2026-10-20. Scope: kids and young teens (target age 10-15), parents, teachers. Spec read: `pikotyper.md`.
 
 ## Method and honesty note
 Web search gave thin results (few real Reddit threads, Common Sense Education reviews were frozen in Jan 2026 and are being removed). Many blog "reviews" are sponsored (Typesy). Claims below are marked:

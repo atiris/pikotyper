@@ -21,7 +21,11 @@ make progress visible and let adults tune the difficulty.
   template (`head`, `eyes`, `neck`, `body`, `back`, `hand-left`, `hand-right`, `feet`),
   keeping each item on the full square canvas (transparent elsewhere). Item ids and names
   come from the set table in `PROMPTS.md`; check the split result with the Read tool and
-  fix misassigned parts with a small override map in the script. Draw order: back,
+  fix misassigned parts with a small override map in the script. Glasses lenses are
+  enclosed areas of the key color with light reflections: key them to transparent and keep
+  the reflections as semi-transparent white (a glass look). Wings and capes were partly
+  hidden by the body when generated; they are drawn behind the companion, so cut edges
+  there are fine. Draw order: back,
   companion, feet, body, neck, hand, eyes, head. Procedural fallback items for the same
   slots when images are missing. Unlock table tied to
   levels, worlds and key mastery milestones; never random. Wardrobe screen to equip.

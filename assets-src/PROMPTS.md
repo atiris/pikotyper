@@ -8,9 +8,10 @@ Images and background music for the game. Sound effects stay synthesized in code
 2. Save the result into this folder (`assets-src/`) with **exactly the file name** in the
    heading, for example `assets-src/piko-fox-idle.png`. Any image format is fine (png, jpg,
    webp); music as mp3, wav or m4a.
-3. Nothing else to do: `npm run assets` (added by the implementing session) removes the flat
-   background, trims (except companions and outfits, which keep their square), resizes and writes small web files to `public/assets/`. Raw files in
-   this folder are not committed, only the processed ones.
+3. Run `npm run assets` (or ask Claude to) and commit `public/assets/`. It removes the flat
+   background, trims (except companions and outfits, which keep their square), resizes
+   and writes small web files to `public/assets/`; the game uses each file that exists.
+   Raw files in this folder are not committed, only the processed ones.
 
 The game works without any of these files (it draws simple shapes instead), so you can make
 them in any order, skip some, or redo one later with the same name.
@@ -22,8 +23,7 @@ them in any order, skip some, or redo one later with the same name.
   (magenta or green). The script removes it. If Gemini adds a floor, shadow or gradient,
   ask: "Same image, but the background must be one flat color, no shadow."
 - **No text in images.** If letters appear, ask for the same image without text.
-- If a result is scary, sharp-toothed or angry, ask again; everything must feel safe for a
-  6-year-old.
+- If a result is scary, sharp-toothed or angry, ask again; everything must feel friendly and safe.
 
 ---
 
@@ -58,7 +58,7 @@ Attach `base-template.png` and use this prompt; replace ANIMAL with the text fro
 ```
 Turn the attached character template into ANIMAL. Keep exactly the same front view, symmetry, pose, size, position in the image, head size and position, eye position, arm and leg positions and outline thickness. Only add the animal features: ears, fur colors and patterns, tail, muzzle or beak. Ears must stay close to the head (no long upright ears sticking far above it), so that a hat could still sit on top of the head. A tail may peek out from the side behind the body. No clothes, no accessories.
 
-Same style: cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft dark-brown outlines, light soft shading, friendly, suitable for 6-year-old children. No text. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow, no floor. Same square size as the template.
+Same style: cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft dark-brown outlines, light soft shading, friendly, suitable for children and young teens aged 10 to 15. No text. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow, no floor. Same square size as the template.
 ```
 
 | File (KIND) | ANIMAL |
@@ -122,7 +122,7 @@ removed). Wide 16:9 images.
 
 ### Common prompt for `*-far.png` (replace SCENE)
 ```
-Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, warm pastel palette, calm and peaceful mood, suitable for 6-year-old children. No text, no letters, no watermark, no characters, no animals.
+Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, warm pastel palette, calm and peaceful mood, suitable for children and young teens aged 10 to 15. No text, no letters, no watermark, no characters, no animals.
 
 Wide game background, landscape 16:9: SCENE. Simple and uncluttered, soft colors, low contrast so that big letters can be read on top of it. The left and right edges should continue smoothly so the image can repeat horizontally.
 ```
@@ -154,7 +154,7 @@ Same style and palette as the previous background image. Wide 16:9 image of only
 
 ### Common prompt (replace OBJECT and BG)
 ```
-Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Friendly faces with big eyes and small smiles where the object has a face. Calm, never scary, suitable for 6-year-old children. No text, no letters, no watermark.
+Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Friendly faces with big eyes and small smiles where the object has a face. Calm, never scary, suitable for children and young teens aged 10 to 15. No text, no letters, no watermark.
 
 A single game object, shown alone: OBJECT. Side view facing right unless said otherwise, centered, full object visible, wide empty margin. Background: one perfectly flat solid pure BG, no gradient, no shadow, no floor, no other objects. Square image.
 ```
@@ -207,7 +207,7 @@ Cute, soft 2D children's game logo illustration, flat vector style, rounded frie
 ### ui-map-*.png (world map islands)
 Replace ISLAND with the text from the table.
 ```
-Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Calm and friendly, suitable for 6-year-old children. No text, no letters, no watermark, no characters.
+Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Calm and friendly, suitable for children and young teens aged 10 to 15. No text, no letters, no watermark, no characters.
 
 A single game map icon: ISLAND. The island floats in the air, with a rounded rocky bottom and a few small hanging roots. Seen from the front and slightly from above. Centered, the whole island visible, wide empty margin around it. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no clouds, no shadow, no other objects. Square image.
 ```
