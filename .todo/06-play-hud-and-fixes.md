@@ -60,14 +60,10 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   the key-swallowing card bug fixed in e3d90ab. Verify with Playwright: play
   `w3-1` to the end typing the guide's next char (see `e2e/helpers.ts`); if it
   still fails, find the cause in `src/game/modes/planet.ts` and fix it.
-- [ ] **Accessory cleanup in code.** Items cut by other items in their outfit need
-  new pictures; the owner makes them from the list "Needs new art" in
-  `assets-src/PROMPTS.md` (`acc-<id>.jpg` replaces the cut item; the pipeline
-  already supports it). Here only the code part: in `scripts/assets.mjs` remove
-  green key spill inside lenses (`heart-glasses`) like the magenta one, and drop
-  small disconnected components of an item (area < 1.5 % of its largest component
-  and farther than 12 px from it; fixes the stray line next to `lantern`). Re-run
-  `npm run assets` and check a contact sheet of every accessory.
+- [x] **Accessory art.** Done 2026-10-21 outside this plan: every item in "Needs new art" (
+  `assets-src/PROMPTS.md`) has its own picture, lens shine is cleaned in
+  `scripts/assets.mjs`. Do not drop small disconnected pieces of an item: the wand's
+  lower end below the paw is one.
 - [ ] **One card before a level.** Today a session can open with a tip card and then
   the get-ready card. Merge them: the get-ready card (`showPosture`) shows the
   posture picture, one line (the session's preparation tip from `pickTip` when one
