@@ -6,4 +6,3 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P3] 20-help-page.md - last, describes the icons and flows the plans above settle

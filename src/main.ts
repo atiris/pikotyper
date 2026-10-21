@@ -7,6 +7,7 @@ import { watchAutoFullscreen } from './ui/chrome';
 import { aboutScreen } from './screens/about';
 import { breakScreen } from './screens/break';
 import { friendsScreen } from './screens/friends';
+import { helpScreen } from './screens/help';
 import { levelScreen } from './screens/level';
 import { moveImportScreen, taskImportScreen } from './screens/link-import';
 import { mapScreen } from './screens/map';
@@ -36,6 +37,7 @@ registerScreen('parent', needsProfile((root, params) => void parentScreen(root, 
 registerScreen('wardrobe', needsProfile(wardrobeScreen));
 registerScreen('friends', needsProfile(friendsScreen));
 registerScreen('break', needsProfile(breakScreen));
+registerScreen('help', needsProfile(helpScreen));
 
 async function boot(): Promise<void> {
   const lang = app.store.data.language ?? detectLanguage();

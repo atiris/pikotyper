@@ -112,6 +112,8 @@ export interface RuntimeOptions {
   onExit(): void;
   /** A click on Piko during play (the level pauses first). */
   onPiko(): void;
+  /** Help from the pause card; `back` returns to the paused level. */
+  onHelp(back: () => void): void;
 }
 
 /** Runs one level: input, typing state, mode, HUD, guide, Piko, stats. */
@@ -774,6 +776,7 @@ export class LevelRuntime {
       h('div', { class: 'row' },
         button(t('level.resume'), () => this.resume(), 'btn primary', 'play'),
         slower,
+        button(t('help.title'), () => this.opts.onHelp(() => (this.pauseEl?.querySelector('button') as HTMLButtonElement | null)?.focus()), 'btn', 'help'),
         button(t('level.toMap'), () => this.exit(), 'btn', 'map')));
     this.el.querySelector('.stage-wrap')!.append(this.pauseEl);
     (this.pauseEl.querySelector('button') as HTMLButtonElement).focus();

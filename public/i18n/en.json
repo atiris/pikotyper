@@ -1107,6 +1107,43 @@
     "creditsTitle": "Credits",
     "credits": "Open source under the MIT license. Fonts: Lexend, Atkinson Hyperlegible and OpenDyslexic (SIL Open Font License)."
   },
+  "help": {
+    "title": "Help",
+    "typeTitle": "How to type",
+    "type": [
+      "Sit up straight, feet on the floor, shoulders relaxed.",
+      "Feel the little bumps on F and J. Your index fingers live there.",
+      "The other fingers lie next to them on the middle row: A S D F and J K L.",
+      "Your thumbs rest above the space bar.",
+      "Each finger has its own keys. After every letter it goes back home.",
+      "Look at the screen, not at your hands. The keyboard below shows which finger goes.",
+      "First type correctly, then fast. Speed comes by itself.",
+      "After a little while of play, take a break: stand up, stretch and drink some water."
+    ],
+    "mapTitle": "Buttons on the map",
+    "levelTitle": "Buttons in a level",
+    "icons": {
+      "players": "Go back to choosing the player.",
+      "settings": "Settings. These are for parents.",
+      "sound": "Sound: normal, quiet or off.",
+      "fullscreen": "Play on the whole screen and back again.",
+      "help": "This help.",
+      "pause": "Pause. The Esc key pauses too.",
+      "paw": "Paw help: {n} words without a mistake charge a paw. Press Enter and {piko} types {words} words for you.",
+      "progress": "The bar shows how much of the level is behind you.",
+      "gauge": "The needle shows your rhythm. When you type smoothly, it moves right.",
+      "read": "Read aloud: the computer reads the words to you.",
+      "guide": "Shows or hides the keyboard that tells where the finger goes."
+    },
+    "playTitle": "How to play",
+    "play": [
+      "Type the word on the object. Then it clears the way.",
+      "When a word gets away, nothing bad happens. Another one comes.",
+      "Stars come from accuracy: the fewer mistakes, the more stars.",
+      "When you type well, new letters come.",
+      "Esc stops the game and another Esc lets it go on."
+    ]
+  },
   "tips": {
     "sit-straight": "Sit up straight and lean your back on the chair.",
     "feet-floor": "Keep your feet flat on the floor or on a footrest.",

@@ -18,6 +18,7 @@ import { keyLabel } from '../ui/keyboard-guide';
 import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
 import { playLevel } from './map';
+import { openHelp } from './help';
 import { openStats } from './stats';
 import { handInDialog, minutesLeft, startTask } from './task';
 
@@ -53,6 +54,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     style: params.style,
     onExit: exit,
     onPiko: openStats,
+    onHelp: (back) => openHelp(root.querySelector('.level-screen')!, back),
     onFinish: (result) => {
       if (!result) return exit();
       if (task) {

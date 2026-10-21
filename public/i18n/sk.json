@@ -1107,6 +1107,43 @@
     "creditsTitle": "Poďakovanie",
     "credits": "Otvorený kód pod licenciou MIT. Písma: Lexend, Atkinson Hyperlegible a OpenDyslexic (SIL Open Font License)."
   },
+  "help": {
+    "title": "Pomoc",
+    "typeTitle": "Ako písať",
+    "type": [
+      "Seď rovno, chodidlá maj na zemi a ramená uvoľnené.",
+      "Nahmataj výstupky na F a J. Tam bývajú tvoje ukazováky.",
+      "Ostatné prsty si ľahnú vedľa nich na stredný rad: A S D F a J K L.",
+      "Palce oddychujú nad medzerníkom.",
+      "Každý prst má svoje klávesy. Po každom písmenku sa vráti domov.",
+      "Pozeraj na obrazovku, nie na ruky. Klávesnica dole ti ukáže, ktorý prst ide.",
+      "Najprv presne, potom rýchlo. Rýchlosť príde sama.",
+      "Po chvíľke hrania si oddýchni: vstaň, natiahni sa a napi sa vody."
+    ],
+    "mapTitle": "Tlačidlá na mape",
+    "levelTitle": "Tlačidlá v úrovni",
+    "icons": {
+      "players": "Vrátiš sa k výberu hráča.",
+      "settings": "Nastavenia. Tie patria rodičom.",
+      "sound": "Zvuk: normálny, potichu alebo vypnutý.",
+      "fullscreen": "Hra na celú obrazovku a zase späť.",
+      "help": "Táto pomoc.",
+      "pause": "Pauza. Rovnako ju zapne aj kláves Esc.",
+      "paw": "Labková pomoc: {n} slov bez chyby nabije labku. Stlač Enter a {piko} napíše za teba {words} slová.",
+      "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
+      "gauge": "Ručička ukazuje tvoj rytmus. Keď píšeš plynulo, ide doprava.",
+      "read": "Čítanie nahlas: počítač ti slová prečíta.",
+      "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst."
+    },
+    "playTitle": "Ako hrať",
+    "play": [
+      "Napíš slovo, ktoré je na predmete. Potom ti uvoľní cestu.",
+      "Keď ti slovo ujde, nič zlé sa nestane. Príde ďalšie.",
+      "Hviezdičky dostaneš za presnosť: čím menej chýb, tým viac hviezdičiek.",
+      "Keď píšeš dobre, prídu nové písmenká.",
+      "Esc hru zastaví a ďalší Esc ju pustí ďalej."
+    ]
+  },
   "tips": {
     "sit-straight": "Seď rovno a chrbát si opri o operadlo.",
     "feet-floor": "Chodidlá nech sú celé na zemi alebo na podstavci.",

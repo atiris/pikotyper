@@ -46,6 +46,7 @@ export const ICONS = {
   practice: '<path d="M12 20l8-8a3 3 0 00-4-4l-8 8-2 6z"/><path d="M14 8l2 2"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
+  help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 113.6 2.2c-.7.4-1.1 1-1.1 1.8v.5M12 17v.01"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
   download: '<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',

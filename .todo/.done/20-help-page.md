@@ -30,8 +30,21 @@ change there.
 - sk + en texts. The page works at 1024x600 with scrolling inside the page.
 
 ## Steps
-- [ ] Help screen + routing + entries (map, pause).
-- [ ] Texts sk + en.
-- [ ] Specs (WHAT and WHY).
-- [ ] Build, vitest, e2e (a test opens help from the map and goes back); Playwright MCP:
+- [x] Help screen + routing + entries (map, pause).
+- [x] Texts sk + en.
+- [x] Specs (WHAT and WHY).
+- [x] Build, vitest, e2e (a test opens help from the map and goes back); Playwright MCP:
   map -> help -> back; level -> pause -> help -> back to the paused level.
+
+## Done - 2026-10-21
+`src/screens/help.ts`: the help page (how to type in 8 own tips, the map's and the level's
+top buttons drawn with the same icons, paw ring, progress bar and rhythm gauge, how to
+play), a "?" button in the map's top actions (`go('help')`, own address `#/p/<id>/help`)
+and a "Help" button in the pause card that opens the page over the paused level (the
+runtime gets `onHelp` like `onPiko`, so `game/` does not import `screens/`). Back and Esc
+return to the map or to the paused level. New `help` icon, texts sk + en, spec
+`.specify/experience/help.md`, e2e `e2e/help.spec.ts`. Decisions: the map's "Players"
+button is listed too (it sits at the top); the practice "Finish" button is not (only in
+free practice). Playwright MCP at 1024x600: map -> help -> back, level -> pause -> help ->
+Esc back to the paused level with focus on Continue; no console errors.
+Left out: nothing; nothing went to the backlog.

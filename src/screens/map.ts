@@ -11,6 +11,7 @@ import { badge } from '../ui/badge';
 import { button, h, icon } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
 import { ownTextPhrases } from '../game/modes/practice';
+import { helpButton } from './help';
 import { openPracticeKeys } from './practice-keys';
 import { openStats } from './stats';
 import { taskCard } from './task';
@@ -63,7 +64,8 @@ export function mapScreen(root: HTMLElement): void {
       h('div', { class: 'top-actions' },
         settingsButton(),
         soundButton(),
-        fullscreenButton())),
+        fullscreenButton(),
+        helpButton())),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
         h('h1', { class: 'map-hello' }, t('map.hello', { name: p.name })),

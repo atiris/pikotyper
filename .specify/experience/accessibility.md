@@ -9,6 +9,7 @@
 - A reduce motion option (and `prefers-reduced-motion` is respected).
 - Fully playable with sound off; every sound cue has a visual counterpart.
 - All menus are usable with the keyboard.
+- Every top button is explained, drawn as it looks, on the [help page](help.md).
 - **Reading aloud** (off by default, per profile): a round button left of the keyboard
   button in the level bar switches it. It reads only the targets, each when it becomes
   the one to type, with the browser's own voice of the profile language, a little slower
