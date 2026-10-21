@@ -36,6 +36,24 @@
   typed fewer than 5 keys (Piko's paws did the rest) says so, gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   goes back to the map, like closing any other card.
+- **Ways to type** (a style per run, the same movement and story in every mode):
+  - *Copy* (default, all story levels so far): the child types the word shown.
+  - *Dictation*: the voice says each target when it becomes the one to type; its label
+    shows a speaker and one dot per letter (spaces as gaps), and the typed letters
+    appear in place. A wrong key shows the whole target, which stays shown until done.
+    A click or tap on the label says it again, and the voice repeats it once by itself
+    after 4 seconds without a key. Targets get one and a half times the travel time.
+    Without a voice for the language the run is copy typing and the get-ready card says
+    so; the reading-aloud button is hidden in a dictation (the voice is the task).
+  - *Memory*: a target shows for a moment (longer for long words, shorter at a higher
+    difficulty, with a small ring that empties), then its letters turn into dots and
+    typing starts. Keys pressed while it shows are not counted and Piko asks to wait:
+    the one exception to "a word seen can be typed", clearly marked by the ring. A wrong
+    key shows it again for a short flash; the letters typed so far stay. Targets get
+    1.8 times the travel time (calm modes wait anyway).
+  - In both, the finger guide does not light the key of a hidden letter, Piko's paws
+    show the target and type it as usual, and the end screen adds how many targets the
+    child typed without the target being shown again ("by ear" / "from memory").
 - Pause anytime (Esc or a visible button); the game also pauses when the tab is hidden.
   The pause is a small card at the top: the words and the guide's next key stay in sight.
   Besides Continue and Map it offers "Slower", one step lower difficulty (Piko confirms);
@@ -53,5 +71,10 @@
   that floated by. Speed pressure over accuracy is the top complaint about typing games
   for children; slow but correct must still succeed
   ([research](../../.research/features/accuracy-first-feedback.md)).
+- Copying, hearing and remembering train different skills: dictation trains listening to
+  letters, memory trains reading whole words instead of letter by letter
+  ([research](../../.research/learning/exercise-types.md)). The style changes only how a
+  target is shown, so every mode gets it without its own rules. A guide that lit the next
+  key would turn both back into copying.
 - A pause that hides the game breaks the child's focus; a way to slow down without a
   parent keeps a struggling child playing instead of giving up.

@@ -100,7 +100,9 @@
     "rhythm": "Rhythm: {n} letters per minute",
     "speed": "Speed",
     "layoutHint": "Your keyboard looks like {layout}. Ask a parent to switch it in the parent area.",
-    "shiftOtherHand": "Press Shift with the other hand: the little finger on the side away from the letter."
+    "shiftOtherHand": "Press Shift with the other hand: the little finger on the side away from the letter.",
+    "memoryWait": "Wait until it hides.",
+    "noVoice": "This browser cannot read aloud, so today you will see the words and copy them."
   },
   "guide": {
     "deadStep1": "{ch}: first the accent key, then the letter",
@@ -153,6 +155,10 @@
     "countFew": "{n} keys",
     "countMany": "{n} keys",
     "needLetters": "Choose at least {n} letters.",
+    "style": "How you will type",
+    "copy": "Copy",
+    "dictation": "Dictation",
+    "memory": "Remember it",
     "start": "Start"
   },
   "touch": {
@@ -194,6 +200,8 @@
   "results": {
     "title": "Level finished!",
     "practiceDone": "Practice finished!",
+    "dictationClean": "By ear without a mistake: {n} of {total}",
+    "memoryClean": "From memory without a mistake: {n} of {total}",
     "starsAria": "{n} of 3 stars",
     "accuracy": "Accuracy {n} %",
     "byPiko": "{piko} did most of this level.",

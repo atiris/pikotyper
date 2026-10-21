@@ -4,6 +4,7 @@ import { pikoElement } from '../gfx/piko';
 import { t, tList } from '../i18n/i18n';
 import { LEVELS, type LevelDef, WORLDS, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
 import type { LevelResult } from '../game/progress';
+import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
 import { captureKeys, surpriseAsk, surpriseLeft } from '../game/cards';
@@ -31,6 +32,8 @@ interface LevelParams {
   text?: boolean;
   /** Id of the task this level is played for. */
   task?: string;
+  /** Free practice: copy typing, dictation or memory, chosen in the key picker. */
+  style?: Style;
 }
 
 export function levelScreen(root: HTMLElement, params: LevelParams): () => void {
@@ -47,6 +50,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     chosen: params.chosen,
     seconds: params.seconds ?? null,
     own: task ? taskOwn(task) : undefined,
+    style: params.style,
     onExit: exit,
     onPiko: openStats,
     onFinish: (result) => {
@@ -92,6 +96,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const facts: HTMLElement[] = [
     chip('main', r.byPiko ? t('results.byPiko', { piko: p.companion.name }) : t('results.accuracy', { n: Math.round(r.accuracy * 100) })),
   ];
+  if (r.byStyle) facts.push(chip('', t(`results.${r.byStyle.style}Clean`, { n: r.byStyle.clean, total: r.byStyle.total })));
   if (r.cpm > 0) facts.push(chip('', t('results.rhythm', { n: r.cpm })));
   if (r.trend && r.trend > 1.05) facts.push(chip('good', t('results.trendUp')));
   if (r.newKeys.length) {

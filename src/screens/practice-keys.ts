@@ -1,4 +1,6 @@
 import { app, go, layout } from '../app/app';
+import { speech } from '../audio/speech';
+import type { Style } from '../game/typing';
 import { t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, isLetterKey, practiceOrder, practiceSteps, stepHolding } from '../learning/lessons';
@@ -12,7 +14,7 @@ const MIN_LETTERS = 2;
 /**
  * Free practice starts here: the keyboard with the chosen keys lit, a slider that adds keys
  * in the lesson order three at a time, and single keys toggled by a click. It opens with
- * the child's active keys.
+ * the child's active keys and copy typing; dictation shows only when the browser has a voice.
  */
 export function openPracticeKeys(): void {
   const p = app.profile!;
@@ -21,6 +23,12 @@ export function openPracticeKeys(): void {
   let chosen = new Set(activeKeys(p));
   let step = stepHolding(steps, [...chosen]);
   let shifted = false;
+  let style: Style = 'copy';
+  const styles: Style[] = speech.available(p.language) ? ['copy', 'dictation', 'memory'] : ['copy', 'memory'];
+  const styleBtns = styles.map((s) => h('button', { class: 'chip', type: 'button', 'data-style': s, onClick: () => {
+    style = s;
+    paint();
+  } }, t(`practiceKeys.${s}`)));
   const codes = allKeys(layout()).map((d) => d.code);
   const kb = new KeyboardGuide(layout());
   kb.el.classList.add('picker', 'practice-picker');
@@ -48,11 +56,15 @@ export function openPracticeKeys(): void {
   const hint = h('p', { class: 'hint pk-hint', role: 'status' });
   const start = button(t('practiceKeys.start'), () => {
     close();
-    go('level', { id: 'practice', chosen: [...chosen] });
+    go('level', { id: 'practice', chosen: [...chosen], style });
   }, 'btn primary', 'play');
   start.autofocus = true;
 
   function paint(): void {
+    styleBtns.forEach((b, i) => {
+      b.classList.toggle('on', styles[i] === style);
+      b.setAttribute('aria-pressed', String(styles[i] === style));
+    });
     kb.el.classList.toggle('shifted', shifted);
     for (const code of codes) {
       const el = kb.keyEl(code)!;
@@ -87,6 +99,7 @@ export function openPracticeKeys(): void {
   const close = modal(h('div', { class: 'practice-keys' },
     h('h2', {}, t('practiceKeys.title')),
     h('p', { class: 'hint' }, t('practiceKeys.intro')),
+    h('div', { class: 'pk-styles', role: 'group', 'aria-label': t('practiceKeys.style') }, ...styleBtns),
     kb.el,
     h('div', { class: 'pk-row' }, shiftChip, count),
     h('label', { class: 'pk-slider' }, h('span', {}, t('practiceKeys.slider')), slider, stepLabel),

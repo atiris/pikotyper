@@ -27,7 +27,7 @@ import { PAW_MAX, PAW_STREAK, PAW_WORDS, isHardMoment } from './paw';
 import { createMode } from './modes';
 import { PressureValve, perChar } from './pace';
 import { type LevelResult, completeLevel } from './progress';
-import { type Target, TypingCore } from './typing';
+import { type Style, type Target, TypingCore } from './typing';
 import { pickTip, showCard, showNewKey, showPosture } from './cards';
 import { surpriseFor } from './own-content';
 
@@ -40,6 +40,8 @@ interface PendingLabel {
 }
 
 interface Rect {
+  /** The target whose label it is. */
+  id?: number;
   x0: number;
   x1: number;
   y0: number;
@@ -55,6 +57,10 @@ const LABEL_MIN_SIZE = 28;
 const READ_TIME = 3;
 /** Extra seconds a target with a capital letter gets (the Shift chord is hard). */
 const CAPITAL_EXTRA = 1.5;
+/** Travel time of dictated and remembered targets: hearing or recalling a target takes longer. */
+const STYLE_PACE: Record<Style, number> = { copy: 1, dictation: 1.5, memory: 1.8 };
+/** Seconds without a key after which a dictated target is said once more. */
+const DICTATION_REPEAT = 4;
 /** Bolt's place next to the DOM Piko, in CSS pixels from the left, and his height in game units. */
 const BOLT_CSS_X = 200;
 const BOLT_SIZE = 150;
@@ -95,6 +101,8 @@ export interface RuntimeOptions {
   seconds?: number | null;
   /** Own words and text instead of the parent's (a task's). */
   own?: WordSourceOwn;
+  /** Free practice: the style chosen in the key picker (a level's own style wins). */
+  style?: Style;
   onFinish(result: LevelResult | null): void;
   onExit(): void;
   /** A click on Piko during play (the level pauses first). */
@@ -115,6 +123,8 @@ export class LevelRuntime {
   /** The profile's difficulty; "Slower" in the pause lowers it during the level. */
   difficulty: number;
   readonly noPressure: boolean;
+  /** How the targets are shown; dictation falls back to copy typing without a voice. */
+  style: Style;
   readonly highContrast: boolean;
   readonly reduceMotion: boolean;
   readonly el: HTMLElement;
@@ -166,6 +176,8 @@ export class LevelRuntime {
   /** Targets the child typed, and the misses already given to the valve. */
   private typedTargets = 0;
   private missesSeen = 0;
+  /** Targets the child typed without a reveal (dictation) or a flash (memory). */
+  private cleanTargets = 0;
 
   /** Paw help: the HUD button, words Piko still types, seconds to his next key. */
   private pawBtn: HTMLButtonElement | null = null;
@@ -180,8 +192,9 @@ export class LevelRuntime {
 
   constructor(root: HTMLElement, readonly def: LevelDef, private opts: RuntimeOptions) {
     const p = app.profile!;
-    this.difficulty = p.settings.difficulty;
+    this.difficulty = this.core.difficulty = p.settings.difficulty;
     this.noPressure = p.settings.noTimePressure;
+    this.style = def.style ?? opts.style ?? 'copy';
     this.highContrast = p.settings.highContrast;
     this.reduceMotion = reduceMotion();
     this.tweens.speed = this.reduceMotion ? 0.5 : 1;
@@ -243,6 +256,8 @@ export class LevelRuntime {
     root.append(this.el);
 
     this.stage = new Stage(stageWrap);
+    this.onStageClick = this.onStageClick.bind(this);
+    this.stage.canvas.addEventListener('pointerdown', this.onStageClick);
     this.mode = createMode(def, this);
     this.piko.classList.toggle('hidden', this.pikoOnStage);
     this.loop = new Loop((dt) => this.update(dt), () => this.render());
@@ -283,7 +298,12 @@ export class LevelRuntime {
       saveProfile();
     }
     if (this.disposed) return;
-    if (!this.opts.keys && await showPosture(host, p, tip, this.surprise) === 'cancel') return this.exit();
+    // Without a voice of the language a dictation runs as copy typing, and the card says so.
+    const noVoice = this.style === 'dictation' && !speech.available(p.language);
+    if (noVoice) this.style = 'copy';
+    this.core.style = this.style;
+    this.paintRead();
+    if (!this.opts.keys && await showPosture(host, p, tip, this.surprise, noVoice ? t('level.noVoice') : undefined) === 'cancel') return this.exit();
     if (this.disposed) return;
     const intro = this.mode.intro();
     if (intro) await showCard(host, h('p', {}, intro), { button: t('common.ok'), cls: 'mode-intro' });
@@ -320,6 +340,7 @@ export class LevelRuntime {
     this.stage.dispose();
     document.removeEventListener('visibilitychange', this.onVisibility);
     window.removeEventListener('pointerdown', this.onTouch);
+    this.stage.canvas.removeEventListener('pointerdown', this.onStageClick);
   }
 
   // ---- words and pacing ------------------------------------------------------
@@ -337,7 +358,7 @@ export class LevelRuntime {
   travelTime(word: string): number {
     const base = (9 - this.difficulty * 0.5) * 0.55;
     const read = READ_TIME + (/\p{Lu}/u.test(word) ? CAPITAL_EXTRA : 0);
-    return (base + word.length * perChar(this.paceSamples, this.lastCps) + read) * this.valve.factor;
+    return (base + word.length * perChar(this.paceSamples, this.lastCps) + read) * this.valve.factor * STYLE_PACE[this.style];
   }
 
   /** How many targets may be on screen at once. */
@@ -364,6 +385,7 @@ export class LevelRuntime {
     const since = this.shownAt.get(tg.id);
     if (since != null) this.paceSamples.push((this.elapsed - since) / tg.word.length);
     this.typedTargets++;
+    if (!tg.revealed) this.cleanTargets++;
     this.valve.hit();
   }
 
@@ -393,7 +415,9 @@ export class LevelRuntime {
     if (c.ch === SPACE && !this.core.locked) return;
     this.deadPending = false;
     const res = this.core.type(c.ch);
+    if (res.kind === 'ignored') return this.say(t('level.memoryWait'), 2);
     const p = app.profile!;
+    this.keyAt = this.elapsed;
     const since = Math.max(this.lastKey, this.readySince);
     const rt = since ? c.time - since : 1000;
     this.lastKey = c.time;
@@ -466,8 +490,9 @@ export class LevelRuntime {
     this.say(pickLine('piko.hint', { key: keyLabel(ch), finger: fingerName }), 5);
   }
 
+  /** The guide lights the next key only when the child can see it: a hidden target keeps it secret. */
   updateGuide(): void {
-    const ch = this.core.expectedChar();
+    const ch = this.core.shownChar();
     const p = app.profile!;
     let fade = 0;
     if (ch && p.settings.guide === 'auto') {
@@ -495,10 +520,10 @@ export class LevelRuntime {
     return p.settings.readAloud && speech.available(p.language);
   }
 
-  /** The button shows only when the browser has a voice of the profile's language. */
+  /** The button shows only when the browser has a voice of the profile's language; in a dictation the voice is the task. */
   private paintRead(): void {
     const p = app.profile!;
-    this.readBtn.hidden = !speech.available(p.language);
+    this.readBtn.hidden = this.style === 'dictation' || !speech.available(p.language);
     this.readBtn.setAttribute('aria-pressed', String(p.settings.readAloud));
   }
 
@@ -514,9 +539,37 @@ export class LevelRuntime {
 
   private readFocus(): void {
     const tg = this.core.focus();
-    if (!tg || tg.id === this.readId || this.pawWords || !this.started || this.paused) return;
-    this.readId = tg.id;
-    if (this.reading) speech.say(tg.word, app.profile!.language);
+    if (!tg || this.pawWords || !this.started || this.paused) return;
+    if (tg.id !== this.readId) {
+      this.readId = tg.id;
+      if (this.style === 'dictation') this.dictate(tg, false);
+      else if (this.reading) speech.say(tg.word, app.profile!.language);
+    } else if (this.style === 'dictation' && tg.masked && !this.repeated && this.elapsed - Math.max(this.spokenAt, this.keyAt) >= DICTATION_REPEAT) {
+      this.dictate(tg, true);
+    }
+  }
+
+  /** Level time of the child's last counted key, and of the last dictated target said; it is said again once by itself. */
+  private keyAt = 0;
+  private spokenAt = 0;
+  private repeated = false;
+
+  /** Says a dictated target; a repeat cuts what is still being said. */
+  private dictate(tg: Target, repeat: boolean): void {
+    if (repeat) speech.stop();
+    speech.say(tg.word, app.profile!.language);
+    this.spokenAt = this.elapsed;
+    this.repeated = repeat;
+  }
+
+  /** A click or tap on a dictated target's label says it again. */
+  private onStageClick(e: PointerEvent): void {
+    if (this.style !== 'dictation' || !this.started || this.paused || this.finished) return;
+    const r = this.stage.canvas.getBoundingClientRect();
+    const x = (e.clientX - r.left) / this.stage.scale, y = (e.clientY - r.top) / this.stage.scale;
+    const hit = this.labelRects.find((b) => x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1);
+    const tg = hit && this.core.active.find((a) => a.id === hit.id);
+    if (tg) this.dictate(tg, true);
   }
 
   // ---- Piko --------------------------------------------------------------------
@@ -653,6 +706,7 @@ export class LevelRuntime {
     }
     this.pawIdle = 0;
     const ch = tg.word[tg.typed];
+    if (tg.masked) this.core.reveal(tg);
     this.core.locked = tg;
     const res = this.core.type(ch);
     this.guide.pawTap(ch);
@@ -691,7 +745,7 @@ export class LevelRuntime {
   /** One step lower difficulty from now on; automatic growth may raise it again after accurate play. */
   private slowDown(): void {
     const p = app.profile!;
-    this.difficulty = Math.max(1, this.difficulty - 1);
+    this.difficulty = this.core.difficulty = Math.max(1, this.difficulty - 1);
     p.settings.difficulty = this.difficulty;
     p.progress.growthSeconds = 0;
     saveProfile();
@@ -706,6 +760,8 @@ export class LevelRuntime {
     this.paused = false;
     this.lastKey = 0;
     this.readySince = performance.now();
+    // The pause cut the voice: a dictated target is said again.
+    if (this.style === 'dictation') this.readId = 0;
   }
 
   private exit(): void {
@@ -754,8 +810,8 @@ export class LevelRuntime {
     }
     // Drift the rhythm down slowly while idle, so the gauge is honest.
     if (performance.now() - this.lastKey > 2500) this.ema = Math.max(0.4, this.ema - dt * 0.05);
-    if (this.core.expectedChar() !== this.lastExpected) {
-      this.lastExpected = this.core.expectedChar();
+    if (this.core.shownChar() !== this.lastExpected) {
+      this.lastExpected = this.core.shownChar();
       this.updateGuide();
     }
     if (this.mode.finished && !this.finished) this.finish();
@@ -803,12 +859,13 @@ export class LevelRuntime {
     const rank = (l: PendingLabel) => (this.core.locked === l.tg ? Infinity : l.tg.urgency);
     const placed: Rect[] = [];
     const shifts = new Map<number, number>();
+    const icon = this.style !== 'copy';
     for (const l of [...this.labels].sort((a, b) => rank(b) - rank(a))) {
       // Phrases shrink to fit: in calm modes the stage around their place, moving targets half of it.
       const room = this.mode.phraseWords > 2 ? Math.min(this.vw * 0.9, 2 * Math.min(l.x, this.vw - l.x) - 20) : this.vw * 0.5;
-      const full = wordBox(g, l.tg.word, l.size).w;
+      const full = wordBox(g, l.tg.word, l.size, icon).w;
       if (full > room) l.size = Math.max(LABEL_MIN_SIZE, Math.min(l.size, l.size * room / full));
-      const { w, h } = wordBox(g, l.tg.word, l.size);
+      const { w, h } = wordBox(g, l.tg.word, l.size, icon);
       const x0 = l.x - w / 2 - LABEL_GAP, x1 = l.x + w / 2 + LABEL_GAP;
       const clear = (dy: number) => placed.every((b) => x1 <= b.x0 || x0 >= b.x1 || l.y + dy + h / 2 + LABEL_GAP <= b.y0 || l.y + dy - h / 2 - LABEL_GAP >= b.y1);
       let want = 0;
@@ -820,7 +877,7 @@ export class LevelRuntime {
       const prev = this.labelShift.get(l.tg.id);
       const shift = prev == null ? want : prev + (want - prev) * follow;
       shifts.set(l.tg.id, shift);
-      this.labelRects.push({ x0: l.x - w / 2, x1: l.x + w / 2, y0: l.y + shift - h / 2, y1: l.y + shift + h / 2 });
+      this.labelRects.push({ id: l.tg.id, x0: l.x - w / 2, x1: l.x + w / 2, y0: l.y + shift - h / 2, y1: l.y + shift + h / 2 });
       if (Math.abs(shift) > LABEL_LINE_FROM) {
         g.save();
         g.strokeStyle = 'rgba(255,253,246,0.7)';
@@ -836,6 +893,8 @@ export class LevelRuntime {
         size: l.size,
         highContrast: this.highContrast,
         locked: this.core.locked === l.tg,
+        masked: !this.core.letters(l.tg),
+        icon: this.style === 'dictation' ? { kind: 'speaker' } : this.style === 'memory' ? { kind: 'ring', left: l.tg.showFor ? l.tg.showLeft / l.tg.showFor : 0 } : undefined,
       });
     }
     this.labelShift = shifts;
@@ -886,12 +945,14 @@ export class LevelRuntime {
     // Targets Piko's paws typed count neither way.
     const resolved = this.typedTargets + this.core.missed;
     const typedShare = resolved ? this.typedTargets / resolved : 1;
+    const clean = this.cleanTargets;
     this.flushSession();
     if (this.def.kind === 'practice' && !this.def.count && total === 0) {
       this.opts.onFinish(null);
       return;
     }
     const result = completeLevel(p, this.def, { accuracy, chars, errors, cpm, seconds }, typedShare);
+    if (this.style !== 'copy') result.byStyle = { style: this.style, clean, total: resolved };
     saveProfile();
     this.sfx('reward');
     this.celebrate();

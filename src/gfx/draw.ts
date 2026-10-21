@@ -252,23 +252,30 @@ export interface WordStyle {
   size?: number;
   highContrast?: boolean;
   locked?: boolean;
+  /** Letters not typed yet are dots (spaces stay gaps). */
+  masked?: boolean;
+  /** A small sign left of the letters: a speaker (dictation) or a ring that empties (memory, 0..1 left). */
+  icon?: { kind: 'speaker' } | { kind: 'ring'; left: number };
 }
 
-/** Word label on a target: typed letters in green, the next letter highlighted, gentle wobble on a mistake. */
 function letterWidths(g: G, word: string, size: number): number[] {
   g.font = `600 ${size}px ${fontFamily()}`;
   // A space is wide enough to see its dot and to be its own step.
   return [...word].map((c) => (c === ' ' ? size * 0.5 : g.measureText(c).width + size * 0.08));
 }
 
+/** Room the icon of a label takes. */
+const ICON_W = 0.85;
+
 /** Width and height of a word label as `drawWord` draws it. */
-export function wordBox(g: G, word: string, size = 40): { w: number; h: number } {
+export function wordBox(g: G, word: string, size = 40, icon = false): { w: number; h: number } {
   g.save();
   const total = letterWidths(g, word, size).reduce((a, b) => a + b, 0);
   g.restore();
-  return { w: total + size * 0.9, h: size * 1.45 };
+  return { w: total + size * (0.9 + (icon ? ICON_W : 0)), h: size * 1.45 };
 }
 
+/** Word label on a target: typed letters in green, the next letter highlighted, gentle wobble on a mistake. */
 export function drawWord(g: G, word: string, typed: number, x: number, y: number, wobble: number, st: WordStyle = {}): void {
   const size = st.size ?? 40;
   g.save();
@@ -277,20 +284,22 @@ export function drawWord(g: G, word: string, typed: number, x: number, y: number
   g.textBaseline = 'middle';
   g.textAlign = 'left';
   const total = widths.reduce((a, b) => a + b, 0);
+  const iconW = st.icon ? size * ICON_W : 0;
   const padX = size * 0.45, h = size * 1.45;
   const shake = wobble > 0 ? Math.sin(wobble * 60) * 5 * (wobble / 0.35) : 0;
-  const bx = x - total / 2 - padX + shake;
+  const bx = x - (total + iconW) / 2 - padX + shake;
   g.shadowColor = 'rgba(40,30,20,0.25)';
   g.shadowBlur = 8;
   g.shadowOffsetY = 3;
   g.fillStyle = st.highContrast ? '#ffffff' : 'rgba(255,253,246,0.94)';
-  roundRect(g, bx, y - h / 2, total + padX * 2, h, h / 2);
+  roundRect(g, bx, y - h / 2, total + iconW + padX * 2, h, h / 2);
   g.fill();
   g.shadowColor = 'transparent';
   g.lineWidth = st.locked ? 4 : 2.5;
   g.strokeStyle = st.locked ? '#ffb23e' : st.highContrast ? '#000' : 'rgba(90,61,43,0.55)';
   g.stroke();
-  let cx = bx + padX;
+  if (st.icon) drawLabelIcon(g, st.icon, bx + padX + size * 0.3, y, size, !!st.highContrast);
+  let cx = bx + padX + iconW;
   chars.forEach((c, i) => {
     const w = widths[i];
     if (i < typed) g.fillStyle = st.highContrast ? '#006b2e' : '#3fa65a';
@@ -301,15 +310,60 @@ export function drawWord(g: G, word: string, typed: number, x: number, y: number
       g.fillStyle = wobble > 0 ? '#d9534f' : '#2d2140';
     } else g.fillStyle = st.highContrast ? '#000' : '#4a3a5c';
     if (c === ' ') {
-      // A light dot shows the space to type.
-      g.save();
-      g.globalAlpha *= i === typed ? 0.8 : 0.4;
+      // A light dot shows the space to type; a hidden target keeps a plain gap.
+      if (!st.masked || i < typed) {
+        g.save();
+        g.globalAlpha *= i === typed ? 0.8 : 0.4;
+        g.beginPath();
+        g.arc(cx + w / 2 - size * 0.02, y + size * 0.08, size * 0.07, 0, Math.PI * 2);
+        g.fill();
+        g.restore();
+      }
+    } else if (st.masked && i >= typed) {
       g.beginPath();
-      g.arc(cx + w / 2 - size * 0.02, y + size * 0.08, size * 0.07, 0, Math.PI * 2);
+      g.arc(cx + w / 2 - size * 0.04, y + size * 0.04, size * 0.12, 0, Math.PI * 2);
       g.fill();
-      g.restore();
     } else g.fillText(c, cx, y + size * 0.04);
     cx += w;
   });
+  g.restore();
+}
+
+/** The speaker of a dictated target, or the ring of a memory target that empties while it shows. */
+function drawLabelIcon(g: G, icon: NonNullable<WordStyle['icon']>, cx: number, y: number, size: number, highContrast: boolean): void {
+  const ink = highContrast ? '#000' : '#5a3d2b';
+  const r = size * 0.28;
+  g.save();
+  g.fillStyle = ink;
+  g.strokeStyle = ink;
+  g.lineCap = 'round';
+  if (icon.kind === 'speaker') {
+    g.beginPath();
+    g.moveTo(cx - r, y - r * 0.4);
+    g.lineTo(cx - r * 0.45, y - r * 0.4);
+    g.lineTo(cx + r * 0.15, y - r);
+    g.lineTo(cx + r * 0.15, y + r);
+    g.lineTo(cx - r * 0.45, y + r * 0.4);
+    g.lineTo(cx - r, y + r * 0.4);
+    g.closePath();
+    g.fill();
+    g.lineWidth = size * 0.06;
+    for (const k of [0.55, 0.95]) {
+      g.beginPath();
+      g.arc(cx + r * 0.15, y, r * k + r * 0.2, -Math.PI / 4, Math.PI / 4);
+      g.stroke();
+    }
+  } else {
+    g.lineWidth = size * 0.09;
+    g.globalAlpha = 0.25;
+    g.beginPath();
+    g.arc(cx, y, r, 0, Math.PI * 2);
+    g.stroke();
+    g.globalAlpha = 1;
+    g.strokeStyle = highContrast ? '#000' : '#ffb23e';
+    g.beginPath();
+    g.arc(cx, y, r, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * Math.max(0, Math.min(1, icon.left)));
+    g.stroke();
+  }
   g.restore();
 }

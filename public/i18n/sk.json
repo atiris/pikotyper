@@ -100,7 +100,9 @@
     "rhythm": "Rytmus: {n} písmen za minútu",
     "speed": "Rýchlosť",
     "layoutHint": "Tvoja klávesnica vyzerá ako {layout}. Popros rodiča, nech ju prepne v rodičovskej časti.",
-    "shiftOtherHand": "Shift stlač druhou rukou: malíčkom na opačnej strane ako písmeno."
+    "shiftOtherHand": "Shift stlač druhou rukou: malíčkom na opačnej strane ako písmeno.",
+    "memoryWait": "Počkaj, kým sa skryje.",
+    "noVoice": "Tento prehliadač nevie čítať nahlas, preto dnes slová uvidíš a odpíšeš ich."
   },
   "guide": {
     "deadStep1": "{ch}: najprv kláves s mäkčeňom alebo dĺžňom, potom písmeno",
@@ -153,6 +155,10 @@
     "countFew": "{n} klávesy",
     "countMany": "{n} kláves",
     "needLetters": "Vyber aspoň {n} písmená.",
+    "style": "Ako budeš písať",
+    "copy": "Odpis",
+    "dictation": "Diktát",
+    "memory": "Zapamätaj si",
     "start": "Začať"
   },
   "touch": {
@@ -194,6 +200,8 @@
   "results": {
     "title": "Úroveň hotová!",
     "practiceDone": "Cvičenie hotové!",
+    "dictationClean": "Podľa sluchu bez chyby: {n} z {total}",
+    "memoryClean": "Z pamäti bez chyby: {n} z {total}",
     "starsAria": "{n} z 3 hviezdičiek",
     "accuracy": "Presnosť {n} %",
     "byPiko": "Túto úroveň zvládol hlavne {piko}.",

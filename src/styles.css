@@ -90,6 +90,7 @@ p { line-height: 1.5; }
   box-shadow: 0 3px 0 rgba(90, 61, 43, 0.15); color: var(--ink);
 }
 .icon-btn:disabled { opacity: 0.4; }
+.icon-btn[hidden] { display: none; }
 .icon-btn .icon { width: 24px; height: 24px; }
 .read-btn[aria-pressed='true'] { background: var(--brand); color: #fff; }
 .link-btn { background: none; border: 0; color: var(--ink-soft); cursor: pointer; text-decoration: underline; display: inline-flex; gap: 0.3em; align-items: center; }
@@ -328,6 +329,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .practice-picker .kb-key:focus-visible { outline: 3px solid var(--brand-dark); outline-offset: 2px; opacity: 1; }
 .practice-keys h2 { margin-top: 0; }
 .pk-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.pk-styles { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.4rem; }
 .pk-count { font-weight: 700; }
 .pk-slider { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.8rem; margin: 0.8rem 0 0.4rem; font-weight: 600; }
 .pk-slider input { width: 100%; accent-color: var(--brand); }

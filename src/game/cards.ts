@@ -85,9 +85,10 @@ export function postureContent(line?: string): HTMLElement {
 /**
  * Get-ready card before every adventure, with the session's preparation tip when one is due
  * and the question of a parent's surprise asked in this run (with what is still left when it
- * counts); the space bar (or a tap on its drawing) opens the adventure, Escape cancels it.
+ * counts) and a note on the run when one is due; the space bar (or a tap on its drawing)
+ * opens the adventure, Escape cancels it.
  */
-export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null): Promise<'start' | 'cancel'> {
+export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null, note?: string): Promise<'start' | 'cancel'> {
   return new Promise((resolve) => {
     const close = (how: 'start' | 'cancel') => {
       stop();
@@ -99,6 +100,7 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
       postureContent(tip),
       surprise ? surpriseAsk(p, surprise.q) : null,
       surprise ? surpriseLeft(p, surprise) : null,
+      note ? h('p', { class: 'hint style-note' }, note) : null,
       h('p', { class: 'space-label' }, t('posture.space')),
       space,
       h('p', { class: 'hint' }, t('posture.escHint')));

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TypingCore } from './typing';
+import { TypingCore, memoryFlash, memoryShow } from './typing';
 import { starsFor } from './levels';
 
 describe('TypingCore', () => {
@@ -50,6 +50,70 @@ describe('TypingCore', () => {
     c.release(t);
     expect(c.locked).toBeNull();
     expect(c.active).toHaveLength(0);
+  });
+});
+
+describe('styles', () => {
+  it('dictation hides the letters and a wrong key reveals the whole target for good', () => {
+    const c = new TypingCore();
+    c.style = 'dictation';
+    const t = c.add('les');
+    expect(c.letters(t)).toBe(false);
+    expect(c.shownChar()).toBeNull();
+    expect(c.type('l').kind).toBe('ok');
+    expect(c.type('x').kind).toBe('wrong');
+    expect(t.revealed).toBe(true);
+    expect(c.letters(t)).toBe(true);
+    expect(c.shownChar()).toBe('e');
+    c.update(10);
+    expect(c.letters(t)).toBe(true);
+  });
+
+  it('memory ignores keys while the target shows, then hides it', () => {
+    const c = new TypingCore();
+    c.style = 'memory';
+    c.difficulty = 5;
+    const t = c.add('mak');
+    expect(c.type('m').kind).toBe('ignored');
+    c.update(0.016);
+    expect(c.letters(t)).toBe(true);
+    expect(c.type('m').kind).toBe('ignored');
+    expect(t.errors).toBe(0);
+    expect(t.typed).toBe(0);
+    c.update(memoryShow(3, 5));
+    expect(c.letters(t)).toBe(false);
+    expect(c.type('m').kind).toBe('ok');
+  });
+
+  it('a wrong key in memory flashes the target again and keeps the progress', () => {
+    const c = new TypingCore();
+    c.style = 'memory';
+    const t = c.add('mak');
+    c.update(0.016);
+    c.update(10);
+    c.type('m');
+    expect(c.type('x').kind).toBe('wrong');
+    expect(t.typed).toBe(1);
+    expect(t.revealed).toBe(true);
+    expect(c.letters(t)).toBe(true);
+    expect(c.type('a').kind).toBe('ignored');
+    c.update(memoryFlash(3));
+    expect(c.letters(t)).toBe(false);
+    expect(c.type('a').kind).toBe('ok');
+    expect(t.typed).toBe(2);
+  });
+
+  it('memory shows shorter at a higher difficulty, never below its floor', () => {
+    expect(memoryShow(5, 9)).toBeLessThan(memoryShow(5, 1));
+    expect(memoryShow(5, 20)).toBeCloseTo(0.8 + 0.15 * 5);
+  });
+
+  it('Piko reveals a hidden target and can type it at once', () => {
+    const c = new TypingCore();
+    c.style = 'memory';
+    const t = c.add('mak');
+    c.reveal(t);
+    expect(c.type('m').kind).toBe('ok');
   });
 });
 

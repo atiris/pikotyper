@@ -2,6 +2,7 @@ import { advanceLesson } from '../learning/lessons';
 import type { CompanionKind, Profile } from '../storage/schema';
 import { type LevelDef, starsFor } from './levels';
 import { type BadgeTier, badgeTier, grantAccessories, grantCompanions } from './rewards';
+import type { Style } from './typing';
 
 export interface LevelResult {
   stars: number;
@@ -23,6 +24,8 @@ export interface LevelResult {
   byPiko: boolean;
   /** The world's badge, when this level earned it (`upgrade` false) or made it better. */
   badge: { world: number; tier: BadgeTier; upgrade: boolean } | null;
+  /** A dictation or memory run: targets the child typed without the target shown again, of all. */
+  byStyle?: { style: Exclude<Style, 'copy'>; clean: number; total: number };
 }
 
 export interface GrowthStep {

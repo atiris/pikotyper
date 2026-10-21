@@ -14,7 +14,7 @@
   the one to type, with the browser's own voice of the profile language, a little slower
   than normal. Piko's lines, cards and results are not read by the voice (screen readers
   still get them). Pause and leaving the level stop it. Without such a voice the button
-  is not shown.
+  is not shown, nor in a dictation run, where the voice always says the targets.
 
 ## Why
 - The voice helps a child who cannot read the word yet; encouragements spoken over the

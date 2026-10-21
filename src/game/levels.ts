@@ -1,5 +1,6 @@
 import { activeKeys } from '../learning/lessons';
 import { type Profile, SUPER_ID } from '../storage/schema';
+import type { Style } from './typing';
 
 export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junkyard' | 'workshop' | 'raintown' | 'robocity' | 'robohome';
 export const WORLDS: WorldId[] = ['meadow', 'space', 'planet', 'dragons', 'egg', 'junkyard', 'workshop', 'raintown', 'robocity', 'robohome'];
@@ -59,6 +60,8 @@ export interface LevelDef {
   isSuper: boolean;
   /** Free practice of the parent's own text: these targets in order, then the end. */
   phrases?: string[];
+  /** How its targets are shown (copy typing when absent). */
+  style?: Style;
 }
 
 const def = (world: number, index: number, kind: LevelKind, count: number, variant = ''): LevelDef =>

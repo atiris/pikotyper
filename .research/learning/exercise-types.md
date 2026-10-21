@@ -1,6 +1,7 @@
 # Exercise types beyond "type what appears"
 
-**Status:** new (owner's request, 2026-10-21). **Prio:** P2.
+**Status:** dictation and memory in spec (`.specify/game/mechanics.md`, plan 23, 2026-10-21);
+picture-to-word not wanted by the owner; the rest open. **Prio:** P2.
 
 ## What is used in typing courses and games
 | Type | What the child does | Where it is used |
@@ -30,8 +31,8 @@
 | Codes in groups | **yes**: robot city doors and gate |
 | Own text / sentences | **partly**: parent's own text in free practice |
 | Accuracy run (restart on error) | **planned**: robot city super level 9-5 (plan 21) |
-| Dictation | **no**: reading aloud speaks the target, but the target is also shown |
-| Memory / flash | **no** |
+| Dictation | **yes**: free practice style; story 3 and rescue missions planned (plan 24) |
+| Memory / flash | **yes**: free practice style; story 3 and rescue missions planned (plan 24) |
 | Picture-to-word / answer typing | **no** |
 | Spelling / missing letters | **no** |
 | Timed test | **no** (researched in `../profiles/typing-check.md`) |

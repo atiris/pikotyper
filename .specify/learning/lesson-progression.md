@@ -37,12 +37,15 @@
   each step adds the next three keys, the last is the whole order) and opens with the
   child's active keys, on the smallest step that holds them. A click on a key adds or takes
   it away ("own choice"). Free practice needs at least two letters. The parent's own words
-  are not mixed in, since they bring other letters. Nothing is stored: the picker opens
-  with the active keys each time.
+  are not mixed in, since they bring other letters. Above the keyboard three buttons pick
+  the way to type: Copy (default), Dictation (only with a voice for the language) and
+  Remember it ([mechanics](../game/mechanics.md)). Nothing is stored: the picker opens
+  with the active keys and Copy each time.
 
 ## Why
 - Free practice is for practising exactly what the child (or parent) wants: the slider
-  is quick, the lit keyboard shows what is in, single clicks fine-tune it.
+  is quick, the lit keyboard shows what is in, single clicks fine-tune it. The way to type
+  is a choice for one run, so it is not stored.
 - Gradual unlocking with weak-key weighting (Keybr, Typing.com) is what users praise most
   for real progress ([research](../../.research/features/lesson-progression.md)).
 - Space early is normal (Typing.com starts with "J, F and Space"); period and comma with the
