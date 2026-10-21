@@ -241,6 +241,13 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-fly.jpg` | a funny little housefly with big eyes and a smile, flying | magenta |
 | `obj-mouse.jpg` | a small grey mouse with big ears, running happily | magenta |
 | `obj-spider.jpg` | a tiny cute round spider with big friendly eyes, eight short soft legs, waving, not scary at all | magenta |
+| `obj-leaf-birch.jpg` | a single small birch leaf, oval with a pointed tip and finely toothed edge, golden yellow autumn color, short stem, lying flat seen from above, no face | magenta |
+| `obj-leaf-ginkgo.jpg` | a single small ginkgo leaf, fan shaped with a small notch in the middle, warm golden yellow, short stem, lying flat seen from above, no face | magenta |
+| `obj-leaf-oak.jpg` | a single oak leaf with soft rounded lobes, orange-brown autumn color, short stem, lying flat seen from above, no face | green |
+| `obj-leaf-maple.jpg` | a single big maple leaf with five pointed lobes, bright red-orange autumn color, stem, lying flat seen from above, no face | green |
+| `obj-leaf-chestnut.jpg` | a single big horse chestnut leaf made of five long fingers spreading from the stem, green turning yellow-brown at the edges, lying flat seen from above, no face | magenta |
+| `obj-fan.jpg` | a pastel green folded paper hand fan, opened into a half circle, with a short wooden handle at the bottom, front view, no face | magenta |
+| `obj-hedgehog.jpg` | a chubby friendly hedgehog standing on the ground, soft brown rounded spikes with a few colorful autumn leaves stuck on its back, big eyes, happy smile, small pink nose | magenta |
 | **Space** | | |
 | `obj-rocket.jpg` | a round cute red and white children's rocket with a round window and small fins, flying to the right, small soft flame | green |
 | `obj-asteroid-small.jpg` | a small round grey-brown space rock with soft craters, sleepy face | magenta |
