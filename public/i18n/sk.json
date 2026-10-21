@@ -281,6 +281,14 @@
   },
   "story": {
     "next": "Ďalej",
+    "meadowStart": [
+      "Pomôž včielkam obletieť pavučinu!",
+      "Fúkneme púpavu a zvieratká preletia ponad pavučinu."
+    ],
+    "webHole": [
+      "Ups, dierka! Nevadí, letí ďalej.",
+      "Pavučina má okienko. Nič sa nestalo!"
+    ],
     "webCleared": [
       "Pavučina je preč! Teraz pomôž lienkam domov.",
       "Výborne, cesta je voľná!"
@@ -307,7 +315,7 @@
       ],
       "world1": [
         "Na lúke je plno zvedavých malých návštevníkov.",
-        "Napíš slovo, ktoré nesie zvieratko, a jemná plácačka ho s obláčikom odfúkne.",
+        "Napíš slovo, ktoré nesie zvieratko, a Piko fúkne púpavu, aby preletelo ponad pavučinu.",
         "Nikomu sa nič nestane: len veselo odletia domov."
       ],
       "invitation": [

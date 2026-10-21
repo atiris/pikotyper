@@ -65,31 +65,53 @@ unclear; this plan wins where they differ.
   `say` lines when a hole appears ("Ups, dierka! Nevadí, letí ďalej.").
 
 ## Steps
-- [ ] **Paw badge and pulse.** `renderPawBtn` in `src/game/runtime.ts` appends the badge
+- [x] **Paw badge and pulse.** `renderPawBtn` in `src/game/runtime.ts` appends the badge
   only when `!pawAuto`; the `auto` class becomes "auto-helping" (set when the paws
   start from `updatePaws`' automatic branch, cleared in `stopPaws`). Rename the CSS
   class to match and drop `.paw-btn.auto .paw-badge`. Update `.specify/companion/piko.md`.
-- [ ] **Procedural web** `src/gfx/web.ts`: `class Web { constructor(size); hole(x, y);
+- [x] **Procedural web** `src/gfx/web.ts`: `class Web { constructor(size); hole(x, y);
   update(dt); draw(g, cx, cy, alpha); loosen() }`, holes in web-local coordinates. Unit
   test (vitest): a hole hides the segments inside it and keeps the others; `loosen`
   ends with alpha 0.
-- [ ] **Dandelion** in `meadow.ts`: replaces `Swatter` (same placement next to Piko,
+- [x] **Dandelion** in `meadow.ts`: replaces `Swatter` (same placement next to Piko,
   appears only when play starts, gentle bob; on a finished word it tilts toward the
   creature and blows seeds). Remove `Swatter` completely.
-- [ ] **MeadowMode with the web.** Two tall flowers + the web in front of the far
+- [x] **MeadowMode with the web.** Two tall flowers + the web in front of the far
   background; `playerX` becomes the web's x so the existing `come -> pass` switch fires
   at the web; `onPass` calls `web.hole(...)` at the creature's y and lets it continue
   left; `onLeave` gives flyers an arc over the web top (mice: under it) and then left.
   Keep `noPressure` waiting: creatures wait `waitGap` before the web.
   Web sizes per variant as in Decisions. Spider out of `pickSprite`.
-- [ ] **WebMode** as in Decisions, using `Web` and the dandelion.
-- [ ] **Story intro and art.** `src/screens/story.ts` meadow intro shows Piko with the
+- [x] **WebMode** as in Decisions, using `Web` and the dandelion.
+- [x] **Story intro and art.** `src/screens/story.ts` meadow intro shows Piko with the
   dandelion (no `obj-swatter`). Remove `obj-swatter` and `obj-spider-web` from
   `public/assets/`, the manifest, `assets-src/` and `PROMPTS.md`; keep `obj-spider`
   (super level). `npm run assets` must still pass.
-- [ ] **Texts** sk + en as in Decisions; search i18n for any remaining swatter wording.
-- [ ] **Specs:** `.specify/game/story.md` (world 1 sentence), `super-obstacles.md`
+- [x] **Texts** sk + en as in Decisions; search i18n for any remaining swatter wording.
+- [x] **Specs:** `.specify/game/story.md` (world 1 sentence), `super-obstacles.md`
   (web gets holes), `finger-guide.md` (dandelion instead of swatter), `piko.md` (badge/pulse).
-- [ ] Build, vitest, e2e; Playwright MCP: play meadow level 1 (let one bee through,
+- [x] Build, vitest, e2e; Playwright MCP: play meadow level 1 (let one bee through,
   type one), level 3 (mouse), level 5; check holes, no swatter, paw button in manual
   and auto mode; screenshots at 1366x768.
+
+## Progress notes
+- The "twang" for a new hole is a new synthesized tone in `src/audio/audio.ts` (`twang`),
+  not a sound file: `sfx` has no volume parameter, so a quiet `pop` was not possible.
+- `ApproachMode` got one hook, `moveGone`, so the meadow can steer the arc over the web.
+- The meadow start line (`story.meadowStart`) is said by `MeadowMode.start`; holes say
+  `story.webHole` on the first hole and then at random (1 in 4) so it does not nag.
+- The dandelion stands at Piko's right side (bottom-anchored, game x 185), not floating
+  where the swatter was. The super level web is 400 px (470 cut off the flower tops at
+  1366x768); its strand spots scale with it.
+- Rescue `meadow` uses the level 1 web size (230 px).
+- Playwright MCP: level 1 (bees blown over the web, untyped ones tear holes with loose
+  ends), level 3 (mouse hops under the web, seed stream visible), level 5 (holes per
+  strand, web loosens, ladybugs fly home, spider waves), paw button: no badge in auto,
+  pulse only during a self-started help; Enter help does not pulse. No console errors.
+
+## Done - 2026-10-21
+Shipped: procedural `Web` with holes and loosening (+ unit tests), dandelion instead of
+the swatter in levels 1-4, rescue and level 5, flowers holding the web, arc over / hop
+under for typed creatures, holes for untyped ones, spider only in level 5, paw button
+without the "A" badge and with the auto-helping pulse, story intro dandelion, sk/en texts,
+specs and README; `obj-swatter` and `obj-spider-web` art removed. Nothing left out.

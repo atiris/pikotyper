@@ -5,8 +5,12 @@ The child travels through five worlds. Each world has several short levels and e
 with a super-obstacle and a reward that opens the next world. Short, skippable intro
 scenes (a few lines of text and a simple animation) tell the story.
 
-1. **Training Meadow** - a gentle fly swatter (a soft puff; the creature flies away
-   happily) shoos away approaching insects, mice and spiders. Super-obstacle: spider web.
+1. **Training Meadow** - insects and mice come toward a spider web hung between two
+   flowers; a typed word lets Piko blow his dandelion, and the wind lifts the creature over
+   the web (mice hop under it). A creature not typed in time tears a hole into the web and
+   goes on happily: nobody is ever caught, and no spider comes. Hitting animals, even
+   softly, is the wrong message for small children; helping them is better.
+   Super-obstacle: a big spider web.
    Reward: a secret invitation to space; the child meets **Piko**.
 2. **Space Rocket Flight** - typing rhythm drives the rocket speedometer; a soft energy
    beam pushes asteroids and planets out of the path. Super-obstacle: fractured asteroid.

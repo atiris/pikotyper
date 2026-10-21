@@ -281,6 +281,14 @@
   },
   "story": {
     "next": "Next",
+    "meadowStart": [
+      "Help the bees fly around the web!",
+      "We blow the dandelion and the creatures fly over the web."
+    ],
+    "webHole": [
+      "Oops, a little hole! Never mind, it flies on.",
+      "The web has a window now. Nothing happened!"
+    ],
     "webCleared": [
       "The web is gone! Now help the ladybugs home.",
       "Great, the way is free!"
@@ -307,7 +315,7 @@
       ],
       "world1": [
         "The meadow is full of curious little visitors.",
-        "Type the word on a creature and the soft swatter will shoo it away with a puff.",
+        "Type the word a creature carries and Piko blows a dandelion, so it flies over the web.",
         "Nobody gets hurt: they just fly home happily."
       ],
       "invitation": [

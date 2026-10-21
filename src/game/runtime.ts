@@ -106,6 +106,8 @@ export class LevelRuntime {
   private pawWords = 0;
   private pawTimer = 0;
   private pawIdle = 0;
+  /** Piko started the current paw help by himself (auto mode), so the button pulses. */
+  private pawSelf = false;
   private guideBeforePaws = true;
   /** Seconds each visible word has been on screen (for the automatic help). */
   private seen = new Map<number, number>();
@@ -438,11 +440,11 @@ export class LevelRuntime {
     const p = app.profile!;
     const { pawHelp, pawAuto } = p.progress;
     this.pawBtn.classList.toggle('empty', pawHelp === 0);
-    this.pawBtn.classList.toggle('auto', pawAuto);
+    this.pawBtn.classList.toggle('auto-helping', this.pawSelf && this.pawWords > 0);
     this.pawBtn.dataset.charged = String(pawHelp);
     this.pawBtn.setAttribute('aria-label', t('paw.aria', { n: pawHelp }));
     this.pawBtn.innerHTML = pawRingSvg(pawHelp, PAW_MAX, pawColors(p.companion.kind)[0]);
-    this.pawBtn.append(h('span', { class: 'paw-badge', 'aria-hidden': 'true' }, pawAuto ? 'A' : '⏎'));
+    if (!pawAuto) this.pawBtn.append(h('span', { class: 'paw-badge', 'aria-hidden': 'true' }, '⏎'));
   }
 
   /** A mistake-free streak charges one paw help. */
@@ -468,7 +470,7 @@ export class LevelRuntime {
   }
 
   /** Piko's paws replace the hands and type the closest words for the child. */
-  private startPaws(): boolean {
+  private startPaws(self = false): boolean {
     const p = app.profile!;
     if (!this.pawsAllowed || !this.started || this.paused || this.finished || this.pawWords) return false;
     if (p.progress.pawHelp <= 0 || !this.core.focus()) return false;
@@ -477,6 +479,7 @@ export class LevelRuntime {
     this.pawWords = PAW_WORDS;
     this.pawTimer = this.reduceMotion ? 0.2 : 0.6;
     this.pawIdle = 0;
+    this.pawSelf = self;
     this.guideBeforePaws = this.guideOn;
     if (!this.guideOn) this.toggleGuide();
     this.guide.setPaws(pawColors(p.companion.kind));
@@ -488,6 +491,8 @@ export class LevelRuntime {
 
   private stopPaws(): void {
     this.pawWords = 0;
+    this.pawSelf = false;
+    this.renderPawBtn();
     this.guide.setPaws(null);
     if (this.guideOn !== this.guideBeforePaws) this.toggleGuide();
     // The child's next reaction time starts now, not with Piko's last key.
@@ -504,7 +509,7 @@ export class LevelRuntime {
     const p = app.profile!;
     if (p.progress.pawAuto && p.progress.pawHelp > 0 &&
       isHardMoment(this.core.targets, this.core.locked, (tg) => this.seen.get(tg.id) ?? 0, (tg) => this.travelTime(tg.word), this.maxActive)) {
-      this.startPaws();
+      this.startPaws(true);
     }
   }
 

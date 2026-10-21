@@ -11,10 +11,18 @@ interface SceneDef {
   piko?: boolean;
   envelope?: boolean;
   sparkles?: boolean;
+  dandelion?: boolean;
 }
 
+/** Piko's dandelion, the same look as in the meadow levels. */
+const DANDELION = `<svg viewBox="0 0 80 160" aria-hidden="true"><path d="M40 158 Q30 100 40 44" fill="none" stroke="#5f9e3f" stroke-width="5" stroke-linecap="round"/><circle cx="40" cy="40" r="30" fill="rgba(255,255,255,0.5)"/>${
+  Array.from({ length: 22 }, (_, i) => {
+    const a = (i / 22) * Math.PI * 2, c = Math.cos(a), s = Math.sin(a);
+    return `<line x1="${40 + c * 6}" y1="${40 + s * 6}" x2="${40 + c * 26}" y2="${40 + s * 26}" stroke="#fff" stroke-width="1.5"/><circle cx="${40 + c * 27}" cy="${40 + s * 27}" r="2.6" fill="#fff"/>`;
+  }).join('')}<circle cx="40" cy="40" r="6" fill="#c9b98a"/></svg>`;
+
 const SCENES: Record<string, SceneDef> = {
-  intro: { world: 'meadow', sprites: ['obj-swatter'], piko: true },
+  intro: { world: 'meadow', sprites: [], piko: true, dandelion: true },
   world1: { world: 'meadow', sprites: ['obj-bee', 'obj-butterfly', 'obj-ladybug'] },
   invitation: { world: 'meadow', sprites: ['obj-rocket'], piko: true, envelope: true },
   world2: { world: 'space', sprites: ['obj-rocket', 'obj-planet-2'] },
@@ -50,6 +58,7 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
     }),
     def.envelope ? h('div', { class: 'envelope', 'aria-hidden': 'true' }, h('span', {}, '★')) : null,
     def.piko ? h('div', { class: 'story-piko' }, pikoElement(p.companion, 'happy', 220)) : null,
+    def.dandelion ? h('div', { class: 'story-dandelion', html: DANDELION }) : null,
     def.sparkles ? h('div', { class: 'sparkles', 'aria-hidden': 'true' }, ...Array.from({ length: 14 }, (_, k) => h('i', { style: `--k:${k}` }))) : null);
   const finish = () => {
     if (!p.progress.scenesSeen.includes(params.scene)) {

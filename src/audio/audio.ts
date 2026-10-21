@@ -1,6 +1,6 @@
 import { assetUrl, hasMusic } from '../gfx/assets';
 
-export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat';
+export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'twang';
 /** Quick sound switch: normal, quiet (20 % of normal) or off. */
 export type SoundLevel = 'normal' | 'quiet' | 'off';
 
@@ -137,6 +137,7 @@ class AudioEngine {
       case 'pop': tone(520, 0, 0.12, 'sine', 0.25, 1040); break;
       case 'whoosh': tone(200, 0, 0.35, 'sine', 0.12, 900); break;
       case 'beat': tone(440, 0, 0.08, 'sine', 0.12); break;
+      case 'twang': tone(392, 0, 0.22, 'triangle', 0.1, 294); break;
       case 'click': tone(700, 0, 0.05, 'square', 0.05); break;
       case 'reward': [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.11, 0.35, 'triangle', 0.18)); break;
     }

@@ -72,12 +72,7 @@ export abstract class ApproachMode extends Mode {
           this.resolved++;
           this.onPass(m, tg);
         }
-      } else {
-        m.x += m.vx * dt;
-        m.y += m.vy * dt;
-        m.rot += m.vr * dt;
-        m.fade = Math.min(1, m.fade + dt * (m.state === 'pass' ? 0.8 : 0.9));
-      }
+      } else this.moveGone(m, dt);
     }
     core.prune((tg) => (tg.data as Mover).fade < 1);
     this.scroll += dt * this.scrollSpeed();
@@ -93,6 +88,14 @@ export abstract class ApproachMode extends Mode {
     if (this.L.noPressure && m.x <= stopAt) return;
     m.x += m.vx * dt;
     if (this.L.noPressure) m.x = Math.max(stopAt, m.x);
+  }
+
+  /** A resolved target drifts away and fades out. */
+  protected moveGone(m: Mover, dt: number): void {
+    m.x += m.vx * dt;
+    m.y += m.vy * dt;
+    m.rot += m.vr * dt;
+    m.fade = Math.min(1, m.fade + dt * (m.state === 'pass' ? 0.8 : 0.9));
   }
 
   /** Speed so the target needs `travelTime` to reach the player. */

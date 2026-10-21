@@ -48,7 +48,7 @@ hatch a new friend. No explosions, no punishment, no ads, no accounts.
 
 | World | What happens | Big challenge | Reward |
 |---|---|---|---|
-| 1. Training Meadow | a soft swatter shoos bees, ladybugs and mice away | spider web | invitation to space, meet Piko |
+| 1. Training Meadow | a dandelion puff lifts bees, ladybugs and mice over a web | big spider web | invitation to space, meet Piko |
 | 2. Rocket Flight | typing rhythm drives the speedometer, a beam pushes rocks away | splitting asteroid | landing clearance |
 | 3. New Planet | stepping stones across a swamp, road signs | cracking boulder | the Force |
 | 4. Dragon Valley | shield bubbles protect baby dragons | rhythm wave | a dragon egg |

@@ -241,8 +241,6 @@ BG is `magenta color (#FF00FF)` unless the table says `green`, then use `green c
 | `obj-fly.jpg` | a funny little housefly with big eyes and a smile, flying | magenta |
 | `obj-mouse.jpg` | a small grey mouse with big ears, running happily | magenta |
 | `obj-spider.jpg` | a tiny cute round spider with big friendly eyes, eight short soft legs, waving, not scary at all | magenta |
-| `obj-spider-web.jpg` | a big round spider web, light grey threads, front view, no spider | magenta |
-| `obj-swatter.jpg` | a soft gentle fly swatter with a round flower-shaped yellow head and a wooden handle, front view | magenta |
 | **Space** | | |
 | `obj-rocket.jpg` | a round cute red and white children's rocket with a round window and small fins, flying to the right, small soft flame | green |
 | `obj-asteroid-small.jpg` | a small round grey-brown space rock with soft craters, sleepy face | magenta |

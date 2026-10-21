@@ -31,11 +31,12 @@
   charges, with an Enter badge) sends Piko's paws onto the keyboard in
   place of the hands, and Piko types the three closest words with his own rhythm. These
   keys never count in the child's statistics, accuracy or rhythm, and the child's own
-  keys wait meanwhile. Backspace switches the paw to automatic (the button pulses gently
-  and shows an `A` badge):
+  keys wait meanwhile. Backspace switches the paw to automatic (the Enter badge goes away,
+  so there is no extra symbol to learn):
   Piko then helps by himself in a hard moment, when the screen holds three words (or as
   many as the level allows), the closest one has used most of its time and the child is
-  not typing it.
+  not typing it. The button pulses gently only while Piko is typing by himself after such
+  an automatic start, which says "I am helping" without words.
 - Clicking Piko opens the statistics overlay ([statistics](../profiles/statistics.md)).
 - After world 5 a newly hatched friend (a baby dragon) joins; more friends come from
   rescue missions.
