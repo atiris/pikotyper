@@ -11,8 +11,8 @@
 - Every player has an address (`#/p/<id>`, plus `/wardrobe`, `/dragons`, `/settings`), so a
   link or desktop shortcut opens that child's map directly; the browser's back and forward
   buttons move between screens. Leaving the whole app asks first while a player is active.
-- **Super mode** for parents and testers: typing `superpikotyper` fast (about 200 letters per
-  minute, no field) on the start screen opens a temporary player with every world, level,
+- **Super mode** for parents and testers: typing `superpikotyper` fast (within 3.5 seconds,
+  no field) on the start screen opens a temporary player with every world, level,
   key and accessory open. It lives in memory only, never touches real players'
   statistics, and ends with its badge at the top or a reload.
 

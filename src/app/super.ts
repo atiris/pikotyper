@@ -7,8 +7,8 @@ import { newProfile } from '../storage/store';
 
 /** Typed on the start screen (no field) fast enough to prove it is not a learner. */
 export const SUPER_PASSWORD = 'superpikotyper';
-/** The whole password within this time: about 200 characters per minute. */
-const SUPER_MS = 4200;
+/** The whole password within this time: about 240 characters per minute. */
+const SUPER_MS = 3500;
 
 /**
  * Listens for the super password on a start page; returns the cleanup.

@@ -231,11 +231,11 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .kb-row:nth-child(3) { padding-left: 3%; }
 .kb-key {
   --w: 1; position: relative; flex: var(--w) 1 0; max-width: calc(var(--w) * 54px); height: clamp(30px, 5.2vh, 46px);
-  border-radius: 9px; background: #fff; display: grid; place-items: center; font-weight: 600; font-size: clamp(0.8rem, 1.6vh, 1.05rem);
+  border-radius: 9px; background: #fff; display: grid; place-items: center; padding-bottom: 9px; font-weight: 600; font-size: clamp(0.8rem, 1.6vh, 1.05rem); line-height: 1;
   box-shadow: inset 0 -5px 0 var(--finger), 0 2px 0 rgba(90, 61, 43, 0.2); border: 1px solid rgba(90, 61, 43, 0.12);
   transition: transform 0.12s, background 0.12s;
 }
-.kb-key.bump::after { content: ''; position: absolute; bottom: 8px; width: 12px; height: 3px; border-radius: 2px; background: rgba(60, 40, 30, 0.45); }
+.kb-key.bump::after { content: ''; position: absolute; bottom: 7px; left: 50%; width: 12px; height: 3px; margin-left: -6px; border-radius: 2px; background: rgba(60, 40, 30, 0.45); }
 .kb-shift { position: absolute; top: 2px; left: 5px; font-size: 0.62em; color: var(--ink-soft); }
 .kb-num { position: absolute; top: 2px; right: 5px; font-size: 0.55em; color: var(--ink-soft); }
 .kb-key.next { background: var(--finger); color: var(--finger-ink); transform: translateY(-3px) scale(1.08); box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--finger), 0 8px 14px rgba(0, 0, 0, 0.2); z-index: 1; animation: key-glow 1s ease-in-out infinite; }
@@ -305,6 +305,10 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .new-key { background: #e3f6e8; border-radius: 12px; padding: 0.2em 0.6em; display: inline-block; }
 .growth { display: flex; align-items: center; gap: 0.8rem; background: #fff3c9; border-radius: 16px; padding: 0.5rem 0.9rem; margin-top: 0.5rem; }
 .growth p { margin: 0; }
+.teaser { text-align: left; margin: 0.8rem auto 0; max-width: 34em; padding: 0.6rem 0.9rem; border-radius: 16px; font-size: 1.05rem; }
+.teaser.answer { background: #e3f4e8; }
+.teaser.ask { background: #fff1e3; }
+.teaser small { color: var(--ink-soft); }
 .medal { position: relative; display: inline-block; width: 64px; height: 82px; flex: none; animation: star-in 0.7s ease backwards; }
 .medal-ribbon { position: absolute; left: 50%; top: 0; width: 34px; height: 36px; transform: translateX(-50%); background: linear-gradient(90deg, #3f8fd6 0 33%, #fff 33% 66%, #e5534b 66%); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 75%, 0 100%); }
 .medal-disc { position: absolute; left: 0; bottom: 0; width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 1.6rem; font-weight: 700; color: #7a4b00; background: radial-gradient(circle at 35% 30%, #fff3b0, #f5b301 70%); box-shadow: inset 0 0 0 4px #e09a00, 0 4px 8px rgba(0, 0, 0, 0.18); }

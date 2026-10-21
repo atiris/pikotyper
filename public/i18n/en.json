@@ -190,6 +190,81 @@
     "growthWordLen": "Words can now have {n} letters.",
     "medalAria": "medal number {n}"
   },
+  "teaser": {
+    "ask": "{piko} asks:",
+    "later": "I will tell you the answer when you finish the next level.",
+    "answer": "The answer I promised:",
+    "meadow": {
+      "q": [
+        "Do you know how many eyes a spider has?",
+        "Why do ladybirds have spots?",
+        "Can you guess how many times a bee flaps its wings in one second?",
+        "Do you know what a butterfly tastes food with?"
+      ],
+      "a": [
+        "Most spiders have eight eyes! Still, many see badly and feel the world mostly with their legs.",
+        "Red with spots tells birds: careful, I taste awful! So birds leave ladybirds alone.",
+        "More than two hundred times a second! That is why you hear the buzz.",
+        "Its feet! A butterfly tastes a flower as soon as it lands on it."
+      ]
+    },
+    "space": {
+      "q": [
+        "Do you know what happens to an astronaut's tear in space?",
+        "How many sunrises a day do astronauts on the space station see?",
+        "Do you know why space is completely silent?",
+        "Can you guess how many Earths would fit inside Jupiter?"
+      ],
+      "a": [
+        "It does not run down! Without gravity it stays by the eye like a little ball of water.",
+        "About sixteen! The station flies around the Earth in about an hour and a half.",
+        "Sound needs air to travel. Space has no air, so you would not hear even a big bang.",
+        "More than a thousand! Jupiter is the biggest planet in our solar system."
+      ]
+    },
+    "planet": {
+      "q": [
+        "On which planet is a day longer than a whole year?",
+        "Do you know what colour a sunset on Mars is?",
+        "Can you guess which planet would float in water?",
+        "Do you know where in space it may rain diamonds?"
+      ],
+      "a": [
+        "On Venus! It turns around itself more slowly than it goes around the Sun.",
+        "Blue! The Martian sky is pinkish by day, but it turns blue around the setting Sun.",
+        "Saturn! For its size it is so light that it would float in a giant bathtub.",
+        "Scientists think diamonds may fall deep inside Neptune and Uranus!"
+      ]
+    },
+    "dragons": {
+      "q": [
+        "Do you know which real animal is called a dragon?",
+        "Can you guess which lizard can run on water?",
+        "Do you know which little dragon really flies?",
+        "Which animals lived in the time of the dinosaurs and still live today?"
+      ],
+      "a": [
+        "The Komodo dragon! It is the biggest lizard in the world, up to three metres long.",
+        "The basilisk! It runs on the water so fast that it has no time to sink.",
+        "The flying dragon! This small lizard spreads the skin on its sides like wings and glides from tree to tree.",
+        "Crocodiles! Their ancestors lived alongside the dinosaurs."
+      ]
+    },
+    "egg": {
+      "q": [
+        "Do you know how a baby bird gets out of its egg?",
+        "Can you guess which egg is the biggest in the world?",
+        "Do you know how a chick inside a closed egg can breathe?",
+        "Do you know which mammal lays eggs?"
+      ],
+      "a": [
+        "It has a tiny sharp bump on its beak, the egg tooth. It scratches the shell until it breaks through.",
+        "The ostrich egg! It is about as big as twenty hen eggs.",
+        "The shell has thousands of tiny holes that let air through.",
+        "The platypus! It is a mammal, but its babies hatch from eggs."
+      ]
+    }
+  },
   "story": {
     "next": "Next",
     "webCleared": [

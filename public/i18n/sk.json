@@ -190,6 +190,81 @@
     "growthWordLen": "Slová môžu mať už {n} písmen.",
     "medalAria": "medaila číslo {n}"
   },
+  "teaser": {
+    "ask": "{piko} sa pýta:",
+    "later": "Odpoveď ti poviem, keď dokončíš ďalšiu úroveň.",
+    "answer": "Sľúbená odpoveď:",
+    "meadow": {
+      "q": [
+        "Vieš, koľko očí má pavúk?",
+        "Prečo majú lienky bodky?",
+        "Uhádneš, koľkokrát za sekundu mávne včela krídlami?",
+        "Vieš, čím motýľ ochutnáva jedlo?"
+      ],
+      "a": [
+        "Väčšina pavúkov má osem očí! Aj tak mnohé vidia zle a svet spoznávajú hlavne nohami.",
+        "Červená farba s bodkami hovorí vtákom: Pozor, chutím hnusne! Tak lienku radšej nechajú tak.",
+        "Vyše dvestokrát za sekundu! Preto počuješ to bzučanie.",
+        "Nohami! Motýľ ochutná kvet hneď, ako si naň sadne."
+      ]
+    },
+    "space": {
+      "q": [
+        "Vieš, čo sa stane so slzou astronauta vo vesmíre?",
+        "Koľkokrát za deň vidia astronauti na vesmírnej stanici východ Slnka?",
+        "Vieš, prečo je vo vesmíre úplné ticho?",
+        "Uhádneš, koľko Zemí by sa zmestilo do Jupitera?"
+      ],
+      "a": [
+        "Nesteká dole! V beztiaži ostane pri oku ako malá vodná guľôčka.",
+        "Asi šestnásťkrát! Stanica obletí Zem približne za hodinu a pol.",
+        "Zvuk potrebuje vzduch. Vo vesmíre vzduch nie je, takže ani veľký výbuch by si nepočul.",
+        "Vyše tisíc! Jupiter je najväčšia planéta našej slnečnej sústavy."
+      ]
+    },
+    "planet": {
+      "q": [
+        "Na ktorej planéte trvá deň dlhšie ako celý rok?",
+        "Vieš, akú farbu má západ slnka na Marse?",
+        "Uhádneš, ktorá planéta by plávala vo vode?",
+        "Vieš, kde vo vesmíre možno pršia diamanty?"
+      ],
+      "a": [
+        "Na Venuši! Otočí sa okolo seba pomalšie, ako obehne Slnko.",
+        "Modrú! Cez deň je obloha na Marse ružovkastá, ale pri západe slnka zmodrie.",
+        "Saturn! Na svoju veľkosť je taký ľahký, že by v obrovskej vani plával.",
+        "Vedci si myslia, že hlboko vo vnútri Neptúna a Uránu môžu padať diamanty!"
+      ]
+    },
+    "dragons": {
+      "q": [
+        "Vieš, ktoré skutočné zviera sa volá drak?",
+        "Uhádneš, ktorá jašterica vie behať po vode?",
+        "Vieš, ktorý malý drak naozaj lieta?",
+        "Ktoré zvieratá žili už v čase dinosaurov a žijú aj dnes?"
+      ],
+      "a": [
+        "Komodský drak! Je to najväčšia jašterica na svete, dlhá až tri metre.",
+        "Bazilišek! Beží po hladine tak rýchlo, že sa nestihne potopiť.",
+        "Drak lietavý! Je to malá jašterica, ktorá roztiahne kožu na bokoch ako krídla a plachtí zo stromu na strom.",
+        "Krokodíly! Ich predkovia žili spolu s dinosaurami."
+      ]
+    },
+    "egg": {
+      "q": [
+        "Vieš, ako sa vtáčatko dostane von z vajíčka?",
+        "Uhádneš, ktoré vajce je najväčšie na svete?",
+        "Vieš, ako môže mláďa vo vajíčku dýchať, keď je vajce zatvorené?",
+        "Vieš, ktorý cicavec znáša vajíčka?"
+      ],
+      "a": [
+        "Na zobáčiku má malý ostrý hrbolček, vajcový zub. Ním škrabe škrupinu, kým ju neprerazí.",
+        "Pštrosie! Je veľké asi ako dvadsať slepačích vajec.",
+        "Škrupina má tisíce maličkých dierok, cez ktoré prechádza vzduch.",
+        "Vtákopysk! Je to cicavec, ale mláďatá sa mu liahnu z vajíčok."
+      ]
+    }
+  },
   "story": {
     "next": "Ďalej",
     "webCleared": [

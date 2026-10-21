@@ -11,6 +11,7 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   const text = await playLevel(page);
   expect(text).toMatch(/%/);
   await expect(page.locator('.results-card .star.on').first()).toBeVisible();
+  await expect(page.locator('.results-card .teaser.ask')).toBeVisible();
   await page.locator('.results-card .btn').last().click();
   await expect(page.locator('.level-node.done')).toHaveCount(1);
   await page.locator('.map-piko').click();

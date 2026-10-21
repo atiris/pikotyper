@@ -2,7 +2,7 @@ import { app, go, pickLine, saveProfile } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
 import { t, tList } from '../i18n/i18n';
-import { LEVELS, type LevelDef, levelById, practiceLevel, rescueLevel } from '../game/levels';
+import { LEVELS, type LevelDef, WORLDS, levelById, practiceLevel, rescueLevel } from '../game/levels';
 import type { LevelResult } from '../game/progress';
 import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
@@ -96,8 +96,24 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     h('div', { class: 'results-body' },
       h('div', { class: 'results-piko' }, pikoElement(p.companion, 'happy', 140), h('p', { class: 'bubble static' }, breakDue ? pickLine('piko.break') : sentence)),
       h('div', { class: 'results-lines' }, ...lines)),
+    ...teaser(def, !!nextDef && r.worldDone === null, p.companion.name),
     actions);
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   (actions.querySelector('button') as HTMLButtonElement).focus();
+}
+
+/**
+ * Piko's curious question about the next level, answered only after that level is
+ * finished, so the child wants to go on. Story levels only.
+ */
+function teaser(def: LevelDef, hasNext: boolean, piko: string): HTMLElement[] {
+  if (def.index < 0) return [];
+  const world = WORLDS[def.world];
+  const answer = def.index > 0 ? tList(`teaser.${world}.a`)[def.index - 1] : undefined;
+  const question = hasNext ? tList(`teaser.${world}.q`)[def.index] : undefined;
+  const out: HTMLElement[] = [];
+  if (answer) out.push(h('p', { class: 'teaser answer' }, h('b', {}, t('teaser.answer')), ' ', answer));
+  if (question) out.push(h('p', { class: 'teaser ask' }, h('b', {}, t('teaser.ask', { piko })), ' ', question, h('br'), h('small', {}, t('teaser.later'))));
+  return out;
 }
