@@ -124,7 +124,7 @@ No schema change and no new stored field: the gate is computed from
   (pace from word pace, pressure valve, growth needs typed share; why),
   `story.md` (no goal comments), `piko.md` (bubble never covers a word),
   `visuals.md` (map cards one row to 1200 px, 3 + 2 below).
-- [ ] Build, vitest, e2e (fix e2e that rely on unlocking levels without keys, e.g. by
+- [x] Build, vitest, e2e (fix e2e that rely on unlocking levels without keys, e.g. by
   giving the test profile enough keys in the helpers). Playwright MCP: new profile, play
   meadow level 1 typing slowly (about 1 key/s with a pause before each word): every
   target must be reachable. Let 2 pass and see the valve slow new targets. Map at the
@@ -145,3 +145,22 @@ No schema change and no new stored field: the gate is computed from
   - One-column body (window <= 900 px): the story row is at most 639 px wide and centered,
     so its container query gives 3 + 2; below 440 px of container 2 columns (one 196 px
     column per row looked broken next to the new grid).
+  - A level reached but short of keys shows the key instead of its mini stars.
+
+## Done - 2026-10-21
+- Shipped: travel time from the word pace (last 5 typed targets, reading included,
+  clamped 0.7-2.4 s per letter) plus 3 s to read, new `maxActive` and `spawnGap`, the
+  silent pressure valve (`src/game/pace.ts` + tests), growth only with a typed share of at
+  least 0.85, key needs 2/4/6/8/10 per world level (`keysNeeded`, `keysMissing`,
+  `isLevelReached`) with the map key badge, Piko's map bubble and practice button,
+  "Continue" and tasks skipping key-locked levels, Piko's bubble moving off or hiding over
+  word labels, meadow goal lines removed, compact map cards with a container query, specs
+  and README.
+- Verified: vitest 117 tests, build, e2e 11 tests (no helper change needed: level 1 needs
+  2 keys and the robot-story test uses the super profile). Playwright MCP: map one row at
+  1440/1280/1200/1100/1024 and 3 + 2 at 900/768, no horizontal scroll; meadow level 1 at
+  about 1 key/s finished with 100 %; the valve raised a 3-letter word from 9.2 s to 11.5 s
+  after 2 misses and 14.4 s after 4, and stepped back after typed targets; over 40 s with
+  Piko talking the bubble took its top spot 1407 frames and never covered a word; key
+  badge bubble "ešte jedno písmeno" and "Continue" replaying level 1.
+- Left out: nothing.
