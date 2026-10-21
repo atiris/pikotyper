@@ -1,0 +1,525 @@
+{
+  "common": {
+    "ok": "OK",
+    "back": "Späť",
+    "continue": "Pokračovať",
+    "skip": "Preskočiť",
+    "sound": "Zvuk zapnúť / vypnúť",
+    "anyKey": "Stlač ľubovoľný kláves a začíname"
+  },
+  "start": {
+    "tagline": "Pokojné dobrodružstvo písania všetkými desiatimi",
+    "whoPlays": "Kto sa dnes hrá?",
+    "newProfile": "Nový hráč",
+    "guest": "Hrať ako hosť",
+    "import": "Načítať profily",
+    "language": "Jazyk",
+    "stars": "Hviezdičky: {n}"
+  },
+  "privacy": {
+    "short": "Žiadne reklamy, účty ani sledovanie. Všetko zostáva v tomto zariadení."
+  },
+  "newProfile": {
+    "title": "Ahoj, nový kamarát!",
+    "name": "Tvoje meno",
+    "nameMissing": "Napíš, prosím, svoje meno.",
+    "companion": "Vyber si kamaráta",
+    "companionName": "Meno kamaráta",
+    "language": "Jazyk",
+    "layout": "Klávesnica",
+    "parentHint": "Rodič môže všetko neskôr zmeniť v rodičovskej časti (tlačidlo so zámkou).",
+    "create": "Poďme na to!"
+  },
+  "layouts": {
+    "sk-qwertz": "slovenská (QWERTZ)",
+    "us-qwerty": "anglická US (QWERTY)"
+  },
+  "kinds": {
+    "fox": "Líška",
+    "cat": "Mačiatko",
+    "bunny": "Zajko",
+    "owl": "Sovička",
+    "dog": "Psík",
+    "bear": "Macko",
+    "panda": "Panda",
+    "penguin": "Tučniak",
+    "lion": "Levík"
+  },
+  "worlds": {
+    "meadow": "Cvičná lúka",
+    "space": "Let raketou",
+    "planet": "Nová planéta",
+    "dragons": "Dračie údolie",
+    "egg": "Cesta vajíčka"
+  },
+  "map": {
+    "hello": "Ahoj, {name}!",
+    "sub": "{piko} už čaká. Prsty na základný rad!",
+    "play": "Hrať: {level}",
+    "practice": "Voľné cvičenie",
+    "wardrobe": "Šatník",
+    "rescue": "Záchranné misie",
+    "dragons": "Moje dráčiky",
+    "switchProfile": "Hráči",
+    "super": "veľká výzva",
+    "starsAria": "hviezdičky: {n}"
+  },
+  "level": {
+    "title": "Svet {world} · Úroveň {level}",
+    "practice": "Voľné cvičenie",
+    "rescue": "Záchranná misia",
+    "guide": "Ukázať alebo skryť klávesnicu",
+    "pause": "Pauza",
+    "paused": "Malá prestávka",
+    "resume": "Pokračovať",
+    "toMap": "Mapa",
+    "progress": "Postup",
+    "rhythm": "Rytmus",
+    "speed": "Rýchlosť",
+    "layoutHint": "Tvoja klávesnica vyzerá ako {layout}. Popros rodiča, nech ju prepne v rodičovskej časti."
+  },
+  "guide": {
+    "deadStep1": "{ch}: najprv kláves s mäkčeňom alebo dĺžňom, potom písmeno",
+    "deadStep2": "{ch}: teraz písmeno"
+  },
+  "fingers": {
+    "leftPinky": "ľavým malíčkom",
+    "leftRing": "ľavým prstenníkom",
+    "leftMiddle": "ľavým prostredníkom",
+    "leftIndex": "ľavým ukazovákom",
+    "leftThumb": "palcom",
+    "rightThumb": "palcom",
+    "rightIndex": "pravým ukazovákom",
+    "rightMiddle": "pravým prostredníkom",
+    "rightRing": "pravým prstenníkom",
+    "rightPinky": "pravým malíčkom"
+  },
+  "tip": {
+    "title": "Skôr než začneme"
+  },
+  "posture": {
+    "title": "Pripraviť sa, pozor, píšeme!",
+    "back": "Seď rovno, chrbtom sa opri o stoličku.",
+    "feet": "Obe chodidlá polož na zem.",
+    "wrists": "Zápästia uvoľnené vo vzduchu, nie opreté o stôl.",
+    "home": "Ukazováky na výstupkoch klávesov F a J, ostatné prsty vedľa nich.",
+    "eyes": "Oči na obrazovke, nie na klávesnici."
+  },
+  "newKey": {
+    "title": "Nový kláves!",
+    "finger": "Stláčaj ho {finger} a potom sa vráť domov.",
+    "typeIt": "Napíš {key} trikrát.",
+    "shift": "Veľké písmená: Shift drž malíčkom druhej ruky. Napíš trikrát veľké A."
+  },
+  "drill": {
+    "title": "Malé cvičenie: {keys}",
+    "left": "{s} s"
+  },
+  "practice": {
+    "left": "Zostáva {s} sekúnd",
+    "words": "Slová: {n}",
+    "finish": "Skončiť"
+  },
+  "touch": {
+    "title": "Potrebuješ klávesnicu",
+    "text": "PikoTyper učí písať na skutočnej klávesnici. Pripoj ku tabletu klávesnicu alebo sa hraj na počítači."
+  },
+  "piko": {
+    "statsHint": "Klikni na mňa a uvidíš, ako ti idú klávesy",
+    "correct_streak": [
+      "Krásny rytmus, {name}!",
+      "Tvoje prsty poznajú cestu!",
+      "Pokojne a plynulo, výborne!",
+      "Páni, päť slov za sebou!",
+      "Ide ti to stále lepšie!",
+      "Len tak ďalej, pekne v rytme!"
+    ],
+    "mistake": [
+      "Nevadí, skús to znova.",
+      "Z chýb sa učíme.",
+      "Nikam sa neponáhľaj."
+    ],
+    "hint": [
+      "Kláves {key} skús {finger}.",
+      "{key} patrí pod prst: stláčaj ho {finger}. Potom späť domov!",
+      "Pomaly: {key} stláčaš {finger}."
+    ],
+    "drillYes": "Precvičiť {key} (20 s)",
+    "drillNo": "Hrať ďalej",
+    "drill_done": [
+      "Super! Tento kláves je už tvoj kamarát.",
+      "Pekne precvičené!",
+      "Tvoje prsty silnejú!"
+    ],
+    "level_done": [
+      "Podarilo sa ti to, {name}!",
+      "Úžasné písanie!",
+      "Mám z teba veľkú radosť!",
+      "To bola skvelá tímová práca!",
+      "Tvoje prsty tancovali po klávesoch!"
+    ],
+    "break": [
+      "Je čas na malú prestávku na pretiahnutie. Ruky si ju zaslúžia!",
+      "Poďme sa spolu natiahnuť a oddýchnuť si oči."
+    ]
+  },
+  "results": {
+    "title": "Úroveň hotová!",
+    "practiceDone": "Cvičenie hotové!",
+    "starsAria": "{n} z 3 hviezdičiek",
+    "accuracy": "Presnosť {n} %",
+    "rhythm": "Rytmus {n} písmen za minútu",
+    "trendUp": "Tvoj rytmus je plynulejší ako minulý týždeň!",
+    "newKey": "Nový kláves: {key}",
+    "newAccessory": "Nové veci v šatníku: {n}",
+    "rescued": "Dráčik {name} je zachránený!",
+    "next": "Ďalšia úroveň",
+    "nextRescue": "Ďalšia misia",
+    "replay": "Hrať znova",
+    "reward": "Pozrieť odmenu",
+    "takeBreak": "Prestávka na pretiahnutie"
+  },
+  "story": {
+    "next": "Ďalej",
+    "webCleared": [
+      "Pavučina je preč! Teraz pomôž lienkam domov.",
+      "Výborne, cesta je voľná!"
+    ],
+    "signView": [
+      "Tadiaľto je krásny výhľad!",
+      "Pozri na tie kvietky!",
+      "Tento chodník vonia ako cukríky!"
+    ],
+    "boulderOpen": [
+      "Z balvana sú kamene na prechod!",
+      "Dokázalo to tvoje presné písanie!"
+    ],
+    "waveCalm": [
+      "Vlna sa upokojila. Pozri, dúha!",
+      "Pokojný rytmus vyhráva!"
+    ],
+    "scenes": {
+      "intro": [
+        "Ahoj, {name}! Ja som {piko}.",
+        "Spolu sa naučíme písať všetkými desiatimi prstami.",
+        "Polož ukazováky na malé výstupky na klávesoch F a J. To je tvoj domov.",
+        "Začneme na Cvičnej lúke!"
+      ],
+      "world1": [
+        "Na lúke je plno zvedavých malých návštevníkov.",
+        "Napíš slovo, ktoré nesie zvieratko, a jemná plácačka ho s obláčikom odfúkne.",
+        "Nikomu sa nič nestane: len veselo odletia domov."
+      ],
+      "invitation": [
+        "Pozri, čo sa našlo v tráve!",
+        "Tajná pozvánka... do VESMÍRU!",
+        "Tvoje prsty sú pripravené na let raketou."
+      ],
+      "world2": [
+        "Tri, dva, jeden... štart!",
+        "Rytmus tvojho písania poháňa raketu.",
+        "Jemným energetickým lúčom odsúvaj ospalé asteroidy z cesty."
+      ],
+      "landing": [
+        "Riadiaca veža hlási: povolenie na pristátie!",
+        "Pristávame na čarovnej novej planéte."
+      ],
+      "world3": [
+        "Vitaj na novej planéte!",
+        "Postav kamene cez močiar a pri smerovníkoch vyber cestu.",
+        "Tu je presnosť dôležitejšia ako rýchlosť."
+      ],
+      "force": [
+        "Objavili sme niečo úžasné: Silu!",
+        "Teraz dokážeš jemne pohybovať vecami, len písaním.",
+        "Dráčiky v susednom údolí potrebujú pomoc."
+      ],
+      "world4": [
+        "Do Dračieho údolia padajú vesmírne kamene.",
+        "Každé slovo vytvorí pre dráčika ochrannú bublinu.",
+        "Kamene sa len odrazia, nikomu sa nič nestane."
+      ],
+      "egg": [
+        "Dráčiky sú v bezpečí a šťastné.",
+        "Ako poďakovanie ti darujú čarovné dračie vajíčko!"
+      ],
+      "world5": [
+        "Ojoj! Vajíčko sa začína hýbať a kotúľa sa dolu kopcom.",
+        "Pomôž mu preskočiť kamene a pníky.",
+        "Pozor na priateľského krtka!"
+      ],
+      "hatched": [
+        "Krak... krak... vajíčko sa liahne!",
+        "Malý dráčik sa na teba pozerá. Máš nového kamaráta!",
+        "Teraz môžeš chodiť na záchranné misie a pomáhať ďalším dráčikom."
+      ]
+    }
+  },
+  "wave": {
+    "onBeat": "Presne v rytme!",
+    "good": "Dobre!"
+  },
+  "stats": {
+    "title": "Moje klávesy",
+    "intro": "Spolu sme napočítali {n} stlačení. Takto ti idú klávesy:",
+    "empty": "Zahraj si úroveň a ukážem ti, ako ti idú klávesy.",
+    "good": "ide to",
+    "ok": "skoro",
+    "practice": "poďme cvičiť",
+    "practiceKeys": "Klávesy na precvičenie",
+    "keyLine": "{acc} % správne, stláčaj {finger}",
+    "instead": "(často namiesto neho {key})",
+    "practiceNow": "Precvičiť ich teraz (1 min)"
+  },
+  "wardrobe": {
+    "title": "Šatník: {piko}",
+    "count": "{n} z {total} vecí",
+    "clear": "Všetko vyzliecť",
+    "byLevel": "Dokonči {level}",
+    "byWorld": "Dokonči svet {world}",
+    "byMastery": "Zvládni {n} klávesov"
+  },
+  "slots": {
+    "head": "Hlava",
+    "eyes": "Okuliare",
+    "neck": "Krk",
+    "body": "Telo",
+    "back": "Chrbát",
+    "hand": "V ruke",
+    "feet": "Nohy"
+  },
+  "items": {
+    "cap": "Červená šiltovka",
+    "round-glasses": "Okrúhle okuliare",
+    "scarf": "Pásikavý šál",
+    "sneakers": "Červené tenisky",
+    "crown": "Zlatá korunka",
+    "star-glasses": "Hviezdičkové okuliare",
+    "bow-tie": "Motýlik",
+    "butterfly-wings": "Motýlie krídla",
+    "wizard-hat": "Čarodejnícky klobúk",
+    "star-cape": "Hviezdny plášť",
+    "wand": "Čarovný prútik",
+    "boots": "Hnedé čižmy",
+    "flower-wreath": "Venček z kvetov",
+    "knit-vest": "Pletená vesta",
+    "rain-boots": "Gumáky",
+    "backpack": "Batôžtek",
+    "beanie": "Čiapka",
+    "neckerchief": "Šatka",
+    "dragon-wings": "Dračie krídla",
+    "balloon": "Balón",
+    "hair-bow": "Mašľa",
+    "heart-glasses": "Srdiečkové okuliare",
+    "star-shirt": "Tričko s hviezdou",
+    "pink-sneakers": "Ružové tenisky",
+    "explorer-hat": "Klobúk objaviteľa",
+    "explorer-vest": "Vesta objaviteľa",
+    "lantern": "Lampáš",
+    "green-boots": "Zelené čižmy"
+  },
+  "dragons": {
+    "title": "Moje dráčiky",
+    "first": "Môj prvý dráčik",
+    "empty": "Choď na záchrannú misiu a spoznáš ďalšie dráčiky."
+  },
+  "dragonNames": [
+    "Iskrička",
+    "Mätka",
+    "Luna",
+    "Kamienok",
+    "Slniečko",
+    "Bublinka",
+    "Žiarik",
+    "Ďatelinka",
+    "Hmlička",
+    "Pipo",
+    "Hviezdička",
+    "Medík",
+    "Vŕbka",
+    "Obláčik",
+    "Kométka",
+    "Sušienka",
+    "Javorček",
+    "Zigi",
+    "Tulipán",
+    "Vánok"
+  ],
+  "break": {
+    "title": "Pretiahnutie {n}/{total}",
+    "arms": "Natiahni ruky vysoko hore ako strom. Nádych... a výdych.",
+    "fists": "Zovri päste a potom široko roztiahni prsty. Znova a znova!",
+    "shoulders": "Pomaly krúž ramenami dozadu. Potom sa pozri ďaleko z okna.",
+    "done": "Pekne oddýchnuté, {name}! Pamätaj si, ako sedieť:",
+    "parentSkip": "Rodič: preskočiť"
+  },
+  "parent": {
+    "title": "Rodičovská časť: {name}",
+    "checkTitle": "Pre dospelých",
+    "checkText": "Napíš toto číslo číslicami:",
+    "checkLabel": "Číslo",
+    "checkWrong": "Nie celkom. Skús to znova.",
+    "tab": {
+      "settings": "Nastavenia",
+      "keys": "Klávesy",
+      "dashboard": "Pokroky",
+      "data": "Údaje"
+    },
+    "group": {
+      "child": "Dieťa",
+      "practice": "Cvičenie",
+      "look": "Vzhľad a zvuk"
+    },
+    "childName": "Meno dieťaťa",
+    "companionName": "Meno kamaráta",
+    "companionKind": "Kamarát",
+    "messages": "Vaše vlastné povzbudenia",
+    "messagesHint": "Jedno na riadok. Kamarát ich občas použije.",
+    "messagesPlaceholder": "Som na teba hrdá!",
+    "language": "Jazyk",
+    "layout": "Rozloženie klávesnice",
+    "layoutHint": "Vyberte rozloženie skutočnej klávesnice. Podľa neho sa riadi nápoveda prstov.",
+    "difficulty": "Náročnosť",
+    "wordLen": "Dĺžka slov",
+    "min": "min. {n}",
+    "max": "max. {n}",
+    "noDiacritics": "Slová bez diakritiky",
+    "noDiacriticsHint": "Pre začiatočníkov, len na chvíľu. Diakritika patrí k správnemu písaniu.",
+    "noTimePressure": "Bez časového tlaku",
+    "noTimePressureHint": "Pohyblivé predmety zastanú a počkajú na dieťa.",
+    "sessionMinutes": "Dĺžka hrania pred prestávkou",
+    "minutes": "{n} min",
+    "guide": "Nápoveda prstov",
+    "guideAuto": "Slabne pri zvládnutých klávesoch",
+    "guideOn": "Vždy zapnutá",
+    "guideOff": "Vypnutá",
+    "guideLocked": "Dieťa nemôže nápovedu skryť ani zobraziť",
+    "sfx": "Zvukové efekty",
+    "music": "Hudba",
+    "font": "Písmo",
+    "largeText": "Veľké písmo",
+    "reduceMotion": "Menej pohybu",
+    "highContrast": "Vysoký kontrast",
+    "keysMode": "Aktívne klávesy",
+    "keysAuto": "Automaticky (nový kláves, keď je posledný zvládnutý)",
+    "keysManual": "Vybrané ručne",
+    "keysHint": "Automatický režim je najlepší: klávesy pribúdajú postupne od základného radu (F J).",
+    "unlocked": "Zatiaľ odomknuté: {keys}",
+    "preset": {
+      "home": "+ základný rad",
+      "homeUs": "+ základný rad",
+      "top": "+ horný rad",
+      "bottom": "+ dolný rad",
+      "clear": "Vymazať"
+    },
+    "heatmap": "Ako ide ktorý kláves",
+    "accuracyTrend": "Presnosť",
+    "rhythmTrend": "Rytmus",
+    "cpm": "písmen/min",
+    "timePerDay": "Čas za deň",
+    "worlds": "Úrovne",
+    "levelsDone": "z {total} úrovní hotových",
+    "keysUnlocked": "naučených klávesov",
+    "keysMastered": "zvládnutých klávesov",
+    "charsTyped": "písmen za 14 dní",
+    "noData": "Zatiaľ bez údajov.",
+    "dataText": "Všetky údaje sú uložené len v tomto prehliadači. Exportom ich prenesiete do iného zariadenia.",
+    "exportOne": "Exportovať tento profil",
+    "exportAll": "Exportovať všetky profily",
+    "import": "Importovať",
+    "print": "Vytlačiť kartu pokrokov",
+    "guestNote": "Profil hosťa sa po zatvorení karty prehliadača zabudne.",
+    "deleteTitle": "Vymazanie",
+    "delete": "Vymazať profil {name}",
+    "deleteConfirm": "Naozaj vymazať profil {name} aj so všetkými pokrokmi?"
+  },
+  "import": {
+    "title": "Import profilov",
+    "text": "Vyberte súbor .json z PikoTypera.",
+    "found": "Nájdené: {names} ({n}).",
+    "conflict": "Tieto tu už existujú: {names}.",
+    "replace": "Nahradiť ich",
+    "keepBoth": "Ponechať oboje",
+    "do": "Importovať",
+    "errorJson": "Tento súbor nie je platný súbor JSON.",
+    "errorShape": "Tento súbor neobsahuje profily PikoTypera."
+  },
+  "print": {
+    "title": "Karta pokrokov v písaní",
+    "keys": "Naučené klávesy: {n} ({keys})",
+    "mastered": "Zvládnuté klávesy: {n}",
+    "stars": "Hviezdičky: {n} z {total}",
+    "worlds": "Dokončené svety: {n} z 5",
+    "rhythm": "Rytmus: {n} písmen za minútu"
+  },
+  "about": {
+    "title": "O hre PikoTyper",
+    "intro": "PikoTyper je bezplatná pokojná hra, ktorá učí deti písať všetkými desiatimi prstami. Spolu s kamarátom precestujú päť svetov. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
+    "privacyTitle": "Náš sľub rodičom",
+    "privacy": [
+      "Žiadne reklamy ani nákupy.",
+      "Žiadne účty ani heslá.",
+      "Žiadne sledovanie, cookies ani analytika.",
+      "Všetky pokroky sú uložené len v tomto prehliadači; môžete ich exportovať do súboru.",
+      "Po prvej návšteve funguje aj bez internetu."
+    ],
+    "howTitle": "Ako učí",
+    "how": [
+      "Klávesy sa učia postupne, od základného radu (F a J).",
+      "Každý kláves má svoj prst; klávesnica a ruky na obrazovke ukazujú ktorý.",
+      "Najprv presnosť; rýchlosť sa ukazuje len ako osobný pokrok.",
+      "Slabšie klávesy sa objavujú častejšie a krátke prestávky chránia zdravie."
+    ],
+    "creditsTitle": "Poďakovanie",
+    "credits": "Otvorený kód pod licenciou MIT. Písma: Lexend, Atkinson Hyperlegible a OpenDyslexic (SIL Open Font License)."
+  },
+  "tips": {
+    "sit-straight": "Seď rovno a chrbát si opri o operadlo.",
+    "feet-floor": "Chodidlá nech sú celé na zemi alebo na podstavci.",
+    "elbows-close": "Lakte maj pri tele, nech ti ruky nelietajú do strán.",
+    "right-angles": "Lakte aj kolená ohni asi do pravého uhla.",
+    "sit-higher": "Sedíš nízko? Podlož si vankúšik.",
+    "screen-distance": "Obrazovku maj asi na dĺžku natiahnutej ruky.",
+    "screen-height": "Obrazovka nech je v úrovni očí, krk ostane uvoľnený.",
+    "relax-shoulders": "Spusti ramená, vydýchni a uvoľni ruky.",
+    "wrists-float": "Zápästia nechaj ľahko vo vzduchu, nie ohnuté.",
+    "no-palms": "Neopieraj sa dlaňami o stôl, ruky nech sú ľahké.",
+    "soft-touch": "Kláves stačí stlačiť jemne, nemusíš búchať.",
+    "thumbs-rest": "Palce nechaj voľne nad medzerníkom.",
+    "fj-bumps": "Nahmataj si výstupky na F a J, tam ležia ukazováky.",
+    "home-row": "Domov je stredný rad: A S D F a J K L.",
+    "return-home": "Po každom písmenku pošli prst domov.",
+    "one-finger": "Každé písmenko má svoj prst, vždy ten istý.",
+    "index-two": "Ukazováky majú najviac práce, každý zvládne dva stĺpce.",
+    "middle-ei": "Na E a I siahne prostredník a hneď sa vráti.",
+    "pinky-p": "Na P siahne pravý malíček, potom späť na L.",
+    "ring-finger": "Prstenník je šikovný: S, L, W aj bodka sú jeho.",
+    "reach-t": "Na vzdialené T sa natiahni ukazovákom a vráť sa na F.",
+    "feel-center": "Mier do stredu klávesu, aj bez pozerania.",
+    "thumb-space": "Medzerník stláčaj palcom, ktorý práve nepísal.",
+    "shift-opposite": "Veľké písmeno? Shift stlač malíčkom opačnej ruky.",
+    "capital-a": "Veľké A píšeš ľavou rukou, preto Shift stlač pravým.",
+    "yz-swap": "Na slovenskej klávesnici je Z hore a Y dole.",
+    "z-finger": "Z píše pravý ukazovák, Y ľavý malíček.",
+    "number-row": "Pod číslami sú ľ š č ť ž ý á í é, číslo dáš so Shiftom.",
+    "number-fingers": "Horný rad píšeš tým istým prstom ako písmená pod ním.",
+    "dead-keys": "Čiarku alebo mäkčeň stlač najprv, až potom písmenko.",
+    "caron-shift": "Mäkčeň je ten istý kláves ako čiarka, ale so Shiftom.",
+    "accent-pinky": "Klávesy ú ä ô ň patria pravému malíčku.",
+    "diacritics-fun": "Slovenské znaky sú malé čaro. Ty sa ho učíš!",
+    "eyes-screen": "Pozeraj na obrazovku, prsty cestu nájdu samy.",
+    "no-peeking": "Chceš kuknúť na klávesnicu? Radšej si predstav prst.",
+    "rest-eyes": "Občas sa pozri z okna, aj oči si chcú oddýchnuť.",
+    "accuracy-first": "Najprv presne, rýchlosť príde sama.",
+    "steady-beat": "Píš v rovnakom rytme, ako keď ťukáš do pesničky.",
+    "slow-down": "Robíš veľa chýb? Spomaľ a pôjde to lepšie.",
+    "hard-word": "Zradné slovo napíš párkrát po sebe, najprv pomaly.",
+    "mistakes-ok": "Chyba nevadí, z každej sa niečo naučíš.",
+    "patience": "Zdá sa ti, že sa nezlepšuješ? To je normálne, vydrž.",
+    "short-sessions": "Viac krátkych cvičení je lepších ako jedno dlhé.",
+    "stretch-fingers": "Roztiahni prsty, zovri päste a znova ich otvor.",
+    "stretch-wrist": "Ohni zápästie a druhou rukou ho jemne potlač.",
+    "take-break": "Po pár minútach vstaň, natiahni sa a napi sa vody.",
+    "celebrate": "Dobrá práca! Tvoj kamarát má z teba radosť."
+  }
+}

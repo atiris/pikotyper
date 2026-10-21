@@ -3,11 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="PikoTyper - a peaceful story-driven touch-typing adventure for children. No ads, no accounts, no tracking." />
+    <meta name="theme-color" content="#7cc79a" />
     <title>PikoTyper</title>
-    <link rel="stylesheet" href="/src/styles.css" />
+    <link rel="icon" href="icons/piko.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/piko-192.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
   </head>
-  <body>
-    <main id="app"></main>
+  <body class="booting">
+    <main id="app"><div class="boot">PikoTyper</div></main>
+    <noscript>PikoTyper needs JavaScript. / PikoTyper potrebuje JavaScript.</noscript>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

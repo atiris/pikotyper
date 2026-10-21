@@ -1,0 +1,54 @@
+import { app, applyProfileLook, go, selectProfile, useLanguage } from '../app/app';
+import { audio } from '../audio/audio';
+import { imageUrl } from '../gfx/assets';
+import { pikoElement } from '../gfx/piko';
+import { LANGS, language, t } from '../i18n/i18n';
+import type { Lang } from '../storage/schema';
+import { button, h, icon } from '../ui/dom';
+import { muteButton } from '../ui/chrome';
+import { importDialog } from './parent';
+
+export function startScreen(root: HTMLElement): void {
+  app.profile = null;
+  applyProfileLook(null);
+  audio.music(app.menuTrack);
+  const logo = imageUrl('ui-logo');
+  const langSwitch = h('div', { class: 'lang-switch', role: 'group', 'aria-label': t('start.language') },
+    ...LANGS.map((l) => button(l.toUpperCase(), async () => {
+      app.store.data.language = l as Lang;
+      app.store.save();
+      await useLanguage(l);
+      go('start');
+    }, `chip ${language() === l ? 'on' : ''}`)));
+
+  const profiles = h('div', { class: 'profile-list' },
+    ...app.store.profiles.map((p) => {
+      const card = h('button', { class: 'profile-card', type: 'button', onClick: async () => { await selectProfile(p); go('map'); } },
+        pikoElement(p.companion, 'idle', 110),
+        h('span', { class: 'profile-name' }, p.name),
+        h('span', { class: 'profile-sub' }, t('start.stars', { n: Object.values(p.progress.levels).reduce((a, b) => a + b, 0) })));
+      return card;
+    }),
+    h('button', { class: 'profile-card new', type: 'button', onClick: () => go('newProfile') },
+      h('span', { class: 'plus' }, icon('plus')), h('span', { class: 'profile-name' }, t('start.newProfile'))));
+
+  root.append(h('div', { class: 'screen start-screen' },
+    h('div', { class: 'top-right' }, langSwitch, muteButton()),
+    h('header', { class: 'hero' },
+      logo ? h('img', { class: 'logo', src: logo, alt: '' }) : null,
+      h('h1', { class: 'title' }, h('span', {}, 'Piko'), h('span', { class: 'title-b' }, 'Typer')),
+      h('p', { class: 'tagline' }, t('start.tagline'))),
+    h('section', { class: 'panel' },
+      h('h2', {}, t('start.whoPlays')),
+      profiles,
+      h('div', { class: 'row center' },
+        button(t('start.guest'), async () => {
+          const g = app.store.startGuest(language());
+          await selectProfile(g);
+          go('map');
+        }, 'btn ghost', 'user'),
+        button(t('start.import'), () => importDialog(() => go('start')), 'btn ghost', 'upload'))),
+    h('footer', { class: 'privacy-note' },
+      h('p', {}, t('privacy.short')),
+      button(t('about.title'), () => go('about'), 'link-btn', 'info'))));
+}

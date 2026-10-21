@@ -1,0 +1,21 @@
+import { app, go } from '../app/app';
+import { t, tList } from '../i18n/i18n';
+import { button, h } from '../ui/dom';
+import { muteButton } from '../ui/chrome';
+
+/** About and privacy promise for parents. */
+export function aboutScreen(root: HTMLElement): void {
+  root.append(h('div', { class: 'screen about-screen' },
+    h('div', { class: 'top-right' }, muteButton()),
+    h('article', { class: 'panel prose' },
+      h('h1', {}, t('about.title')),
+      h('p', {}, t('about.intro')),
+      h('h2', {}, t('about.privacyTitle')),
+      h('ul', {}, ...tList('about.privacy').map((l) => h('li', {}, l))),
+      h('h2', {}, t('about.howTitle')),
+      h('ul', {}, ...tList('about.how').map((l) => h('li', {}, l))),
+      h('h2', {}, t('about.creditsTitle')),
+      h('p', {}, t('about.credits')),
+      h('p', {}, h('a', { href: 'https://github.com/atiris/pikotyper', target: '_blank', rel: 'noopener' }, 'github.com/atiris/pikotyper')),
+      h('div', { class: 'row' }, button(t('common.back'), () => go(app.profile ? 'map' : 'start'), 'btn primary', 'back')))));
+}

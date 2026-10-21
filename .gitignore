@@ -10,3 +10,4 @@ playwright-report/
 /.e2e/
 /assets-src/*
 !/assets-src/PROMPTS.md
+.playwright-mcp/
