@@ -18,7 +18,8 @@ export function startScreen(root: HTMLElement): void {
       app.store.data.language = l as Lang;
       app.store.save();
       await useLanguage(l);
-      go('start');
+      // Re-render only if the child is still here (the file may load slowly).
+      if (root.dataset.screen === 'start') go('start');
     }, `chip ${language() === l ? 'on' : ''}`)));
 
   const profiles = h('div', { class: 'profile-list' },
