@@ -62,7 +62,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
       return src ? h('img', { class: `star ${on ? 'on' : ''}`, src, alt: '', style: `--i:${i}` }) : h('span', { class: `star-fallback ${on ? 'on' : ''}`, style: `--i:${i}` }, '★');
     }));
   const lines: HTMLElement[] = [
-    h('p', { class: 'big-line' }, t('results.accuracy', { n: Math.round(r.accuracy * 100) })),
+    h('p', { class: 'big-line' }, r.byPiko ? t('results.byPiko', { piko: p.companion.name }) : t('results.accuracy', { n: Math.round(r.accuracy * 100) })),
   ];
   if (r.cpm > 0) lines.push(h('p', {}, t('results.rhythm', { n: r.cpm })));
   if (r.trend && r.trend > 1.05) lines.push(h('p', { class: 'good' }, t('results.trendUp')));

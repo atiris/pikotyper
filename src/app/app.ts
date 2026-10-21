@@ -1,7 +1,7 @@
 import { audio } from '../audio/audio';
 import { resetFontFamily } from '../gfx/draw';
 import { language, setLanguage, t, tList } from '../i18n/i18n';
-import { h } from '../ui/dom';
+import { h, icon } from '../ui/dom';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { Store } from '../storage/store';
 import { GUEST_ID, type Lang, type Profile, SUPER_ID } from '../storage/schema';
@@ -82,15 +82,15 @@ export function go(name: ScreenName, params: any = {}, push = true): void {
   superBadge();
 }
 
-/** Super mode is on: a badge on top of every screen; clicking it ends the mode. */
+/** Super mode is on: a round star in the top right corner of every screen; clicking it ends the mode. */
 function superBadge(): void {
   document.querySelector('.super-badge')?.remove();
   document.body.classList.toggle('super-on', !!app.superPlayer);
   if (!app.superPlayer) return;
-  document.body.append(h('button', { class: 'super-badge', type: 'button', title: t('super.end'), onClick: () => {
+  document.body.append(h('button', { class: 'super-badge', type: 'button', title: t('super.badge'), 'aria-label': t('super.badge'), onClick: () => {
     app.superPlayer = null;
     go('start');
-  } }, `★ ${t('super.on')} ✕`));
+  } }, icon('star')));
 }
 
 export function saveProfile(): void {

@@ -13,8 +13,9 @@ import { LAYOUTS, LayoutMismatchDetector, canType, fingerFor, stepsFor } from '.
 import { activeKeys, keysToIntroduce, masteryLevel, newestGroup } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide } from '../ui/keyboard-guide';
-import { button, h, icon } from '../ui/dom';
-import { soundButton } from '../ui/chrome';
+import { button, h } from '../ui/dom';
+import { fullscreenButton, soundButton } from '../ui/chrome';
+import { pawRingSvg, rhythmGauge } from '../ui/hud';
 import { WordSource } from '../words/words';
 import type { LevelDef } from './levels';
 import { WORLDS } from './levels';
@@ -23,7 +24,7 @@ import { PAW_MAX, PAW_STREAK, PAW_WORDS, isHardMoment } from './paw';
 import { createMode } from './modes';
 import { type LevelResult, completeLevel } from './progress';
 import { type Target, TypingCore } from './typing';
-import { showCard, showDrill, showNewKey, showPosture, showTip } from './cards';
+import { pickTip, showCard, showDrill, showNewKey, showPosture } from './cards';
 
 export interface RuntimeOptions {
   /** Practice: only these keys (drills), else the profile's active keys. */
@@ -57,7 +58,9 @@ export class LevelRuntime {
   private bubble: HTMLElement;
   private bubbleTimer = 0;
   private progressFill: HTMLElement;
-  private meter: HTMLElement;
+  private gauge = rhythmGauge();
+  /** Seconds until the gauge's spoken label may change again. */
+  private gaugeLabelIn = 0;
   private pauseEl: HTMLElement | null = null;
   private paused = false;
   /** Play began (the preparation cards are done). */
@@ -116,7 +119,6 @@ export class LevelRuntime {
     // DOM: HUD, stage, Piko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
     this.progressFill = h('div', { class: 'progress-fill' });
-    this.meter = h('div', { class: 'meter-fill' });
     const title = def.kind === 'practice' ? t('level.practice') : def.id === 'rescue' ? t('level.rescue') : t('level.title', { world: def.world + 1, level: def.index + 1 });
     const guideBtn = button('', () => this.toggleGuide(), 'icon-btn', 'keyboard');
     guideBtn.title = t('level.guide');
@@ -124,18 +126,18 @@ export class LevelRuntime {
     if (p.settings.guideLocked) guideBtn.disabled = true;
     const pauseBtn = button('', () => this.pause(), 'icon-btn', 'pause');
     pauseBtn.setAttribute('aria-label', t('level.pause'));
-    const hud = h('div', { class: 'hud' },
-      pauseBtn,
-      h('div', { class: 'hud-title' }, title),
-      h('div', { class: 'progress', title: t('level.progress') }, this.progressFill),
-      h('div', { class: 'meter', title: t('level.rhythm') }, h('span', { class: 'meter-label' }, t('level.rhythm')), h('div', { class: 'meter-bar' }, this.meter)),
-      guideBtn, soundButton());
     if (this.pawsAllowed) {
-      this.pawBtn = h('button', { class: 'paw-btn', type: 'button', onClick: () => this.startPaws() });
+      this.pawBtn = h('button', { class: 'icon-btn paw-btn', type: 'button', onClick: () => this.startPaws() });
       this.pawBtn.title = t('paw.title', { n: PAW_STREAK, words: PAW_WORDS, piko: p.companion.name });
-      hud.insertBefore(this.pawBtn, guideBtn);
       this.renderPawBtn();
     }
+    const hud = h('div', { class: 'hud' },
+      pauseBtn,
+      this.pawBtn,
+      h('div', { class: 'hud-title' }, title),
+      h('div', { class: 'progress', title: t('level.progress') }, this.progressFill),
+      this.gauge.el,
+      guideBtn, soundButton(), fullscreenButton());
     const stageWrap = h('div', { class: 'stage-wrap' });
     this.piko = pikoElement(p.companion, 'idle', 150);
     // Piko joins the stage when play starts; the preparation cards show him themselves.
@@ -170,16 +172,18 @@ export class LevelRuntime {
     return ['swamp', 'signs', 'boulder'].includes(this.def.kind);
   }
 
-  /** Preparation: assets, tip, new keys, the get-ready card with its password, then play. */
+  /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
   private async prepare(): Promise<void> {
     const p = app.profile!;
     await preload([`bg-${this.mode.world}-far`, `bg-${this.mode.world}-mid`, `bg-${this.mode.world}-near`]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
     const host = this.el.querySelector<HTMLElement>('.stage-wrap')!;
+    let tip: string | undefined;
     if (!app.tipShown && !this.opts.keys) {
       app.tipShown = true;
-      await showTip(host, p);
+      tip = pickTip(p)?.text;
+      saveProfile();
     }
     for (const key of this.opts.keys ? [] : keysToIntroduce(p)) {
       if (this.disposed) return;
@@ -188,7 +192,7 @@ export class LevelRuntime {
       saveProfile();
     }
     if (this.disposed) return;
-    if (!this.opts.keys) await showPosture(host, p);
+    if (!this.opts.keys && await showPosture(host, p, tip) === 'cancel') return this.exit();
     if (this.disposed) return;
     this.mode.start();
     this.started = true;
@@ -397,12 +401,14 @@ export class LevelRuntime {
 
   private renderPawBtn(): void {
     if (!this.pawBtn) return;
-    const { pawHelp, pawAuto } = app.profile!.progress;
+    const p = app.profile!;
+    const { pawHelp, pawAuto } = p.progress;
     this.pawBtn.classList.toggle('empty', pawHelp === 0);
+    this.pawBtn.classList.toggle('auto', pawAuto);
+    this.pawBtn.dataset.charged = String(pawHelp);
     this.pawBtn.setAttribute('aria-label', t('paw.aria', { n: pawHelp }));
-    this.pawBtn.replaceChildren(icon('paw'),
-      h('span', { class: 'paw-pips' }, ...Array.from({ length: PAW_MAX }, (_, i) => h('i', { class: i < pawHelp ? 'on' : '' }))),
-      h('kbd', { class: pawAuto ? 'auto' : '' }, pawAuto ? t('paw.auto') : '⏎'));
+    this.pawBtn.innerHTML = pawRingSvg(pawHelp, PAW_MAX, pawColors(p.companion.kind)[0]);
+    this.pawBtn.append(h('span', { class: 'paw-badge', 'aria-hidden': 'true' }, pawAuto ? 'A' : '⏎'));
   }
 
   /** A mistake-free streak charges one paw help. */
@@ -555,8 +561,12 @@ export class LevelRuntime {
     if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) renderPikoInto(this.piko, app.profile!.companion, 'idle');
     this.progressFill.style.width = `${Math.round(this.mode.progress() * 100)}%`;
     const target = 0.9 + this.difficulty * 0.35;
-    this.meter.style.width = `${Math.round(Math.min(1, this.ema / target) * 100)}%`;
-    // Drift the rhythm down slowly while idle, so the meter is honest.
+    this.gauge.set(this.ema / target);
+    if ((this.gaugeLabelIn -= dt) <= 0) {
+      this.gaugeLabelIn = 1;
+      this.gauge.label(t('level.rhythm', { n: Math.round(this.ema * 60) }));
+    }
+    // Drift the rhythm down slowly while idle, so the gauge is honest.
     if (performance.now() - this.lastKey > 2500) this.ema = Math.max(0.4, this.ema - dt * 0.05);
     if (this.core.expectedChar() !== this.lastExpected) {
       this.lastExpected = this.core.expectedChar();

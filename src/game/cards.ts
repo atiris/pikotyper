@@ -13,8 +13,6 @@ import { activeKeys } from '../learning/lessons';
 
 interface CardOpts {
   button?: string;
-  /** Any key press dismisses the card. */
-  anyKey?: boolean;
   cls?: string;
 }
 
@@ -41,7 +39,7 @@ export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = 
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.repeat || ['Shift', 'Control', 'Alt', 'Meta', 'Tab'].includes(e.key)) return;
-      if (o.anyKey || e.key === 'Enter' || e.key === 'Escape') {
+      if (e.key === 'Enter' || e.key === 'Escape') {
         e.preventDefault();
         e.stopPropagation();
         done();
@@ -52,7 +50,6 @@ export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = 
       card.append(h('div', { class: 'row' }, b));
       queueMicrotask(() => b.focus());
     }
-    if (o.anyKey) card.append(h('p', { class: 'hint' }, t('common.anyKey')));
     const stop = captureKeys(overlay, onKey);
     host.append(overlay);
   });
@@ -75,24 +72,16 @@ export function pickTip(p: Profile): { id: string; text: string } | null {
   return { id, text: tips[id] };
 }
 
-export async function showTip(host: HTMLElement, p: Profile): Promise<void> {
-  const tip = pickTip(p);
-  saveProfile();
-  if (!tip) return;
-  const piko = pikoElement(p.companion, 'happy', 120);
-  await showCard(host, h('div', { class: 'tip' }, piko, h('div', {}, h('h3', {}, t('tip.title')), h('p', { class: 'tip-text' }, tip.text))), { anyKey: true, cls: 'tip-card' });
-}
-
 const POSTURE_TIPS = ['back', 'feet', 'wrists', 'home', 'eyes'];
 
-/** Good posture picture with one random reminder (one is read, a list is skipped). */
-export function postureContent(): HTMLElement {
+/** Good posture picture with one line: the given tip, else one random posture reminder (one is read, a list is skipped). */
+export function postureContent(line?: string): HTMLElement {
   const src = imageUrl('ui-posture');
   const tip = POSTURE_TIPS[Math.floor(Math.random() * POSTURE_TIPS.length)];
   return h('div', { class: 'posture' },
     h('h2', {}, t('posture.title')),
     src ? h('img', { class: 'posture-img', src, alt: '' }) : h('div', { class: 'posture-img', html: postureSvg() }),
-    h('p', { class: 'posture-tip' }, t(`posture.${tip}`)));
+    h('p', { class: 'posture-tip' }, line ?? t(`posture.${tip}`)));
 }
 
 /** Two different random letters the child already knows: the password of this adventure. */
@@ -104,19 +93,31 @@ export function adventurePassword(p: Profile, rnd = Math.random): string {
   return a + rest[Math.floor(rnd() * rest.length)];
 }
 
-/** Get-ready card before every adventure; it opens the adventure only with its password typed. */
-export function showPosture(host: HTMLElement, p: Profile): Promise<void> {
+/**
+ * Get-ready card before every adventure, with the session's preparation tip when one is due;
+ * it opens the adventure only with its password typed. Escape cancels the adventure.
+ */
+export function showPosture(host: HTMLElement, p: Profile, tip?: string): Promise<'start' | 'cancel'> {
   return new Promise((resolve) => {
     const password = adventurePassword(p);
     const slots = [...password].map((c) => h('span', { class: 'pass-key' }, c));
     const pass = h('div', { class: 'pass' }, ...slots);
     const card = h('div', { class: 'card posture-card', 'data-password': password },
-      postureContent(),
+      postureContent(tip),
       h('p', { class: 'pass-label' }, t('posture.password')),
-      pass);
+      pass,
+      h('p', { class: 'hint' }, t('posture.escHint')));
     const overlay = h('div', { class: 'overlay' }, card);
     let n = 0;
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        stop();
+        overlay.remove();
+        resolve('cancel');
+        return;
+      }
       if (e.repeat || [...e.key].length !== 1) return;
       e.preventDefault();
       e.stopPropagation();
@@ -125,7 +126,7 @@ export function showPosture(host: HTMLElement, p: Profile): Promise<void> {
         audio.sfx('pop');
         if (n === password.length) {
           stop();
-          setTimeout(() => { overlay.remove(); resolve(); }, 350);
+          setTimeout(() => { overlay.remove(); resolve('start'); }, 350);
         }
       } else {
         n = 0;

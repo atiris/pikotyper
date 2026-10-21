@@ -5,10 +5,11 @@
     "continue": "Pokračovať",
     "skip": "Preskočiť",
     "sound": "Zvuk",
-    "anyKey": "Stlač ľubovoľný kláves a začíname",
     "sound_normal": "normálny",
     "sound_quiet": "potichu",
-    "sound_off": "vypnutý"
+    "sound_off": "vypnutý",
+    "fullscreen": "Celá obrazovka",
+    "fullscreenExit": "Zrušiť celú obrazovku"
   },
   "start": {
     "tagline": "Pokojné dobrodružstvo písania všetkými desiatimi",
@@ -80,7 +81,7 @@
     "resume": "Pokračovať",
     "toMap": "Mapa",
     "progress": "Postup",
-    "rhythm": "Rytmus",
+    "rhythm": "Rytmus: {n} písmen za minútu",
     "speed": "Rýchlosť",
     "layoutHint": "Tvoja klávesnica vyzerá ako {layout}. Popros rodiča, nech ju prepne v rodičovskej časti."
   },
@@ -100,9 +101,6 @@
     "rightRing": "pravým prstenníkom",
     "rightPinky": "pravým malíčkom"
   },
-  "tip": {
-    "title": "Skôr než začneme"
-  },
   "posture": {
     "title": "Pripraviť sa, pozor, píšeme!",
     "back": "Seď rovno, chrbtom sa opri o stoličku.",
@@ -110,7 +108,8 @@
     "wrists": "Zápästia uvoľnené vo vzduchu, nie opreté o stôl.",
     "home": "Ukazováky na výstupkoch klávesov F a J, ostatné prsty vedľa nich.",
     "eyes": "Oči na obrazovke, nie na klávesnici.",
-    "password": "Heslo tohto dobrodružstva. Napíš ho a môžeme začať:"
+    "password": "Heslo tohto dobrodružstva. Napíš ho a môžeme začať:",
+    "escHint": "Esc: späť na mapu"
   },
   "newKey": {
     "title": "Nový kláves!",
@@ -175,6 +174,7 @@
     "practiceDone": "Cvičenie hotové!",
     "starsAria": "{n} z 3 hviezdičiek",
     "accuracy": "Presnosť {n} %",
+    "byPiko": "Túto úroveň zvládol hlavne {piko}.",
     "rhythm": "Rytmus {n} písmen za minútu",
     "trendUp": "Tvoj rytmus je plynulejší ako minulý týždeň!",
     "newKey": "Nový kláves: {key}",
@@ -268,7 +268,6 @@
   "paw": {
     "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: {piko} napíše za teba {words} slová. Backspace: pomôže sám, keď bude ťažko.",
     "aria": "Labková pomoc, nabité labky: {n}",
-    "auto": "AUTO",
     "start": "Labky na klávesy! Teraz píšem ja.",
     "charged": "{n} slov bez chyby! Labka je nabitá. Stlač Enter a napíšem za teba {words} slová.",
     "chargedAuto": "{n} slov bez chyby! Labka je nabitá. Keď bude ťažko, pomôžem ti sám.",
@@ -511,6 +510,8 @@
     "largeText": "Veľké písmo",
     "reduceMotion": "Menej pohybu",
     "highContrast": "Vysoký kontrast",
+    "autoFullscreen": "Spúšťať na celú obrazovku",
+    "autoFullscreenHint": "Prehliadač dovolí celú obrazovku až po prvom stlačení klávesu alebo kliknutí.",
     "keysMode": "Aktívne klávesy",
     "keysAuto": "Automaticky (nový kláves, keď je posledný zvládnutý)",
     "keysManual": "Vybrané ručne",
@@ -546,7 +547,7 @@
     "checkOk": "Áno, otvoriť",
     "deleteOk": "Áno, vymazať",
     "auto": "Automaticky (rastie s pokrokom dieťaťa)",
-    "autoHint": "Automaticky sa náročnosť a dĺžka slov striedavo zvyšujú po niekoľkých minútach presného písania; každý krok dieťa odmení medailou."
+    "autoHint": "Automaticky sa náročnosť a dĺžka slov striedavo zvyšujú po niekoľkých minútach presného písania; každý krok dieťa odmení medailou. Začiatok je pomalý: krátke slovo putuje ku kamarátovi asi 10 sekúnd a na obrazovke sú najviac dve. Ak dieťa ani tak nestíha, zapnite Bez časového tlaku."
   },
   "import": {
     "title": "Import profilov",
@@ -639,7 +640,6 @@
     "celebrate": "Dobrá práca! Tvoj kamarát má z teba radosť."
   },
   "super": {
-    "on": "Superrežim: všetko odomknuté",
-    "end": "Ukončiť superrežim"
+    "badge": "Superrežim: všetko odomknuté. Kliknutím ho ukončíš."
   }
 }

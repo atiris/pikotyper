@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { STORE_KEY, Store, applyImport, migrate, newProfile, parseImport, planImport } from './store';
+import { STORE_KEY, STORE_VERSION, Store, applyImport, migrate, newProfile, parseImport, planImport } from './store';
 
 class MemStorage {
   map = new Map<string, string>();
@@ -20,7 +20,7 @@ describe('Store', () => {
     s.add(newProfile('Ema', 'sk'));
     const again = new Store(local, mem());
     expect(again.profiles.map((p) => p.name)).toEqual(['Ema']);
-    expect(JSON.parse(local.getItem(STORE_KEY)!).version).toBe(3);
+    expect(JSON.parse(local.getItem(STORE_KEY)!).version).toBe(STORE_VERSION);
   });
 
   it('keeps the guest only in session storage', () => {
@@ -69,6 +69,13 @@ describe('Store', () => {
     const out = migrate({ version: 2, profiles: [p] }).profiles[0];
     expect(out.progress.pawHelp).toBe(0);
     expect(out.progress.pawAuto).toBe(false);
+  });
+
+  it('gives v3 profiles no automatic fullscreen', () => {
+    const p: any = newProfile('Ema', 'sk');
+    delete p.settings.autoFullscreen;
+    const out = migrate({ version: 3, profiles: [p] }).profiles[0];
+    expect(out.settings.autoFullscreen).toBe(false);
   });
 });
 

@@ -46,16 +46,14 @@ test('Enter sends Piko\'s paws to type a few words', async ({ page }) => {
   await page.locator('.map-side .btn.primary').click();
   await page.locator('.story-screen').waitFor();
   await page.keyboard.press('Escape');
-  await page.locator('.tip-card').waitFor();
-  await page.keyboard.press('Space');
   const pass = await page.locator('.posture-card').getAttribute('data-password');
   await page.keyboard.type(pass!);
-  await expect(page.locator('.paw-pips i.on')).toHaveCount(3);
+  await expect(page.locator('.paw-btn')).toHaveAttribute('data-charged', '3');
   await expect(page.locator('.level-piko.waiting')).toHaveCount(0);
   await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next')).not.toBe('');
   await page.keyboard.press('Enter');
   await expect(page.locator('.kb-guide.paws-on')).toBeVisible();
-  await expect(page.locator('.paw-pips i.on')).toHaveCount(2);
+  await expect(page.locator('.paw-btn')).toHaveAttribute('data-charged', '2');
   await expect(page.locator('.kb-guide.paws-on')).toHaveCount(0, { timeout: 15000 });
 });
 
@@ -66,8 +64,6 @@ test('a level left during its get-ready card does not swallow the next level\'s 
   await page.locator('.map-side .btn.primary').click();
   await page.locator('.story-screen').waitFor();
   await page.keyboard.press('Escape');
-  await page.locator('.tip-card').waitFor();
-  await page.keyboard.press('Space');
   await page.locator('.posture-card').waitFor();
   await page.goBack();
   await page.locator('.map-screen').waitFor();

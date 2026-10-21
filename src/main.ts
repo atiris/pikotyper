@@ -3,6 +3,7 @@ import { app, go, openRoute, registerScreen, selectProfile, useLanguage } from '
 import { loadManifest } from './gfx/assets';
 import { SUPER_ID } from './storage/schema';
 import { detectLanguage } from './i18n/i18n';
+import { watchAutoFullscreen } from './ui/chrome';
 import { aboutScreen } from './screens/about';
 import { breakScreen } from './screens/break';
 import { dragonsScreen } from './screens/dragons';
@@ -36,6 +37,7 @@ async function boot(): Promise<void> {
   await Promise.all([loadManifest(), useLanguage(lang)]);
   document.body.classList.remove('booting');
   window.addEventListener('popstate', () => void openRoute(location.hash));
+  watchAutoFullscreen();
   if (location.hash.length > 2) return openRoute(location.hash);
   // A guest session survives reloads of the same tab only.
   if (app.store.guest) {

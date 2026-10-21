@@ -12,7 +12,7 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
 
 ## Steps
 
-- [ ] **Paw help button, round.** Move it from the right of the HUD to just after the
+- [x] **Paw help button, round.** Move it from the right of the HUD to just after the
   pause button (next to the level progress). A round `icon-btn` (48 px) with a better
   paw in the middle: one big pad and four toe pads, filled, in the companion's paw
   color (`pawColors` in `src/gfx/piko.ts`). The ring around it is an SVG circle split
@@ -20,22 +20,22 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   whole button pulses gently (CSS animation, off with reduced motion) and a small
   `A` badge sits at the bottom right; manual mode shows a small `⏎` badge.
   Remove the pips and the `kbd` label of today. Keep title/aria texts.
-- [ ] **Rhythm as a round gauge.** Replace the bar "Rytmus" with a round element of
+- [x] **Rhythm as a round gauge.** Replace the bar "Rytmus" with a round element of
   the same size as the keyboard button: a half-circle tachometer (SVG arc, needle
   rotated by the same ratio the bar uses today: `ema / (0.9 + difficulty * 0.35)`),
   colored arc from calm blue to green; no red. Title shows
   "Rytmus: N písmen za minútu". Clicking it does nothing (it is not a button: use a
   `div role="img"` with an aria-label that updates at most once a second).
-- [ ] **Super badge as a round icon.** `superBadge()` in `src/app/app.ts` becomes a
+- [x] **Super badge as a round icon.** `superBadge()` in `src/app/app.ts` becomes a
   round 44 px star button fixed at the top right corner, over the page, not a
   full-width bar; the screen gets no extra top padding (remove the padding that was
   added for the bar). Title/aria "Superrežim: všetko odomknuté. Kliknutím ho
   ukončíš." Click ends super mode as today.
-- [ ] **Esc on the get-ready card.** In `showPosture` (`src/game/cards.ts`) Escape
+- [x] **Esc on the get-ready card.** In `showPosture` (`src/game/cards.ts`) Escape
   cancels the adventure: the card closes and the player goes back to the map (the
   runtime's `onExit`). Add the hint "Esc: späť na mapu" under the password.
   `showPosture` resolves with `'start' | 'cancel'`.
-- [ ] **Fullscreen.** A round fullscreen button (icon: four corner arrows; when in
+- [x] **Fullscreen.** A round fullscreen button (icon: four corner arrows; when in
   fullscreen, inward arrows) in the HUD next to the sound button and in the map's
   top actions. New setting `autoFullscreen: boolean` (default false) in the parent
   settings ("Spúšťať na celú obrazovku"): browsers allow fullscreen only after a
@@ -49,12 +49,12 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   from the label to its object anchor. Smooth the moved offset over frames (lerp
   0.25 per frame at 60 Hz, time based) so labels do not jump. Test with
   `meadow`, `space`, `dragons` (Shield), `planet` modes at difficulty 9.
-- [ ] **Accuracy only from the child's keys.** Already true for `chars`/`errors`;
+- [x] **Accuracy only from the child's keys.** Already true for `chars`/`errors`;
   but when the child typed fewer than 5 keys in a level (Piko did the rest), the
   results card shows "Túto úroveň zvládol hlavne {piko}" instead of the accuracy
   line, gives 1 star, does not change best stars of the level if already higher, and
   `grow()` gets no seconds. Unit test in `src/game/progress.test.ts`.
-- [ ] **Piko on the map jumps less.** Halve the hover lift/scale of `.map-piko`
+- [x] **Piko on the map jumps less.** Halve the hover lift/scale of `.map-piko`
   (`src/styles.css`).
 - [ ] **World 3 level 1 typing.** The owner saw "hora" with no reaction; most likely
   the key-swallowing card bug fixed in e3d90ab. Verify with Playwright: play
@@ -64,7 +64,7 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   `assets-src/PROMPTS.md`) has its own picture, lens shine is cleaned in
   `scripts/assets.mjs`. Do not drop small disconnected pieces of an item: the wand's
   lower end below the paw is one.
-- [ ] **One card before a level.** Today a session can open with a tip card and then
+- [x] **One card before a level.** Today a session can open with a tip card and then
   the get-ready card. Merge them: the get-ready card (`showPosture`) shows the
   posture picture, one line (the session's preparation tip from `pickTip` when one
   is due, which includes the "stand up and drink water" reminder, otherwise one
@@ -95,3 +95,16 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   `.specify/profiles/profiles.md` (super badge). i18n sk + en for every new text.
 - [ ] Build, `vitest`, `playwright test`; drive the level screen with the
   Playwright MCP at 1366x768 and 1920x1080 and check HUD, labels and results card.
+
+## Decisions
+
+- Paw button sits right after pause, before the level title; its charge count is in
+  `data-charged` (e2e reads it). The old "AUTO" text and the any-key card option are gone.
+- Super star: top right corner; the HUD, bars and `.top-right` get right padding instead
+  of the old top padding so the star never covers the sound button.
+- `autoFullscreen` is a per-profile setting (like the other look settings); the first key
+  press (not Esc) or click with such a profile selected asks for fullscreen once.
+- A level with fewer than 5 own keys (`MIN_OWN_KEYS`, story levels only) gets `byPiko`,
+  1 star and no growth at all (`grow` is skipped, not called with 0 seconds).
+- The parent hint for automatic difficulty now says the start is slow and points to
+  "Bez časového tlaku".

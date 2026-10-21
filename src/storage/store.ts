@@ -15,7 +15,7 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 3;
+export const STORE_VERSION = 4;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -24,7 +24,14 @@ const migrations: Record<number, (data: any) => any> = {
   1: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV1toV2) : data.profiles }),
   // v3: Piko's paw help, charged by mistake-free streaks.
   2: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV2toV3) : data.profiles }),
+  // v4: optional fullscreen on start.
+  3: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV3toV4) : data.profiles }),
 };
+
+function profileV3toV4(p: any): any {
+  if (!p || typeof p !== 'object') return p;
+  return { ...p, settings: { ...p.settings, autoFullscreen: false } };
+}
 
 function profileV2toV3(p: any): any {
   if (!p || typeof p !== 'object') return p;

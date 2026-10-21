@@ -18,6 +18,8 @@ export interface LevelResult {
   trend: number | null;
   /** An automatic step up earned with this level (a new medal), else null. */
   growth: GrowthStep | null;
+  /** The child typed too few keys; Piko's paws did most of the level. */
+  byPiko: boolean;
 }
 
 export interface GrowthStep {
@@ -33,6 +35,8 @@ export const AUTO_DIFFICULTY_MAX = 8;
 export const AUTO_WORD_MAX = 9;
 /** Accuracy a level needs for its time to count toward the next step. */
 const GROWTH_ACCURACY = 0.9;
+/** Fewer keys of the child's own in a story level: Piko did most of it. */
+export const MIN_OWN_KEYS = 5;
 
 /** Seconds of good play for the next step: 4 minutes, then one more for each step. */
 export function growthNeed(step: number): number {
@@ -65,8 +69,10 @@ export function grow(p: Profile, seconds: number, accuracy: number): GrowthStep 
 }
 
 /** Applies a finished level to the profile. Unlocks keys, worlds and accessories. */
-export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'worldDone' | 'trend' | 'growth'>): LevelResult {
-  const stars = starsFor(r.accuracy);
+export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'worldDone' | 'trend' | 'growth' | 'byPiko'>): LevelResult {
+  // Accuracy of a handful of keys says nothing; such a level earns one star and no growth time.
+  const byPiko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
+  const stars = byPiko ? 1 : starsFor(r.accuracy);
   let worldDone: number | null = null;
   if (def.index >= 0 && def.kind !== 'practice') {
     p.progress.levels[def.id] = Math.max(p.progress.levels[def.id] ?? 0, stars);
@@ -77,8 +83,8 @@ export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 's
   }
   const newKeys = advanceLesson(p);
   const newAccessories = grantAccessories(p);
-  const growth = grow(p, r.seconds, r.accuracy);
-  return { ...r, stars, newKeys, newAccessories, worldDone, trend: rhythmTrend(p), growth };
+  const growth = byPiko ? null : grow(p, r.seconds, r.accuracy);
+  return { ...r, stars, newKeys, newAccessories, worldDone, trend: rhythmTrend(p), growth, byPiko };
 }
 
 /** Current rhythm vs. a week ago (only positive framing is shown). */

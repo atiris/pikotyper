@@ -5,10 +5,11 @@
     "continue": "Continue",
     "skip": "Skip",
     "sound": "Sound",
-    "anyKey": "Press any key to start",
     "sound_normal": "normal",
     "sound_quiet": "quiet",
-    "sound_off": "off"
+    "sound_off": "off",
+    "fullscreen": "Fullscreen",
+    "fullscreenExit": "Exit fullscreen"
   },
   "start": {
     "tagline": "A calm typing adventure with all ten fingers",
@@ -80,7 +81,7 @@
     "resume": "Continue",
     "toMap": "Map",
     "progress": "Progress",
-    "rhythm": "Rhythm",
+    "rhythm": "Rhythm: {n} letters per minute",
     "speed": "Speed",
     "layoutHint": "Your keyboard looks like {layout}. Ask a parent to switch it in the parent area."
   },
@@ -100,9 +101,6 @@
     "rightRing": "right ring finger",
     "rightPinky": "right little finger"
   },
-  "tip": {
-    "title": "Before we start"
-  },
   "posture": {
     "title": "Ready, steady, type!",
     "back": "Sit up straight, your back against the chair.",
@@ -110,7 +108,8 @@
     "wrists": "Wrists relaxed and floating, not resting on the desk.",
     "home": "Index fingers on the bumps of F and J, the other fingers next to them.",
     "eyes": "Eyes on the screen, not on the keyboard.",
-    "password": "The password of this adventure. Type it and we can start:"
+    "password": "The password of this adventure. Type it and we can start:",
+    "escHint": "Esc: back to the map"
   },
   "newKey": {
     "title": "A new key!",
@@ -175,6 +174,7 @@
     "practiceDone": "Practice finished!",
     "starsAria": "{n} of 3 stars",
     "accuracy": "Accuracy {n} %",
+    "byPiko": "{piko} did most of this level.",
     "rhythm": "Rhythm {n} letters per minute",
     "trendUp": "Your rhythm is smoother than last week!",
     "newKey": "New key unlocked: {key}",
@@ -268,7 +268,6 @@
   "paw": {
     "title": "Paw help: {n} words without a mistake charge a paw (3 at most). Enter: {piko} types {words} words for you. Backspace: help by itself when it gets hard.",
     "aria": "Paw help, charged paws: {n}",
-    "auto": "AUTO",
     "start": "Paws on the keys! My turn to type.",
     "charged": "{n} words without a mistake! A paw is charged. Press Enter and I will type {words} words for you.",
     "chargedAuto": "{n} words without a mistake! A paw is charged. When it gets hard, I will help by myself.",
@@ -511,6 +510,8 @@
     "largeText": "Large text",
     "reduceMotion": "Reduce motion",
     "highContrast": "High contrast",
+    "autoFullscreen": "Start in fullscreen",
+    "autoFullscreenHint": "The browser allows fullscreen only after the first key press or click.",
     "keysMode": "Active keys",
     "keysAuto": "Automatic (new key when the last one is mastered)",
     "keysManual": "Picked by hand",
@@ -546,7 +547,7 @@
     "checkOk": "Yes, open",
     "deleteOk": "Yes, delete",
     "auto": "Automatic (grows with the child)",
-    "autoHint": "In automatic mode, difficulty and word length take turns going up after a few minutes of accurate typing; each step earns the child a medal."
+    "autoHint": "In automatic mode, difficulty and word length take turns going up after a few minutes of accurate typing; each step earns the child a medal. The start is slow: a short word takes about 10 seconds to reach the companion and at most two are on screen. If the child still cannot keep up, turn on No time pressure."
   },
   "import": {
     "title": "Import profiles",
@@ -639,7 +640,6 @@
     "celebrate": "Great job! Your companion is proud of you too."
   },
   "super": {
-    "on": "Super mode: everything unlocked",
-    "end": "End super mode"
+    "badge": "Super mode: everything unlocked. Click to end it."
   }
 }

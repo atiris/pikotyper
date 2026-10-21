@@ -62,6 +62,8 @@ export interface Settings {
   largeText: boolean;
   reduceMotion: boolean;
   highContrast: boolean;
+  /** Ask for fullscreen on the first key press or click after the app starts. */
+  autoFullscreen: boolean;
 }
 
 export interface RescuedDragon {
@@ -116,7 +118,7 @@ export interface Profile {
 }
 
 export interface StoreData {
-  version: 3;
+  version: 4;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;
@@ -145,6 +147,7 @@ export function defaultSettings(): Settings {
     largeText: false,
     reduceMotion: false,
     highContrast: false,
+    autoFullscreen: false,
   };
 }
 

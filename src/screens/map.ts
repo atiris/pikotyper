@@ -5,7 +5,7 @@ import { pikoElement } from '../gfx/piko';
 import { t } from '../i18n/i18n';
 import { LEVELS, WORLDS, isLevelUnlocked, isWorldUnlocked, nextLevel, rescueUnlocked, worldLevels } from '../game/levels';
 import { button, h, icon } from '../ui/dom';
-import { soundButton } from '../ui/chrome';
+import { fullscreenButton, soundButton } from '../ui/chrome';
 import { openStats } from './stats';
 
 /** Starts a level, showing the world's intro scene the first time. */
@@ -63,7 +63,8 @@ export function mapScreen(root: HTMLElement): void {
       h('div', { class: 'map-hello' }, h('h1', {}, t('map.hello', { name: p.name })), h('p', {}, t('map.sub', { piko: p.companion.name }))),
       h('div', { class: 'top-actions' },
         settingsButton(),
-        soundButton())),
+        soundButton(),
+        fullscreenButton())),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
         piko,

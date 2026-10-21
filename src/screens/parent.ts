@@ -124,7 +124,8 @@ function settingsTab(p: Profile): HTMLElement {
       field(t('parent.font'), select<FontChoice>(s.font, [['lexend', 'Lexend'], ['atkinson', 'Atkinson Hyperlegible'], ['opendyslexic', 'OpenDyslexic']], (v) => { s.font = v; save(); })),
       field(t('parent.largeText'), check(s.largeText, (v) => { s.largeText = v; save(); })),
       field(t('parent.reduceMotion'), check(s.reduceMotion, (v) => { s.reduceMotion = v; save(); })),
-      field(t('parent.highContrast'), check(s.highContrast, (v) => { s.highContrast = v; save(); }))));
+      field(t('parent.highContrast'), check(s.highContrast, (v) => { s.highContrast = v; save(); })),
+      field(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint'))));
 }
 
 function keysTab(p: Profile): HTMLElement {
