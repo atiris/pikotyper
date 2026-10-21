@@ -1,11 +1,11 @@
-import { app, go, isDebug, saveProfile } from '../app/app';
+import { app, go } from '../app/app';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
 import { t } from '../i18n/i18n';
 import { LEVELS, WORLDS, isLevelUnlocked, isWorldUnlocked, nextLevel, rescueUnlocked, worldLevels } from '../game/levels';
 import { button, h, icon } from '../ui/dom';
-import { muteButton } from '../ui/chrome';
+import { soundButton } from '../ui/chrome';
 import { openStats } from './stats';
 
 /** Starts a level, showing the world's intro scene the first time. */
@@ -22,13 +22,15 @@ export function playLevel(id: string): void {
   go('level', { id });
 }
 
+function settingsButton(): HTMLButtonElement {
+  const b = button('', () => go('parent'), 'icon-btn', 'gear');
+  b.setAttribute('aria-label', t('map.settings'));
+  b.title = t('map.settings');
+  return b;
+}
+
 export function mapScreen(root: HTMLElement): void {
   const p = app.profile!;
-  if (isDebug() && !p.progress.worldsDone.length) {
-    p.progress.worldsDone = [0, 1, 2, 3, 4];
-    LEVELS.forEach((l) => (p.progress.levels[l.id] = 1));
-    saveProfile();
-  }
   audio.music(app.menuTrack);
   const piko = h('button', { class: 'map-piko', type: 'button', title: t('piko.statsHint'), 'aria-label': t('stats.title'), onClick: () => openStats() },
     pikoElement(p.companion, 'idle', 130));
@@ -60,8 +62,8 @@ export function mapScreen(root: HTMLElement): void {
       button(t('map.switchProfile'), () => go('start'), 'btn ghost small', 'back'),
       h('div', { class: 'map-hello' }, h('h1', {}, t('map.hello', { name: p.name })), h('p', {}, t('map.sub', { piko: p.companion.name }))),
       h('div', { class: 'top-actions' },
-        button('', () => go('parent'), 'icon-btn', 'lock'),
-        muteButton())),
+        settingsButton(),
+        soundButton())),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
         piko,
@@ -71,6 +73,8 @@ export function mapScreen(root: HTMLElement): void {
         button(t('stats.title'), () => openStats(), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         p.progress.worldsDone.includes(4) ? button(t('map.dragons'), () => go('dragons'), 'btn', 'dragon') : null),
-      h('div', { class: 'islands' }, ...islands))));
+      h('section', { class: 'story-row' },
+        h('h2', { class: 'story-name' }, t('map.storyName')),
+        h('div', { class: 'islands' }, ...islands)))));
   (root.querySelector('.btn.primary') as HTMLElement | null)?.focus();
 }

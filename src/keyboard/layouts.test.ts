@@ -36,9 +36,22 @@ describe('layouts', () => {
 
   it('detects a US keyboard on a Slovak profile', () => {
     const d = new LayoutMismatchDetector('sk-qwertz');
-    expect(d.observe('KeyY', 'y', false)).toBeNull();
     expect(d.observe('Digit2', '2', false)).toBeNull();
-    expect(d.observe('KeyZ', 'z', false)).toBe('us-qwerty');
+    expect(d.observe('Digit3', '3', false)).toBeNull();
+    expect(d.observe('Digit4', '4', false)).toBe('us-qwerty');
+  });
+
+  it('detects Slovak QWERTY on a Slovak QWERTZ profile', () => {
+    const d = new LayoutMismatchDetector('sk-qwertz');
+    expect(d.observe('KeyY', 'y', false)).toBeNull();
+    expect(d.observe('KeyZ', 'z', false)).toBeNull();
+    expect(d.observe('KeyY', 'y', false)).toBe('sk-qwerty');
+  });
+
+  it('types y and z in the English places on Slovak QWERTY', () => {
+    const skq = LAYOUTS['sk-qwerty'];
+    expect(stepsFor(skq, 'z')).toEqual([{ code: 'KeyZ', shift: false }]);
+    expect(stepsFor(skq, 'ž')).toEqual([{ code: 'Digit6', shift: false }]);
   });
 
   it('does not complain when the layout matches', () => {

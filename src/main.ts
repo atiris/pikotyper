@@ -1,6 +1,7 @@
 import './styles.css';
-import { app, go, registerScreen, selectProfile, useLanguage } from './app/app';
+import { app, go, openRoute, registerScreen, selectProfile, useLanguage } from './app/app';
 import { loadManifest } from './gfx/assets';
+import { SUPER_ID } from './storage/schema';
 import { detectLanguage } from './i18n/i18n';
 import { aboutScreen } from './screens/about';
 import { breakScreen } from './screens/break';
@@ -25,7 +26,7 @@ registerScreen('about', aboutScreen);
 registerScreen('map', needsProfile(mapScreen));
 registerScreen('level', needsProfile(levelScreen));
 registerScreen('story', needsProfile(storyScreen));
-registerScreen('parent', needsProfile((root) => void parentScreen(root)));
+registerScreen('parent', needsProfile((root, params) => void parentScreen(root, params)));
 registerScreen('wardrobe', needsProfile(wardrobeScreen));
 registerScreen('dragons', needsProfile(dragonsScreen));
 registerScreen('break', needsProfile(breakScreen));
@@ -34,14 +35,23 @@ async function boot(): Promise<void> {
   const lang = app.store.data.language ?? detectLanguage();
   await Promise.all([loadManifest(), useLanguage(lang)]);
   document.body.classList.remove('booting');
+  window.addEventListener('popstate', () => void openRoute(location.hash));
+  if (location.hash.length > 2) return openRoute(location.hash);
   // A guest session survives reloads of the same tab only.
   if (app.store.guest) {
     await selectProfile(app.store.guest);
-    go('map');
-  } else go('start');
+    go('map', {}, false);
+  } else go('start', {}, false);
 }
 
 void boot();
+
+// Leaving the whole app by accident (a stray shortcut, the back button) asks first.
+window.addEventListener('beforeunload', (e) => {
+  if (!app.profile || app.profile.id === SUPER_ID) return;
+  e.preventDefault();
+  e.returnValue = '';
+});
 
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {

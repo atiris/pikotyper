@@ -1,62 +1,33 @@
 import { app, applyProfileLook, go, saveProfile, useLanguage } from '../app/app';
 import { t } from '../i18n/i18n';
-import { LAYOUTS, allKeys } from '../keyboard/layouts';
+import { LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, WORLDS } from '../game/levels';
 import { lessonOrder, SHIFT_KEY } from '../learning/lessons';
 import { COMPANION_KINDS, GUEST_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type Profile } from '../storage/schema';
 import { applyImport, parseImport, planImport } from '../storage/store';
 import { KeyboardGuide } from '../ui/keyboard-guide';
-import { button, download, h, modal } from '../ui/dom';
-import { muteButton } from '../ui/chrome';
-import { heatScores, keyForCode } from './stats';
+import { button, confirmDialog, download, h, modal } from '../ui/dom';
+import { pikoElement } from '../gfx/piko';
+import { soundButton } from '../ui/chrome';
+import { clickableHeatmap } from './stats';
+import { barChart, lineChart } from '../ui/charts';
 import { masteredCount } from '../game/rewards';
 
-const NUMBER_WORDS: Record<Lang, (n: number) => string> = {
-  en: (n) => {
-    const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
-    const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-    return n < 20 ? ones[n] : tens[Math.floor(n / 10)] + (n % 10 ? `-${ones[n % 10]}` : '');
-  },
-  sk: (n) => {
-    const ones = ['', 'jeden', 'dva', 'tri', 'štyri', 'päť', 'šesť', 'sedem', 'osem', 'deväť', 'desať', 'jedenásť', 'dvanásť', 'trinásť', 'štrnásť', 'pätnásť', 'šestnásť', 'sedemnásť', 'osemnásť', 'devätnásť'];
-    const tens = ['', '', 'dvadsať', 'tridsať', 'štyridsať', 'päťdesiat', 'šesťdesiat', 'sedemdesiat', 'osemdesiat', 'deväťdesiat'];
-    return n < 20 ? ones[n] : tens[Math.floor(n / 10)] + (n % 10 ? ones[n % 10] : '');
-  },
-};
-
-export function numberInWords(n: number, lang: Lang): string {
-  return NUMBER_WORDS[lang](n);
-}
-
-/** Simple adult check: type the number written in words. Resolves true when passed. */
-export function adultCheck(): Promise<boolean> {
-  return new Promise((resolve) => {
-    const n = 11 + Math.floor(Math.random() * 89);
-    const lang = (app.profile?.language ?? app.store.data.language ?? 'en') as Lang;
-    const input = h('input', { type: 'text', inputmode: 'numeric', autocomplete: 'off', 'aria-label': t('parent.checkLabel'), autofocus: true });
-    const err = h('p', { class: 'error', role: 'alert' });
-    let ok = false;
-    const form = h('form', { class: 'adult-check', onSubmit: (e: Event) => {
-      e.preventDefault();
-      if (Number(input.value.trim()) === n) {
-        ok = true;
-        close();
-      } else {
-        err.textContent = t('parent.checkWrong');
-        input.select();
-      }
-    } },
-      h('h2', {}, t('parent.checkTitle')),
-      h('p', {}, t('parent.checkText')),
-      h('p', { class: 'number-words' }, numberInWords(n, lang)),
-      input, err,
-      h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'submit' }, t('common.ok'))));
-    const close = modal(form, { onClose: () => resolve(ok) });
+/** Settings are for parents: one calm question instead of a lock a child solves anyway. */
+function parentAccess(): Promise<boolean> {
+  const p = app.profile;
+  return confirmDialog({
+    title: t('parent.checkTitle'),
+    text: t('parent.checkText'),
+    ok: t('parent.checkOk'),
+    cancel: t('common.back'),
+    art: p ? pikoElement(p.companion, 'thinking', 110) : undefined,
   });
 }
 
-export async function parentScreen(root: HTMLElement): Promise<void> {
-  if (!(await adultCheck())) return go('map');
+/** `granted`: re-render inside the parent area without asking again. */
+export async function parentScreen(root: HTMLElement, params: { granted?: boolean }): Promise<void> {
+  if (!params.granted && !(await parentAccess())) return go('map');
   const p = app.profile!;
   const tabs = ['settings', 'keys', 'dashboard', 'data'] as const;
   type Tab = (typeof tabs)[number];
@@ -73,13 +44,13 @@ export async function parentScreen(root: HTMLElement): Promise<void> {
     nav.append(b);
   }
   root.append(h('div', { class: 'screen parent-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('parent.title', { name: p.name })), muteButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('parent.title', { name: p.name })), soundButton()),
     nav, body));
   show('settings');
 }
 
-function field(label: string, control: HTMLElement, hint?: string): HTMLElement {
-  return h('label', { class: 'field' }, h('span', { class: 'field-label' }, label), control, hint ? h('small', {}, hint) : null);
+function field(label: string, control: HTMLElement, hint?: string, tag: 'label' | 'div' = 'label'): HTMLElement {
+  return h(tag, { class: 'field' }, h('span', { class: 'field-label' }, label), control, hint ? h('small', {}, hint) : null);
 }
 
 function range(value: number, min: number, max: number, step: number, onInput: (v: number) => void, fmt: (v: number) => string = String): HTMLElement {
@@ -102,6 +73,14 @@ function select<T extends string>(value: T, options: [T, string][], onChange: (v
   return s;
 }
 
+/** Sliders with an "automatic" switch: while automatic, the app moves them and they are read-only. */
+function autoField(ranges: HTMLElement[], auto: boolean, onAuto: (v: boolean) => void): HTMLElement {
+  const lock = (on: boolean) => ranges.forEach((r) => r.querySelectorAll('input').forEach((i) => (i.disabled = on)));
+  lock(auto);
+  return h('span', { class: 'auto-field' }, ...ranges,
+    h('label', { class: 'auto-check' }, check(auto, (v) => { lock(v); onAuto(v); }), t('parent.auto')));
+}
+
 function settingsTab(p: Profile): HTMLElement {
   const s = p.settings;
   const save = () => { saveProfile(); applyProfileLook(p); };
@@ -118,8 +97,8 @@ function settingsTab(p: Profile): HTMLElement {
       field(t('parent.companionName'), pikoName),
       field(t('parent.companionKind'), select<CompanionKind>(p.companion.kind, COMPANION_KINDS.map((k) => [k, t(`kinds.${k}`)]), (v) => { p.companion.kind = v; p.avatar = v; save(); })),
       field(t('parent.messages'), messages, t('parent.messagesHint')),
-      field(t('parent.language'), select<Lang>(p.language, [['sk', 'Slovenčina'], ['en', 'English']], async (v) => { p.language = v; save(); await useLanguage(v); go('parent'); })),
-      field(t('parent.layout'), select<LayoutId>(p.layout, [['sk-qwertz', t('layouts.sk-qwertz')], ['us-qwerty', t('layouts.us-qwerty')]], (v) => {
+      field(t('parent.language'), select<Lang>(p.language, [['sk', 'Slovenčina'], ['en', 'English']], async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
+      field(t('parent.layout'), select<LayoutId>(p.layout, LAYOUT_IDS.map((id) => [id, t(`layouts.${id}`)]), (v) => {
         p.layout = v;
         // Keep the progress, but only keys the new layout teaches.
         const order = lessonOrder(v);
@@ -127,10 +106,13 @@ function settingsTab(p: Profile): HTMLElement {
         save();
       }), t('parent.layoutHint'))),
     h('fieldset', {}, h('legend', {}, t('parent.group.practice')),
-      field(t('parent.difficulty'), range(s.difficulty, 1, 10, 1, (v) => { s.difficulty = v; save(); })),
-      field(t('parent.wordLen'), h('span', { class: 'two' },
+      field(t('parent.difficulty'), autoField(
+        [range(s.difficulty, 1, 10, 1, (v) => { s.difficulty = v; save(); })],
+        s.autoDifficulty, (v) => { s.autoDifficulty = v; save(); }), t('parent.autoHint'), 'div'),
+      field(t('parent.wordLen'), autoField([
         range(s.wordLen[0], 1, 8, 1, (v) => { s.wordLen = [v, Math.max(v, s.wordLen[1])]; save(); }, (v) => t('parent.min', { n: v })),
-        range(s.wordLen[1], 2, 12, 1, (v) => { s.wordLen = [Math.min(v, s.wordLen[0]), v]; save(); }, (v) => t('parent.max', { n: v })))),
+        range(s.wordLen[1], 2, 12, 1, (v) => { s.wordLen = [Math.min(v, s.wordLen[0]), v]; save(); }, (v) => t('parent.max', { n: v }))],
+        s.autoWordLen, (v) => { s.autoWordLen = v; save(); }), undefined, 'div'),
       field(t('parent.noDiacritics'), check(s.noDiacritics, (v) => { s.noDiacritics = v; save(); }), t('parent.noDiacriticsHint')),
       field(t('parent.noTimePressure'), check(s.noTimePressure, (v) => { s.noTimePressure = v; save(); }), t('parent.noTimePressureHint')),
       field(t('parent.sessionMinutes'), range(s.sessionMinutes, 5, 30, 5, (v) => { s.sessionMinutes = v; save(); }, (v) => t('parent.minutes', { n: v }))),
@@ -176,7 +158,7 @@ function keysTab(p: Profile): HTMLElement {
     h('p', { class: 'hint' }, t('parent.unlocked', { keys: p.progress.unlockedKeys.join(' ') })),
     kb.el,
     h('div', { class: 'row' },
-      ...presets.filter(([id]) => (p.layout === 'sk-qwertz' ? id !== 'homeUs' : id !== 'home')).map(([id, keys]) => button(t(`parent.preset.${id}`), () => {
+      ...presets.filter(([id]) => (p.layout === 'us-qwerty' ? id !== 'home' : id !== 'homeUs')).map(([id, keys]) => button(t(`parent.preset.${id}`), () => {
         for (const c of keys) if (allKeys(lay).some((d) => d.base === c)) picked.add(c);
         s.manualKeys = [...picked];
         s.activeKeysMode = 'manual';
@@ -188,48 +170,11 @@ function keysTab(p: Profile): HTMLElement {
       button(t('parent.preset.clear'), () => { picked.clear(); s.manualKeys = []; paint(); saveProfile(); }, 'btn small ghost')));
 }
 
-/** Inline SVG line chart (no chart library). */
-function lineChart(values: number[], labels: string[], unit: string, color: string): HTMLElement {
-  const w = 520, hh = 160, pad = 28;
-  if (values.length < 1) return h('p', { class: 'hint' }, t('parent.noData'));
-  const max = Math.max(...values, 1);
-  const xs = values.map((_, i) => pad + (values.length === 1 ? (w - 2 * pad) / 2 : (i * (w - 2 * pad)) / (values.length - 1)));
-  const ys = values.map((v) => hh - pad - (v / max) * (hh - 2 * pad));
-  const pts = xs.map((x, i) => `${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' ');
-  const svg = `<svg viewBox="0 0 ${w} ${hh}" class="chart" role="img" aria-label="${unit}">
-    <line x1="${pad}" y1="${hh - pad}" x2="${w - pad}" y2="${hh - pad}" class="axis"/>
-    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
-    ${xs.map((x, i) => `<circle cx="${x}" cy="${ys[i]}" r="4" fill="${color}"><title>${labels[i]}: ${values[i]} ${unit}</title></circle>`).join('')}
-    <text x="${pad}" y="16" class="chart-label">${max} ${unit}</text>
-    <text x="${pad}" y="${hh - 8}" class="chart-label">${labels[0] ?? ''}</text>
-    <text x="${w - pad}" y="${hh - 8}" text-anchor="end" class="chart-label">${labels[labels.length - 1] ?? ''}</text></svg>`;
-  return h('div', { html: svg });
-}
-
-function barChart(values: number[], labels: string[], unit: string): HTMLElement {
-  const w = 520, hh = 160, pad = 28;
-  if (!values.length) return h('p', { class: 'hint' }, t('parent.noData'));
-  const max = Math.max(...values, 1);
-  const bw = Math.min(40, (w - 2 * pad) / values.length - 6);
-  const svg = `<svg viewBox="0 0 ${w} ${hh}" class="chart" role="img" aria-label="${unit}">
-    <line x1="${pad}" y1="${hh - pad}" x2="${w - pad}" y2="${hh - pad}" class="axis"/>
-    ${values.map((v, i) => {
-      const x = pad + i * ((w - 2 * pad) / values.length) + 3;
-      const bh = (v / max) * (hh - 2 * pad);
-      return `<rect x="${x}" y="${hh - pad - bh}" width="${bw}" height="${bh}" rx="4" fill="#5fb37b"><title>${labels[i]}: ${v} ${unit}</title></rect>`;
-    }).join('')}
-    <text x="${pad}" y="16" class="chart-label">${max} ${unit}</text>
-    <text x="${pad}" y="${hh - 8}" class="chart-label">${labels[0]}</text>
-    <text x="${w - pad}" y="${hh - 8}" text-anchor="end" class="chart-label">${labels[labels.length - 1]}</text></svg>`;
-  return h('div', { html: svg });
-}
-
 function dashboardTab(p: Profile): HTMLElement {
   const sessions = p.stats.sessions.slice(-14);
   const labels = sessions.map((s) => s.date.slice(5));
-  const kb = new KeyboardGuide(LAYOUTS[p.layout]);
-  kb.el.classList.add('heatmap');
-  kb.heat(heatScores(), keyForCode);
+  const detail = h('div', { class: 'key-detail-host' }, h('p', { class: 'hint' }, t('stats.clickKey')));
+  const kb = clickableHeatmap(p, detail);
   const levelsDone = LEVELS.filter((l) => p.progress.levels[l.id]).length;
   const totalChars = sessions.reduce((a, s) => a + s.chars, 0);
   return h('div', { class: 'dashboard' },
@@ -238,13 +183,15 @@ function dashboardTab(p: Profile): HTMLElement {
       h('div', { class: 'stat' }, h('b', {}, String(p.progress.unlockedKeys.length)), h('span', {}, t('parent.keysUnlocked'))),
       h('div', { class: 'stat' }, h('b', {}, String(masteredCount(p))), h('span', {}, t('parent.keysMastered'))),
       h('div', { class: 'stat' }, h('b', {}, String(totalChars)), h('span', {}, t('parent.charsTyped')))),
-    h('h3', {}, t('parent.heatmap')), kb.el,
-    h('h3', {}, t('parent.accuracyTrend')),
-    lineChart(sessions.map((s) => Math.round((s.chars / Math.max(1, s.chars + s.errors)) * 100)), labels, '%', '#3f8fd6'),
-    h('h3', {}, t('parent.rhythmTrend')),
-    lineChart(sessions.map((s) => s.cpm), labels, t('parent.cpm'), '#e08a3c'),
-    h('h3', {}, t('parent.timePerDay')),
-    barChart(sessions.map((s) => Math.round(s.seconds / 60)), labels, 'min'),
+    h('h3', {}, t('parent.heatmap')),
+    h('div', { class: 'heat-split' }, kb.el, detail),
+    h('div', { class: 'chart-grid' },
+      h('section', {}, h('h3', {}, t('parent.accuracyTrend')),
+        lineChart(sessions.map((s) => Math.round((s.chars / Math.max(1, s.chars + s.errors)) * 100)), labels, '%', '#3f8fd6')),
+      h('section', {}, h('h3', {}, t('parent.rhythmTrend')),
+        lineChart(sessions.map((s) => s.cpm), labels, t('parent.cpm'), '#e08a3c')),
+      h('section', {}, h('h3', {}, t('parent.timePerDay')),
+        barChart(sessions.map((s) => Math.round(s.seconds / 60)), labels, 'min'))),
     h('h3', {}, t('parent.worlds')),
     h('ul', { class: 'world-list' }, ...WORLDS.map((w, i) => h('li', {}, `${i + 1}. ${t(`worlds.${w}`)}: `,
       ...LEVELS.filter((l) => l.world === i).map((l) => h('span', { class: 'lv' }, `${'★'.repeat(p.progress.levels[l.id] ?? 0) || '·'}`))))));
@@ -257,16 +204,23 @@ function dataTab(p: Profile): HTMLElement {
     h('div', { class: 'row' },
       guest ? null : button(t('parent.exportOne'), () => download(`pikotyper-${slug(p.name)}.json`, app.store.exportJson([p.id])), 'btn', 'download'),
       button(t('parent.exportAll'), () => download('pikotyper-profiles.json', app.store.exportJson()), 'btn', 'download'),
-      button(t('parent.import'), () => importDialog(() => go('parent')), 'btn', 'upload'),
+      button(t('parent.import'), () => importDialog(() => go('parent', { granted: true })), 'btn', 'upload'),
       button(t('parent.print'), () => printCard(p), 'btn', 'print')),
     guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : h('div', { class: 'danger' },
       h('h3', {}, t('parent.deleteTitle')),
-      button(t('parent.delete', { name: p.name }), () => {
-        if (confirm(t('parent.deleteConfirm', { name: p.name }))) {
-          app.store.remove(p.id);
-          app.profile = null;
-          go('start');
-        }
+      button(t('parent.delete', { name: p.name }), async () => {
+        const yes = await confirmDialog({
+          title: t('parent.deleteTitle'),
+          text: t('parent.deleteConfirm', { name: p.name }),
+          ok: t('parent.deleteOk'),
+          cancel: t('common.back'),
+          danger: true,
+          art: pikoElement(p.companion, 'thinking', 110),
+        });
+        if (!yes) return;
+        app.store.remove(p.id);
+        app.profile = null;
+        go('start');
       }, 'btn danger', 'trash')));
 }
 

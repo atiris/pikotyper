@@ -8,6 +8,7 @@ import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
 import { localDate } from '../learning/stats';
 import { button, h } from '../ui/dom';
+import { medal } from '../ui/medal';
 import { playLevel } from './map';
 
 interface LevelParams {
@@ -68,6 +69,11 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   for (const k of r.newKeys) lines.push(h('p', { class: 'new-key' }, t('results.newKey', { key: k === 'Shift' ? '⇧ Shift' : k })));
   if (r.newAccessories.length) lines.push(h('p', { class: 'new-acc' }, t('results.newAccessory', { n: r.newAccessories.length })));
   if (rescued) lines.push(h('p', { class: 'good' }, t('results.rescued', { name: rescued.name })));
+  if (r.growth) {
+    lines.push(h('div', { class: 'growth' }, medal(r.growth.medal),
+      h('p', {}, h('b', {}, t('results.growthTitle')), h('br'),
+        r.growth.kind === 'difficulty' ? t('results.growthDifficulty') : t('results.growthWordLen', { n: r.growth.value }))));
+  }
   const sentence = pickLine('piko.level_done', { name: p.name }, p.customMessages);
 
   const actions = h('div', { class: 'row center' });

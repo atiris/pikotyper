@@ -2,7 +2,7 @@ import { app, go } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { t } from '../i18n/i18n';
 import { button, h } from '../ui/dom';
-import { muteButton } from '../ui/chrome';
+import { soundButton } from '../ui/chrome';
 
 /** Collection of dragons rescued in rescue missions. */
 export function dragonsScreen(root: HTMLElement): void {
@@ -11,7 +11,7 @@ export function dragonsScreen(root: HTMLElement): void {
   const baby = imageUrl('obj-dragon-baby-1');
   const list = p.progress.dragons;
   root.append(h('div', { class: 'screen dragons-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('dragons.title')), muteButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('dragons.title')), soundButton()),
     h('div', { class: 'dragon-grid' },
       h('figure', { class: 'dragon first' }, hatched ? h('img', { src: hatched, alt: '' }) : null, h('figcaption', {}, t('dragons.first'))),
       ...list.map((d) => h('figure', { class: 'dragon' },

@@ -30,13 +30,14 @@ export const ICONS = {
   pause: '<rect x="6" y="5" width="4" height="14" rx="1.5"/><rect x="14" y="5" width="4" height="14" rx="1.5"/>',
   play: '<path d="M7 5l12 7-12 7z"/>',
   sound: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 010 7"/><path d="M19 6a8.5 8.5 0 010 12"/>',
+  soundLow: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 9.5a3.5 3.5 0 010 5"/>',
   mute: '<path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/>',
   keyboard: '<rect x="2" y="6" width="20" height="12" rx="2.5"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10"/>',
   map: '<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>',
   back: '<path d="M15 5l-7 7 7 7"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>',
   star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
-  gear: '<circle cx="12" cy="12" r="3.2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/>',
   shirt: '<path d="M8 3l-5 3 2 4 3-1v12h8V9l3 1 2-4-5-3a4 4 0 01-8 0z"/>',
   chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   dragon: '<path d="M4 18c2-6 6-9 12-9l4-3-1 5c0 5-4 8-9 8H4z"/><circle cx="15" cy="12" r=".8"/>',
@@ -91,6 +92,31 @@ export function modal(content: HTMLElement, opts: { onClose?: () => void; cls?: 
   document.body.append(back);
   queueMicrotask(() => (box.querySelector('[autofocus]') as HTMLElement | null ?? box.querySelector('button:not(.modal-x), input, select') as HTMLElement | null)?.focus());
   return close;
+}
+
+export interface ConfirmOpts {
+  title: string;
+  text: string;
+  ok: string;
+  cancel: string;
+  /** The confirming action destroys something. */
+  danger?: boolean;
+  /** Picture above the title (Piko). */
+  art?: HTMLElement;
+}
+
+/** Yes/no question in the app's style; resolves true when confirmed. */
+export function confirmDialog(o: ConfirmOpts): Promise<boolean> {
+  return new Promise((resolve) => {
+    let yes = false;
+    const close = modal(h('div', { class: 'confirm' },
+      o.art ?? null,
+      h('h2', {}, o.title),
+      h('p', {}, o.text),
+      h('div', { class: 'row center' },
+        button(o.cancel, () => close(), 'btn primary'),
+        button(o.ok, () => { yes = true; close(); }, `btn ${o.danger ? 'danger' : ''}`))), { cls: 'confirm-modal', onClose: () => resolve(yes) });
+  });
 }
 
 export function download(filename: string, text: string): void {

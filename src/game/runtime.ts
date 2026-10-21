@@ -13,7 +13,8 @@ import { LAYOUTS, LayoutMismatchDetector, canType, fingerFor, stepsFor } from '.
 import { activeKeys, keysToIntroduce, masteryLevel, newestGroup } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide } from '../ui/keyboard-guide';
-import { button, h, icon } from '../ui/dom';
+import { button, h } from '../ui/dom';
+import { soundButton } from '../ui/chrome';
 import { WordSource } from '../words/words';
 import type { LevelDef } from './levels';
 import { WORLDS } from './levels';
@@ -58,7 +59,8 @@ export class LevelRuntime {
   private meter: HTMLElement;
   private pauseEl: HTMLElement | null = null;
   private paused = false;
-  private started = false;
+  /** Play began (the preparation cards are done). */
+  started = false;
   private finished = false;
   private deadPending = false;
   private mismatch: LayoutMismatchDetector;
@@ -110,8 +112,6 @@ export class LevelRuntime {
     guideBtn.title = t('level.guide');
     guideBtn.setAttribute('aria-label', t('level.guide'));
     if (p.settings.guideLocked) guideBtn.disabled = true;
-    const muteBtn = button('', () => { audio.toggleMute(); muteBtn.replaceChildren(icon(audio.muted ? 'mute' : 'sound')); }, 'icon-btn', audio.muted ? 'mute' : 'sound');
-    muteBtn.setAttribute('aria-label', t('common.sound'));
     const pauseBtn = button('', () => this.pause(), 'icon-btn', 'pause');
     pauseBtn.setAttribute('aria-label', t('level.pause'));
     const hud = h('div', { class: 'hud' },
@@ -119,10 +119,11 @@ export class LevelRuntime {
       h('div', { class: 'hud-title' }, title),
       h('div', { class: 'progress', title: t('level.progress') }, this.progressFill),
       h('div', { class: 'meter', title: t('level.rhythm') }, h('span', { class: 'meter-label' }, t('level.rhythm')), h('div', { class: 'meter-bar' }, this.meter)),
-      guideBtn, muteBtn);
+      guideBtn, soundButton());
     const stageWrap = h('div', { class: 'stage-wrap' });
     this.piko = pikoElement(p.companion, 'idle', 150);
-    this.piko.classList.add('level-piko');
+    // Piko joins the stage when play starts; the preparation cards show him themselves.
+    this.piko.classList.add('level-piko', 'waiting');
     this.piko.title = t('piko.statsHint');
     this.bubble = h('div', { class: 'bubble hidden', role: 'status', 'aria-live': 'polite' });
     stageWrap.append(this.piko, this.bubble);
@@ -148,7 +149,7 @@ export class LevelRuntime {
     return ['swamp', 'signs', 'boulder'].includes(this.def.kind);
   }
 
-  /** Preparation: assets, tip, posture card, new key, then play. */
+  /** Preparation: assets, tip, new keys, the get-ready card with its password, then play. */
   private async prepare(): Promise<void> {
     const p = app.profile!;
     await preload([`bg-${this.mode.world}-far`, `bg-${this.mode.world}-mid`, `bg-${this.mode.world}-near`]);
@@ -159,20 +160,18 @@ export class LevelRuntime {
       app.tipShown = true;
       await showTip(host, p);
     }
-    if (!p.progress.postureSeen && !this.opts.keys) {
-      await showPosture(host);
-      p.progress.postureSeen = true;
-      saveProfile();
-    }
     for (const key of this.opts.keys ? [] : keysToIntroduce(p)) {
       if (this.disposed) return;
-      await showNewKey(host, key, layout(), this.guide);
+      await showNewKey(host, key, layout(), this.guide, p);
       p.progress.introducedKeys.push(key);
       saveProfile();
     }
     if (this.disposed) return;
+    if (!this.opts.keys) await showPosture(host, p);
+    if (this.disposed) return;
     this.mode.start();
     this.started = true;
+    this.piko.classList.remove('waiting');
     this.readySince = performance.now();
     this.input = new KeyInput(window, {
       onChar: (c) => this.onChar(c),
@@ -186,6 +185,8 @@ export class LevelRuntime {
   private disposed = false;
 
   dispose(): void {
+    // Leaving by the browser's back button still keeps the time and keys typed.
+    if (this.started && !this.finished) this.flushSession();
     this.disposed = true;
     this.loop.stop();
     this.input?.dispose();

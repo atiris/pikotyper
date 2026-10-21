@@ -1,4 +1,5 @@
 import { firstKeys } from '../learning/lessons';
+import { RECENT_WRONG_KEEP } from '../learning/stats';
 import {
   type CompanionKind,
   type Lang,
@@ -8,16 +9,43 @@ import {
   COMPANION_KINDS,
   GUEST_ID,
   defaultSettings,
+  emptyKeyStat,
 } from './schema';
 
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
+export const STORE_VERSION = 2;
+
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
-const migrations: Record<number, (data: any) => any> = {};
+const migrations: Record<number, (data: any) => any> = {
+  // v2: key stats keep recent mistakes and a daily history instead of lifetime sums;
+  // automatic difficulty and word length; growth medals.
+  1: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV1toV2) : data.profiles }),
+};
+
+function profileV1toV2(p: any): any {
+  if (!p || typeof p !== 'object') return p;
+  const keys: Record<string, any> = {};
+  for (const [k, s] of Object.entries<any>(p.stats?.keys ?? {})) {
+    const wrong = Object.entries<number>(s?.wrong ?? {}).flatMap(([ch, n]) => Array<string>(Math.min(n, RECENT_WRONG_KEEP)).fill(ch));
+    keys[k] = { presses: s?.presses ?? 0, errors: s?.errors ?? 0, recent: Array.isArray(s?.recent) ? s.recent : [], recentWrong: wrong.slice(-RECENT_WRONG_KEEP), days: [] };
+  }
+  // Values a parent changed stay as they are; untouched defaults switch to automatic.
+  const st = p.settings ?? {};
+  const len = st.wordLen ?? [2, 6];
+  // The get-ready card is shown before every level now.
+  const { postureSeen: _seen, ...progress } = p.progress ?? {};
+  return {
+    ...p,
+    progress,
+    stats: { ...p.stats, keys },
+    settings: { ...st, autoDifficulty: (st.difficulty ?? 3) === 3, autoWordLen: len[0] === 2 && len[1] === 6 },
+  };
+}
 
 function emptyStore(): StoreData {
-  return { version: 1, profiles: [], lastProfileId: null, language: null };
+  return { version: STORE_VERSION, profiles: [], lastProfileId: null, language: null };
 }
 
 export function migrate(raw: any): StoreData {
@@ -25,7 +53,7 @@ export function migrate(raw: any): StoreData {
   let data = raw;
   let version = typeof data.version === 'number' ? data.version : 1;
   while (migrations[version]) data = migrations[version](data), version++;
-  const store: StoreData = { ...emptyStore(), ...data, version: 1 };
+  const store: StoreData = { ...emptyStore(), ...data, version: STORE_VERSION };
   store.profiles = Array.isArray(store.profiles) ? store.profiles.filter(isProfile).map(normalizeProfile) : [];
   return store;
 }
@@ -39,7 +67,10 @@ export function normalizeProfile(p: Profile): Profile {
     companion: { ...base.companion, ...p.companion },
     settings: { ...base.settings, ...p.settings },
     progress: { ...base.progress, ...p.progress },
-    stats: { keys: p.stats?.keys ?? {}, sessions: p.stats?.sessions ?? [] },
+    stats: {
+      keys: Object.fromEntries(Object.entries(p.stats?.keys ?? {}).map(([k, st]) => [k, { ...emptyKeyStat(), ...st }])),
+      sessions: p.stats?.sessions ?? [],
+    },
   };
 }
 
@@ -67,8 +98,9 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
       rewards: [],
       dragons: [],
       lastTips: [],
-      postureSeen: false,
       scenesSeen: [],
+      growth: 0,
+      growthSeconds: 0,
     },
     stats: { keys: {}, sessions: [] },
     createdAt: Date.now(),
@@ -145,7 +177,7 @@ export class Store {
   /** JSON for the export file: one profile or all of them. */
   exportJson(ids?: string[]): string {
     const profiles = ids ? this.data.profiles.filter((p) => ids.includes(p.id)) : this.data.profiles;
-    return JSON.stringify({ app: 'pikotyper', version: 1, exportedAt: new Date().toISOString(), profiles }, null, 2);
+    return JSON.stringify({ app: 'pikotyper', version: STORE_VERSION, exportedAt: new Date().toISOString(), profiles }, null, 2);
   }
 }
 
@@ -159,9 +191,9 @@ export interface ImportPlan {
 export function parseImport(text: string): Profile[] {
   let raw: any;
   try { raw = JSON.parse(text); } catch { throw new Error('import.errorJson'); }
-  const list = raw?.app === 'pikotyper' && Array.isArray(raw.profiles) ? raw.profiles : isProfile(raw) ? [raw] : null;
-  if (!list) throw new Error('import.errorShape');
-  const profiles = list.filter(isProfile).map(normalizeProfile);
+  const file = raw?.app === 'pikotyper' && Array.isArray(raw.profiles) ? raw : isProfile(raw) ? { version: STORE_VERSION, profiles: [raw] } : null;
+  if (!file) throw new Error('import.errorShape');
+  const profiles = migrate({ version: file.version, profiles: file.profiles }).profiles;
   if (!profiles.length) throw new Error('import.errorShape');
   return profiles;
 }

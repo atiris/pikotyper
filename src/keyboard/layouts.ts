@@ -51,6 +51,14 @@ const SK: Layout = {
   ],
 };
 
+/** Slovak QWERTY: the Slovak layout with Y and Z in the English places. */
+const SK_QWERTY: Layout = {
+  id: 'sk-qwerty',
+  dead: SK.dead,
+  rows: SK.rows.map((row) => row.map((d) =>
+    d.code === 'KeyY' ? { ...d, base: 'y', shift: 'Y' } : d.code === 'KeyZ' ? { ...d, base: 'z', shift: 'Z' } : d)),
+};
+
 const US: Layout = {
   id: 'us-qwerty',
   dead: {},
@@ -67,7 +75,9 @@ const US: Layout = {
   ],
 };
 
-export const LAYOUTS: Record<LayoutId, Layout> = { 'sk-qwertz': SK, 'us-qwerty': US };
+export const LAYOUTS: Record<LayoutId, Layout> = { 'sk-qwertz': SK, 'sk-qwerty': SK_QWERTY, 'us-qwerty': US };
+
+export const LAYOUT_IDS = Object.keys(LAYOUTS) as LayoutId[];
 
 export function allKeys(layout: Layout): KeyDef[] {
   return layout.rows.flat();
@@ -121,20 +131,27 @@ export function canType(layout: Layout, ch: string): boolean {
  * for example `y`/`z` swapped or digits instead of `ľščť`.
  */
 export class LayoutMismatchDetector {
-  private votes = 0;
-  constructor(private layout: LayoutId, private threshold = 3) {}
+  private votes = new Map<LayoutId, number>();
+  /** Other layouts, those of the same language first (the likelier mix-up). */
+  private others: LayoutId[];
+
+  constructor(private layout: LayoutId, private threshold = 3) {
+    const lang = layout.slice(0, 2);
+    this.others = (Object.keys(LAYOUTS) as LayoutId[]).filter((id) => id !== layout)
+      .sort((a, b) => Number(b.startsWith(lang)) - Number(a.startsWith(lang)));
+  }
 
   /** Feeds one key event; returns the suspected layout once the evidence is strong enough. */
   observe(code: string, key: string, shift: boolean): LayoutId | null {
-    const other: LayoutId = this.layout === 'sk-qwertz' ? 'us-qwerty' : 'sk-qwertz';
     const mine = keyByCode(LAYOUTS[this.layout], code);
-    const theirs = keyByCode(LAYOUTS[other], code);
-    if (!mine || !theirs || key.length !== 1) return null;
-    const expectMine = shift ? mine.shift : mine.base;
-    const expectTheirs = shift ? theirs.shift : theirs.base;
+    if (!mine || key.length !== 1) return null;
     const lower = key.toLowerCase();
-    if (expectMine.toLowerCase() === lower) this.votes = Math.max(0, this.votes - 1);
-    else if (expectTheirs.toLowerCase() === lower) this.votes++;
-    return this.votes >= this.threshold ? other : null;
+    const typed = (d: KeyDef | undefined) => !!d && (shift ? d.shift : d.base).toLowerCase() === lower;
+    if (typed(mine)) {
+      for (const [id, n] of this.votes) this.votes.set(id, Math.max(0, n - 1));
+      return null;
+    }
+    for (const id of this.others) if (typed(keyByCode(LAYOUTS[id], code))) this.votes.set(id, (this.votes.get(id) ?? 0) + 1);
+    return this.others.find((id) => (this.votes.get(id) ?? 0) >= this.threshold) ?? null;
   }
 }

@@ -5,10 +5,11 @@ import { pikoElement } from '../gfx/piko';
 import { LANGS, language, t } from '../i18n/i18n';
 import type { Lang } from '../storage/schema';
 import { button, h, icon } from '../ui/dom';
-import { muteButton } from '../ui/chrome';
+import { soundButton } from '../ui/chrome';
 import { importDialog } from './parent';
+import { listenForSuperPassword, superProfile } from '../app/super';
 
-export function startScreen(root: HTMLElement): void {
+export function startScreen(root: HTMLElement): () => void {
   app.profile = null;
   applyProfileLook(null);
   audio.music(app.menuTrack);
@@ -23,7 +24,7 @@ export function startScreen(root: HTMLElement): void {
     }, `chip ${language() === l ? 'on' : ''}`)));
 
   const profiles = h('div', { class: 'profile-list' },
-    ...app.store.profiles.map((p) => {
+    ...[...(app.superPlayer ? [app.superPlayer] : []), ...app.store.profiles].map((p) => {
       const card = h('button', { class: 'profile-card', type: 'button', onClick: async () => { await selectProfile(p); go('map'); } },
         pikoElement(p.companion, 'idle', 110),
         h('span', { class: 'profile-name' }, p.name),
@@ -34,7 +35,7 @@ export function startScreen(root: HTMLElement): void {
       h('span', { class: 'plus' }, icon('plus')), h('span', { class: 'profile-name' }, t('start.newProfile'))));
 
   root.append(h('div', { class: 'screen start-screen' },
-    h('div', { class: 'top-right' }, langSwitch, muteButton()),
+    h('div', { class: 'top-right' }, langSwitch, soundButton()),
     h('header', { class: 'hero' },
       logo ? h('img', { class: 'logo', src: logo, alt: '' }) : null,
       h('h1', { class: 'title' }, h('span', {}, 'Piko'), h('span', { class: 'title-b' }, 'Typer')),
@@ -52,4 +53,9 @@ export function startScreen(root: HTMLElement): void {
     h('footer', { class: 'privacy-note' },
       h('p', {}, t('privacy.short')),
       button(t('about.title'), () => go('about'), 'link-btn', 'info'))));
+  return listenForSuperPassword(async () => {
+    app.superPlayer = superProfile(language());
+    await selectProfile(app.superPlayer);
+    go('map');
+  });
 }

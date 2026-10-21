@@ -4,7 +4,7 @@ import { SLOTS, pikoElement, renderPikoInto } from '../gfx/piko';
 import { t } from '../i18n/i18n';
 import { hasAccessory, unlockRules } from '../game/rewards';
 import { button, h, icon } from '../ui/dom';
-import { muteButton } from '../ui/chrome';
+import { soundButton } from '../ui/chrome';
 
 /** Wardrobe: one item per body area, mixed freely; locked items show how to earn them. */
 export function wardrobeScreen(root: HTMLElement): void {
@@ -53,7 +53,7 @@ export function wardrobeScreen(root: HTMLElement): void {
   render();
   const owned = accessories().filter((a) => hasAccessory(p, a.id)).length;
   root.append(h('div', { class: 'screen wardrobe-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title', { piko: p.companion.name })), muteButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title', { piko: p.companion.name })), soundButton()),
     h('div', { class: 'wardrobe-body' },
       h('div', { class: 'wardrobe-preview' }, preview, h('p', {}, t('wardrobe.count', { n: owned, total: accessories().length })),
         button(t('wardrobe.clear'), () => { p.companion.accessories = []; saveProfile(); render(); }, 'btn ghost small')),

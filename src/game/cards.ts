@@ -1,13 +1,15 @@
 import { app, pickLine, saveProfile } from '../app/app';
 import { audio } from '../audio/audio';
 import { t, tMap } from '../i18n/i18n';
-import { type Layout, fingerFor } from '../keyboard/layouts';
+import type { Layout } from '../keyboard/layouts';
 import { recordPress } from '../learning/stats';
 import type { Profile } from '../storage/schema';
-import { FINGER_KEYS, type KeyboardGuide } from '../ui/keyboard-guide';
+import { type KeyboardGuide, fingerChip } from '../ui/keyboard-guide';
 import { button, h } from '../ui/dom';
 import { pikoElement } from '../gfx/piko';
-import { WordSource } from '../words/words';
+import { WordSource, letterKeys } from '../words/words';
+import { imageUrl } from '../gfx/assets';
+import { activeKeys } from '../learning/lessons';
 
 interface CardOpts {
   button?: string;
@@ -46,14 +48,15 @@ export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = 
 }
 
 /** One random preparation tip, never one of the last five shown. */
-/** Tips that only make sense on the Slovak keyboard. */
+/** Tips that only make sense on a Slovak keyboard, and those only on Slovak QWERTZ. */
 const SK_ONLY_TIPS = new Set(['yz-swap', 'z-finger', 'number-row', 'dead-keys', 'caron-shift', 'accent-pinky', 'diacritics-fun']);
+const QWERTZ_ONLY_TIPS = new Set(['yz-swap', 'z-finger']);
 /** Tips about keys far from the home row; shown once the child knows more keys. */
 const LATER_TIPS = new Set(['number-row', 'number-fingers', 'dead-keys', 'caron-shift', 'accent-pinky', 'diacritics-fun', 'shift-opposite', 'capital-a', 'yz-swap', 'z-finger', 'pinky-p', 'reach-t', 'middle-ei', 'ring-finger']);
 
 export function pickTip(p: Profile): { id: string; text: string } | null {
   const tips = tMap('tips');
-  const ids = Object.keys(tips).filter((id) => (p.layout === 'sk-qwertz' || !SK_ONLY_TIPS.has(id)) && (p.progress.unlockedKeys.length >= 12 || !LATER_TIPS.has(id)));
+  const ids = Object.keys(tips).filter((id) => (p.layout !== 'us-qwerty' || !SK_ONLY_TIPS.has(id)) && (p.layout === 'sk-qwertz' || !QWERTZ_ONLY_TIPS.has(id)) && (p.progress.unlockedKeys.length >= 12 || !LATER_TIPS.has(id)));
   if (!ids.length) return null;
   const fresh = ids.filter((id) => !p.progress.lastTips.includes(id));
   const id = (fresh.length ? fresh : ids)[Math.floor(Math.random() * (fresh.length || ids.length))];
@@ -69,30 +72,82 @@ export async function showTip(host: HTMLElement, p: Profile): Promise<void> {
   await showCard(host, h('div', { class: 'tip' }, piko, h('div', {}, h('h3', {}, t('tip.title')), h('p', { class: 'tip-text' }, tip.text))), { anyKey: true, cls: 'tip-card' });
 }
 
-export async function showPosture(host: HTMLElement): Promise<void> {
-  await showCard(host, postureContent(), { anyKey: true, cls: 'posture-card' });
-}
+const POSTURE_TIPS = ['back', 'feet', 'wrists', 'home', 'eyes'];
 
+/** Good posture picture with one random reminder (one is read, a list is skipped). */
 export function postureContent(): HTMLElement {
+  const src = imageUrl('ui-posture');
+  const tip = POSTURE_TIPS[Math.floor(Math.random() * POSTURE_TIPS.length)];
   return h('div', { class: 'posture' },
     h('h2', {}, t('posture.title')),
-    h('div', { class: 'posture-img', html: postureSvg() }),
-    h('ul', {}, ...['back', 'feet', 'wrists', 'home', 'eyes'].map((k) => h('li', {}, t(`posture.${k}`)))));
+    src ? h('img', { class: 'posture-img', src, alt: '' }) : h('div', { class: 'posture-img', html: postureSvg() }),
+    h('p', { class: 'posture-tip' }, t(`posture.${tip}`)));
 }
 
-/** Introduces a new key alone: where it is and which finger, typed three times. */
-export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide: KeyboardGuide): Promise<void> {
+/** Two different random letters the child already knows: the password of this adventure. */
+export function adventurePassword(p: Profile, rnd = Math.random): string {
+  const letters = [...new Set(letterKeys(activeKeys(p), true).filter((k) => /^\p{Ll}$/u.test(k)))];
+  const pool = letters.length >= 2 ? letters : ['f', 'j'];
+  const a = pool[Math.floor(rnd() * pool.length)];
+  const rest = pool.filter((c) => c !== a);
+  return a + rest[Math.floor(rnd() * rest.length)];
+}
+
+/** Get-ready card before every adventure; it opens the adventure only with its password typed. */
+export function showPosture(host: HTMLElement, p: Profile): Promise<void> {
   return new Promise((resolve) => {
-    const finger = fingerFor(layout, key);
+    const password = adventurePassword(p);
+    const slots = [...password].map((c) => h('span', { class: 'pass-key' }, c));
+    const pass = h('div', { class: 'pass' }, ...slots);
+    const card = h('div', { class: 'card posture-card', 'data-password': password },
+      postureContent(),
+      h('p', { class: 'pass-label' }, t('posture.password')),
+      pass);
+    const overlay = h('div', { class: 'overlay' }, card);
+    let n = 0;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.repeat || [...e.key].length !== 1) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.key.normalize('NFC').toLowerCase() === password[n]) {
+        slots[n++].classList.add('on');
+        audio.sfx('pop');
+        if (n === password.length) {
+          window.removeEventListener('keydown', onKey, true);
+          setTimeout(() => { overlay.remove(); resolve(); }, 350);
+        }
+      } else {
+        n = 0;
+        slots.forEach((sl) => sl.classList.remove('on'));
+        pass.classList.remove('wobble');
+        void pass.offsetWidth;
+        pass.classList.add('wobble');
+        audio.sfx('wrong');
+      }
+    };
+    window.addEventListener('keydown', onKey, true);
+    host.append(overlay);
+  });
+}
+
+/** Introduces a new key alone: where it is and which finger, typed three times; Piko shows it. */
+export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide: KeyboardGuide, p: Profile): Promise<void> {
+  return new Promise((resolve) => {
+    const chip = fingerChip(layout, key);
     const dots = h('div', { class: 'dots' }, h('span'), h('span'), h('span'));
     const big = h('div', { class: 'big-key' }, key === 'Shift' ? '⇧' : key);
     const sample = key === 'Shift' ? 'A' : key;
+    // The finger name sits inside the sentence, highlighted in the finger's color.
+    const [before, after] = t('newKey.finger', { finger: '\u0000' }).split('\u0000');
     const card = h('div', { class: 'card newkey-card' },
-      h('h2', {}, t('newKey.title')),
-      big,
-      h('p', {}, finger != null ? t('newKey.finger', { finger: t(`fingers.${FINGER_KEYS[finger]}`) }) : ''),
-      h('p', { class: 'hint' }, key === 'Shift' ? t('newKey.shift') : t('newKey.typeIt', { key })),
-      dots,
+      h('div', { class: 'newkey-body' },
+        pikoElement(p.companion, 'happy', 150),
+        h('div', {},
+          h('h2', {}, t('newKey.title')),
+          big,
+          chip ? h('p', { class: 'newkey-finger' }, before, chip, after ?? '') : null,
+          h('p', { class: 'hint' }, key === 'Shift' ? t('newKey.shift') : t('newKey.typeIt', { key })),
+          dots)),
       button(t('common.skip'), () => done(), 'btn small ghost'));
     const overlay = h('div', { class: 'overlay' }, card);
     host.append(overlay);

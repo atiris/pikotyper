@@ -16,10 +16,56 @@ export interface LevelResult {
   worldDone: number | null;
   /** Rhythm compared with the sessions of a week ago, as a ratio (null = no data). */
   trend: number | null;
+  /** An automatic step up earned with this level (a new medal), else null. */
+  growth: GrowthStep | null;
+}
+
+export interface GrowthStep {
+  kind: 'difficulty' | 'wordLen';
+  /** New difficulty, or the new longest word. */
+  value: number;
+  /** Medal number (1 = first step). */
+  medal: number;
+}
+
+/** Automatic steps stop here; higher values stay a parent's choice. */
+export const AUTO_DIFFICULTY_MAX = 8;
+export const AUTO_WORD_MAX = 9;
+/** Accuracy a level needs for its time to count toward the next step. */
+const GROWTH_ACCURACY = 0.9;
+
+/** Seconds of good play for the next step: 4 minutes, then one more for each step. */
+export function growthNeed(step: number): number {
+  return 240 + step * 60;
+}
+
+/**
+ * Automatic difficulty and word length: good play time collects, and when there
+ * is enough, one setting goes up by one step (they take turns).
+ */
+export function grow(p: Profile, seconds: number, accuracy: number): GrowthStep | null {
+  const s = p.settings;
+  const options: GrowthStep['kind'][] = [];
+  if (s.autoDifficulty && s.difficulty < AUTO_DIFFICULTY_MAX) options.push('difficulty');
+  if (s.autoWordLen && s.wordLen[1] < AUTO_WORD_MAX) options.push('wordLen');
+  if (!options.length || accuracy < GROWTH_ACCURACY) return null;
+  p.progress.growthSeconds += Math.round(seconds);
+  if (p.progress.growthSeconds < growthNeed(p.progress.growth)) return null;
+  const kind = options[p.progress.growth % options.length];
+  p.progress.growthSeconds = 0;
+  p.progress.growth++;
+  let value: number;
+  if (kind === 'difficulty') value = ++s.difficulty;
+  else {
+    value = s.wordLen[1] + 1;
+    // The shortest words grow slowly too, so long words really appear.
+    s.wordLen = [Math.max(s.wordLen[0], Math.min(4, value - 4)), value];
+  }
+  return { kind, value, medal: p.progress.growth };
 }
 
 /** Applies a finished level to the profile. Unlocks keys, worlds and accessories. */
-export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'worldDone' | 'trend'>): LevelResult {
+export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'worldDone' | 'trend' | 'growth'>): LevelResult {
   const stars = starsFor(r.accuracy);
   let worldDone: number | null = null;
   if (def.index >= 0 && def.kind !== 'practice') {
@@ -31,7 +77,8 @@ export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 's
   }
   const newKeys = advanceLesson(p);
   const newAccessories = grantAccessories(p);
-  return { ...r, stars, newKeys, newAccessories, worldDone, trend: rhythmTrend(p) };
+  const growth = grow(p, r.seconds, r.accuracy);
+  return { ...r, stars, newKeys, newAccessories, worldDone, trend: rhythmTrend(p), growth };
 }
 
 /** Current rhythm vs. a week ago (only positive framing is shown). */

@@ -1,7 +1,11 @@
-import { type Profile, type SessionRecord, emptyKeyStat } from '../storage/schema';
-import { MASTERY_WINDOW, SHIFT_KEY, recentAccuracy } from './lessons';
+import { type KeyStat, type Profile, type SessionRecord, emptyKeyStat } from '../storage/schema';
+import { MASTERY_WINDOW, SHIFT_KEY, median } from './lessons';
 
 const RECENT_KEEP = MASTERY_WINDOW * 2;
+export const RECENT_WRONG_KEEP = 30;
+const DAYS_KEEP = 60;
+/** Key statistics look at the last presses only, so old habits stop counting. */
+export const STATS_WINDOW = 50;
 /** Reaction times above this are pauses, not slowness. */
 const RT_CAP = 4000;
 
@@ -14,18 +18,28 @@ export function recordPress(profile: Profile, expected: string, typed: string, r
   const keys = expected !== expected.toLowerCase() ? [expected.toLowerCase(), SHIFT_KEY] : [expected];
   const ok = typed === expected;
   const rt = Math.max(1, Math.min(RT_CAP, Math.round(reactionMs)));
+  const date = localDate();
   for (const key of keys) {
     const s = (profile.stats.keys[key] ??= emptyKeyStat());
     s.presses++;
-    if (ok) {
-      s.rtSum += rt;
-      s.rtCount++;
-    } else {
+    if (!ok) {
       s.errors++;
-      s.wrong[typed] = (s.wrong[typed] ?? 0) + 1;
+      s.recentWrong.push(typed);
+      if (s.recentWrong.length > RECENT_WRONG_KEEP) s.recentWrong.splice(0, s.recentWrong.length - RECENT_WRONG_KEEP);
     }
     s.recent.push(ok ? rt : 0);
     if (s.recent.length > RECENT_KEEP) s.recent.splice(0, s.recent.length - RECENT_KEEP);
+    let day = s.days[s.days.length - 1];
+    if (!day || day.date !== date) {
+      day = { date, presses: 0, errors: 0, rtSum: 0, rtCount: 0 };
+      s.days.push(day);
+      if (s.days.length > DAYS_KEEP) s.days.splice(0, s.days.length - DAYS_KEEP);
+    }
+    day.presses++;
+    if (ok) {
+      day.rtSum += rt;
+      day.rtCount++;
+    } else day.errors++;
   }
 }
 
@@ -48,30 +62,38 @@ export function recordSession(profile: Profile, seconds: number, chars: number, 
 
 export interface KeyReport {
   key: string;
+  /** All presses ever. */
   presses: number;
+  /** Presses the report is based on (the last STATS_WINDOW). */
+  window: number;
   accuracy: number;
+  /** Typical reaction time of correct presses (median), 0 without data. */
   avgMs: number;
-  topWrong: string | null;
+  /** Keys typed instead of this one lately, most frequent first. */
+  confusions: { ch: string; n: number }[];
   /** 0..1 how well it goes; higher is better. */
   score: number;
 }
 
 export function keyReport(profile: Profile, key: string): KeyReport | null {
-  const s = profile.stats.keys[key];
-  if (!s || !s.presses) return null;
-  const accuracy = (s.presses - s.errors) / s.presses;
-  const avgMs = s.rtCount ? s.rtSum / s.rtCount : 0;
-  const topWrong = Object.entries(s.wrong).sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
-  const recentAcc = s.recent.length ? recentAccuracy(s) : accuracy;
+  const s: KeyStat | undefined = profile.stats.keys[key];
+  if (!s || !s.recent.length) return null;
+  const win = s.recent.slice(-STATS_WINDOW);
+  const ok = win.filter((v) => v > 0);
+  const accuracy = ok.length / win.length;
+  const avgMs = ok.length ? median(ok) : 0;
+  const counts = new Map<string, number>();
+  for (const ch of s.recentWrong) counts.set(ch, (counts.get(ch) ?? 0) + 1);
+  const confusions = [...counts].map(([ch, n]) => ({ ch, n })).sort((a, b) => b.n - a.n);
   const speed = avgMs ? Math.max(0, Math.min(1, (2000 - avgMs) / 1400)) : 0.5;
-  return { key, presses: s.presses, accuracy, avgMs, topWrong, score: recentAcc * 0.75 + speed * 0.25 };
+  return { key, presses: s.presses, window: win.length, accuracy, avgMs, confusions, score: accuracy * 0.75 + speed * 0.25 };
 }
 
 /** Keys that need practice most, worst first (only keys with enough data). */
 export function weakKeys(profile: Profile, keys: string[], count = 3): KeyReport[] {
   return keys
     .map((k) => keyReport(profile, k))
-    .filter((r): r is KeyReport => !!r && r.presses >= 5)
+    .filter((r): r is KeyReport => !!r && r.window >= 5)
     .sort((a, b) => a.score - b.score)
     .slice(0, count);
 }
@@ -84,4 +106,22 @@ export function keyWeights(profile: Profile, keys: string[]): Record<string, num
     w[k] = r ? 1 + (1 - r.score) * 3 : 1.5;
   }
   return w;
+}
+
+export interface KeyDayPoint {
+  date: string;
+  accuracy: number;
+  /** Average reaction time of correct presses that day, 0 without data. */
+  avgMs: number;
+  presses: number;
+}
+
+/** Day by day accuracy and speed of a key, oldest first. */
+export function keyHistory(profile: Profile, key: string): KeyDayPoint[] {
+  return (profile.stats.keys[key]?.days ?? []).map((d) => ({
+    date: d.date,
+    accuracy: d.presses ? (d.presses - d.errors) / d.presses : 0,
+    avgMs: d.rtCount ? d.rtSum / d.rtCount : 0,
+    presses: d.presses,
+  }));
 }

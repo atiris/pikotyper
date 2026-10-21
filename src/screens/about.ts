@@ -1,12 +1,12 @@
 import { app, go } from '../app/app';
 import { t, tList } from '../i18n/i18n';
 import { button, h } from '../ui/dom';
-import { muteButton } from '../ui/chrome';
+import { soundButton } from '../ui/chrome';
 
 /** About and privacy promise for parents. */
 export function aboutScreen(root: HTMLElement): void {
   root.append(h('div', { class: 'screen about-screen' },
-    h('div', { class: 'top-right' }, muteButton()),
+    h('div', { class: 'top-right' }, soundButton()),
     h('article', { class: 'panel prose' },
       h('h1', {}, t('about.title')),
       h('p', {}, t('about.intro')),

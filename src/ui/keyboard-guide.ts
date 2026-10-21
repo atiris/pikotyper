@@ -1,4 +1,4 @@
-import { type Finger, type Layout, type KeyStep, allKeys, shiftKeyFor, stepsFor } from '../keyboard/layouts';
+import { type Finger, type Layout, type KeyStep, allKeys, fingerFor, shiftKeyFor, stepsFor } from '../keyboard/layouts';
 import { t } from '../i18n/i18n';
 
 /** Finger colors (Okabe-Ito based, colorblind-safe) plus a number label on each key. */
@@ -12,6 +12,37 @@ export const FINGER_KEYS: Record<Finger, string> = {
   0: 'leftPinky', 1: 'leftRing', 2: 'leftMiddle', 3: 'leftIndex', 4: 'leftThumb',
   5: 'rightThumb', 6: 'rightIndex', 7: 'rightMiddle', 8: 'rightRing', 9: 'rightPinky',
 };
+
+const DARK_INK = '#2d2140';
+
+function luminance(hex: string): number {
+  const n = parseInt(hex.slice(1), 16);
+  const [r, g, b] = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => {
+    const c = v / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/** Text color on a highlighted key: white or dark, whichever reads better on the finger color. */
+export function inkOn(hex: string): string {
+  const l = luminance(hex);
+  const onWhite = 1.05 / (l + 0.05);
+  const onDark = (l + 0.05) / (luminance(DARK_INK) + 0.05);
+  return onWhite >= onDark ? '#ffffff' : DARK_INK;
+}
+
+/** Finger name on the finger's own color, as on the keyboard guide. */
+export function fingerChip(layout: Layout, key: string): HTMLElement | null {
+  const f = key === 'Shift' ? null : fingerFor(layout, key);
+  if (f == null) return null;
+  const chip = document.createElement('b');
+  chip.className = 'finger-chip';
+  chip.style.setProperty('--finger', FINGER_COLORS[f]);
+  chip.style.setProperty('--finger-ink', inkOn(FINGER_COLORS[f]));
+  chip.textContent = t(`fingers.${FINGER_KEYS[f]}`);
+  return chip;
+}
 
 function label(base: string, shift: string): string {
   if (base === 'dead:acute') return '´ ˇ';
@@ -43,6 +74,7 @@ export class KeyboardGuide {
         if (def.bump) k.classList.add('bump');
         k.style.setProperty('--w', String(def.w ?? 1));
         k.style.setProperty('--finger', FINGER_COLORS[def.finger]);
+        k.style.setProperty('--finger-ink', inkOn(FINGER_COLORS[def.finger]));
         k.innerHTML = `<span class="kb-label">${label(def.base, def.shift)}</span>` +
           (def.base !== ' ' && def.base !== 'shift' ? `<span class="kb-shift">${def.base.startsWith('dead') || def.shift.toLowerCase() === def.base ? '' : def.shift}</span><span class="kb-num">${FINGER_NUMBER[def.finger]}</span>` : '');
         r.appendChild(k);

@@ -25,7 +25,7 @@ const US_GROUPS = [
 export const DIACRITICS = new Set([...'áäčďéíĺľňóôŕšťúýž']);
 
 export function lessonGroups(layout: LayoutId): string[][] {
-  return layout === 'sk-qwertz' ? SK_GROUPS : US_GROUPS;
+  return layout === 'us-qwerty' ? US_GROUPS : SK_GROUPS;
 }
 
 export function lessonOrder(layout: LayoutId): string[] {

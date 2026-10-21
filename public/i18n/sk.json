@@ -4,8 +4,11 @@
     "back": "Späť",
     "continue": "Pokračovať",
     "skip": "Preskočiť",
-    "sound": "Zvuk zapnúť / vypnúť",
-    "anyKey": "Stlač ľubovoľný kláves a začíname"
+    "sound": "Zvuk",
+    "anyKey": "Stlač ľubovoľný kláves a začíname",
+    "sound_normal": "normálny",
+    "sound_quiet": "potichu",
+    "sound_off": "vypnutý"
   },
   "start": {
     "tagline": "Pokojné dobrodružstvo písania všetkými desiatimi",
@@ -32,6 +35,7 @@
   },
   "layouts": {
     "sk-qwertz": "slovenská (QWERTZ)",
+    "sk-qwerty": "slovenská (QWERTY)",
     "us-qwerty": "anglická US (QWERTY)"
   },
   "kinds": {
@@ -62,7 +66,9 @@
     "dragons": "Moje dráčiky",
     "switchProfile": "Hráči",
     "super": "veľká výzva",
-    "starsAria": "hviezdičky: {n}"
+    "starsAria": "hviezdičky: {n}",
+    "storyName": "Piko a dračie vajíčko",
+    "settings": "Nastavenia pre rodičov"
   },
   "level": {
     "title": "Svet {world} · Úroveň {level}",
@@ -103,7 +109,8 @@
     "feet": "Obe chodidlá polož na zem.",
     "wrists": "Zápästia uvoľnené vo vzduchu, nie opreté o stôl.",
     "home": "Ukazováky na výstupkoch klávesov F a J, ostatné prsty vedľa nich.",
-    "eyes": "Oči na obrazovke, nie na klávesnici."
+    "eyes": "Oči na obrazovke, nie na klávesnici.",
+    "password": "Heslo tohto dobrodružstva. Napíš ho a môžeme začať:"
   },
   "newKey": {
     "title": "Nový kláves!",
@@ -177,7 +184,11 @@
     "nextRescue": "Ďalšia misia",
     "replay": "Hrať znova",
     "reward": "Pozrieť odmenu",
-    "takeBreak": "Prestávka na pretiahnutie"
+    "takeBreak": "Prestávka na pretiahnutie",
+    "growthTitle": "Nová medaila! Si šikovnejší a hra rastie s tebou.",
+    "growthDifficulty": "Predmety sa budú hýbať o kúsok rýchlejšie.",
+    "growthWordLen": "Slová môžu mať už {n} písmen.",
+    "medalAria": "medaila číslo {n}"
   },
   "story": {
     "next": "Ďalej",
@@ -261,15 +272,28 @@
   },
   "stats": {
     "title": "Moje klávesy",
-    "intro": "Spolu sme napočítali {n} stlačení. Takto ti idú klávesy:",
+    "intro": "Rátam posledných {n} stlačení každého klávesu, staré chyby sa nepočítajú. Ťukni na kláves a uvidíš, ako ti ide.",
     "empty": "Zahraj si úroveň a ukážem ti, ako ti idú klávesy.",
     "good": "ide to",
     "ok": "skoro",
     "practice": "poďme cvičiť",
     "practiceKeys": "Klávesy na precvičenie",
-    "keyLine": "{acc} % správne, stláčaj {finger}",
+    "keyLine": "{acc} % správne, stláčaj",
     "instead": "(často namiesto neho {key})",
-    "practiceNow": "Precvičiť ich teraz (1 min)"
+    "practiceNow": "Precvičiť ich teraz (1 min)",
+    "clickKey": "Ťukni na kláves na klávesnici a ukážem ti, ako ti ide.",
+    "fingerLine": "Stláčaj ho",
+    "keyNoData": "Tento kláves sme ešte nepísali.",
+    "keyAccuracy": "{acc} % správne z posledných {n} stlačení",
+    "keySpeed": "Zvyčajne ho stlačíš za {s} s",
+    "keyTotal": "Spolu už {n} stlačení",
+    "keyConfused": "Namiesto neho niekedy stlačíš:",
+    "keyNoConfusion": "V poslednom čase si ho s ničím nemýliš.",
+    "keyAccuracyTrend": "Presnosť po dňoch",
+    "keySpeedTrend": "Čas na stlačenie po dňoch",
+    "keyHistorySoon": "Vývoj po dňoch uvidíš, keď budeš hrať aspoň dva dni.",
+    "practiceKey": "Precvičiť {key} (1 min)",
+    "medals": "Moje medaily"
   },
   "wardrobe": {
     "title": "Šatník: {piko}",
@@ -351,14 +375,15 @@
     "fists": "Zovri päste a potom široko roztiahni prsty. Znova a znova!",
     "shoulders": "Pomaly krúž ramenami dozadu. Potom sa pozri ďaleko z okna.",
     "done": "Pekne oddýchnuté, {name}! Pamätaj si, ako sedieť:",
-    "parentSkip": "Rodič: preskočiť"
+    "parentSkip": "Rodič: preskočiť",
+    "skipTitle": "Preskočiť prestávku?",
+    "skipText": "Krátke pretiahnutie pomáha chrbtu aj očiam. Naozaj ju preskočiť?",
+    "skipOk": "Áno, preskočiť"
   },
   "parent": {
     "title": "Rodičovská časť: {name}",
-    "checkTitle": "Pre dospelých",
-    "checkText": "Napíš toto číslo číslicami:",
-    "checkLabel": "Číslo",
-    "checkWrong": "Nie celkom. Skús to znova.",
+    "checkTitle": "Nastavenia pre rodičov",
+    "checkText": "Tu sa mení náročnosť, klávesy a údaje. Naozaj chceš otvoriť nastavenia?",
     "tab": {
       "settings": "Nastavenia",
       "keys": "Klávesy",
@@ -431,7 +456,11 @@
     "guestNote": "Profil hosťa sa po zatvorení karty prehliadača zabudne.",
     "deleteTitle": "Vymazanie",
     "delete": "Vymazať profil {name}",
-    "deleteConfirm": "Naozaj vymazať profil {name} aj so všetkými pokrokmi?"
+    "deleteConfirm": "Naozaj vymazať profil {name} aj so všetkými pokrokmi?",
+    "checkOk": "Áno, otvoriť",
+    "deleteOk": "Áno, vymazať",
+    "auto": "Automaticky (rastie s pokrokom dieťaťa)",
+    "autoHint": "Automaticky sa náročnosť a dĺžka slov striedavo zvyšujú po niekoľkých minútach presného písania; každý krok dieťa odmení medailou."
   },
   "import": {
     "title": "Import profilov",
@@ -521,5 +550,9 @@
     "stretch-wrist": "Ohni zápästie a druhou rukou ho jemne potlač.",
     "take-break": "Po pár minútach vstaň, natiahni sa a napi sa vody.",
     "celebrate": "Dobrá práca! Tvoj kamarát má z teba radosť."
+  },
+  "super": {
+    "on": "Superrežim: všetko odomknuté",
+    "end": "Ukončiť superrežim"
   }
 }

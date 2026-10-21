@@ -1,4 +1,4 @@
-import type { Profile } from '../storage/schema';
+import { type Profile, SUPER_ID } from '../storage/schema';
 
 export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg';
 export const WORLDS: WorldId[] = ['meadow', 'space', 'planet', 'dragons', 'egg'];
@@ -49,6 +49,7 @@ export function isWorldUnlocked(p: Profile, world: number): boolean {
 }
 
 export function isLevelUnlocked(p: Profile, l: LevelDef): boolean {
+  if (p.id === SUPER_ID) return true;
   if (!isWorldUnlocked(p, l.world)) return false;
   if (l.index === 0) return true;
   const prev = worldLevels(l.world)[l.index - 1];

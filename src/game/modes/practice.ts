@@ -5,6 +5,9 @@ import { Mode } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 
+const MIN_WORD_PX = 44;
+const MIN_INFO_PX = 18;
+
 /** Free practice: calm words one after another, no story, no motion pressure. */
 export class PracticeMode extends Mode {
   readonly world = 'meadow';
@@ -45,13 +48,18 @@ export class PracticeMode extends Mode {
     g.fillStyle = 'rgba(255,255,255,0.35)';
     g.fillRect(0, 0, this.L.vw, VH);
     g.restore();
-    if (this.current) this.L.label(g, this.current, this.L.vw / 2, VH * 0.42 + (1 - this.pop) * 20, 56);
+    // Sizes in screen pixels never drop below a readable minimum in a small window.
+    const scale = this.L.stage.scale;
+    const wordSize = Math.max(56, MIN_WORD_PX / scale);
+    const infoSize = Math.max(24, MIN_INFO_PX / scale);
+    const y = VH * 0.42;
+    if (this.current) this.L.label(g, this.current, this.L.vw / 2, y + (1 - this.pop) * 20, wordSize);
     g.save();
     g.fillStyle = '#2d4a3a';
-    g.font = `600 24px ${fontFamily()}`;
+    g.font = `600 ${infoSize}px ${fontFamily()}`;
     g.textAlign = 'center';
     const info = this.seconds ? t('practice.left', { s: Math.max(0, Math.ceil(this.seconds - this.time)) }) : t('practice.words', { n: this.count });
-    g.fillText(info, this.L.vw / 2, VH * 0.62);
+    g.fillText(info, this.L.vw / 2, Math.max(VH * 0.62, y + wordSize * 0.75 + infoSize * 1.4));
     g.restore();
   }
 

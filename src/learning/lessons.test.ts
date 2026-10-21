@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { advanceLesson, firstKeys, isMastered, keysToIntroduce, lessonOrder, reactionLimit } from './lessons';
-import { recordPress, weakKeys } from './stats';
+import { STATS_WINDOW, keyReport, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
   it('starts on the home row with the index fingers', () => {
@@ -70,8 +70,10 @@ describe('statistics', () => {
     const p = newProfile('Ema', 'sk');
     recordPress(p, 'f', 'g', 300);
     recordPress(p, 'F', 'F', 300);
-    expect(p.stats.keys.f.wrong).toEqual({ g: 1 });
+    expect(p.stats.keys.f.recentWrong).toEqual(['g']);
     expect(p.stats.keys.f.presses).toBe(2);
+    expect(p.stats.keys.f.days).toHaveLength(1);
+    expect(p.stats.keys.f.days[0]).toMatchObject({ presses: 2, errors: 1, rtCount: 1 });
     expect(p.stats.keys.Shift.presses).toBe(1);
   });
 
@@ -82,5 +84,15 @@ describe('statistics', () => {
       recordPress(p, 'j', i % 2 ? 'h' : 'j', 400);
     }
     expect(weakKeys(p, ['f', 'j'])[0].key).toBe('j');
+  });
+
+  it('counts only the last presses, so old mistakes fade out', () => {
+    const p = newProfile('Ema', 'sk');
+    for (let i = 0; i < 30; i++) recordPress(p, 'f', 'g', 400);
+    for (let i = 0; i < STATS_WINDOW; i++) recordPress(p, 'f', 'f', 400);
+    const r = keyReport(p, 'f')!;
+    expect(r.accuracy).toBe(1);
+    expect(r.presses).toBe(30 + STATS_WINDOW);
+    expect(r.confusions).toEqual([{ ch: 'g', n: 30 }]);
   });
 });

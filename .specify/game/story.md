@@ -21,6 +21,9 @@ scenes (a few lines of text and a simple animation) tell the story.
    **endless rescue missions** unlock (replayable, generated from all worlds).
 
 - Worlds unlock in order; finished levels can always be replayed.
+- On the map these five worlds form one named story ("Piko and the Dragon Egg"); on wide
+  screens its name stands to the left of its worlds, so later stories can be added as
+  further rows.
 - Every level can be finished by any child: obstacles that are not cleared in time just
   pass by or are helped by Piko; they never cause failure.
 

@@ -173,7 +173,8 @@ function tiled(g: G, img: HTMLImageElement, vw: number, offset: number): void {
   const s = VH / tile.height;
   const w = tile.width * s, h = tile.height * s;
   const y = VH - h;
-  for (let x = -(((offset % w) + w) % w); x < vw; x += w) g.drawImage(tile, Math.floor(x), y, Math.ceil(w) + 1, h);
+  // Sub-pixel positions: rounding made slow layers move in visible jumps.
+  for (let x = -(((offset % w) + w) % w); x < vw; x += w) g.drawImage(tile, x, y, w + 1, h);
 }
 
 /** Three-layer parallax background of a world; `scroll` grows as the scene moves forward. */
@@ -231,8 +232,15 @@ function starField(g: G, vw: number, offset: number): void {
   g.globalAlpha = 1;
 }
 
+let font = '';
+
+/** The game font; read once per look change, since a style read every frame forces a style recalc. */
 export function fontFamily(): string {
-  return getComputedStyle(document.body).getPropertyValue('--font-game').trim() || 'Lexend, system-ui, sans-serif';
+  return (font ||= getComputedStyle(document.body).getPropertyValue('--font-game').trim() || 'Lexend, system-ui, sans-serif');
+}
+
+export function resetFontFamily(): void {
+  font = '';
 }
 
 export interface WordStyle {

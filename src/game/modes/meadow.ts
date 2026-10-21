@@ -34,6 +34,8 @@ class Swatter {
   }
 
   draw(g: G, t: number): void {
+    // It joins Piko when the game starts, not during the preparation cards.
+    if (!this.L.started) return;
     const bob = Math.sin(t * 2) * 4;
     const x = this.homeX + (this.tx - this.homeX) * this.swing;
     const y = this.homeY + bob + (this.ty - this.homeY) * this.swing;

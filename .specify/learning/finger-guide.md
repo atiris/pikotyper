@@ -2,12 +2,18 @@
 
 ## What
 - On-screen keyboard (matching the profile layout) with a color per finger and a
-  highlight on the next key; for dead-key letters both steps are shown.
+  highlight on the next key; for dead-key letters both steps are shown. The letter on a
+  highlighted key is dark or white, whichever reads better on that finger's color.
 - Optional hand outline showing which finger presses the key.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. Colors also carry a pattern or label (colorblind-safe).
-- Short posture card before the first session and at breaks: sit straight, wrists
-  relaxed, index fingers on the `F` and `J` bumps, eyes on the screen.
+- "Ready, steady, type!" card before every adventure (story level, rescue, free practice)
+  and at breaks: a picture of good posture and **one** random reminder (sit straight, feet
+  on the floor, wrists relaxed, index fingers on the `F` and `J` bumps, eyes on the
+  screen). It closes only when the child types the adventure's password: two random
+  letters the child already knows.
+- A new key is introduced by Piko on its own card, with the finger's name highlighted in
+  that finger's color; game objects (the swatter) appear only when play starts.
 - Preparation tip: at the start of every training session one short, random tip about
   getting ready to type well (posture, hands, fingers, eyes, rhythm, breaks), shown by
   Piko for a few seconds and dismissed by any key. A pool of 40+ tips per language, no
@@ -19,3 +25,5 @@
   ([research](../../.research/features/on-screen-keyboard-finger-guide.md)).
 - Good habits (posture, hand position) are easier to build at the start than to fix
   later; short varied tips remind the child without a boring lecture.
+- A list of five rules gets skipped; one reminder plus a tiny typing task gets read, and
+  puts the fingers on the keys before the game begins.

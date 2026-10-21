@@ -13,7 +13,29 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   await expect(page.locator('.results-card .star.on').first()).toBeVisible();
   await page.locator('.results-card .btn').last().click();
   await expect(page.locator('.level-node.done')).toHaveCount(1);
+  await page.locator('.map-piko').click();
+  await page.locator('.heatmap .kb-key[data-heat]').first().click();
+  await expect(page.locator('.stats-modal .key-detail')).toContainText('%');
   expect(errors).toEqual([]);
+});
+
+test('a copied link opens the player directly', async ({ page, context }) => {
+  await createProfile(page, 'Lea');
+  expect(page.url()).toMatch(/#\/p\//);
+  const p2 = await context.newPage();
+  await p2.goto(page.url());
+  await expect(p2.locator('.map-hello')).toContainText('Lea');
+});
+
+test('the super password typed fast on the start page opens everything', async ({ page }) => {
+  await page.goto('./');
+  await page.locator('.start-screen').waitFor();
+  await page.keyboard.type('superpikotyper', { delay: 40 });
+  await expect(page.locator('.super-badge')).toBeVisible();
+  await expect(page.locator('.level-node:disabled')).toHaveCount(0);
+  await page.locator('.super-badge').click();
+  await expect(page.locator('.start-screen')).toBeVisible();
+  await expect(page.locator('.super-badge')).toHaveCount(0);
 });
 
 test('guest progress is forgotten in a new browser context', async ({ page, browser }) => {

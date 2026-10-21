@@ -43,19 +43,23 @@ const OUTFITS = {
 const run = promisify(execFile);
 
 function sampleKey(data, w, h) {
-  // Average of the four corner pixels.
-  const key = [0, 0, 0];
-  for (const [x, y] of [[2, 2], [w - 3, 2], [2, h - 3], [w - 3, h - 3]]) {
+  // The most saturated corner is the key; corners covered by artwork (the ground
+  // of a background layer) are left out of the average.
+  const corners = [[2, 2], [w - 3, 2], [2, h - 3], [w - 3, h - 3]].map(([x, y]) => {
     const i = (y * w + x) * 4;
-    for (let c = 0; c < 3; c++) key[c] += data[i + c] / 4;
-  }
-  return key;
+    return [data[i], data[i + 1], data[i + 2]];
+  });
+  const chroma = (c) => Math.max(...c) - Math.min(...c);
+  const ref = corners.reduce((a, b) => (chroma(b) > chroma(a) ? b : a));
+  const same = corners.filter((c) => Math.hypot(c[0] - ref[0], c[1] - ref[1], c[2] - ref[2]) < 60);
+  return [0, 1, 2].map((ch) => same.reduce((a, c) => a + c[ch], 0) / same.length);
 }
 
 /** Removes the flat key background in place (RGBA buffer). */
-function keyOut(data, w, h, { glass = false } = {}) {
+function keyOut(data, w, h, { glass = false, layer = false } = {}) {
   const key = sampleKey(data, w, h);
   const green = key[1] > key[0] && key[1] > key[2];
+  const kKey = green ? key[1] - Math.max(key[0], key[2]) : Math.min(key[0], key[2]) - key[1];
   const n = w * h;
   const dist = new Float32Array(n);
   const k = new Int16Array(n);
@@ -69,7 +73,9 @@ function keyOut(data, w, h, { glass = false } = {}) {
   const removed = new Uint8Array(n);
   const queue = new Int32Array(n);
   let head = 0, tail = 0;
-  const seed = (p) => { if (!removed[p] && dist[p] < D_FLOOD) { removed[p] = 1; queue[tail++] = p; } };
+  // Background layers have shaded key pockets between grass blades: the flood
+  // follows the key tint into them.
+  const seed = (p) => { if (!removed[p] && (dist[p] < D_FLOOD || layer && k[p] > kKey * 0.3)) { removed[p] = 1; queue[tail++] = p; } };
   for (let x = 0; x < w; x++) { seed(x); seed((h - 1) * w + x); }
   for (let y = 0; y < h; y++) { seed(y * w); seed(y * w + w - 1); }
   while (head < tail) {
@@ -80,10 +86,11 @@ function keyOut(data, w, h, { glass = false } = {}) {
     if (y > 0) seed(p - w);
     if (y < h - 1) seed(p + w);
   }
-  // 2. Enclosed gaps that match the key closely (and glass lenses).
+  // 2. Enclosed gaps that match the key closely (and glass lenses, and strongly
+  // tinted pockets of background layers).
   const enclosed = new Uint8Array(n);
   for (let p = 0; p < n; p++) {
-    if (!removed[p] && (dist[p] < D_ENCLOSED || glass && k[p] > K_LENS)) { removed[p] = 1; enclosed[p] = 1; }
+    if (!removed[p] && (dist[p] < D_ENCLOSED || glass && k[p] > K_LENS || layer && k[p] > kKey * 0.6)) { removed[p] = 1; enclosed[p] = 1; }
   }
 
   // 3. Pixels up to 2 px from removed ones form the edge feather band.
@@ -109,11 +116,43 @@ function keyOut(data, w, h, { glass = false } = {}) {
       data[i] = 255; data[i + 1] = 255; data[i + 2] = 255; data[i + 3] = 110;
       continue;
     }
-    if (!band[p] || dist[p] >= D_SOFT) continue;
+    if (!band[p]) continue;
+    // Edge alpha from the color distance, and from the key tint: a pixel mixed with
+    // the key keeps some of its dominance, though far from the key in RGB.
+    const aDist = Math.min(1, (dist[p] - D_ENCLOSED) / (D_SOFT - D_ENCLOSED));
+    const aTint = 1 - Math.max(0, k[p]) / kKey;
+    const a = Math.max(0.05, Math.min(aDist, aTint));
+    if (a >= 1) continue;
     // Unmix the edge pixel: observed = a * color + (1 - a) * key.
-    const a = Math.max(0.05, (dist[p] - D_ENCLOSED) / (D_SOFT - D_ENCLOSED));
     for (let c = 0; c < 3; c++) data[i + c] = Math.max(0, Math.min(255, Math.round((data[i + c] - (1 - a) * key[c]) / a)));
-    data[i + 3] = Math.round(data[i + 3] * a);
+    // Despill: a shadowed key tint survives the unmix; take it out of the key
+    // channels, and on background layers fade such pixels out.
+    const r = data[i], g = data[i + 1], b = data[i + 2];
+    const spill = green ? g - Math.max(r, b) : Math.min(r, b) - g;
+    let fade = 1;
+    if (spill > 0) {
+      if (green) data[i + 1] = g - spill;
+      else { data[i] = r - spill; data[i + 2] = b - spill; }
+      if (layer) fade = Math.max(0, 1 - spill / 40);
+    }
+    data[i + 3] = Math.round(data[i + 3] * a * fade);
+  }
+  bleedColor(data, w, h);
+}
+
+// Lossy WebP mixes the color of transparent pixels into their visible neighbors,
+// so transparent pixels take the color of the nearest visible pixel in their row.
+function bleedColor(data, w, h) {
+  for (let y = 0; y < h; y++) {
+    const row = y * w;
+    let last = -1;
+    for (let x = 0; x < w; x++) {
+      const i = (row + x) * 4;
+      if (data[i + 3] > 0) {
+        if (last < 0) for (let j = row * 4; j < i; j += 4) data.copy(data, j, i, i + 3);
+        last = i;
+      } else if (last >= 0) data.copy(data, i, last, last + 3);
+    }
   }
 }
 
@@ -160,7 +199,7 @@ async function processImage(name, file, manifest) {
   }
   const { data, w, h } = await loadRgba(file);
   if (name.startsWith('outfit-')) return processOutfit(name.slice(7), data, w, h, manifest);
-  keyOut(data, w, h);
+  keyOut(data, w, h, { layer: name.startsWith('bg-') });
   if (name === 'base-template' || name.startsWith('piko-')) return writeSquare(name, data, w, h, manifest);
   if (name.startsWith('bg-')) {
     const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).resize({ width: BG_WIDTH, withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));

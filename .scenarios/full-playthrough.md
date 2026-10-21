@@ -43,7 +43,7 @@ Assertions:
 
 ### P02 - The first keys are taught one at a time (budget: 5 min)
 
-- S1: Start the first level. Read the preparation tip and the posture card, dismiss them with a key.
+- S1: Start the first level. Read the preparation tip (dismiss it with a key), learn the new keys, then type the two-letter password on the "Ready, steady, type!" card.
 - S2: Learn the first new keys when the game introduces them.
 
 Assertions:
@@ -77,13 +77,13 @@ Assertions:
 
 ### P05 - A parent tunes the settings and moves the profile (budget: 10 min)
 
-- S1: Open the parent area and pass the adult check.
+- S1: Open the parent area (gear button) and confirm the question.
 - S2: Turn on "no time pressure", change the difficulty, look at the progress dashboard.
 - S3: Export this profile to a file; in a new, empty browser context import that file.
 
 Assertions:
 
-- A12: The adult check asks for a number written in words and refuses a wrong answer.
+- A12: The parent area asks one confirm question in the app's style; "back" returns to the map.
 - A13: The dashboard shows the levels finished, the keys learned, an accuracy trend and time per day.
 - A14: The imported profile appears in the new context with the same name, stars and the changed settings.
   Corroboration (2026-10-21): `localStorage['pikotyper:v1'].profiles[0].settings.noTimePressure === true`.
@@ -107,5 +107,5 @@ Assertions:
 
 ## Appendix - last known paths (2026-10-21, orientation only, expected to go stale)
 
-- Parent area: lock button top right of the map. Statistics: the companion on the map.
+- Parent area: gear button top right of the map. Statistics: the companion on the map.
 - The finger guide element carries the next character in `data-next`.

@@ -4,7 +4,8 @@ import { language, t } from '../i18n/i18n';
 import { COMPANION_KINDS, type CompanionKind, type Lang, type LayoutId } from '../storage/schema';
 import { newProfile } from '../storage/store';
 import { button, h } from '../ui/dom';
-import { muteButton } from '../ui/chrome';
+import { LAYOUT_IDS } from '../keyboard/layouts';
+import { soundButton } from '../ui/chrome';
 
 export function newProfileScreen(root: HTMLElement): void {
   let kind: CompanionKind = 'fox';
@@ -14,8 +15,7 @@ export function newProfileScreen(root: HTMLElement): void {
     h('option', { value: 'sk', selected: language() === 'sk' }, 'Slovenčina'),
     h('option', { value: 'en', selected: language() === 'en' }, 'English'));
   const lay = h('select', { id: 'np-layout' },
-    h('option', { value: 'sk-qwertz', selected: language() === 'sk' }, t('layouts.sk-qwertz')),
-    h('option', { value: 'us-qwerty', selected: language() !== 'sk' }, t('layouts.us-qwerty')));
+    ...LAYOUT_IDS.map((id) => h('option', { value: id, selected: id === (language() === 'sk' ? 'sk-qwertz' : 'us-qwerty') }, t(`layouts.${id}`))));
   lang.addEventListener('change', () => (lay.value = lang.value === 'sk' ? 'sk-qwertz' : 'us-qwerty'));
   const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('newProfile.companion') },
     ...COMPANION_KINDS.map((k) => {
@@ -54,5 +54,5 @@ export function newProfileScreen(root: HTMLElement): void {
     h('div', { class: 'row' },
       button(t('common.back'), () => go('start'), 'btn ghost', 'back'),
       h('button', { class: 'btn primary', type: 'submit' }, t('newProfile.create'))));
-  root.append(h('div', { class: 'screen form-screen' }, h('div', { class: 'top-right' }, muteButton()), form));
+  root.append(h('div', { class: 'screen form-screen' }, h('div', { class: 'top-right' }, soundButton()), form));
 }

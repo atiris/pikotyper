@@ -4,8 +4,11 @@
     "back": "Back",
     "continue": "Continue",
     "skip": "Skip",
-    "sound": "Sound on / off",
-    "anyKey": "Press any key to start"
+    "sound": "Sound",
+    "anyKey": "Press any key to start",
+    "sound_normal": "normal",
+    "sound_quiet": "quiet",
+    "sound_off": "off"
   },
   "start": {
     "tagline": "A calm typing adventure with all ten fingers",
@@ -32,6 +35,7 @@
   },
   "layouts": {
     "sk-qwertz": "Slovak (QWERTZ)",
+    "sk-qwerty": "Slovak (QWERTY)",
     "us-qwerty": "English US (QWERTY)"
   },
   "kinds": {
@@ -62,7 +66,9 @@
     "dragons": "My dragons",
     "switchProfile": "Players",
     "super": "big challenge",
-    "starsAria": "{n} stars"
+    "starsAria": "{n} stars",
+    "storyName": "Piko and the Dragon Egg",
+    "settings": "Settings for parents"
   },
   "level": {
     "title": "World {world} · Level {level}",
@@ -103,7 +109,8 @@
     "feet": "Both feet flat on the floor.",
     "wrists": "Wrists relaxed and floating, not resting on the desk.",
     "home": "Index fingers on the bumps of F and J, the other fingers next to them.",
-    "eyes": "Eyes on the screen, not on the keyboard."
+    "eyes": "Eyes on the screen, not on the keyboard.",
+    "password": "The password of this adventure. Type it and we can start:"
   },
   "newKey": {
     "title": "A new key!",
@@ -177,7 +184,11 @@
     "nextRescue": "Another mission",
     "replay": "Play again",
     "reward": "See the reward",
-    "takeBreak": "Stretch break"
+    "takeBreak": "Stretch break",
+    "growthTitle": "A new medal! You got better and the game grows with you.",
+    "growthDifficulty": "Things will move a little faster now.",
+    "growthWordLen": "Words can now have {n} letters.",
+    "medalAria": "medal number {n}"
   },
   "story": {
     "next": "Next",
@@ -261,15 +272,28 @@
   },
   "stats": {
     "title": "My keys",
-    "intro": "{piko} counted {n} key presses. Here is how your keys are doing:",
+    "intro": "I count the last {n} presses of every key, so old mistakes stop counting. Tap a key to see how it goes.",
     "empty": "Play a level and I will show you how your keys are doing.",
     "good": "going well",
     "ok": "almost",
     "practice": "let's practise",
     "practiceKeys": "Keys to practise",
-    "keyLine": "{acc} % right, use your {finger}",
+    "keyLine": "{acc} % right, press it with",
     "instead": "(often {key} instead)",
-    "practiceNow": "Practise them now (1 min)"
+    "practiceNow": "Practise them now (1 min)",
+    "clickKey": "Tap a key on the keyboard and I will show you how it goes.",
+    "fingerLine": "Press it with",
+    "keyNoData": "We have not typed this key yet.",
+    "keyAccuracy": "{acc} % right in the last {n} presses",
+    "keySpeed": "You usually press it in {s} s",
+    "keyTotal": "{n} presses so far",
+    "keyConfused": "Sometimes you press instead:",
+    "keyNoConfusion": "Lately you do not mix it up with anything.",
+    "keyAccuracyTrend": "Accuracy by day",
+    "keySpeedTrend": "Time to press by day",
+    "keyHistorySoon": "Play on at least two days to see how it changes.",
+    "practiceKey": "Practice {key} (1 min)",
+    "medals": "My medals"
   },
   "wardrobe": {
     "title": "{piko}'s wardrobe",
@@ -351,14 +375,15 @@
     "fists": "Make fists, then open your fingers wide. Again and again!",
     "shoulders": "Roll your shoulders slowly backwards. Then look far out of the window.",
     "done": "Well rested, {name}! Remember how to sit:",
-    "parentSkip": "Parent: skip"
+    "parentSkip": "Parent: skip",
+    "skipTitle": "Skip the break?",
+    "skipText": "A short stretch helps the back and the eyes. Really skip it?",
+    "skipOk": "Yes, skip"
   },
   "parent": {
     "title": "Parent area: {name}",
-    "checkTitle": "For grown-ups",
-    "checkText": "Write this number in digits:",
-    "checkLabel": "Number",
-    "checkWrong": "Not quite. Try again.",
+    "checkTitle": "Settings for parents",
+    "checkText": "Difficulty, keys and data are changed here. Do you really want to open the settings?",
     "tab": {
       "settings": "Settings",
       "keys": "Keys",
@@ -431,7 +456,11 @@
     "guestNote": "A guest profile is forgotten when the browser tab closes.",
     "deleteTitle": "Delete",
     "delete": "Delete profile {name}",
-    "deleteConfirm": "Really delete the profile {name} with all its progress?"
+    "deleteConfirm": "Really delete the profile {name} with all its progress?",
+    "checkOk": "Yes, open",
+    "deleteOk": "Yes, delete",
+    "auto": "Automatic (grows with the child)",
+    "autoHint": "In automatic mode, difficulty and word length take turns going up after a few minutes of accurate typing; each step earns the child a medal."
   },
   "import": {
     "title": "Import profiles",
@@ -521,5 +550,9 @@
     "stretch-wrist": "Bend your wrist and gently press it with the other hand.",
     "take-break": "After a few minutes, stand up, stretch and drink some water.",
     "celebrate": "Great job! Your companion is proud of you too."
+  },
+  "super": {
+    "on": "Super mode: everything unlocked",
+    "end": "End super mode"
   }
 }

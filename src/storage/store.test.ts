@@ -20,7 +20,7 @@ describe('Store', () => {
     s.add(newProfile('Ema', 'sk'));
     const again = new Store(local, mem());
     expect(again.profiles.map((p) => p.name)).toEqual(['Ema']);
-    expect(JSON.parse(local.getItem(STORE_KEY)!).version).toBe(1);
+    expect(JSON.parse(local.getItem(STORE_KEY)!).version).toBe(2);
   });
 
   it('keeps the guest only in session storage', () => {
@@ -48,6 +48,18 @@ describe('Store', () => {
     const out = migrate({ version: 1, profiles: [p] }).profiles[0];
     expect(out.settings.font).toBe('lexend');
     expect(out.progress.dragons).toEqual([]);
+  });
+
+  it('upgrades v1 key stats and keeps settings a parent changed', () => {
+    const p: any = newProfile('Ema', 'sk');
+    p.settings.difficulty = 6;
+    delete p.settings.autoDifficulty;
+    delete p.settings.autoWordLen;
+    p.stats.keys.f = { presses: 10, errors: 2, rtSum: 4000, rtCount: 8, recent: [400, 0, 400], wrong: { g: 2 } };
+    const out = migrate({ version: 1, profiles: [p] }).profiles[0];
+    expect(out.stats.keys.f).toEqual({ presses: 10, errors: 2, recent: [400, 0, 400], recentWrong: ['g', 'g'], days: [] });
+    expect(out.settings.autoDifficulty).toBe(false);
+    expect(out.settings.autoWordLen).toBe(true);
   });
 });
 

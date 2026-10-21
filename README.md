@@ -25,10 +25,16 @@ hatch a new friend. No explosions, no punishment, no ads, no accounts.
   misses on one key Piko offers a 20-second mini practice.
 - **Weak keys come more often**, and the stats overlay (click Piko) shows which keys to
   practise, with a one-minute drill.
-- **Good habits:** a posture card, a short preparation tip before each session (47 tips),
-  and a stretch break after the session length the parent chose.
-- **Slovak QWERTZ done right:** `ľ š č ť ž ý á í é` on the number row, `ú ä ô ň`, dead keys
-  for `ó ĺ ŕ ď` and accented capitals, and a hint when the real keyboard looks different.
+- **Grows with the child.** Difficulty and word length go up in small automatic steps
+  after a few minutes of accurate play, and every step earns a medal.
+- **Per-key stats** count only the last 50 presses, show what a key is mixed up with and
+  how it changed day by day; click any key on the stats keyboard.
+- **Good habits:** before every adventure a "Ready, steady, type!" card with one posture
+  reminder and a two-letter password to start, a short preparation tip each session
+  (47 tips), and a stretch break after the session length the parent chose.
+- **Slovak keyboards done right:** QWERTZ and QWERTY variants, `ľ š č ť ž ý á í é` on the
+  number row, `ú ä ô ň`, dead keys for `ó ĺ ŕ ď` and accented capitals, and a hint when
+  the real keyboard looks different.
 
 ## The game
 
@@ -49,12 +55,19 @@ Piko can be one of nine animals and wears 28 accessories earned by progress (nev
 
 - **Private:** 100 % in the browser. No backend, no tracking, no cookies. Profiles stay in
   `localStorage` and can be exported / imported as a `.json` file. Guest mode keeps nothing.
-- **Parent area** (lock button, simple adult check): child and companion names, own
+- **Parent area** (gear button, one confirm question): child and companion names, own
   encouraging messages, keyboard layout, active keys (automatic or picked by hand), word
-  length, difficulty 1-10, words without diacritics, no time pressure, session length,
+  length and difficulty 1-10 (automatic or fixed), words without diacritics, no time pressure, session length,
   guide visibility, volumes, fonts (Lexend, Atkinson Hyperlegible, OpenDyslexic), large
   text, reduced motion, high contrast. A dashboard shows a per-key heat map, accuracy and
   rhythm trends, time per day, and a printable progress card.
+- **Direct links:** each child's map has its own address (`.../pikotyper/#/p/<id>`), so you
+  can bookmark it or put it on the desktop. Leaving the app asks first.
+- **Quick sound button:** normal, quiet (20 %) or off.
+- **Super mode (secret password):** on the start screen, type `superpikotyper` quickly
+  (in about 4 seconds, no text field needed). A temporary "Super Piko" player opens with
+  every world, level, key and accessory unlocked, to look around or test. Nothing it does
+  is saved or counted in anyone's statistics; end it with the badge at the top or a reload.
 - **Offline:** installable PWA; works without internet after the first visit.
 
 ## Development

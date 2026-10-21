@@ -9,11 +9,14 @@ export async function playLevel(page: Page, mistakes = true): Promise<string> {
       if (res) return { kind: 'results', text: res.innerText };
       const nk = document.querySelector('.newkey-card .big-key');
       if (nk) return { kind: 'newkey', key: nk.textContent ?? '' };
-      if (document.querySelector('.tip-card, .posture-card')) return { kind: 'card' };
+      const pass = document.querySelector<HTMLElement>('.posture-card')?.dataset.password;
+      if (pass) return { kind: 'password', key: pass };
+      if (document.querySelector('.tip-card')) return { kind: 'card' };
       return { kind: 'play', next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '' };
     });
     if (state.kind === 'results') return state.text!;
     if (state.kind === 'card') await page.keyboard.press('Space');
+    else if (state.kind === 'password') await page.keyboard.type(state.key!);
     else if (state.kind === 'newkey') await page.keyboard.type(state.key === '⇧' ? 'A' : state.key!);
     else if (state.next) {
       if (mistakes && typed % 13 === 4) await page.keyboard.type('q');

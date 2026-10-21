@@ -1,9 +1,12 @@
-/** Fixed-timestep loop: update at 60 Hz, render every animation frame. */
+/**
+ * Update and render once per animation frame with the real frame time, split into
+ * steps of at most 1/60 s. A fixed 60 Hz update would leave some frames without
+ * movement on 75-144 Hz screens and make motion stutter.
+ */
 export class Loop {
   static readonly STEP = 1 / 60;
   private raf = 0;
   private last = 0;
-  private acc = 0;
   running = false;
 
   constructor(private update: (dt: number) => void, private render: () => void) {}
@@ -12,15 +15,15 @@ export class Loop {
     if (this.running) return;
     this.running = true;
     this.last = performance.now();
-    this.acc = 0;
     const frame = (now: number) => {
       if (!this.running) return;
       // Long gaps (tab hidden, debugger) do not fast-forward the game.
-      this.acc += Math.min(0.25, (now - this.last) / 1000);
+      let left = Math.min(0.25, Math.max(0, (now - this.last) / 1000));
       this.last = now;
-      while (this.acc >= Loop.STEP) {
-        this.update(Loop.STEP);
-        this.acc -= Loop.STEP;
+      while (left > 1e-6) {
+        const dt = Math.min(Loop.STEP, left);
+        this.update(dt);
+        left -= dt;
       }
       this.render();
       this.raf = requestAnimationFrame(frame);

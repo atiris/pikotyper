@@ -1,8 +1,12 @@
 import { assetUrl, hasMusic } from '../gfx/assets';
 
 export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat';
+/** Quick sound switch: normal, quiet (20 % of normal) or off. */
+export type SoundLevel = 'normal' | 'quiet' | 'off';
 
-const MUTE_KEY = 'pikotyper:mute';
+export const SOUND_LEVELS: SoundLevel[] = ['normal', 'quiet', 'off'];
+const LEVEL_GAIN: Record<SoundLevel, number> = { normal: 1, quiet: 0.2, off: 0 };
+const SOUND_KEY = 'pikotyper:sound';
 const FADE = 1.2;
 
 /**
@@ -15,13 +19,16 @@ class AudioEngine {
   private musicGain!: GainNode;
   private sfxVolume = 0.7;
   private musicVolume = 0.5;
-  muted = false;
+  level: SoundLevel = 'normal';
   private track: string | null = null;
   private current: { el?: HTMLAudioElement; gain: GainNode; stop: () => void } | null = null;
   private listeners: (() => void)[] = [];
 
   constructor() {
-    try { this.muted = localStorage.getItem(MUTE_KEY) === '1'; } catch { this.muted = false; }
+    try {
+      const saved = localStorage.getItem(SOUND_KEY) as SoundLevel | null;
+      if (saved && SOUND_LEVELS.includes(saved)) this.level = saved;
+    } catch { /* private mode */ }
     const unlock = () => {
       this.ensure();
       if (this.ctx?.state === 'suspended') void this.ctx.resume();
@@ -56,19 +63,21 @@ class AudioEngine {
   private applyVolumes(): void {
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
-    this.sfxGain.gain.setTargetAtTime(this.muted ? 0 : this.sfxVolume * 0.6, now, 0.05);
-    this.musicGain.gain.setTargetAtTime(this.muted ? 0 : this.musicVolume * 0.55, now, 0.2);
+    const k = LEVEL_GAIN[this.level];
+    this.sfxGain.gain.setTargetAtTime(this.sfxVolume * 0.6 * k, now, 0.05);
+    this.musicGain.gain.setTargetAtTime(this.musicVolume * 0.55 * k, now, 0.2);
   }
 
-  toggleMute(): boolean {
-    this.muted = !this.muted;
-    try { localStorage.setItem(MUTE_KEY, this.muted ? '1' : '0'); } catch { /* private mode */ }
+  /** Next quick sound level: normal -> quiet -> off -> normal. */
+  cycleLevel(): SoundLevel {
+    this.level = SOUND_LEVELS[(SOUND_LEVELS.indexOf(this.level) + 1) % SOUND_LEVELS.length];
+    try { localStorage.setItem(SOUND_KEY, this.level); } catch { /* private mode */ }
     this.applyVolumes();
     this.listeners.forEach((l) => l());
-    return this.muted;
+    return this.level;
   }
 
-  onMuteChange(fn: () => void): () => void {
+  onLevelChange(fn: () => void): () => void {
     this.listeners.push(fn);
     return () => (this.listeners = this.listeners.filter((l) => l !== fn));
   }
@@ -106,7 +115,7 @@ class AudioEngine {
 
   sfx(kind: Sfx): void {
     const ctx = this.ctx;
-    if (!ctx || this.muted || ctx.state !== 'running') return;
+    if (!ctx || this.level === 'off' || ctx.state !== 'running') return;
     const t = ctx.currentTime;
     const tone = (freq: number, start: number, dur: number, type: OscillatorType = 'sine', vol = 0.3, slide?: number) => {
       const o = ctx.createOscillator();

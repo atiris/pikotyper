@@ -1,23 +1,34 @@
-// Storage schema v1. These types are the data contract of `localStorage['pikotyper:v1']`
-// and of exported `.json` files.
+// Storage schema v2. These types are the data contract of `localStorage['pikotyper:v1']`
+// and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
-export type LayoutId = 'sk-qwertz' | 'us-qwerty';
+export type LayoutId = 'sk-qwertz' | 'sk-qwerty' | 'us-qwerty';
 export type CompanionKind = 'fox' | 'cat' | 'bunny' | 'owl' | 'dog' | 'bear' | 'panda' | 'penguin' | 'lion';
 export type FontChoice = 'lexend' | 'atkinson' | 'opendyslexic';
 
 export const COMPANION_KINDS: CompanionKind[] = ['fox', 'cat', 'bunny', 'owl', 'dog', 'bear', 'panda', 'penguin', 'lion'];
 
-export interface KeyStat {
+/** One day of practice of a key. */
+export interface KeyDay {
+  /** Local date `YYYY-MM-DD`. */
+  date: string;
   presses: number;
   errors: number;
   /** Sum and count of reaction times (ms) of correct presses. */
   rtSum: number;
   rtCount: number;
+}
+
+export interface KeyStat {
+  /** All presses and errors ever (shown as totals only). */
+  presses: number;
+  errors: number;
   /** Last presses, newest last: reaction ms for a correct press, 0 for an error. */
   recent: number[];
-  /** What was typed instead of this key, with counts. */
-  wrong: Record<string, number>;
+  /** What was typed instead of this key lately, newest last. */
+  recentWrong: string[];
+  /** Days with practice, oldest first. */
+  days: KeyDay[];
 }
 
 export interface SessionRecord {
@@ -36,6 +47,9 @@ export interface Settings {
   manualKeys: string[];
   wordLen: [number, number];
   difficulty: number;
+  /** The app raises difficulty and word length step by step as the child gets better. */
+  autoDifficulty: boolean;
+  autoWordLen: boolean;
   noDiacritics: boolean;
   noTimePressure: boolean;
   sessionMinutes: number;
@@ -68,9 +82,12 @@ export interface Progress {
   dragons: RescuedDragon[];
   /** Ids of the last preparation tips shown, newest last. */
   lastTips: string[];
-  postureSeen: boolean;
   /** Story scenes already seen (they stay skippable). */
   scenesSeen: string[];
+  /** Automatic steps up in difficulty or word length earned so far (each one is a medal). */
+  growth: number;
+  /** Seconds of good play collected toward the next automatic step. */
+  growthSeconds: number;
 }
 
 export interface Companion {
@@ -95,13 +112,15 @@ export interface Profile {
 }
 
 export interface StoreData {
-  version: 1;
+  version: 2;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;
 }
 
 export const GUEST_ID = 'guest';
+/** The temporary super player (see app/super.ts); never stored. */
+export const SUPER_ID = 'super';
 
 export function defaultSettings(): Settings {
   return {
@@ -109,6 +128,8 @@ export function defaultSettings(): Settings {
     manualKeys: [],
     wordLen: [2, 6],
     difficulty: 3,
+    autoDifficulty: true,
+    autoWordLen: true,
     noDiacritics: false,
     noTimePressure: false,
     sessionMinutes: 15,
@@ -124,5 +145,5 @@ export function defaultSettings(): Settings {
 }
 
 export function emptyKeyStat(): KeyStat {
-  return { presses: 0, errors: 0, rtSum: 0, rtCount: 0, recent: [], wrong: {} };
+  return { presses: 0, errors: 0, recent: [], recentWrong: [], days: [] };
 }
