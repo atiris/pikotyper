@@ -36,11 +36,31 @@ No schema change: the picker opens with the child's active keys each time.
   `aria-pressed`, so it all works without a mouse.
 
 ## Steps
-- [ ] Picker UI: keyboard drawing with toggles, slider with steps, counter "{n} kláves".
-- [ ] Hook all free practice entries; start with the chosen keys.
-- [ ] Unit test for the step sets (step 1 = f j space, each step +3, opening step from
+- [x] Picker UI: keyboard drawing with toggles, slider with steps, counter "{n} kláves".
+- [x] Hook all free practice entries; start with the chosen keys.
+- [x] Unit test for the step sets (step 1 = f j space, each step +3, opening step from
   active keys).
-- [ ] Spec update.
-- [ ] Build, vitest, e2e (practice entry now passes the picker; adapt helpers);
+- [x] Spec update.
+- [x] Build, vitest, e2e (practice entry now passes the picker; adapt helpers);
   Playwright MCP: open the picker, move the slider, toggle keys, start, check that the
   words use only those keys.
+
+## Progress notes
+- Picker is its own modal, `src/screens/practice-keys.ts`; step math (`practiceOrder`,
+  `practiceSteps`, `stepHolding`) lives in `src/learning/lessons.ts`.
+- Chosen keys go to the level as a new `chosen` option, not the drill `keys` option:
+  drills skip the new-key cards, the get-ready card and the surprise, and add the active
+  keys around non-letters; free practice keeps all of that and uses exactly the chosen keys.
+- The parent's own words are not mixed into picked practice (they bring other letters).
+- The minimum is 2 letters (not 2 keys besides space): punctuation, Shifts or digits
+  alone make no words.
+- Keys that hold two lesson keys (Slovak digits, `?`, `:`, `!`) are reached through the
+  same "⇧ symbols" switch as the stats heat map; keys outside the lesson order are dim and
+  not clickable. With diacritics off they leave the slider's order too.
+- "Again" on the results replays with the same chosen keys, without the picker.
+
+## Done - 2026-10-21
+Shipped: key picker before every free practice entry on the map (slider in steps of three
+over the lesson order, clickable lit keyboard with `aria-pressed`, ⇧ symbols switch, count,
+2-letter minimum, Esc/Back), practice built only from the chosen keys, unit tests for the
+steps, e2e for the picker, spec update. Nothing left out.

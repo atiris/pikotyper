@@ -6,7 +6,6 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P2] 17-free-practice-key-picker.md - independent; before 20 so help shows the final entries
 - [P2] 18-settings-password.md - schema bump; take the next version if 19 landed first
 - [P2] 19-surprise-rules.md - after 16 (results block); schema bump
 - [P2] 21-robot-finale-badges-celebration.md - after 16 (progress view gets the badge shelf)

@@ -41,6 +41,28 @@ export function firstKeys(layout: LayoutId): string[] {
   return [...lessonGroups(layout)[0]];
 }
 
+/** Keys each step of the free practice slider adds. */
+export const PRACTICE_STEP = 3;
+
+/** The lesson order the free practice picker steps through; no diacritics when the parent turned them off. */
+export function practiceOrder(profile: Profile): string[] {
+  return lessonOrder(profile.layout).filter((k) => !(profile.settings.noDiacritics && DIACRITICS.has(k)));
+}
+
+/** The free practice slider's key sets: the first three keys of the order, three more each step, the last one the whole order. */
+export function practiceSteps(order: string[]): string[][] {
+  const steps: string[][] = [];
+  for (let n = PRACTICE_STEP; n - PRACTICE_STEP < order.length; n += PRACTICE_STEP) steps.push(order.slice(0, n));
+  return steps;
+}
+
+/** Index of the smallest step that holds all these keys; keys outside the order do not count. */
+export function stepHolding(steps: string[][], keys: string[]): number {
+  const all = steps[steps.length - 1] ?? [];
+  const inOrder = keys.filter((k) => all.includes(k));
+  return Math.max(0, steps.findIndex((s) => inOrder.every((k) => s.includes(k))));
+}
+
 /** Recent presses window used by the mastery rule. */
 export const MASTERY_WINDOW = 40;
 /** A key is ready for the next one after fewer presses than full mastery. */

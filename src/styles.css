@@ -320,6 +320,18 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .picker .kb-key { cursor: pointer; }
 .picker .kb-key.picked { background: var(--green); color: #fff; }
 .picker.disabled { opacity: 0.5; pointer-events: none; }
+.practice-picker .kb-key { opacity: 0.45; }
+.practice-picker .kb-key.picked { background: var(--finger); color: var(--finger-ink); opacity: 1; }
+.practice-picker .kb-key.picked .kb-shift, .practice-picker .kb-key.picked .kb-num { color: var(--finger-ink); }
+.practice-picker .kb-key.off { opacity: 0.25; cursor: default; }
+.practice-picker .kb-key:focus-visible { outline: 3px solid var(--brand-dark); outline-offset: 2px; opacity: 1; }
+.practice-keys h2 { margin-top: 0; }
+.pk-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.pk-count { font-weight: 700; }
+.pk-slider { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.8rem; margin: 0.8rem 0 0.4rem; font-weight: 600; }
+.pk-slider input { width: 100%; accent-color: var(--brand); }
+.pk-step { min-width: 8.5em; text-align: right; color: var(--ink-soft); }
+.pk-hint { min-height: 1.3em; margin: 0.2rem 0 0.6rem; }
 
 /* Overlays and cards */
 .overlay { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; background: rgba(40, 30, 50, 0.35); backdrop-filter: blur(3px); padding: 1rem; animation: fade-in 0.2s ease; }
@@ -433,8 +445,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .heatmap.clickable .kb-key:hover { transform: translateY(-2px); }
 .heat-host { display: grid; justify-items: start; gap: var(--sp-1); min-width: 0; }
 .heat-host .heatmap { width: 100%; }
-.heatmap.shifted .kb-key:has(.kb-shift:not(:empty)) .kb-label { opacity: 0.35; }
-.heatmap.shifted .kb-shift { font-size: 0.9em; font-weight: 700; color: var(--ink); }
+.heatmap.shifted .kb-key:has(.kb-shift:not(:empty)) .kb-label, .practice-picker.shifted .kb-key:has(.kb-shift:not(:empty)) .kb-label { opacity: 0.35; }
+.heatmap.shifted .kb-shift, .practice-picker.shifted .kb-shift { font-size: 0.9em; font-weight: 700; color: var(--ink); }
 .heatmap .kb-key.selected { outline: 3px solid var(--brand); outline-offset: 1px; z-index: 1; }
 .stats-split, .heat-split { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); align-items: start; }
 .heat-split { grid-template-columns: minmax(0, 3fr) minmax(min(100%, 300px), 2fr); }

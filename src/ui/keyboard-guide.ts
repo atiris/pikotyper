@@ -86,6 +86,7 @@ function label(base: string, shift: string): string {
 export class KeyboardGuide {
   readonly el: HTMLElement;
   private keys = new Map<string, HTMLElement>();
+  private board: HTMLElement;
   private hands: HTMLElement;
   private paws: HTMLElement;
   private hint: HTMLElement;
@@ -93,7 +94,7 @@ export class KeyboardGuide {
   constructor(private layout: Layout) {
     this.el = document.createElement('div');
     this.el.className = 'kb-guide';
-    const board = document.createElement('div');
+    const board = this.board = document.createElement('div');
     board.className = 'kb';
     board.setAttribute('aria-hidden', 'true');
     for (const row of layout.rows) {
@@ -195,9 +196,20 @@ export class KeyboardGuide {
     }
   }
 
-  /** Makes keys clickable (parent key picker). */
+  /** Makes keys clickable (key pickers, heat map). */
   onKeyClick(fn: (code: string, el: HTMLElement) => void): void {
     for (const [code, el] of this.keys) el.addEventListener('click', () => fn(code, el));
+  }
+
+  /** Lets the keyboard and screen readers reach the keys; the picker gives them role, label and state. */
+  exposeKeys(): void {
+    this.board.removeAttribute('aria-hidden');
+    this.board.addEventListener('keydown', (e) => {
+      const key = (e.target as HTMLElement).closest<HTMLElement>('.kb-key[role="button"]');
+      if (!key || (e.key !== 'Enter' && e.key !== ' ')) return;
+      e.preventDefault();
+      key.click();
+    });
   }
 
   keyEl(code: string): HTMLElement | undefined {

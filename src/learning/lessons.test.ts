@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { LAYOUTS } from '../keyboard/layouts';
-import { advanceLesson, firstKeys, isMastered, keysToIntroduce, lessonOrder, reactionLimit, shiftKeyOf } from './lessons';
+import { advanceLesson, firstKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
 import { STATS_WINDOW, keyReport, lastTraining, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
@@ -143,5 +143,34 @@ describe('last training', () => {
     expect(lastTraining(p, now)).toEqual({ daysAgo: 2, weekMinutes: 8 });
     p.stats.sessions.push({ date: '2026-10-21', seconds: 0, chars: 0, errors: 0, cpm: 0 });
     expect(lastTraining(p, now).daysAgo).toBe(2);
+  });
+});
+
+describe('free practice steps', () => {
+  const order = lessonOrder('sk-qwertz');
+  const steps = practiceSteps(order);
+
+  it('starts with f j and space and adds three keys each step', () => {
+    expect(steps[0]).toEqual(['f', 'j', ' ']);
+    expect(steps[1]).toEqual(['f', 'j', ' ', 'd', 'k', 's']);
+    for (let i = 1; i < steps.length - 1; i++) expect(steps[i].length).toBe(steps[i - 1].length + 3);
+    expect(steps[steps.length - 1]).toEqual(order);
+    expect(steps.length).toBe(Math.ceil(order.length / 3));
+  });
+
+  it('opens on the smallest step holding all active keys', () => {
+    expect(stepHolding(steps, ['f', 'j', ' '])).toBe(0);
+    expect(stepHolding(steps, ['f', 'j', ' ', 'd'])).toBe(1);
+    expect(stepHolding(steps, ['f', 'j', ' ', 'd', 'k', 's', 'l'])).toBe(2);
+    expect(stepHolding(steps, ['f', 'j', 'ShiftL'])).toBe(order.indexOf('ShiftL') / 3 | 0);
+    // A key outside the order (a parent's manual pick) does not push the slider to the end.
+    expect(stepHolding(steps, ['f', 'j', '='])).toBe(0);
+  });
+
+  it('leaves diacritics out when they are turned off', () => {
+    const p = newProfile('Ema', 'sk', 'sk-qwertz');
+    p.settings.noDiacritics = true;
+    expect(practiceOrder(p)).not.toContain('á');
+    expect(practiceOrder(p)).toContain('a');
   });
 });

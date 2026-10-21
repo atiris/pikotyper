@@ -143,6 +143,18 @@
     "words": "Slová: {n}",
     "finish": "Skončiť"
   },
+  "practiceKeys": {
+    "title": "Ktoré klávesy si precvičíš?",
+    "intro": "Posuň jazdec, pridá ďalšie klávesy v poradí lekcií. Klikni na kláves a pridáš ho alebo zoberieš.",
+    "slider": "Klávesy",
+    "step": "krok {n} z {total}",
+    "own": "vlastný výber",
+    "countOne": "{n} kláves",
+    "countFew": "{n} klávesy",
+    "countMany": "{n} kláves",
+    "needLetters": "Vyber aspoň {n} písmená.",
+    "start": "Začať"
+  },
   "touch": {
     "title": "Potrebuješ klávesnicu",
     "text": "PikoTyper učí písať na skutočnej klávesnici. Pripoj ku tabletu klávesnicu alebo sa hraj na počítači."

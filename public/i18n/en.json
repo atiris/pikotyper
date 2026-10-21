@@ -143,6 +143,18 @@
     "words": "Words: {n}",
     "finish": "Finish"
   },
+  "practiceKeys": {
+    "title": "Which keys will you practise?",
+    "intro": "Move the slider to add keys in the lesson order. Click a key to add it or take it away.",
+    "slider": "Keys",
+    "step": "step {n} of {total}",
+    "own": "own choice",
+    "countOne": "{n} key",
+    "countFew": "{n} keys",
+    "countMany": "{n} keys",
+    "needLetters": "Choose at least {n} letters.",
+    "start": "Start"
+  },
   "touch": {
     "title": "A keyboard is needed",
     "text": "PikoTyper teaches typing on a real keyboard. Please connect a keyboard to this tablet or play on a computer."

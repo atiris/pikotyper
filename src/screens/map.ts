@@ -9,6 +9,7 @@ import { activeKeys } from '../learning/lessons';
 import { button, h, icon } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
 import { ownTextPhrases } from '../game/modes/practice';
+import { openPracticeKeys } from './practice-keys';
 import { openStats } from './stats';
 import { taskCard } from './task';
 
@@ -44,13 +45,13 @@ export function mapScreen(root: HTMLElement): void {
   const keysBubble = (n: number) => {
     bubble.replaceChildren(
       h('p', {}, t(n === 1 ? 'map.keysOne' : n < 5 ? 'map.keysFew' : 'map.keysMany', { n })),
-      h('div', { class: 'bubble-actions' }, button(t('map.practice'), () => go('level', { id: 'practice' }), 'btn small', 'practice')));
+      h('div', { class: 'bubble-actions' }, button(t('map.practice'), () => openPracticeKeys(), 'btn small', 'practice')));
     bubble.hidden = false;
   };
   const next = nextLevel(p);
   const rescue = rescueUnlocked(p);
   // Nothing open for the child's keys: continue means practice, which brings new keys.
-  const play = button(t('map.continue'), () => (next ? playLevel(next.id) : go('level', { id: 'practice' })), 'btn primary big', 'play');
+  const play = button(t('map.continue'), () => (next ? playLevel(next.id) : openPracticeKeys()), 'btn primary big', 'play');
   const nextName = next ? t('level.title', { world: next.world + 1, level: next.index + 1 }) : t('map.practice');
   play.title = nextName;
   play.setAttribute('aria-label', `${t('map.continue')}: ${nextName}`);
@@ -68,7 +69,7 @@ export function mapScreen(root: HTMLElement): void {
         bubble,
         taskCard(p),
         play,
-        button(t('map.practice'), () => go('level', { id: 'practice' }), 'btn', 'practice'),
+        button(t('map.practice'), () => openPracticeKeys(), 'btn', 'practice'),
         ownTextPhrases(p).length ? button(t('map.ownText'), () => go('level', { id: 'practice', text: true }), 'btn', 'read') : null,
         button(t('map.wardrobe'), () => go('wardrobe'), 'btn', 'shirt'),
         button(t('progress.title'), () => openStats(), 'btn', 'chart'),

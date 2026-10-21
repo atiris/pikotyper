@@ -23,6 +23,8 @@ interface LevelParams {
   id: string;
   /** Drill keys (practice now). */
   keys?: string[];
+  /** Free practice: the keys chosen in the key picker. */
+  chosen?: string[];
   seconds?: number;
   /** Free practice of the parent's own text. */
   text?: boolean;
@@ -41,6 +43,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   const exit = () => go('map');
   rt = new LevelRuntime(root, def, {
     keys: params.keys,
+    chosen: params.chosen,
     seconds: params.seconds ?? null,
     own: task ? taskOwn(task) : undefined,
     onExit: exit,

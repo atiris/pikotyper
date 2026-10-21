@@ -60,29 +60,32 @@ const BOLT_CSS_X = 200;
 const BOLT_SIZE = 150;
 
 /**
- * The targets of a profile: its active keys (or a drill's), weak keys more often, the newest
- * group in focus, and the parent's own words and text mixed in (not in drills), or a task's.
+ * The targets of a profile: its active keys (or a drill's, or the keys chosen for free practice),
+ * weak keys more often, the newest group in focus, and the parent's own words and text mixed
+ * in (not in drills or chosen keys, their words would bring other letters), or a task's.
  */
-export function wordSource(p: Profile, drill?: string[], own?: WordSourceOwn): WordSource {
+export function wordSource(p: Profile, drill?: string[], own?: WordSourceOwn, chosen?: string[]): WordSource {
   // Practice of space, punctuation or a Shift needs letters around it: the known ones.
-  const keys = !drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])];
+  const keys = chosen ?? (!drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])]);
   const s = p.settings;
   return new WordSource(app.words, {
     keys,
     len: s.wordLen,
     noDiacritics: s.noDiacritics,
     weights: keyWeights(p, keys),
-    focus: drill ?? newestGroup(p),
+    focus: drill ?? newestGroup(p).filter((k) => keys.includes(k)),
     layout: LAYOUTS[p.layout],
     names: tList('names'),
     shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k], s.difficulty)])),
-    own: drill ? undefined : own ?? { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
+    own: drill || chosen ? undefined : own ?? { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
   });
 }
 
 export interface RuntimeOptions {
   /** Practice: only these keys (drills), else the profile's active keys. */
   keys?: string[];
+  /** Free practice: words only from these keys, chosen in the key picker. */
+  chosen?: string[];
   /** Practice length in seconds; null = until the child stops. */
   seconds?: number | null;
   /** Own words and text instead of the parent's (a task's). */
@@ -184,7 +187,7 @@ export class LevelRuntime {
     this.mismatch = new LayoutMismatchDetector(p.layout);
 
     const lay = LAYOUTS[p.layout];
-    this.words = wordSource(p, opts.keys, opts.own);
+    this.words = wordSource(p, opts.keys, opts.own, opts.chosen);
     this.surprise = surpriseFor(p, def, !!opts.keys);
 
     // DOM: HUD, stage, Piko, bubble, guide.
