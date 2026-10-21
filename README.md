@@ -30,7 +30,11 @@ no punishment, no ads, no accounts.
 - **Weak keys come more often**, and the stats overlay (click Piko) shows which keys to
   practise, with a one-minute drill.
 - **Grows with the child.** Difficulty and word length go up in small automatic steps
-  after a few minutes of accurate play, and every step earns a medal.
+  after a few minutes of accurate play where few words floated by, and every step earns a
+  medal. Words move at the child's own word pace (reading included), and when two pass by
+  in a row the next ones come slower.
+- **Levels open with keys.** The five levels of each world need 2, 4, 6, 8 and 10 known
+  keys, so ten keys carry a child through a whole story with varied words.
 - **Piko keeps the child curious and helps out.** After a level he asks a question about
   the next one and answers it only when that level is done. Fifteen words in a row
   without a mistake charge a paw (three at most): on Enter, Piko's paws replace the hands

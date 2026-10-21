@@ -40,6 +40,8 @@
   many as the level allows), the closest one has used most of its time and the child is
   not typing it. The button pulses gently only while Piko is typing by himself after such
   an automatic start, which says "I am helping" without words.
+- Piko's speech bubble never covers a word: when it would, it moves to the top left of
+  the scene, and when that spot is covered too, it hides until a spot is free.
 - Clicking Piko opens the statistics overlay ([statistics](../profiles/statistics.md)).
 - After world 5 a newly hatched friend (a baby dragon) joins; in story 2 the robot Bolt
   walks next to Piko ([story](../game/story.md)). More little friends, dragons and
@@ -54,5 +56,6 @@
   and gives one more gentle reason to collect stars.
 - An open question is a gentle reason to play one more level, and the answer teaches
   something on the way.
+- The word is the child's task, so it must always be readable.
 - Paw help is a reward for accuracy that makes play more fun and takes the edge off a
   crowded moment, without blurring what the child really typed.

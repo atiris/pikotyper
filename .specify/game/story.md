@@ -10,8 +10,9 @@ skippable intro scenes (a few lines of text and a simple animation) tell the sto
 1. **Training Meadow** - the meadow creatures play catch with Piko, the goalkeeper. A bee,
    butterfly, ladybug, fly or mouse brings a leaf with a word and sends it toward Piko; a
    typed word lets his fan blow the leaf back to its creature, which catches it and goes
-   home. A leaf not typed in time flies past him: a goal, everybody cheers, so a miss is a
-   laugh, not a failure. The leaf size shows the word length at a glance. Animals are
+   home. A leaf not typed in time flies past him: a goal, everybody cheers (a "GOAL!" pop,
+   confetti and the creature's joy, but no words from Piko, which would nag), so a miss is
+   a laugh, not a failure. The leaf size shows the word length at a glance. Animals are
    never the target of anything (no webs, nets or swatters): even soft hitting or catching
    is the wrong message for small children; playing with them is better.
    Super-obstacle: a hedgehog throws volleys of leaves from its back.
@@ -58,7 +59,8 @@ worried at a mistake and happy at a finished word.
 ### Both stories
 - Story 2 opens when world 2 of story 1 is finished; from then on both stories go on
   independently. Lesson keys do not depend on stories.
-- Worlds of a story unlock in order; finished levels can always be replayed.
+- Worlds of a story unlock in order; finished levels can always be replayed. A level also
+  needs a few known keys ([lesson progression](../learning/lesson-progression.md)).
 - On the map each story is one row with its name above its world cards, left aligned with
   the first card; a closed story shows when it opens. World numbers run on across stories.
 - Rescue missions open with the first finished story and are drawn from the finished

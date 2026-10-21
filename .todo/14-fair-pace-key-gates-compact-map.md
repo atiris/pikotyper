@@ -120,7 +120,7 @@ No schema change and no new stored field: the gate is computed from
 - [x] **Bubble vs. labels:** label rects per frame, bubble second spot, hide/show.
 - [x] **Meadow goal lines removed.**
 - [x] **Compact map cards** (CSS + any class change in `map.ts`).
-- [ ] **Specs:** `lesson-progression.md` (keys needed per level, why), `mechanics.md`
+- [x] **Specs:** `lesson-progression.md` (keys needed per level, why), `mechanics.md`
   (pace from word pace, pressure valve, growth needs typed share; why),
   `story.md` (no goal comments), `piko.md` (bubble never covers a word),
   `visuals.md` (map cards one row to 1200 px, 3 + 2 below).

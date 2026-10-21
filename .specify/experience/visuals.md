@@ -16,6 +16,9 @@
   statistics) and the buttons, all of one height; the first and biggest one just says
   "Continue" and names the level it starts only on hover. The right column holds the
   stories. One spacing scale and a clear heading order (greeting, story name, world names).
+- The world cards of a story stay in one row while the window is at least about 1000 px
+  wide (they shrink with the space, the side column narrows below 1300 px); in a narrower
+  window they go three and two.
 - Back buttons in top bars have the same height as the round buttons beside them.
 - Fullscreen: a round button on the map and in levels; a parent can set a profile to
   start in fullscreen (browsers allow it only after the first key press or click).
@@ -26,4 +29,5 @@
 ## Why
 - Children judge quality visually; a calm, cute style supports the peaceful philosophy.
 - A map that repeats itself or wastes its top area hides what matters: where to go next.
+- Cards that wrap into two rows on a common laptop break the story's path into pieces.
 - Mixed shapes in the top bar looked untidy; fullscreen hides the browser's distractions.
