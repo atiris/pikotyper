@@ -1,0 +1,600 @@
+{
+ "images": {
+  "base-template": {
+   "w": 512,
+   "h": 512
+  },
+  "bg-dragons-far": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-dragons-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-dragons-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-egg-far": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-egg-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-egg-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-meadow-far": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-meadow-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-meadow-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-planet-far": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-planet-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-planet-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-space-far": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-space-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-space-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "obj-asteroid-big": {
+   "w": 512,
+   "h": 501
+  },
+  "obj-asteroid-small": {
+   "w": 512,
+   "h": 512
+  },
+  "obj-bee": {
+   "w": 512,
+   "h": 512
+  },
+  "obj-boulder-1": {
+   "w": 512,
+   "h": 480
+  },
+  "obj-boulder-2": {
+   "w": 512,
+   "h": 480
+  },
+  "obj-boulder-3": {
+   "w": 512,
+   "h": 462
+  },
+  "obj-butterfly": {
+   "w": 512,
+   "h": 512
+  },
+  "obj-dragon-baby-1": {
+   "w": 428,
+   "h": 512
+  },
+  "obj-dragon-baby-2": {
+   "w": 429,
+   "h": 512
+  },
+  "obj-dragon-baby-3": {
+   "w": 428,
+   "h": 512
+  },
+  "obj-dragon-hatched": {
+   "w": 383,
+   "h": 512
+  },
+  "obj-egg-cracking": {
+   "w": 401,
+   "h": 512
+  },
+  "obj-egg": {
+   "w": 401,
+   "h": 512
+  },
+  "obj-fly": {
+   "w": 512,
+   "h": 444
+  },
+  "obj-ladybug": {
+   "w": 512,
+   "h": 454
+  },
+  "obj-mole": {
+   "w": 512,
+   "h": 512
+  },
+  "obj-mouse": {
+   "w": 478,
+   "h": 512
+  },
+  "obj-planet-1": {
+   "w": 512,
+   "h": 345
+  },
+  "obj-planet-2": {
+   "w": 512,
+   "h": 512
+  },
+  "obj-planet-3": {
+   "w": 472,
+   "h": 472
+  },
+  "obj-planet-4": {
+   "w": 512,
+   "h": 512
+  },
+  "obj-planet-5": {
+   "w": 512,
+   "h": 512
+  },
+  "obj-rock-falling-1": {
+   "w": 429,
+   "h": 486
+  },
+  "obj-rock-falling-2": {
+   "w": 488,
+   "h": 512
+  },
+  "obj-rock-round": {
+   "w": 512,
+   "h": 501
+  },
+  "obj-rocket": {
+   "w": 512,
+   "h": 512
+  },
+  "obj-sign": {
+   "w": 420,
+   "h": 512
+  },
+  "obj-spider-web": {
+   "w": 512,
+   "h": 511
+  },
+  "obj-spider": {
+   "w": 512,
+   "h": 370
+  },
+  "obj-stone": {
+   "w": 512,
+   "h": 388
+  },
+  "obj-stump": {
+   "w": 494,
+   "h": 512
+  },
+  "obj-swatter": {
+   "w": 355,
+   "h": 512
+  },
+  "acc-cap": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-round-glasses": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-scarf": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-sneakers": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-crown": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-star-glasses": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-bow-tie": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-butterfly-wings": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-wizard-hat": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-wand": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-boots": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-star-cape": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-flower-wreath": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-rain-boots": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-backpack": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-knit-vest": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-balloon": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-beanie": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-neckerchief": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-dragon-wings": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-hair-bow": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-heart-glasses": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-star-shirt": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-pink-sneakers": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-explorer-hat": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-lantern": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-explorer-vest": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-green-boots": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-bear-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-bear-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-bear-thinking": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-bunny-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-bunny-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-bunny-thinking": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-cat-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-cat-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-cat-thinking": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-dog-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-dog-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-dog-thinking": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-fox-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-fox-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-fox-thinking": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-lion-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-lion-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-lion-thinking": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-owl-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-owl-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-owl-thinking": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-panda-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-panda-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-panda-thinking": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-penguin-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-penguin-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "piko-penguin-thinking": {
+   "w": 512,
+   "h": 512
+  },
+  "ui-logo": {
+   "w": 429,
+   "h": 512
+  },
+  "ui-map-dragons": {
+   "w": 512,
+   "h": 497
+  },
+  "ui-map-egg": {
+   "w": 494,
+   "h": 512
+  },
+  "ui-map-meadow": {
+   "w": 512,
+   "h": 422
+  },
+  "ui-map-planet": {
+   "w": 459,
+   "h": 512
+  },
+  "ui-map-space": {
+   "w": 512,
+   "h": 500
+  },
+  "ui-star-empty": {
+   "w": 512,
+   "h": 490
+  },
+  "ui-star": {
+   "w": 512,
+   "h": 490
+  }
+ },
+ "accessories": [
+  {
+   "id": "cap",
+   "slot": "head",
+   "set": "a"
+  },
+  {
+   "id": "round-glasses",
+   "slot": "eyes",
+   "set": "a"
+  },
+  {
+   "id": "scarf",
+   "slot": "neck",
+   "set": "a"
+  },
+  {
+   "id": "sneakers",
+   "slot": "feet",
+   "set": "a"
+  },
+  {
+   "id": "crown",
+   "slot": "head",
+   "set": "b"
+  },
+  {
+   "id": "star-glasses",
+   "slot": "eyes",
+   "set": "b"
+  },
+  {
+   "id": "bow-tie",
+   "slot": "neck",
+   "set": "b"
+  },
+  {
+   "id": "butterfly-wings",
+   "slot": "back",
+   "set": "b"
+  },
+  {
+   "id": "wizard-hat",
+   "slot": "head",
+   "set": "c"
+  },
+  {
+   "id": "wand",
+   "slot": "hand",
+   "set": "c"
+  },
+  {
+   "id": "boots",
+   "slot": "feet",
+   "set": "c"
+  },
+  {
+   "id": "star-cape",
+   "slot": "back",
+   "set": "c"
+  },
+  {
+   "id": "flower-wreath",
+   "slot": "head",
+   "set": "d"
+  },
+  {
+   "id": "rain-boots",
+   "slot": "feet",
+   "set": "d"
+  },
+  {
+   "id": "backpack",
+   "slot": "back",
+   "set": "d"
+  },
+  {
+   "id": "knit-vest",
+   "slot": "body",
+   "set": "d"
+  },
+  {
+   "id": "balloon",
+   "slot": "hand",
+   "set": "e"
+  },
+  {
+   "id": "beanie",
+   "slot": "head",
+   "set": "e"
+  },
+  {
+   "id": "neckerchief",
+   "slot": "neck",
+   "set": "e"
+  },
+  {
+   "id": "dragon-wings",
+   "slot": "back",
+   "set": "e"
+  },
+  {
+   "id": "hair-bow",
+   "slot": "head",
+   "set": "f"
+  },
+  {
+   "id": "heart-glasses",
+   "slot": "eyes",
+   "set": "f"
+  },
+  {
+   "id": "star-shirt",
+   "slot": "body",
+   "set": "f"
+  },
+  {
+   "id": "pink-sneakers",
+   "slot": "feet",
+   "set": "f"
+  },
+  {
+   "id": "explorer-hat",
+   "slot": "head",
+   "set": "g"
+  },
+  {
+   "id": "lantern",
+   "slot": "hand",
+   "set": "g"
+  },
+  {
+   "id": "explorer-vest",
+   "slot": "body",
+   "set": "g"
+  },
+  {
+   "id": "green-boots",
+   "slot": "feet",
+   "set": "g"
+  }
+ ],
+ "music": [
+  "music-break",
+  "music-dragons",
+  "music-egg",
+  "music-meadow",
+  "music-menu",
+  "music-planet",
+  "music-relaxing",
+  "music-space"
+ ]
+}
