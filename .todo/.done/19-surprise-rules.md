@@ -69,8 +69,8 @@ Do this after plan 16 (compact results card).
 - [x] Get-ready card teaser and the results block with question + answer; built-in
   teaser answer with its question.
 - [x] Prekvapenia tab table and form; remove the own questions editor.
-- [ ] Specs (WHAT and WHY).
-- [ ] Build, vitest, e2e (adapt `own-content.spec.ts`); Playwright MCP: add a level rule
+- [x] Specs (WHAT and WHY).
+- [x] Build, vitest, e2e (adapt `own-content.spec.ts`); Playwright MCP: add a level rule
   for world 1 level 1 (not repeating), play it and see question + answer, check it is
   marked done and not shown again; a 1 minute rule; the table on a narrow screen.
 
@@ -92,3 +92,15 @@ Decisions taken while implementing (2026-10-21):
 - Editing a rule's question or answer keeps its state; changing the trigger, number,
   level or repeat makes it wait again from now (and clears done).
 - The built-in teaser answer shows above it "Pamätáš si otázku?" with the question.
+
+## Done - 2026-10-21
+- Shipped: surprises as rules (level, minutes, levels, stars, random; repeat on/off) in a
+  store v11 migration that resets surprises and drops own questions; a rule engine with
+  unit tests; the question with "still left" on the get-ready card; question and answer
+  together on the results (the built-in teaser answer too, with "Pamätáš si otázku?");
+  a "Prekvapenia" tab with one table (cards on a narrow screen) and an add/edit form;
+  specs and README. Verified with vitest, e2e and the Playwright MCP (level rule for
+  world 1 level 1 shown and done, a 1 minute rule fired in the run that reached it,
+  edit restarts the count, narrow table without horizontal scroll).
+- Left out: nothing; share links carry no surprises (only the whole-profile move code,
+  which the migration covers).

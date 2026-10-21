@@ -22,22 +22,28 @@
   is slow and points to "no time pressure" for a child who still cannot keep up.
 - An **own content** tab collects what the parent writes for the child:
   - own encouraging messages, mixed into the companion's lines;
-  - **surprises**: a question and an answer (up to 20, 200 characters each) placed on a
-    story level, on the next level or rescue mission, or on free practice of a minute at
-    least, with the stars needed (1-3, two by default: "well enough"). The companion asks
-    the question on the get-ready card and again on the results card. With enough stars
-    (in practice: the same accuracy limits) the answer is shown, highlighted, once; from
-    then on the surprise is never shown to the child again, and the parent sees it as
-    revealed with its date. Without them the companion says "almost, try once more" and the
-    surprise waits. Several on one place come oldest first, one per level. Surprises never
-    count in statistics;
-  - **own questions and answers** (up to 30, 160 characters each): every second teaser
-    question after a story level is the next own question, in order and then from the start
-    again; its answer comes on the results card of the next finished story level, even after
-    a break;
   - **own words** (up to 300) and **own text** (up to 4000 characters) with the share of
     targets taken from them and a preview of five sample targets
     ([words](../learning/words.md)).
+- A **surprises** tab holds the parent's surprises as rules in one table (up to 50; question
+  and answer up to 200 characters each). Each rule says when the answer comes:
+  - **after a level** (a story level picked by world and level): the companion asks on that
+    level's get-ready card and tells the answer on its results when it is finished;
+  - **after minutes of training** (story levels and practice together), **after more
+    levels** or **after more stars**, counted from when the rule was made: the companion
+    asks on every get-ready card while it waits, with what is still left ("3 more
+    levels"), and tells the answer on the results of the level that reaches it;
+  - **at random**: a pool of free questions; after a finished level, now and then (one in
+    three) and never twice a day, one of them comes with its answer at once.
+  A rule either repeats (counts again from the reveal, fires on every finish of its level,
+  or goes back to the pool) or is done after its reveal and never shown again. A level run
+  has one surprise at most, in the order level, minutes, levels, stars, random; Piko's own
+  teaser waits in such a run. The answer always comes right under its question,
+  highlighted. The table shows the question, the answer, when (in words), repeat, the
+  state (waiting, "12 / 20 min", done with its date) and edit and delete; a form under it
+  adds or edits a rule. Changing when a rule fires makes it wait again from now. On a
+  narrow screen the rows become cards. Surprises never count in statistics. Free
+  practice drills of chosen keys have no surprise.
 - Dashboard: per-key heat map on the keyboard, accuracy and rhythm trend, time played per
   day, finished levels.
 - Printable progress card / certificate (browser print), instead of class codes.
@@ -52,6 +58,10 @@
   each celebrated, make getting better visible and rewarding.
 - Parents and teachers want control and visible progress; printable cards avoid accounts
   and rosters ([research](../../.research/features/parent-dashboard.md)).
-- A real reward hidden behind a level (a treat, a trip, a game evening) and the family's
-  own questions tie the game to the child's life; told once and only after good play, the
-  answer stays worth waiting for ([research](../../.research/game/piko-questions.md)).
+- A real reward (a treat, a trip, a game evening) ties the game to the child's life
+  ([research](../../.research/game/piko-questions.md)). Parents use it as a real reward,
+  so they want to say exactly when it comes: after a given level, after some training
+  time, after more levels or stars, or now and then over a long time. One table shows
+  every rule and what is done.
+- After a level a child may not remember the question any more, so the answer always
+  comes together with it.

@@ -15,11 +15,12 @@ test('own words and a surprise from the parent reach the child\'s next level', a
   await page.locator('.own-text select').selectOption('most');
   await expect(page.locator('.own-preview li')).toHaveCount(5);
 
-  await page.locator('.own-surprises textarea').first().fill('Where is the treat?');
-  await page.locator('.own-surprises textarea').nth(1).fill('Behind the fridge.');
-  await page.locator('.own-surprises select').nth(1).selectOption('1');
-  await page.locator('.own-surprises .btn.primary').click();
-  await expect(page.locator('.own-surprises .own-list li')).toHaveCount(1);
+  await page.locator('.tab[data-tab=surprises]').click();
+  await page.locator('.surprise-form textarea').first().fill('Where is the treat?');
+  await page.locator('.surprise-form textarea').nth(1).fill('Behind the fridge.');
+  await page.locator('.surprise-form select').nth(1).selectOption('w1-1');
+  await page.locator('.surprise-form .btn.primary').click();
+  await expect(page.locator('.surprise-table tbody tr')).toHaveCount(1);
 
   await page.locator('.bar .btn').first().click();
   await page.locator('.map-side .btn.primary').click();
@@ -35,8 +36,9 @@ test('own words and a surprise from the parent reach the child\'s next level', a
   const typed: string[] = [];
   await playLevel(page, false, typed);
   expect(typed.join('')).toMatch(/lopta|ruka/);
+  await expect(page.locator('.results-card .surprise.ask')).toContainText('Where is the treat?');
   await expect(page.locator('.results-card .surprise.answer')).toHaveText('Behind the fridge.');
-  const revealed = await page.evaluate(() => JSON.parse(localStorage.getItem('pikotyper:v1')!).profiles[0].surprises[0].revealedAt);
-  expect(revealed).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  const done = await page.evaluate(() => JSON.parse(localStorage.getItem('pikotyper:v1')!).profiles[0].surprises[0].doneAt);
+  expect(done).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   expect(errors).toEqual([]);
 });

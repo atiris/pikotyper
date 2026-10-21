@@ -89,15 +89,16 @@ Piko can be one of nine animals and wears 35 accessories earned by progress (nev
   guide visibility, volumes, fonts (Lexend, Atkinson Hyperlegible, OpenDyslexic), large
   text, reduced motion, high contrast. A dashboard shows a per-key heat map, accuracy and
   rhythm trends, time per day, and a printable progress card.
-- **Own content** (its own tab): encouraging messages, own questions and answers that take
-  turns with the companion's questions, own words (for example this week's spelling words)
-  and an own text, mixed into the levels by a share you pick. The text can also be typed
-  in order as free practice ("My text").
-- **Surprises:** this is meant for real rewards. Hide a treat, a trip or a game evening
-  behind a level: write a question ("Do you know where Dad hid a sweet reward?") and the
-  answer ("In the cupboard behind the fridge."). The companion asks the question before
-  that level and shows the answer only once, after the level is done well enough (the
-  stars you choose); otherwise it says "almost, try once more" and keeps the secret.
+- **Own content** (its own tab): encouraging messages, own words (for example this week's
+  spelling words) and an own text, mixed into the levels by a share you pick. The text can
+  also be typed in order as free practice ("My text").
+- **Surprises** (their own tab): this is meant for real rewards. Write a question ("Do you
+  know where Dad hid a sweet reward?") and the answer ("In the cupboard behind the
+  fridge."), and say when the answer comes: after a given level, after some minutes of
+  training, after some more levels or stars, or at random now and then. The companion asks
+  the question before the level (with what is still left) and shows the answer right under
+  it when the time comes, once or again and again. One table shows every surprise and its
+  state.
 - **Reading aloud:** a button in the level bar reads the word to type and the companion's
   lines with the browser's own voice (shown when the browser has one for the language).
 - **Direct links:** each child's map has its own address (`.../pikotyper/#/p/<id>`), so you
