@@ -1,4 +1,4 @@
-# 09 Own word lists, own text and reading aloud
+# 09 Own content tab (words, text, encouragements, questions) and reading aloud
 
 Depends on 07 (own text needs space and punctuation). Client side only.
 Affected: `src/storage/schema.ts` + migration (new settings), `src/screens/parent.ts`,
@@ -10,6 +10,17 @@ Parents and teachers want this week's spelling words and their own texts in the
 game (top research proposals); reading aloud helps young and dyslexic readers.
 
 ## Decisions
+- **One tab for own content.** The parent area gets a new tab "Vlastné" / "Own content"
+  between Settings and Keys, with four sections in this order: own encouragements
+  (moved here from the Settings tab, same data `customMessages`), own questions and
+  answers, own words, own text with the mix choice. The Settings tab no longer shows
+  the encouragements.
+- **Own questions and answers**: `ownQuestions: { q: string; a: string }[]` (max 30,
+  each max 160 chars, both required). They take turns with Piko's built-in teasers:
+  every second teaser after a story level is the next own question (in order, then
+  from the start again). The answer comes, as for built-in teasers, on the results card
+  of the next finished story level; the pending question is kept in
+  `progress.pendingQuestion: number | null` so a break between levels does not lose it.
 - Settings per profile: `ownWords: string[]` (max 300, trimmed, lowercased unless
   the parent typed capitals), `ownText: string` (max 4000 chars),
   `ownMix: 'off' | 'some' | 'half' | 'most'` (share of targets taken from own
@@ -31,7 +42,10 @@ game (top research proposals); reading aloud helps young and dyslexic readers.
 
 ## Steps
 - [ ] Schema + migration + tests.
-- [ ] Parent area: "Vlastné slová" (textarea, one word per line or separated by
+- [ ] Own content tab: encouragements moved from Settings; questions editor (list of
+  question + answer pairs, add/remove, max 30) and the teaser turn-taking in
+  `src/screens/level.ts` with a unit test for the order.
+- [ ] In that tab: "Vlastné slová" (textarea, one word per line or separated by
   commas/spaces) and "Vlastný text" (textarea) with the mix choice and a preview
   of five sample targets; validation messages.
 - [ ] Word source: mix own words/phrases into `WordSource.next` by `ownMix`;
