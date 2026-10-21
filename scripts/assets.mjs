@@ -253,6 +253,11 @@ const singleAccessories = new Set();
 
 /** One accessory drawn alone on the template position (no other item can cut it). */
 async function processAccessory(id, data, w, h, manifest) {
+  // The front part of a back item (a cape's clasp), drawn over the body.
+  if (id.endsWith('-front')) {
+    keyOut(data, w, h);
+    return writeSquare(`acc-${id}`, data, w, h, manifest);
+  }
   const single = SINGLES[id] && { rid: id, slot: SINGLES[id].slot, set: 'single', tint: SINGLES[id].tint };
   const entry = single ?? Object.entries(OUTFITS).flatMap(([set, rules]) => rules.map(([rid, slot]) => ({ rid, slot, set }))).find((r) => r.rid === id);
   if (!entry) { console.warn(`acc-${id}: not in an outfit table nor in SINGLES, skipped`); return; }

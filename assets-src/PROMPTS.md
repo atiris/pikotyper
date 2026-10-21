@@ -155,6 +155,21 @@ the body are completed, the game draws the body over them anyway):
 Keep only the ITEM, exactly where it is, with the same size, shape, colors and outline. Remove the whole character completely: head, fur, skin, ears, eyes, cheeks, arms, legs and body. Where the body covered the middle of the ITEM, complete the hidden part of the ITEM naturally so it is one whole, unbroken piece, in the same style and colors. Nothing else may cross or cut the ITEM: no lines, no strings, no other objects. Fill everything that is not the ITEM with one perfectly flat solid pure green color (#00FF00). No shading, no shadow, no outline where the character was, no gradient. Same square size.
 ```
 
+A back item may have a front part (a cape's clasp, a backpack's straps): save it as
+`acc-<id>-front.jpg` at the same position. The game draws the item behind the body and
+its front part over the body. To split one generated picture, attach it in a new chat
+for each part, so both keep the same position:
+
+Back part (replace ITEM and FRONT):
+```
+In the attached image keep only the ITEM itself and remove FRONT. Where FRONT was, continue the ITEM naturally in the same style, colors and pattern, so it is one whole piece. Keep everything exactly where it is, with the same size, shape, colors and outline. Everything else is one perfectly flat solid pure green color (#00FF00). No shadow, no gradient. Same square size.
+```
+
+Front part (replace FRONT):
+```
+In the attached image keep only FRONT, exactly where it is, with the same size, shape, colors and outline. Remove everything else and fill it with one perfectly flat solid pure green color (#00FF00). Do not redraw or add anything. No shadow, no gradient. Same square size.
+```
+
 | File | ITEM | What is wrong now |
 |---|---|---|
 | `acc-round-glasses.jpg` | glasses: FRAME = round orange glasses with a soft dark-brown outline, a short curved bridge, and two short temple arms reaching toward the sides of the head | done 2026-10-21 |

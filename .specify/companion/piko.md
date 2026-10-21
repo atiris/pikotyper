@@ -12,6 +12,8 @@
   chance: hats, glasses, scarves and bows, vests and shirts, wings, capes and backpacks,
   shoes, things to hold (wand, balloon, lantern). One item per body area (head, eyes,
   neck, body, back, hand, feet); the child mixes them freely in a wardrobe screen.
+  A back item can have a front part (a cape's clasp, a backpack's straps) that lies
+  over the body while the item itself stays behind.
 - After each story level that has a next one, Piko asks a curious question about the
   world's theme (real facts about animals, space, eggs) and gives the answer only after
   the next level is finished.

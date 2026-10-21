@@ -1,5 +1,5 @@
 import type { Companion, CompanionKind } from '../storage/schema';
-import { accessories, imageUrl, sprite, type Slot } from './assets';
+import { accessories, hasImage, imageUrl, sprite, type Slot } from './assets';
 import { drawFace, type G } from './draw';
 
 export type Mood = 'idle' | 'happy' | 'thinking';
@@ -36,7 +36,11 @@ export function pikoStack(c: Companion, mood: Mood): { name: string; slot: Slot 
   return SLOT_ORDER.flatMap((slot): { name: string; slot: Slot | 'companion' }[] => {
     if (slot === 'companion') return [{ name: `piko-${c.kind}-${mood}`, slot }];
     const name = bySlot.get(slot);
-    return name ? [{ name, slot }] : [];
+    const layers: { name: string; slot: Slot | 'companion' }[] = name ? [{ name, slot }] : [];
+    // A back item's front part (a cape's clasp) lies over the body.
+    const back = bySlot.get('back');
+    if (slot === 'body' && back && hasImage(`${back}-front`)) layers.push({ name: `${back}-front`, slot: 'back' });
+    return layers;
   });
 }
 
