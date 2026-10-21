@@ -126,28 +126,54 @@ export const PALETTES: Record<string, Palette> = {
   egg: { sky: ['#9fd8f5', '#f2fbff'], hills: ['#a5d97f', '#86c465'], ground: '#76b457', accent: '#ffd25a' },
 };
 
-/** Draws a background layer image at full screen height, tiled horizontally by `offset`. */
+const seamless = new Map<HTMLImageElement, HTMLCanvasElement>();
+
+/**
+ * A copy of a background that repeats without a visible seam: its last part is
+ * cross-faded into its beginning, and the copy is shorter by that part.
+ */
+function seamlessCopy(img: HTMLImageElement): HTMLCanvasElement {
+  let c = seamless.get(img);
+  if (c) return c;
+  const w = img.naturalWidth, h = img.naturalHeight;
+  const overlap = Math.round(w * 0.15);
+  c = document.createElement('canvas');
+  c.width = w - overlap;
+  c.height = h;
+  const g = c.getContext('2d')!;
+  g.drawImage(img, 0, 0);
+  // Fade the start of the image out and add its end faded in: a linear cross-fade
+  // that also works for layers with transparency.
+  g.globalCompositeOperation = 'destination-out';
+  const fade = g.createLinearGradient(0, 0, overlap, 0);
+  fade.addColorStop(0, 'rgba(0,0,0,1)');
+  fade.addColorStop(1, 'rgba(0,0,0,0)');
+  g.fillStyle = fade;
+  g.fillRect(0, 0, overlap, h);
+  g.globalCompositeOperation = 'lighter';
+  const strip = document.createElement('canvas');
+  strip.width = overlap;
+  strip.height = h;
+  const sg = strip.getContext('2d')!;
+  sg.drawImage(img, w - overlap, 0, overlap, h, 0, 0, overlap, h);
+  sg.globalCompositeOperation = 'destination-in';
+  const grad = sg.createLinearGradient(0, 0, overlap, 0);
+  grad.addColorStop(0, 'rgba(0,0,0,1)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  sg.fillStyle = grad;
+  sg.fillRect(0, 0, overlap, h);
+  g.drawImage(strip, 0, 0);
+  seamless.set(img, c);
+  return c;
+}
+
+/** Draws a background layer at full screen height, repeated horizontally by `offset`. */
 function tiled(g: G, img: HTMLImageElement, vw: number, offset: number): void {
-  // Skip a thin edge of the image: generated images often have a faint border line.
-  const inset = 3;
-  const sw = img.naturalWidth - inset * 2;
-  const s = VH / img.naturalHeight;
-  const w = sw * s, h = img.naturalHeight * s;
+  const tile = seamlessCopy(img);
+  const s = VH / tile.height;
+  const w = tile.width * s, h = tile.height * s;
   const y = VH - h;
-  let x = -(((offset % w) + w) % w);
-  // Mirror every other tile so the seam always matches.
-  let i = Math.floor(offset / w);
-  while (x < vw) {
-    if (i % 2) {
-      g.save();
-      g.translate(x + w, y);
-      g.scale(-1, 1);
-      g.drawImage(img, inset, 0, sw, img.naturalHeight, 0, 0, w, h);
-      g.restore();
-    } else g.drawImage(img, inset, 0, sw, img.naturalHeight, x, y, w, h);
-    x += w;
-    i++;
-  }
+  for (let x = -(((offset % w) + w) % w); x < vw; x += w) g.drawImage(tile, Math.floor(x), y, Math.ceil(w) + 1, h);
 }
 
 /** Three-layer parallax background of a world; `scroll` grows as the scene moves forward. */
@@ -169,7 +195,7 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     g.fillRect(0, 0, vw, VH);
   }
   g.save();
-  if (world === 'space') g.globalAlpha = 0.55;
+  if (world === 'space') g.globalAlpha = 0.4;
   const mid = sprite(`bg-${world}-mid`);
   if (mid) tiled(g, mid, vw, motion ? scroll * 0.35 : 0);
   else hills(g, vw, scroll * 0.35, VH * 0.62, 70, pal.hills[0]);

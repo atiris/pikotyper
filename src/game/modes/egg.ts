@@ -183,6 +183,7 @@ export class MoleMode extends SlopeMode {
     m.t += dt;
     m.x -= dt * this.groundSpeed * 0.3;
     tg.urgency = 1000 - m.window + m.t;
+    tg.selectable = m.up > 0.6 && (m.state === 'rise' || m.state === 'wait');
     if (m.state === 'rise') {
       m.up = Math.min(1, m.up + dt * 3);
       if (m.up >= 1) {
