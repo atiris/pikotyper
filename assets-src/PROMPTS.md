@@ -220,6 +220,15 @@ A single game map icon: ISLAND. The island floats in the air, with a rounded roc
 | `ui-map-dragons.jpg` | a small floating island with rounded hills and a cozy dragon cave |
 | `ui-map-egg.jpg` | a small floating island with a grassy slope and a big spotted egg on top |
 
+### ui-star.jpg and ui-star-empty.jpg (results screen, 1-3 stars)
+Make `ui-star.jpg` first, then in the same chat attach it and use the second prompt.
+```
+Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette. A single chubby five-pointed star with rounded tips, warm golden yellow with a soft light highlight in the upper left, no face. Front view, centered, the whole star visible, wide empty margin. No text, no letters, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no sparkles, no other objects. Square image.
+```
+```
+The same star with exactly the same shape, size, position and outline, but empty: filled with flat soft light grey, no highlight. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
 ---
 
 ## 6. Background music
