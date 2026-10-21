@@ -127,7 +127,7 @@ Two steps per item, in the same chat, as for the sets:
 Then run `npm run assets`.
 
 ```
-Dress the attached character template in this one item, and nothing else: ITEM. Keep exactly the same front view, symmetry, pose, size, position, colors and outline of the character. The item must fit the figure closely, be symmetrical where possible, be complete (no part cut off) and must not hide the eyes. Same style: cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft dark-brown outlines. No text. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow. Same square size.
+Dress the attached character template in this one item, and nothing else: ITEM. Keep exactly the same front view, symmetry, pose, size, position, colors and outline of the character. Both arms stay exactly as in the template, hanging down with the paws at hip height: never raise, bend or move an arm or paw; a held item is placed into the paw where it is. The item must fit the figure closely, be symmetrical where possible, be complete (no part cut off) and must not hide the eyes. Same style: cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft dark-brown outlines. No text. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow. Same square size.
 ```
 
 Glasses need their own two prompts: the eyes behind the lenses must go, and nothing
@@ -148,6 +148,13 @@ Keep only the glasses frames, exactly where they are, with the same size, shape,
 ```
 If a piece of an eye stays, add in the same chat: "Inside both lenses there must be only
 flat green (#00FF00) and the one pale green highlight; remove every remaining part of the eyes."
+
+Body clothing (raincoat, vest) remove prompt (replace ITEM). Unlike the back items, nothing
+hidden is completed: the game draws the body under the item, so only what is visible stays:
+```
+Make a cut-out of the ITEM: keep only the pixels of the ITEM that are visible in the attached image, exactly where they are, with the same size, shape, colors and outline. Do not draw or complete anything that was hidden behind the character: no inner back of the collar, no inside of the sleeves, no curved lines behind the neck opening or behind the sleeve openings. The neck opening and both sleeve openings are filled with the flat green background, together with the rest of the removed character (head, ears, face, body, arms, paws, legs, feet) and every outline line of the character. Nothing but the ITEM may remain: no stray arcs, lines, dots or shadows. Everything that is not the ITEM is one perfectly flat solid pure green color (#00FF00). No shading, no gradient. Same square size.
+```
+If a stray arc remains, add in the same chat: "Remove the arc behind the collar and the arcs behind the sleeves; there must be only flat green there."
 
 Back items (wings, cape, backpack) remove prompt (replace ITEM; the parts hidden behind
 the body are completed, the game draws the body over them anyway):
@@ -317,7 +324,7 @@ One round badge picture per world, shown in a medal on the map, the results and 
 progress view. The ring (bronze, silver, gold) is drawn by the game, so the picture has
 no ring or frame. Replace BADGE with the text from the table.
 ```
-Cute, soft 2D children's game icon, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. A single badge picture: BADGE. Front view, centered, the whole object visible, wide empty margin around it, it fits inside a circle. No ring, no frame, no ribbon, no text, no letters, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+Beautiful, richly detailed 2D game achievement icon for teenagers aged 10 to 15, polished vector illustration with layered gradients, soft glossy highlights, rim light, subtle texture and fine decorative details, rounded friendly shapes, soft dark-brown outlines (not black), harmonious saturated pastel palette with a few brighter accents. A single badge picture: BADGE. Make it look like a precious collectible emblem: a main object with several small supporting details (for example tiny sparkles, small leaves or stars, an inner glow, small ornaments) that belong to the same theme, never cluttered. Sparkles and small ornaments are only gold, white or pale yellow, never pink, purple or magenta, and there is no glow, haze or halo around the object: the flat background color reaches the object's outline directly. The object stands alone with a compact, roughly round overall shape; do not draw any circle, disc, medal, coin or plate behind it. Front view, centered, the whole composition visible, wide empty margin around it. No ring, no frame, no ribbon, no text, no letters, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
 | File | BADGE | Status |
@@ -371,6 +378,7 @@ anything still missing. Use the common prompts of sections 3, 4, 5 and 6 with th
 below. Suggested order: Bolt first (he is in every level), then world by world.
 
 ### Bolt (sprites, section 4 prompt, BG magenta)
+For this character replace the sentence "Side view facing right unless said otherwise" with "Strictly front view, facing the viewer directly, symmetrical, standing on nothing: no shadow or ground under the feet".
 Same robot in every picture: "a small cute round robot about as tall as a child's knee,
 light grey-blue metal body with soft rounded edges, a round head with a dark glass face
 showing two big friendly glowing cyan eyes, one short antenna with a tiny orange ball,
@@ -384,7 +392,7 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 | `robot-worried.jpg` | the same robot, a little worried, eyes looking up, claws together |
 | `robot-wet.jpg` | the same robot shaking off a few water drops, eyes squeezed shut, smiling |
 | `robot-broken.jpg` | the same robot but older: a few soft rust spots, one leg missing, antenna bent, sad but hopeful eyes |
-| `robot2-idle.jpg` | the same robot with new longer legs and a bright yellow antenna ball, standing proudly |
+| `robot2-idle.jpg` | the same robot with new longer legs, a bright yellow antenna ball, a golden shield-shaped plate on the chest and a thin golden rim around the glass face, standing proudly |
 | `robot2-happy.jpg` | the robot of `robot2-idle`, happy, waving |
 | `robot-raincoat.jpg` | only a small yellow raincoat with a hood that fits the robot of `robot2-idle`, same position and size (overlay) |
 
@@ -459,7 +467,7 @@ front part (`acc-jetpack-front.jpg` for its straps).
 
 | File | ITEM / FRAME |
 |---|---|
-| `acc-umbrella.jpg` | hand: a small open red umbrella held up in the right hand |
+| `acc-umbrella.jpg` | head: only the front of a red umbrella, worn like a cap: a half-dome canopy with ribs and a scalloped rim, no handle, no underside, about 1.4 times as wide as the head so it also covers a lion's mane, the tip points up |
 | `acc-raincoat.jpg` | body: a yellow raincoat with big round buttons |
 | `acc-hard-hat.jpg` | head: a yellow hard hat |
 | `acc-goggles.jpg` | glasses: FRAME = round safety goggles with a green rubber strap and a thick frame |
@@ -488,6 +496,7 @@ shape for anything still missing. Use the common prompts of sections 3, 4, 5 and
 texts below. Suggested order: Melody first (she is in every level), then world by world.
 
 ### Melody (sprites, section 4 prompt, BG green)
+For this character replace the sentence "Side view facing right unless said otherwise" with "Strictly front view, facing the viewer directly, symmetrical, standing on nothing: no shadow or ground under the feet".
 Same fairy in every picture: "a small cute fairy girl about as tall as a child's hand,
 round friendly face with rosy cheeks and big kind eyes, short wavy lavender hair with one
 small yellow flower, a soft pink dress made of flower petals, two pairs of shimmering

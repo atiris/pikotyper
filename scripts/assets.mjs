@@ -69,7 +69,7 @@ const OUTFITS = {
 const SINGLES = {
   sunglasses: { slot: 'eyes', tint: [40, 32, 52, 0.5] },
   // Story 2 rewards.
-  umbrella: { slot: 'hand' },
+  umbrella: { slot: 'head' },
   raincoat: { slot: 'body' },
   'hard-hat': { slot: 'head' },
   goggles: { slot: 'eyes' },

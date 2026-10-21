@@ -11,8 +11,8 @@
   encouraging messages.
 - Accessories unlock by progress (finishing levels and worlds, mastering keys), never by
   chance (each player earns their own; siblings share a computer): hats, glasses, scarves and bows, vests and shirts, wings, capes and backpacks,
-  shoes, things to hold (wand, balloon, lantern, umbrella). Story 2 adds a hard hat,
-  safety goggles, a raincoat, an umbrella, a small jetpack and an antenna headband. One item per body area (head, eyes,
+  shoes, things to hold (wand, balloon, lantern). Story 2 adds a hard hat,
+  safety goggles, a raincoat, an umbrella worn as a hat, a small jetpack and an antenna headband. One item per body area (head, eyes,
   neck, body, back, hand, feet); the child mixes them freely in the "Buddy and wardrobe"
   screen.
 - In the same screen the child renames the companion (up to 16 characters, never empty)
