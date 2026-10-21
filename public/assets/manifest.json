@@ -24,6 +24,14 @@
    "w": 160,
    "h": 160
   },
+  "acc-sunglasses": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-sunglasses-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "base-template": {
    "w": 512,
    "h": 512
@@ -580,6 +588,11 @@
    "id": "star-glasses",
    "slot": "eyes",
    "set": "b"
+  },
+  {
+   "id": "sunglasses",
+   "slot": "eyes",
+   "set": "single"
   },
   {
    "id": "cap",

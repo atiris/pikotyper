@@ -44,7 +44,7 @@ const OUTFITS = {
 // Accessories that never were part of an outfit set: drawn alone (`acc-<id>`).
 // `tint`: lenses become this semi-transparent color instead of clear glass.
 const SINGLES = {
-  sunglasses: { slot: 'eyes', tint: [40, 32, 52, 0.42] },
+  sunglasses: { slot: 'eyes', tint: [40, 32, 52, 0.5] },
 };
 
 const run = promisify(execFile);
@@ -152,7 +152,7 @@ function keyOut(data, w, h, { glass = false, layer = false, tint = null } = {}) 
     }
     data[i + 3] = Math.round(data[i + 3] * a * fade);
   }
-  if (glass) growShine(data, w, h, k, shine);
+  if (glass) growShine(data, w, h, k, shine, removed);
   bleedColor(data, w, h);
 }
 
@@ -160,14 +160,14 @@ function keyOut(data, w, h, { glass = false, layer = false, tint = null } = {}) 
  * The ends of a reflection stripe touch the lens frame, so they are not found
  * inside the lens; key-tinted pixels touching a reflection join it.
  */
-function growShine(data, w, h, k, shine) {
+function growShine(data, w, h, k, shine, removed) {
   const queue = [];
   for (let p = 0; p < w * h; p++) if (shine[p]) queue.push(p);
   while (queue.length) {
     const p = queue.pop();
     const x = p % w;
     for (const q of [x > 0 ? p - 1 : -1, x < w - 1 ? p + 1 : -1, p - w, p + w]) {
-      if (q < 0 || q >= w * h || shine[q] || data[q * 4 + 3] === 0 || k[q] <= K_SHINE) continue;
+      if (q < 0 || q >= w * h || shine[q] || removed[q] || k[q] <= K_SHINE) continue;
       shine[q] = 1;
       data.fill(255, q * 4, q * 4 + 3);
       data[q * 4 + 3] = 110;
