@@ -22,8 +22,4 @@ export abstract class Mode {
   onCorrect(_t: Target): void {}
   onDone(_t: Target): void {}
   onWrong(_t: Target | null): void {}
-  /** Rhythm meter shown in the HUD; the space world draws its own speedometer. */
-  get ownMeter(): boolean {
-    return false;
-  }
 }

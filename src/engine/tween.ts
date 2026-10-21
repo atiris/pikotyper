@@ -12,9 +12,6 @@ export const ease = {
     t === 0 || t === 1 ? t : 2 ** (-10 * t) * Math.sin((t * 10 - 0.75) * ((2 * Math.PI) / 3)) + 1,
 };
 
-export const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
-export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-
 interface Tween {
   t: number;
   dur: number;
@@ -44,9 +41,5 @@ export class Tweens {
       this.list = this.list.filter((tw) => !finished.includes(tw));
       for (const tw of finished) tw.done?.();
     }
-  }
-
-  get busy(): boolean {
-    return this.list.length > 0;
   }
 }

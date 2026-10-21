@@ -34,11 +34,11 @@ healthy session length, offline use and a full end-to-end check.
   run it with `scenario-run`.
 
 ## Steps
-- [ ] audio engine, SFX, per-world music, volume + mute
-- [ ] fonts, large text, reduce motion, high contrast, keyboard-only menus
-- [ ] session pacing, stretch break, posture card
-- [ ] PWA manifest, icons, service worker, offline test
-- [ ] about/privacy page, tablet notice, visual polish pass on all screens
-- [ ] README update (features, screenshots from the playwright MCP in `docs/`)
-- [ ] scenario written and run; findings triaged
-- [ ] build + tests + e2e green; push; check the live GitHub Pages site
+- [x] audio engine, SFX, per-world music, volume + mute
+- [x] fonts, large text, reduce motion, high contrast, keyboard-only menus
+- [x] session pacing, stretch break, posture card
+- [x] PWA manifest, icons, service worker, offline test
+- [x] about/privacy page, tablet notice, visual polish pass on all screens
+- [x] README update (features, screenshots from the playwright MCP in `docs/`)
+- [x] scenario written and run; findings triaged
+- [x] build + tests + e2e green; push; check the live GitHub Pages site

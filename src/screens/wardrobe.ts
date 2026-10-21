@@ -32,7 +32,7 @@ export function wardrobeScreen(root: HTMLElement): void {
         h('div', { class: 'items' }, ...items.map((a) => {
           const owned = hasAccessory(p, a.id);
           const on = p.companion.accessories.includes(a.id);
-          const src = imageUrl(`acc-${a.id}`);
+          const src = imageUrl(`acc-${a.id}-thumb`) ?? imageUrl(`acc-${a.id}`);
           return h('button', {
             class: `item ${on ? 'on' : ''} ${owned ? '' : 'locked'}`,
             type: 'button',

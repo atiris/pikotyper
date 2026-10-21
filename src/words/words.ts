@@ -31,8 +31,8 @@ export interface WordOptions {
   noDiacritics: boolean;
   /** Per key weight; weak keys get more. */
   weights?: Record<string, number>;
-  /** A key that should appear in most words (a newly introduced key). */
-  focus?: string | null;
+  /** Keys that should appear in most words (newly introduced keys). */
+  focus?: string[];
   /** Characters the layout can type (capitals need it). */
   canType?: (ch: string) => boolean;
   seed?: number;
@@ -66,10 +66,6 @@ export class WordSource {
     this.capitals = opts.keys.includes(SHIFT_KEY);
   }
 
-  get realWordCount(): number {
-    return this.pool.length;
-  }
-
   /** Next word; tries to start with a letter not in `avoidFirst` (letters of words already on screen). */
   next(avoidFirst: Set<string> = new Set(), maxLen = this.opts.len[1]): string {
     let word = '';
@@ -88,8 +84,9 @@ export class WordSource {
       return Array.from({ length: r.int(1, Math.min(3, maxLen)) }, () => r.pick(this.digits)).join('');
     }
     let word: string;
-    const focus = this.opts.focus && this.letters.includes(this.opts.focus) ? this.opts.focus : null;
-    if (this.letters.length <= 4) word = this.drill(maxLen);
+    const focusList = (this.opts.focus ?? []).filter((k) => this.letters.includes(k));
+    const focus = focusList.length ? r.pick(focusList) : null;
+    if (this.letters.length <= 4) word = this.drill(maxLen, focus);
     else if (this.pool.length >= 8 && r.chance(this.pool.length >= 40 ? 0.9 : 0.6)) word = this.pickReal(maxLen, focus);
     else word = this.pseudo(maxLen, focus);
     if (this.capitals && r.chance(0.25)) {
@@ -120,17 +117,14 @@ export class WordSource {
   }
 
   /** Letter patterns for tiny key sets, e.g. `fff jjj fj jf`. */
-  drill(maxLen: number): string {
+  drill(maxLen: number, focus: string | null = null): string {
     const r = this.rng;
-    const pickKey = () => this.weightedLetter(this.opts.focus);
+    const pickKey = () => this.weightedLetter(focus);
     const a = pickKey();
-    const kind = r.int(0, 3);
-    let w: string;
-    if (kind === 0) w = a.repeat(r.int(2, 3));
-    else {
-      const b = pickKey();
-      w = kind === 1 ? a + b : kind === 2 ? a + b + a : a + a + b;
-    }
+    const b = pickKey();
+    // Short rhythmic patterns: aaa, ab, aba, aab, abab, aabb.
+    const patterns = [a.repeat(3), a + b, a + b + a, a + a + b, a + b + a + b, a + a + b + b];
+    const w = patterns[r.int(0, patterns.length - 1)];
     return w.slice(0, Math.max(1, maxLen));
   }
 
@@ -139,7 +133,7 @@ export class WordSource {
     const r = this.rng;
     const vowels = this.letters.filter((c) => VOWELS.has(c));
     const consonants = this.letters.filter((c) => !VOWELS.has(c));
-    if (!vowels.length || !consonants.length) return this.drill(Math.min(maxLen, 4));
+    if (!vowels.length || !consonants.length) return this.drill(Math.min(maxLen, 4), focus);
     const [min, max] = this.opts.len;
     for (let attempt = 0; attempt < 20; attempt++) {
       const len = r.int(Math.max(2, min), Math.max(2, Math.min(max, maxLen, 6)));
@@ -152,11 +146,11 @@ export class WordSource {
       }
       if (!isBlocked(w)) return w;
     }
-    return this.drill(maxLen);
+    return this.drill(maxLen, focus);
   }
 
-  private weightedLetter(focus?: string | null): string {
-    if (focus && this.letters.includes(focus) && this.rng.chance(0.5)) return focus;
+  private weightedLetter(focus: string | null): string {
+    if (focus && this.rng.chance(0.5)) return focus;
     return this.weightedFrom(this.letters);
   }
 

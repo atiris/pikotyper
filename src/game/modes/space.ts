@@ -25,10 +25,6 @@ export class SpaceMode extends ApproachMode {
     this.playerX = 260;
   }
 
-  get ownMeter(): boolean {
-    return true;
-  }
-
   protected pickSprite(): string {
     const v = this.L.def.variant;
     const r = this.L.rng;

@@ -443,6 +443,118 @@
   "ui-star": {
    "w": 512,
    "h": 490
+  },
+  "acc-backpack-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-balloon-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-beanie-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-boots-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-bow-tie-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-butterfly-wings-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-cap-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-crown-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-dragon-wings-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-explorer-hat-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-explorer-vest-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-flower-wreath-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-green-boots-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-hair-bow-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-heart-glasses-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-knit-vest-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-lantern-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-neckerchief-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-pink-sneakers-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-rain-boots-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-round-glasses-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-scarf-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-sneakers-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-star-cape-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-star-glasses-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-star-shirt-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-wand-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-wizard-hat-thumb": {
+   "w": 160,
+   "h": 160
   }
  },
  "accessories": [

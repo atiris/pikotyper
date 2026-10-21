@@ -30,12 +30,12 @@ the practice stays fresh.
 - "No time pressure" setting: falling/approaching objects stop and wait near the player.
 
 ## Steps
-- [ ] World 2 visuals, levels, speedometer, fractured asteroid, reward
-- [ ] World 3 visuals, swamp stones, road signs, boulder, reward
-- [ ] World 4 visuals, shields, rhythm wave, reward
-- [ ] World 5 visuals, egg jumps, mole, hatching scene, reward
-- [ ] rescue mission generator + rescued dragons collection
-- [ ] all story texts in sk + en
-- [ ] Playwright test: with a debug unlock (query `?debug=unlock-all`, dev builds only)
+- [x] World 2 visuals, levels, speedometer, fractured asteroid, reward
+- [x] World 3 visuals, swamp stones, road signs, boulder, reward
+- [x] World 4 visuals, shields, rhythm wave, reward
+- [x] World 5 visuals, egg jumps, mole, hatching scene, reward
+- [x] rescue mission generator + rescued dragons collection
+- [x] all story texts in sk + en
+- [x] Playwright test: with a debug unlock (query `?debug=unlock-all`, dev builds only)
       open and finish one level of each world
-- [ ] build + tests green; drive each world with the playwright MCP; push
+- [x] build + tests green; drive each world with the playwright MCP; push

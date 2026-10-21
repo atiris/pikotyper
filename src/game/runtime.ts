@@ -10,7 +10,7 @@ import { preload } from '../gfx/assets';
 import { t } from '../i18n/i18n';
 import { KeyInput, type TypedChar } from '../input/input';
 import { LAYOUTS, LayoutMismatchDetector, canType, fingerFor, stepsFor } from '../keyboard/layouts';
-import { activeKeys, keysToIntroduce, masteryLevel } from '../learning/lessons';
+import { activeKeys, keysToIntroduce, masteryLevel, newestGroup } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide } from '../ui/keyboard-guide';
 import { button, h, icon } from '../ui/dom';
@@ -97,7 +97,7 @@ export class LevelRuntime {
       len: p.settings.wordLen,
       noDiacritics: p.settings.noDiacritics,
       weights: keyWeights(p, keys),
-      focus: opts.keys ? null : keysToIntroduce(p).pop() ?? p.progress.unlockedKeys[p.progress.unlockedKeys.length - 1],
+      focus: opts.keys ? [] : newestGroup(p),
       canType: (ch) => canType(lay, ch),
     });
 
@@ -283,6 +283,7 @@ export class LevelRuntime {
     this.wordStreak = 0;
     if (this.wrongStreak.ch === expected) this.wrongStreak.n++;
     else this.wrongStreak = { ch: expected, n: 1 };
+    if (this.wrongStreak.n === 2) this.say(pickLine('piko.mistake'), 2);
     if (this.wrongStreak.n === 3) this.offerDrill(expected);
   }
 

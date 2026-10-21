@@ -39,20 +39,22 @@ describe('mastery and unlocking', () => {
     expect(isMastered(q.stats.keys.f, 5)).toBe(false);
   });
 
-  it('unlocks the next key only after the newest one is mastered', () => {
+  it('unlocks the next mirrored pair only when both newest keys are ready', () => {
     const p = newProfile('Ema', 'sk');
-    expect(advanceLesson(p)).toBeNull();
-    for (let i = 0; i < 40; i++) recordPress(p, 'j', 'j', 400);
-    expect(advanceLesson(p)).toBe('d');
-    expect(p.progress.unlockedKeys).toEqual(['f', 'j', 'd']);
+    expect(advanceLesson(p)).toEqual([]);
+    for (let i = 0; i < 25; i++) recordPress(p, 'j', 'j', 400);
+    expect(advanceLesson(p)).toEqual([]);
+    for (let i = 0; i < 25; i++) recordPress(p, 'f', 'f', 400);
+    expect(advanceLesson(p)).toEqual(['d', 'k']);
+    expect(p.progress.unlockedKeys).toEqual(['f', 'j', 'd', 'k']);
   });
 
   it('skips diacritics when the parent turned them off', () => {
     const p = newProfile('Ema', 'sk');
     p.settings.noDiacritics = true;
-    p.progress.unlockedKeys = lessonOrder('sk-qwertz').slice(0, 27);
+    p.progress.unlockedKeys = lessonOrder('sk-qwertz').slice(0, lessonOrder('sk-qwertz').indexOf('q') + 1);
     for (let i = 0; i < 40; i++) recordPress(p, 'q', 'q', 400);
-    expect(advanceLesson(p)).toBe('Shift');
+    expect(advanceLesson(p)).toEqual(['Shift']);
   });
 
   it('introduces every unlocked key once, in order', () => {

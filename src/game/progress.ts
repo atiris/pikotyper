@@ -1,6 +1,6 @@
 import { advanceLesson } from '../learning/lessons';
 import type { Profile } from '../storage/schema';
-import { type LevelDef, WORLDS, starsFor } from './levels';
+import { type LevelDef, starsFor } from './levels';
 import { grantAccessories } from './rewards';
 
 export interface LevelResult {
@@ -14,32 +14,24 @@ export interface LevelResult {
   newAccessories: string[];
   /** The world finished with this level (super-obstacle), else null. */
   worldDone: number | null;
-  firstTime: boolean;
   /** Rhythm compared with the sessions of a week ago, as a ratio (null = no data). */
   trend: number | null;
 }
 
 /** Applies a finished level to the profile. Unlocks keys, worlds and accessories. */
-export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'worldDone' | 'firstTime' | 'trend'>): LevelResult {
+export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'worldDone' | 'trend'>): LevelResult {
   const stars = starsFor(r.accuracy);
-  let firstTime = false;
   let worldDone: number | null = null;
   if (def.index >= 0 && def.kind !== 'practice') {
-    firstTime = !p.progress.levels[def.id];
     p.progress.levels[def.id] = Math.max(p.progress.levels[def.id] ?? 0, stars);
     if (def.isSuper && !p.progress.worldsDone.includes(def.world)) {
       p.progress.worldsDone.push(def.world);
       worldDone = def.world;
     }
   }
-  const newKeys: string[] = [];
-  for (let i = 0; i < 2; i++) {
-    const k = advanceLesson(p);
-    if (!k) break;
-    newKeys.push(k);
-  }
+  const newKeys = advanceLesson(p);
   const newAccessories = grantAccessories(p);
-  return { ...r, stars, newKeys, newAccessories, worldDone, firstTime, trend: rhythmTrend(p) };
+  return { ...r, stars, newKeys, newAccessories, worldDone, trend: rhythmTrend(p) };
 }
 
 /** Current rhythm vs. a week ago (only positive framing is shown). */
@@ -55,4 +47,3 @@ export function rhythmTrend(p: Profile): number | null {
   return now.cpm / ref.cpm;
 }
 
-export const worldName = (w: number) => WORLDS[w];

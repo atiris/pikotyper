@@ -19,3 +19,6 @@ come only from the gitignored `*.protect.md` files and are never written down.
 - [common-rules.md](common-rules.md) - this project's rules for every run: the
   environment, the production guard, protected files, evidence, platform rules.
   Not runnable on its own.
+- [full-playthrough.md](full-playthrough.md) - S1: a new child learns the first keys
+  one by one, plays all of World 1, meets Piko and sees the stats; a parent tunes
+  settings, exports and imports the profile; offline reload. Not destructive.

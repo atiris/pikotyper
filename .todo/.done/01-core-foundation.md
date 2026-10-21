@@ -50,19 +50,19 @@ logic and can be unit-tested well, so they come first.
 - Unit tests with Vitest next to modules (`*.test.ts`).
 
 ## Steps
-- [ ] i18n loader + sk/en base files + browser detection (fallback en) + tests
-- [ ] storage: schema types, load/save, migrations hook, guest mode, export/import
+- [x] i18n loader + sk/en base files + browser detection (fallback en) + tests
+- [x] storage: schema types, load/save, migrations hook, guest mode, export/import
       (validate shape, "replace or keep both") + tests
-- [ ] keyboard layouts sk-qwertz and us-qwerty as data + finger map + dead-key table +
+- [x] keyboard layouts sk-qwertz and us-qwerty as data + finger map + dead-key table +
       mismatch detector + tests (y/z swap, digits vs ľščť)
-- [ ] input module with dead-key handling + tests using synthetic KeyboardEvents
-- [ ] word lists sk/en (~1000 each) + filter + weighted picker + pseudo-word generator
+- [x] input module with dead-key handling + tests using synthetic KeyboardEvents
+- [x] word lists sk/en (~1000 each) + filter + weighted picker + pseudo-word generator
       + block list + tests (tiny key sets, diacritics toggle, length range)
-- [ ] learning: lesson order, mastery rule, active key resolver, stats recorder + tests
-- [ ] app shell: router, start screen with language switch, profile list/create/guest,
+- [x] learning: lesson order, mastery rule, active key resolver, stats recorder + tests
+- [x] app shell: router, start screen with language switch, profile list/create/guest,
       minimal free-practice screen (DOM text, no canvas yet) proving the full pipeline:
       words -> input -> stats -> storage
-- [ ] `npm run build` and `npm test` green; push (CI deploys)
+- [x] `npm run build` and `npm test` green; push (CI deploys)
 
 ## Affected
 New `src/*` modules, `public/i18n/*`, `public/words/*`. No backend, no DB.

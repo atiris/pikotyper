@@ -49,18 +49,18 @@ the same engine, so it must be general.
 - Piko appears as a simple placeholder drawing here; plan 04 makes it customizable.
 
 ## Steps
-- [ ] engine loop, canvas, pause, tweens, particles, RNG + tests for pure parts
-- [ ] asset pipeline script + `npm run assets` + asset loader with procedural fallback;
+- [x] engine loop, canvas, pause, tweens, particles, RNG + tests for pure parts
+- [x] asset pipeline script + `npm run assets` + asset loader with procedural fallback;
       process whatever is in `assets-src/` now and commit the results
-- [ ] LevelScene base with targets, lock-on, wobble, timer, results + tests for the
+- [x] LevelScene base with targets, lock-on, wobble, timer, results + tests for the
       state machine (no canvas)
-- [ ] keyboard guide component (sk + us layouts) with dead-key two-step hint
-- [ ] World 1 visuals: meadow parallax, insects/mice/spiders, gentle fly swatter puff
-- [ ] World 1 levels 1-4 + spider web super-obstacle (letters of the web clear one by one,
+- [x] keyboard guide component (sk + us layouts) with dead-key two-step hint
+- [x] World 1 visuals: meadow parallax, insects/mice/spiders, gentle fly swatter puff
+- [x] World 1 levels 1-4 + spider web super-obstacle (letters of the web clear one by one,
       items behind become reachable)
-- [ ] reward: "invitation to space" scene, meet Piko; progress saved, World 2 unlocked
-- [ ] world map + results screen; free practice moved to canvas style
-- [ ] preparation tip at the start of each training session (40+ tips sk + en in i18n,
+- [x] reward: "invitation to space" scene, meet Piko; progress saved, World 2 unlocked
+- [x] world map + results screen; free practice moved to canvas style
+- [x] preparation tip at the start of each training session (40+ tips sk + en in i18n,
       random, no repeat of the last 5) + posture card on the first session
-- [ ] Playwright smoke test: create profile, play level 1 by typing, see results
-- [ ] build + tests green; drive it with the playwright MCP as a real user; push
+- [x] Playwright smoke test: create profile, play level 1 by typing, see results
+- [x] build + tests green; drive it with the playwright MCP as a real user; push

@@ -42,11 +42,11 @@ make progress visible and let adults tune the difficulty.
 - Layout mismatch hint from plan 01 shown here and once in the level screen.
 
 ## Steps
-- [ ] Piko drawing, kinds, animations, speech bubble
-- [ ] accessories + unlock table + wardrobe screen
-- [ ] message pools sk/en + custom messages integration
-- [ ] stats overlay + practice-now drill
-- [ ] parent area: adult check, settings, active key picker
-- [ ] dashboard charts + printable progress card + export/import UI
-- [ ] Playwright test: change settings, export, import into a fresh context
-- [ ] build + tests green; drive with the playwright MCP; push
+- [x] Piko drawing, kinds, animations, speech bubble
+- [x] accessories + unlock table + wardrobe screen
+- [x] message pools sk/en + custom messages integration
+- [x] stats overlay + practice-now drill
+- [x] parent area: adult check, settings, active key picker
+- [x] dashboard charts + printable progress card + export/import UI
+- [x] Playwright test: change settings, export, import into a fresh context
+- [x] build + tests green; drive with the playwright MCP; push
