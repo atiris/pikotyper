@@ -26,7 +26,7 @@
   over the body while the item itself stays behind.
 - After each story level that has a next one, Piko asks a curious question about the
   world's theme (real facts about animals, space, eggs, recycling, machines, rain, locks
-  and codes, robots) and gives the answer only after
+  and codes, robots, flowers, birds, frogs, music, the night) and gives the answer only after
   the next level is finished, with the question shown again above it. A run with a
   parent's surprise has no teaser ([parent controls](../profiles/parent-controls.md)).
 - **Paw help**: fifteen words in a row without a mistake charge one paw (three at most,
@@ -48,10 +48,12 @@
   ([statistics](../profiles/statistics.md)); his title says "Click me to see how you are
   doing".
 - After world 5 a newly hatched friend (a baby dragon) joins; in story 2 the robot Bolt
-  walks next to Piko ([story](../game/story.md)). More little friends, dragons and
-  robots, come from rescue missions.
-- Piko needs no new base pictures for story 2; an optional "surprised" face is used only
-  in the meeting scene with Bolt (else the happy one).
+  walks next to Piko, in story 3 the fairy Melody floats next to him
+  ([story](../game/story.md)). More little friends, dragons, robots and forest friends,
+  come from rescue missions.
+- Piko needs no new base pictures for stories 2 and 3; an optional "surprised" face is
+  used only in the meeting scene with Bolt (else the happy one). Story 3 rewards are a
+  feather, a little harp and fairy wings.
 
 ## Why
 - A companion that gives gentle, personal feedback replaces punishment and makes the

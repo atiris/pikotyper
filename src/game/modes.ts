@@ -2,8 +2,13 @@ import type { LevelDef } from './levels';
 import type { Mode } from './mode';
 import { WaveMode, ShieldMode } from './modes/dragons';
 import { MoleMode, SlopeMode } from './modes/egg';
+import { BirdsMode, OwlMode } from './modes/forestpath';
+import { BudsMode, FlowerMode } from './modes/garden';
 import { JunkMode, KnotMode } from './modes/junkyard';
+import { LiliesMode, ReflectionMode } from './modes/lilylake';
 import { HedgehogMode, MeadowMode } from './modes/meadow';
+import { FirefliesMode, LastSongMode } from './modes/moonball';
+import { NotesMode, TreeSongMode } from './modes/musictree';
 import { BoulderMode, SignsMode, SwampMode } from './modes/planet';
 import { PracticeMode } from './modes/practice';
 import { RainMode, StormMode } from './modes/raintown';
@@ -36,6 +41,16 @@ export function createMode(def: LevelDef & { seconds?: number | null }, L: Level
     case 'gate': return new GateMode(L);
     case 'rooms': return new RoomsMode(L);
     case 'welcome': return new WelcomeMode(L);
+    case 'buds': return new BudsMode(L);
+    case 'flower': return new FlowerMode(L);
+    case 'birds': return new BirdsMode(L);
+    case 'owl': return new OwlMode(L);
+    case 'lilies': return new LiliesMode(L);
+    case 'reflection': return new ReflectionMode(L);
+    case 'notes': return new NotesMode(L);
+    case 'treesong': return new TreeSongMode(L);
+    case 'fireflies': return new FirefliesMode(L);
+    case 'lastsong': return new LastSongMode(L);
     case 'practice': return new PracticeMode(L, def.seconds ?? null, def.phrases ?? null);
   }
 }

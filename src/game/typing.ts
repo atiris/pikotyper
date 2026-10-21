@@ -1,7 +1,9 @@
 /** Pure typing state of a level: targets with words, lock-on, letter fill and the style of the run. */
 
-/** How a run shows its targets: copied from the label, heard (dictation), or remembered. */
-export type Style = 'copy' | 'dictation' | 'memory';
+/** How a run shows its targets: copied from the label, heard (dictation), remembered, or heard and remembered in turns (mixed). */
+export type Style = 'copy' | 'dictation' | 'memory' | 'mixed';
+/** How one target is shown. */
+export type TargetStyle = Exclude<Style, 'mixed'>;
 
 /** Seconds a memory target shows before its letters hide; shorter at a higher difficulty. */
 export function memoryShow(length: number, difficulty: number): number {
@@ -28,6 +30,8 @@ export interface Target {
   wobble: number;
   /** Errors made on this target. */
   errors: number;
+  /** How it is shown: the run's style, in a mixed run dictation and memory in turns. */
+  style: TargetStyle;
   /** Letters not typed yet are dots (dictation, memory once hidden). */
   masked: boolean;
   /** Memory: seconds the whole target still shows (keys wait), and how long this showing lasts. */
@@ -57,9 +61,11 @@ export class TypingCore {
   private nextId = 1;
 
   add(word: string, data: any = {}, selectable = true): Target {
+    const id = this.nextId++;
+    const style: TargetStyle = this.style === 'mixed' ? (id % 2 ? 'dictation' : 'memory') : this.style;
     const t: Target = {
-      id: this.nextId++, word, typed: 0, done: false, gone: false, selectable, urgency: 0, wobble: 0, errors: 0,
-      masked: this.style !== 'copy', showLeft: 0, showFor: 0, revealed: false, data,
+      id, word, typed: 0, done: false, gone: false, selectable, urgency: 0, wobble: 0, errors: 0, style,
+      masked: style !== 'copy', showLeft: 0, showFor: 0, revealed: false, data,
     };
     this.targets.push(t);
     return t;
@@ -96,7 +102,7 @@ export class TypingCore {
 
   /** Keys reach the target: a memory target waits until it has shown and hidden. */
   typable(t: Target): boolean {
-    return t.selectable && (this.style !== 'memory' || !t.masked || (t.showFor > 0 && t.showLeft <= 0));
+    return t.selectable && (t.style !== 'memory' || !t.masked || (t.showFor > 0 && t.showLeft <= 0));
   }
 
   /** Shows a hidden target for good (Piko's paws type it). */
@@ -148,7 +154,7 @@ export class TypingCore {
     t.errors++;
     if (!t.masked) return;
     t.revealed = true;
-    if (this.style === 'memory') t.showLeft = t.showFor = memoryFlash(t.word.length);
+    if (t.style === 'memory') t.showLeft = t.showFor = memoryFlash(t.word.length);
     else t.masked = false;
   }
 
@@ -165,7 +171,7 @@ export class TypingCore {
   update(dt: number): void {
     for (const t of this.targets) {
       if (t.wobble > 0) t.wobble = Math.max(0, t.wobble - dt);
-      if (this.style !== 'memory' || !t.selectable || t.done || t.gone) continue;
+      if (t.style !== 'memory' || !t.selectable || t.done || t.gone) continue;
       // A memory target shows from the moment it can be seen.
       if (t.showFor === 0 && t.masked) t.showLeft = t.showFor = memoryShow(t.word.length, this.difficulty);
       else if (t.showLeft > 0) t.showLeft = Math.max(0, t.showLeft - dt);

@@ -84,13 +84,44 @@ The forest has forgotten its songs and fell quiet. Each world brings one song ba
   world, Melody's lines (start, mistake, done), level tips for listening and memory.
 
 ## Steps
-- [ ] Worlds, levels, story row, unlock by keys; tests in `levels.test.ts`.
-- [ ] Melody on stage (canvas figure with fallback, moods).
-- [ ] Level kinds for worlds 11-15 with the styles; super-obstacles.
-- [ ] Scenes, rewards, accessories, badges, friends group, rescue kinds.
-- [ ] Texts sk + en.
-- [ ] `PROMPTS.md` section 8, `SINGLES` for the new accessories.
-- [ ] Specs (WHAT and WHY) and README.
+- [x] Worlds, levels, story row, unlock by keys; tests in `levels.test.ts`.
+- [x] Melody on stage (canvas figure with fallback, moods).
+- [x] Level kinds for worlds 11-15 with the styles; super-obstacles.
+- [x] Scenes, rewards, accessories, badges, friends group, rescue kinds.
+- [x] Texts sk + en.
+- [x] `PROMPTS.md` section 8, `SINGLES` for the new accessories.
+- [x] Specs (WHAT and WHY) and README.
 - [ ] Build, vitest, e2e; Playwright MCP with a super profile: map with three rows, one
   level of each world (copy, dictation, memory, mixed, sentences), one super-obstacle,
   reward scene, friends screen. Screenshots.
+
+## Decisions taken while implementing
+- **Per-target style:** the music tree's "dictation and memory in turns" needs a style per
+  target, so `Style` gains `mixed` (the run) and every `Target` has its own `style`
+  (dictation and memory alternate); labels, speech and clicks follow the target's style.
+  A mixed run without a voice plays as memory only (its own get-ready note), since copy
+  typing would lose what the world trains.
+- **Sentences:** `WordSource.next` takes a fewest-words count; above 2 it makes sentences
+  of `minWords` to `words` words (fireflies 3-6, last song 3-4, owl riddles 3-4, the long
+  reflection 4-5).
+- **Key cap:** `keysNeeded(p, l)` is capped at the profile's practice order (its whole
+  lesson path, without diacritics when they are off).
+- **Super-obstacle counts:** owl = 3 riddles (each split into its words), reflection = 2
+  phrases (shown whole once, then typed word by word; a slip flashes that word only),
+  flower = 6 words, tree song = 8 beat words (dictated, calmer tempo 40 + 2 x difficulty),
+  last song = 5 sentences.
+- **World names** on the map are short words, as the story spec asks (Záhrada, Cestička,
+  Jazero, Strom, Ples / Garden, Path, Lake, Tree, Ball); the long names live in the scenes.
+- **Accessories:** the garden gives none (Piko has the flower wreath from world 1), the lake
+  gives its lily as a scene only; feather (path), harp (tree), fairy wings (ball).
+  `BY_WORLD` became a record by world index.
+- **Melody** is drawn on the canvas like Bolt, floating 110 units above the friend's spot
+  (`boltSpot` renamed to `friendSpot`); moods: curious at a wrong key, a twirl at a done
+  word, singing while a target is dictated. Her lines (`fairy.start/mistake/done`) show in
+  Piko's bubble at the start, at the second repeated mistake (instead of Piko's line) and
+  at the end of a normal level. `data-fairy="melody"` on the level screen for tests.
+- **Tips:** `listen-*` and `remember-*` tips are shown only in runs of that style (both in
+  mixed), and such runs get only them.
+- **Friends:** `Friend.kind` gains `forest` (new value only, no migration); names from
+  `forestNames`; the results chip says the friend is home again.
+- New `note` sound (a pentatonic bell) for buds, birds, lilies and notes.

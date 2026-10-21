@@ -1,6 +1,6 @@
 import { assetUrl, hasMusic } from '../gfx/assets';
 
-export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'cheer' | 'bzzt';
+export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'cheer' | 'bzzt' | 'note';
 /** Quick sound switch: normal, quiet (20 % of normal) or off. */
 export type SoundLevel = 'normal' | 'quiet' | 'off';
 
@@ -138,6 +138,8 @@ class AudioEngine {
       case 'pop': tone(520, 0, 0.12, 'sine', 0.25, 1040); break;
       case 'whoosh': tone(200, 0, 0.35, 'sine', 0.12, 900); break;
       case 'beat': tone(440, 0, 0.08, 'sine', 0.12); break;
+      // A bell-like note of a pentatonic scale, a little song as the notes add up.
+      case 'note': { const f = [523, 587, 659, 784, 880][Math.floor(Math.random() * 5)]; tone(f, 0, 0.5, 'sine', 0.16); tone(f * 2, 0, 0.3, 'sine', 0.05); break; }
       case 'cheer': [587, 740, 880, 1175].forEach((f, i) => tone(f, i * 0.07, 0.2, 'triangle', 0.12)); break;
       case 'click': tone(700, 0, 0.05, 'square', 0.05); break;
       case 'reward': [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.11, 0.35, 'triangle', 0.18)); break;

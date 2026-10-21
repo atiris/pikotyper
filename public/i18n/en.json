@@ -61,7 +61,12 @@
     "workshop": "Workshop",
     "raintown": "Rain",
     "robocity": "City",
-    "robohome": "Home"
+    "robohome": "Home",
+    "garden": "Garden",
+    "forestpath": "Path",
+    "lilylake": "Lake",
+    "musictree": "Tree",
+    "moonball": "Ball"
   },
   "map": {
     "ownText": "My text",
@@ -81,7 +86,8 @@
     "keysOne": "You need one more letter for this level. You get new letters by playing or in Free practice.",
     "keysFew": "You need {n} more letters for this level. You get new letters by playing or in Free practice.",
     "keysMany": "You need {n} more letters for this level. You get new letters by playing or in Free practice.",
-    "keysLocked": "needs more letters"
+    "keysLocked": "needs more letters",
+    "storyFairy": "Piko and Melody the Fairy"
   },
   "level": {
     "ownText": "My text",
@@ -102,7 +108,8 @@
     "layoutHint": "Your keyboard looks like {layout}. Ask a parent to switch it in the parent area.",
     "shiftOtherHand": "Press Shift with the other hand: the little finger on the side away from the letter.",
     "memoryWait": "Wait until it hides.",
-    "noVoice": "This browser cannot read aloud, so today you will see the words and copy them."
+    "noVoice": "This browser cannot read aloud, so today you will see the words and copy them.",
+    "noVoiceMemory": "This browser cannot read aloud, so today every note glows first and you type it from memory."
   },
   "guide": {
     "deadStep1": "{ch}: first the accent key, then the letter",
@@ -224,7 +231,9 @@
     "repaired": "You repaired the little robot {name}!",
     "badgeNew": "New badge!",
     "badgeSilver": "Your badge is silver now!",
-    "badgeGold": "Your badge is gold now!"
+    "badgeGold": "Your badge is gold now!",
+    "mixedClean": "By ear and from memory without a mistake: {n} of {total}",
+    "guided": "You helped {name} find the way home!"
   },
   "badge": {
     "bronze": "bronze",
@@ -389,7 +398,77 @@
         "The Czech writer Karel Čapek, about a hundred years ago."
       ]
     },
-    "asked": "Remember the question?"
+    "asked": "Remember the question?",
+    "garden": {
+      "q": [
+        "Do you know why flowers smell nice?",
+        "Can you guess which flower turns to follow the sun?",
+        "Do you know how bees tell each other where flowers are?",
+        "Do you know which flower is the biggest in the world?"
+      ],
+      "a": [
+        "The smell calls bees and butterflies, who carry pollen from flower to flower.",
+        "The sunflower! Young sunflowers turn their heads from east to west during the day.",
+        "They dance! A little waggle dance shows the other bees which way to fly and how far.",
+        "The rafflesia. Its flower can be as wide as a car tyre, and it smells bad on purpose to call flies."
+      ]
+    },
+    "forestpath": {
+      "q": [
+        "Do you know why birds sing in the morning?",
+        "Can you guess how an owl can turn its head?",
+        "Do you know which bird can fly backwards?",
+        "Do you know how young birds learn to sing?"
+      ],
+      "a": [
+        "The morning air is calm, so their song travels far. They say: this is my tree!",
+        "Almost all the way round to its back! Its eyes cannot move, so the whole head turns.",
+        "The hummingbird! It can also stay still in the air like a tiny helicopter.",
+        "They listen to their parents and practise, just like you practise typing."
+      ]
+    },
+    "lilylake": {
+      "q": [
+        "Do you know how a frog drinks water?",
+        "Can you guess why water lilies do not sink?",
+        "Do you know what a tadpole turns into?",
+        "Do you know why a lake looks like a mirror?"
+      ],
+      "a": [
+        "Through its skin! Frogs do not drink with their mouth.",
+        "Their leaves have tiny air pockets, so they float like little boats.",
+        "Into a frog! First its legs grow, then its tail disappears.",
+        "Calm water reflects light, so you see the sky and the trees upside down in it."
+      ]
+    },
+    "musictree": {
+      "q": [
+        "Do you know what makes a sound?",
+        "Can you guess how many strings a big harp has?",
+        "Do you know why music can make us happy?",
+        "Do you know which instrument is made from a hollow tree branch?"
+      ],
+      "a": [
+        "Things that shake very fast, like a string or the air in a flute. Our ears feel the shaking.",
+        "About forty-seven! Each string plays a different note.",
+        "Our brain loves patterns, and a happy tune makes it feel good.",
+        "The didgeridoo! Termites eat the inside of a branch and people make it into a long pipe."
+      ]
+    },
+    "moonball": {
+      "q": [
+        "Do you know why fireflies glow?",
+        "Can you guess why the moon changes its shape?",
+        "Do you know which animals are awake at night?",
+        "Do you know if the moon makes its own light?"
+      ],
+      "a": [
+        "They talk with light! Each kind of firefly blinks its own pattern.",
+        "It does not really change. We just see more or less of its sunny side.",
+        "Owls, bats, hedgehogs and moths. They are called nocturnal animals.",
+        "No! The moon shines because the sun lights it up, like a big mirror."
+      ]
+    }
   },
   "paw": {
     "title": "Paw help: {n} words without a mistake charge a paw (3 at most). Enter: {piko} types {words} words for you. Backspace: help by itself when it gets hard.",
@@ -530,6 +609,56 @@
         "Bolt's family is so happy he is home.",
         "They thank you, {name}, for helping Bolt.",
         "Now you can repair little robots on rescue missions too."
+      ],
+      "world11": [
+        "The forest has gone quiet. Not a bird sings, not a leaf rustles.",
+        "A tiny fairy with shimmering wings flies up to {piko}. \"I am Melody. The forest forgot its songs!\"",
+        "Type a word and a sleeping bud opens. Each flower hums one note."
+      ],
+      "wreath": [
+        "The big flower is awake and the whole garden hums!",
+        "Melody weaves a flower wreath for {piko}.",
+        "The garden has its song back. One song is home, four more to go."
+      ],
+      "world12": [
+        "The birds on the forest path forgot their words.",
+        "Each bird sings a word quietly. Listen well and type what you hear.",
+        "Tap a bird's word if you want to hear it again."
+      ],
+      "feather": [
+        "Who, who? The owl liked your answers.",
+        "She gives {piko} a soft feather for his hat.",
+        "The birds are singing again!"
+      ],
+      "world13": [
+        "The lake is still as a mirror.",
+        "A word shows on the water, then a little wave washes it away.",
+        "Remember it and type it, and a lily blooms."
+      ],
+      "lily": [
+        "The long reflection is back in the water!",
+        "Melody gives {piko} a shining water lily.",
+        "The frogs croak the lake's song."
+      ],
+      "world14": [
+        "In the middle of the forest stands the Music Tree.",
+        "Its notes hang on the branches. Some sing, some glow and then fade.",
+        "Listen or remember, then type, and the note flies up."
+      ],
+      "harp": [
+        "The Music Tree plays its song again!",
+        "Melody gives {piko} a little harp.",
+        "Only one song is missing, the song of the night."
+      ],
+      "world15": [
+        "The moon rises and the fireflies come to the ball.",
+        "Melody sings a short sentence for each firefly.",
+        "Type it and the dance floor lights up."
+      ],
+      "wings": [
+        "The whole forest sings! Every bird, every frog, every tree.",
+        "The forest thanks you, {name}. Melody gives {piko} fairy wings.",
+        "Now you can also guide little birds and fireflies home on rescue missions."
       ]
     },
     "junkStart": [
@@ -567,6 +696,47 @@
     "welcomeDone": [
       "The whole family said hello!",
       "Beep beep beep! The little robots are happy."
+    ],
+    "flowerIntro": "The big flower is asleep. Melody whispers a word, listen and type it. Each word wakes the flower a little more.",
+    "flowerAwake": [
+      "The big flower is awake! It smells so nice.",
+      "The garden hums its song again!"
+    ],
+    "owlIntro": "The owl tells a riddle, one word at a time. Listen to each word and type it.",
+    "owlSolved": [
+      "Who, who! All riddles solved.",
+      "The owl is happy, the birds are singing!"
+    ],
+    "reflectionIntro": "The lake shows a whole long sentence, but only once. Look well, then type it word by word.",
+    "reflectionDone": [
+      "The long reflection is back in the lake!",
+      "What a memory! The frogs are clapping."
+    ],
+    "treeSong": [
+      "The Music Tree plays its song!",
+      "A calm steady beat did it."
+    ],
+    "lastSongIntro": "The last song of the night. Melody sings short sentences, one after another. Listen and type.",
+    "lastSongDone": [
+      "The whole forest sings!",
+      "Every song is home again."
+    ]
+  },
+  "fairy": {
+    "start": [
+      "Melody: Shall we sing together?",
+      "Melody: Listen, the forest is waiting.",
+      "Melody: I am right here with you!"
+    ],
+    "mistake": [
+      "Melody: Hmm? Try that one again.",
+      "Melody: Every song has a wrong note sometimes.",
+      "Melody: Slowly, I will wait."
+    ],
+    "done": [
+      "Melody: La la la, beautiful!",
+      "Melody: The forest heard you!",
+      "Melody: One more song is home."
     ]
   },
   "wave": {
@@ -667,7 +837,10 @@
     "hard-hat": "Hard hat",
     "goggles": "Safety goggles",
     "jetpack": "Jetpack",
-    "antenna-band": "Antenna headband"
+    "antenna-band": "Antenna headband",
+    "feather": "Feather",
+    "harp": "Little harp",
+    "fairy-wings": "Fairy wings"
   },
   "dragonNames": [
     "Sparky",
@@ -981,7 +1154,13 @@
     "stretch-fingers": "Spread your fingers, make fists, then open them again.",
     "stretch-wrist": "Bend your wrist and gently press it with the other hand.",
     "take-break": "After a few minutes, stand up, stretch and drink some water.",
-    "celebrate": "Great job! Your companion is proud of you too."
+    "celebrate": "Great job! Your companion is proud of you too.",
+    "listen-whole": "Listen to the whole word first, then type it.",
+    "listen-again": "Did not catch it? Tap the word and you will hear it again.",
+    "listen-sounds": "Say the word quietly to yourself, letter by letter.",
+    "remember-picture": "Look at the whole word like a picture before it hides.",
+    "remember-wait": "Wait until the word hides, then type it from memory.",
+    "remember-slip": "Forgot a letter? A mistake shows the word for a moment again."
   },
   "super": {
     "badge": "Super mode: everything unlocked. Click to end it."
@@ -1121,7 +1300,9 @@
     "robots": "Robots",
     "firstDragon": "My first dragon",
     "bolt": "Bolt",
-    "empty": "Go on a rescue mission to meet new little friends."
+    "empty": "Go on a rescue mission to meet new little friends.",
+    "forests": "Forest friends",
+    "melody": "Melody"
   },
   "robotNames": [
     "Bip",
@@ -1144,5 +1325,23 @@
     "Click",
     "Roller",
     "Beepo"
+  ],
+  "forestNames": [
+    "Pip",
+    "Twinkle",
+    "Feather",
+    "Glow",
+    "Chirp",
+    "Spark",
+    "Tweet",
+    "Lumi",
+    "Peep",
+    "Flicker",
+    "Robin",
+    "Star",
+    "Wren",
+    "Shine",
+    "Trill",
+    "Beam"
   ]
 }

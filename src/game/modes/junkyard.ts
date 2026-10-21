@@ -92,7 +92,7 @@ export class JunkMode extends ApproachMode {
   private drawPile(g: G): void {
     const left = (1 - this.L.def.index * 0.18) * (1 - this.progress());
     const n = Math.ceil(PILE.length * Math.max(0, left));
-    const { x, y } = this.L.boltSpot();
+    const { x, y } = this.L.friendSpot();
     for (const [dx, dy, s] of PILE.slice(0, n)) drawJunk(g, s, x + dx, y + dy - 30, 70, dx * 0.004);
   }
 }

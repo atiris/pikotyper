@@ -3,8 +3,9 @@
 A peaceful, story-driven touch-typing adventure for children (about 10-15 years).
 Kids learn to type with **all ten fingers** together with their friend **Piko**: they play catch
 with animals on a meadow, fly a rocket through space, explore a new planet, protect dragons and
-hatch a new friend; in a second story they help the little robot Bolt get home. No explosions,
-no punishment, no ads, no accounts.
+hatch a new friend; in a second story they help the little robot Bolt get home, in a third
+the fairy Melody brings the songs back to a quiet forest by listening and remembering. No
+explosions, no punishment, no ads, no accounts.
 
 *Pokojná príbehová hra pre deti na nácvik písania všetkými desiatimi. Po slovensky aj po anglicky.*
 
@@ -61,7 +62,7 @@ no punishment, no ads, no accounts.
 | 4. Dragon Valley | shield bubbles protect baby dragons | rhythm wave | a dragon egg |
 | 5. Egg Journey | the egg jumps over rocks and stumps | friendly mole | a baby dragon, endless rescue missions |
 
-**Story 2: Piko and Bolt the Robot** (opens after world 2; Bolt walks next to Piko)
+**Story 2: Piko and Bolt the Robot** (opens at 10 known keys; Bolt walks next to Piko)
 
 | World | What happens | Big challenge | Reward |
 |---|---|---|---|
@@ -71,10 +72,20 @@ no punishment, no ads, no accounts.
 | 9. City | doors open with passwords typed on their panels | main gate: a long code without a mistake | the home key card |
 | 10. Home | lamps switch on and helper robots wake up | little robots popping out of boxes | Bolt's family, little robots in rescue missions |
 
-Every finished world gives a badge that turns silver and gold with more stars.
-Rescued dragons and repaired robots collect on the Little friends screen.
+**Story 3: Piko and Melody the Fairy** (opens at 20 known keys; Melody floats next to Piko)
 
-Piko can be one of nine animals and wears 35 accessories earned by progress (never by chance).
+| World | What happens | Big challenge | Reward |
+|---|---|---|---|
+| 11. Garden | typed words open humming buds | the sleeping flower, woken by dictated words | the garden's song, a flower wreath |
+| 12. Path | birds sing their words (dictation) and fly along | the owl's riddles, word by word | a feather |
+| 13. Lake | words reflected on the water fade (memory), lilies bloom | the long reflection, shown once | a water lily |
+| 14. Tree | notes sing or glow and fade, in turns | the tree's song to a calm beat | a little harp |
+| 15. Ball | fireflies bring sung sentences to the dance floor | the last song | fairy wings, forest friends in rescue missions |
+
+Every finished world gives a badge that turns silver and gold with more stars.
+Rescued dragons, repaired robots and forest friends guided home collect on the Little friends screen.
+
+Piko can be one of nine animals and wears 38 accessories earned by progress (never by chance).
 
 ![Meadow level](docs/meadow.png)
 ![Space level](docs/space.png)

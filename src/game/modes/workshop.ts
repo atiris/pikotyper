@@ -33,7 +33,7 @@ export class BeltMode extends ApproachMode {
   }
 
   private basket(): { x: number; y: number } {
-    return { x: this.L.boltSpot().x + 95, y: VH - 40 };
+    return { x: this.L.friendSpot().x + 95, y: VH - 40 };
   }
 
   makeMover(word: string): Mover {
@@ -161,8 +161,13 @@ export abstract class BeatMode extends Mode {
   /** The scene, `k` = 0..1 done. */
   protected abstract drawScene(g: G, k: number): void;
 
+  /** Beats per minute. */
+  protected tempo(): number {
+    return 48 + this.L.difficulty * 4;
+  }
+
   start(): void {
-    this.period = 60 / (48 + this.L.difficulty * 4);
+    this.period = 60 / this.tempo();
     this.next();
   }
 
@@ -194,6 +199,7 @@ export abstract class BeatMode extends Mode {
     if (this.calmed >= this.L.def.count) {
       this.L.say(pickLine(this.doneLine), 3);
       this.L.setRobotMood('happy', 4);
+      this.L.setFairyMood('happy', 4);
     } else this.next();
   }
 

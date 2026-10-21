@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
-import { LEVELS, STORIES, isLevelUnlocked, isWorldUnlocked, levelById, nextLevel, rescueLevel, rescueUnlocked, worldLevels } from './levels';
+import { lessonOrder } from '../learning/lessons';
+import { LEVELS, STORIES, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, nextLevel, rescueLevel, rescueUnlocked, worldLevels } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -17,6 +18,15 @@ describe('story unlocks', () => {
     p.progress.worldsDone = [];
     expect(isWorldUnlocked(p, 5)).toBe(true);
     expect(isWorldUnlocked(p, 6)).toBe(false);
+  });
+
+  it('opens the fairy story at twenty keys', () => {
+    const p = newProfile('Ema', 'sk');
+    p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, 19);
+    expect(isWorldUnlocked(p, 10)).toBe(false);
+    p.progress.unlockedKeys = lessonOrder(p.layout).slice(0, 20);
+    expect(isWorldUnlocked(p, 10)).toBe(true);
+    expect(isWorldUnlocked(p, 11)).toBe(false);
   });
 
   it('lets both stories go on independently', () => {
@@ -87,6 +97,18 @@ describe('keys needed per level', () => {
     expect(robot()).toEqual([true, true, true, true, true]);
   });
 
+  it('needs 20 / 25 / 30 / 35 / 40 keys in the fairy story, never more than the whole lesson path', () => {
+    const p = newProfile('Ema', 'sk');
+    expect(worldLevels(12).map((l) => keysNeeded(p, l))).toEqual([20, 25, 30, 35, 40]);
+    p.layout = 'us-qwerty';
+    const path = lessonOrder('us-qwerty').length;
+    expect(Math.max(...LEVELS.map((l) => keysNeeded(p, l)))).toBeLessThanOrEqual(path);
+    p.progress.worldsDone = [10];
+    for (const l of worldLevels(11)) p.progress.levels[l.id] = 2;
+    p.progress.unlockedKeys = lessonOrder('us-qwerty');
+    expect(worldLevels(11).every((l) => isLevelUnlocked(p, l))).toBe(true);
+  });
+
   it('does not gate the super profile', () => {
     const p = withKeys(2);
     p.id = SUPER_ID;
@@ -113,5 +135,14 @@ describe('rescue missions', () => {
     p.progress.worldsDone.push(2, 3, 4);
     const worlds = new Set(Array.from({ length: 20 }, (_, seed) => rescueLevel(p, seed).world >= 5));
     expect(worlds).toEqual(new Set([true, false]));
+  });
+
+  it('listen and remember once the fairy story is done', () => {
+    const p = newProfile('Ema', 'sk');
+    p.progress.worldsDone = [0, 1, 2, 3, 4];
+    const styles = () => new Set(Array.from({ length: 40 }, (_, seed) => rescueLevel(p, seed).style ?? 'copy'));
+    expect(styles()).toEqual(new Set(['copy']));
+    p.progress.worldsDone.push(10, 11, 12, 13, 14);
+    expect(styles()).toEqual(new Set(['copy', 'dictation', 'memory', 'mixed']));
   });
 });

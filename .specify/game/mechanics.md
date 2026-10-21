@@ -23,7 +23,7 @@
 - The start is slow: at difficulty 3 a short word needs about 10 seconds to reach Piko
   and one word is on screen at a time.
 - Level length is about 1-3 minutes. At the end Piko stays where he is and jumps happily
-  three times (Bolt hops with him in story 2), and any tool he held in the level (fan,
+  three times (Bolt hops with him in story 2, Melody twirls in story 3), and any tool he held in the level (fan,
   umbrella, shield) fades away; with reduced motion he only smiles and the tool is gone
   at once. About 1.4 seconds later the end screen shows stars (accuracy), new keys, and a
   sentence from Piko. The end screen is a compact card that fits a small laptop screen
@@ -37,7 +37,8 @@
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   goes back to the map, like closing any other card.
 - **Ways to type** (a style per run, the same movement and story in every mode):
-  - *Copy* (default, all story levels so far): the child types the word shown.
+  - *Copy* (default, stories 1 and 2 and the fairy story's garden): the child types the
+    word shown.
   - *Dictation*: the voice says each target when it becomes the one to type; its label
     shows a speaker and one dot per letter (spaces as gaps), and the typed letters
     appear in place. A wrong key shows the whole target, which stays shown until done.
@@ -51,9 +52,13 @@
     the one exception to "a word seen can be typed", clearly marked by the ring. A wrong
     key shows it again for a short flash; the letters typed so far stay. Targets get
     1.8 times the travel time (calm modes wait anyway).
-  - In both, the finger guide does not light the key of a hidden letter, Piko's paws
+  - *Mixed* (the fairy story's music tree): dictation and memory targets in turns, each
+    with its own icon. Without a voice the run is memory only.
+  - In all of them, the finger guide does not light the key of a hidden letter, Piko's paws
     show the target and type it as usual, and the end screen adds how many targets the
-    child typed without the target being shown again ("by ear" / "from memory").
+    child typed without the target being shown again ("by ear" / "from memory" / "by
+    ear and from memory"). The get-ready tip of such a run is about listening or
+    remembering.
 - Pause anytime (Esc or a visible button); the game also pauses when the tab is hidden.
   The pause is a small card at the top: the words and the guide's next key stay in sight.
   Besides Continue and Map it offers "Slower", one step lower difficulty (Piko confirms);

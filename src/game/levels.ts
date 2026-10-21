@@ -1,12 +1,14 @@
-import { activeKeys } from '../learning/lessons';
+import { activeKeys, practiceOrder } from '../learning/lessons';
 import { type Profile, SUPER_ID } from '../storage/schema';
 import type { Style } from './typing';
 
-export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junkyard' | 'workshop' | 'raintown' | 'robocity' | 'robohome';
-export const WORLDS: WorldId[] = ['meadow', 'space', 'planet', 'dragons', 'egg', 'junkyard', 'workshop', 'raintown', 'robocity', 'robohome'];
+export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junkyard' | 'workshop' | 'raintown' | 'robocity' | 'robohome'
+  | 'garden' | 'forestpath' | 'lilylake' | 'musictree' | 'moonball';
+export const WORLDS: WorldId[] = ['meadow', 'space', 'planet', 'dragons', 'egg', 'junkyard', 'workshop', 'raintown', 'robocity', 'robohome',
+  'garden', 'forestpath', 'lilylake', 'musictree', 'moonball'];
 
 export interface StoryDef {
-  id: 'dragon' | 'robot';
+  id: 'dragon' | 'robot' | 'fairy';
   /** i18n key of the story title. */
   title: string;
   /** World indexes of the story, in order. */
@@ -22,6 +24,7 @@ export interface StoryDef {
 export const STORIES: StoryDef[] = [
   { id: 'dragon', title: 'map.storyName', worlds: [0, 1, 2, 3, 4], opensAtKeys: null, keysBase: 2, keysStep: 2 },
   { id: 'robot', title: 'map.storyRobot', worlds: [5, 6, 7, 8, 9], opensAtKeys: 10, keysBase: 10, keysStep: 4 },
+  { id: 'fairy', title: 'map.storyFairy', worlds: [10, 11, 12, 13, 14], opensAtKeys: 20, keysBase: 20, keysStep: 5 },
 ];
 
 export function storyOf(world: number): StoryDef {
@@ -44,6 +47,11 @@ export type LevelKind =
   | 'rain' | 'storm'
   | 'doors' | 'gate'
   | 'rooms' | 'welcome'
+  | 'buds' | 'flower'
+  | 'birds' | 'owl'
+  | 'lilies' | 'reflection'
+  | 'notes' | 'treesong'
+  | 'fireflies' | 'lastsong'
   | 'practice';
 
 export interface LevelDef {
@@ -64,8 +72,8 @@ export interface LevelDef {
   style?: Style;
 }
 
-const def = (world: number, index: number, kind: LevelKind, count: number, variant = ''): LevelDef =>
-  ({ id: `w${world + 1}-${index + 1}`, world, index, kind, count, variant, isSuper: index === 4 });
+const def = (world: number, index: number, kind: LevelKind, count: number, variant = '', style?: Style): LevelDef =>
+  ({ id: `w${world + 1}-${index + 1}`, world, index, kind, count, variant, isSuper: index === 4, ...(style ? { style } : {}) });
 
 export const LEVELS: LevelDef[] = [
   def(0, 0, 'meadow', 12, 'flyers'), def(0, 1, 'meadow', 14, 'bugs'), def(0, 2, 'meadow', 14, 'runners'), def(0, 3, 'meadow', 16, 'mix'), def(0, 4, 'hedgehog', 6),
@@ -78,6 +86,12 @@ export const LEVELS: LevelDef[] = [
   def(7, 0, 'rain', 12), def(7, 1, 'rain', 14), def(7, 2, 'rain', 16), def(7, 3, 'rain', 18), def(7, 4, 'storm', 14),
   def(8, 0, 'doors', 10, '1'), def(8, 1, 'doors', 12, '2'), def(8, 2, 'doors', 14, '2'), def(8, 3, 'doors', 16, '3'), def(8, 4, 'gate', 8),
   def(9, 0, 'rooms', 10), def(9, 1, 'rooms', 12), def(9, 2, 'rooms', 14), def(9, 3, 'rooms', 16), def(9, 4, 'welcome', 14),
+  // Story 3 trains listening and remembering; level 1 of the forest path and the lake starts with single short words.
+  def(10, 0, 'buds', 10), def(10, 1, 'buds', 12), def(10, 2, 'buds', 14), def(10, 3, 'buds', 16), def(10, 4, 'flower', 6, '', 'dictation'),
+  def(11, 0, 'birds', 10, 'short', 'dictation'), def(11, 1, 'birds', 12, '', 'dictation'), def(11, 2, 'birds', 14, '', 'dictation'), def(11, 3, 'birds', 16, '', 'dictation'), def(11, 4, 'owl', 3, '', 'dictation'),
+  def(12, 0, 'lilies', 10, 'short', 'memory'), def(12, 1, 'lilies', 12, '', 'memory'), def(12, 2, 'lilies', 14, '', 'memory'), def(12, 3, 'lilies', 16, '', 'memory'), def(12, 4, 'reflection', 2, '', 'memory'),
+  def(13, 0, 'notes', 10, '', 'mixed'), def(13, 1, 'notes', 12, '', 'mixed'), def(13, 2, 'notes', 14, '', 'mixed'), def(13, 3, 'notes', 16, '', 'mixed'), def(13, 4, 'treesong', 8, '', 'dictation'),
+  def(14, 0, 'fireflies', 6, '', 'dictation'), def(14, 1, 'fireflies', 7, '', 'dictation'), def(14, 2, 'fireflies', 8, '', 'dictation'), def(14, 3, 'fireflies', 9, '', 'dictation'), def(14, 4, 'lastsong', 5, '', 'dictation'),
 ];
 
 export function levelById(id: string): LevelDef | undefined {
@@ -102,17 +116,19 @@ export function isWorldUnlocked(p: Profile, world: number): boolean {
 
 /**
  * Keys a story level needs, so its words are varied enough, again in every world: the
- * dragon story 2 / 4 / 6 / 8 / 10, the robot story 10 / 14 / 18 / 22 / 26.
+ * dragon story 2 / 4 / 6 / 8 / 10, the robot story 10 / 14 / 18 / 22 / 26, the fairy story
+ * 20 / 25 / 30 / 35 / 40; never more than the profile's whole lesson path, so a child
+ * who knows it all can play everything.
  */
-export function keysNeeded(l: LevelDef): number {
+export function keysNeeded(p: Profile, l: LevelDef): number {
   const story = storyOf(l.world);
-  return story.keysBase + story.keysStep * l.index;
+  return Math.min(story.keysBase + story.keysStep * l.index, practiceOrder(p).length);
 }
 
 /** Keys the child still needs for a level (0 = enough); the super profile needs none. */
 export function keysMissing(p: Profile, l: LevelDef): number {
   if (p.id === SUPER_ID) return 0;
-  return Math.max(0, keysNeeded(l) - activeKeys(p).length);
+  return Math.max(0, keysNeeded(p, l) - activeKeys(p).length);
 }
 
 /** The level before it has its star (the first level opens with its world). */
@@ -145,11 +161,13 @@ export function starsFor(accuracy: number): number {
   return accuracy >= 0.95 ? 3 : accuracy >= 0.85 ? 2 : 1;
 }
 
-const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string }[] = [
+const RESCUE_KINDS: { kind: LevelKind; world: number; variant: string; style?: Style }[] = [
   { kind: 'meadow', world: 0, variant: 'mix' }, { kind: 'space', world: 1, variant: 'mix' }, { kind: 'swamp', world: 2, variant: '' },
   { kind: 'signs', world: 2, variant: '' }, { kind: 'shield', world: 3, variant: '3' }, { kind: 'slope', world: 4, variant: 'mix' },
   { kind: 'junk', world: 5, variant: 'mix' }, { kind: 'belt', world: 6, variant: 'mix' }, { kind: 'rain', world: 7, variant: '' },
   { kind: 'doors', world: 8, variant: '2' }, { kind: 'rooms', world: 9, variant: '' },
+  { kind: 'buds', world: 10, variant: '' }, { kind: 'birds', world: 11, variant: '', style: 'dictation' }, { kind: 'lilies', world: 12, variant: '', style: 'memory' },
+  { kind: 'notes', world: 13, variant: '', style: 'mixed' }, { kind: 'fireflies', world: 14, variant: '', style: 'dictation' },
 ];
 
 /** Endless rescue missions: a level kind from any world of a finished story; the friend helped follows the story. */
@@ -157,7 +175,7 @@ export function rescueLevel(p: Profile, seed: number): LevelDef {
   const open = RESCUE_KINDS.filter((r) => storyDone(p, storyOf(r.world)));
   const pool = open.length ? open : RESCUE_KINDS.filter((r) => STORIES[0].worlds.includes(r.world));
   const r = pool[Math.abs(seed) % pool.length];
-  return { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: 14, variant: r.variant, isSuper: false };
+  return { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: r.kind === 'fireflies' ? 8 : 14, variant: r.variant, isSuper: false, ...(r.style ? { style: r.style } : {}) };
 }
 
 export function practiceLevel(seconds: number | null, phrases?: string[]): LevelDef & { seconds: number | null } {

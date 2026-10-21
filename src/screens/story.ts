@@ -1,6 +1,7 @@
 import { app, go, saveProfile, type ScreenName } from '../app/app';
 import { audio } from '../audio/audio';
 import { hasImage, imageUrl } from '../gfx/assets';
+import { type FairyMood, fairyElement } from '../gfx/fairy';
 import { type Mood, pikoElement } from '../gfx/piko';
 import { type RobotMood, type RobotState, robotElement } from '../gfx/robot';
 import { t, tList } from '../i18n/i18n';
@@ -17,6 +18,8 @@ interface SceneDef {
   mood?: Mood;
   /** Bolt in story 2. */
   bolt?: RobotState & { mood: RobotMood };
+  /** Melody in story 3. */
+  fairy?: FairyMood;
 }
 
 /** Piko's fan, the same look as the code-drawn one in the meadow levels. */
@@ -55,6 +58,16 @@ const SCENES: Record<string, SceneDef> = {
   key: { world: 'robocity', sprites: ['obj-door-open'], piko: true, bolt: { look: 'robot2', raincoat: true, mood: 'happy' }, sparkles: true },
   world10: { world: 'robohome', sprites: ['obj-lamp'], piko: true, bolt: { look: 'robot2', raincoat: true, mood: 'idle' } },
   home: { world: 'robohome', sprites: ['obj-vacuum-robot', 'obj-toaster-robot', 'obj-robot-small-1'], piko: true, bolt: { look: 'robot2', raincoat: true, mood: 'happy' }, sparkles: true },
+  world11: { world: 'garden', sprites: ['obj-bud'], piko: true, fairy: 'curious' },
+  wreath: { world: 'garden', sprites: ['obj-big-flower-open'], piko: true, fairy: 'happy', sparkles: true },
+  world12: { world: 'forestpath', sprites: ['obj-bird', 'obj-owl'], fairy: 'singing' },
+  feather: { world: 'forestpath', sprites: ['obj-bird'], piko: true, fairy: 'happy', sparkles: true },
+  world13: { world: 'lilylake', sprites: ['obj-lily-pad', 'obj-frog'], fairy: 'idle' },
+  lily: { world: 'lilylake', sprites: ['obj-lily', 'obj-frog'], piko: true, fairy: 'happy', sparkles: true },
+  world14: { world: 'musictree', sprites: ['obj-note'], piko: true, fairy: 'singing' },
+  harp: { world: 'musictree', sprites: ['obj-note'], piko: true, fairy: 'happy', sparkles: true },
+  world15: { world: 'moonball', sprites: ['obj-firefly'], fairy: 'singing' },
+  wings: { world: 'moonball', sprites: ['obj-firefly', 'obj-baby-bird'], piko: true, fairy: 'happy', sparkles: true },
 };
 
 interface StoryParams {
@@ -81,6 +94,7 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
     def.envelope ? h('div', { class: 'envelope', 'aria-hidden': 'true' }, h('span', {}, '★')) : null,
     def.piko ? h('div', { class: 'story-piko' }, pikoElement(p.companion, def.mood && hasImage(`piko-${p.companion.kind}-${def.mood}`) ? def.mood : 'happy', 220)) : null,
     def.bolt ? h('div', { class: 'story-bolt' }, robotElement(def.bolt, def.bolt.mood, 180)) : null,
+    def.fairy ? h('div', { class: 'story-melody' }, fairyElement(def.fairy, 160)) : null,
     def.fan ? fan() : null,
     def.sparkles ? h('div', { class: 'sparkles', 'aria-hidden': 'true' }, ...Array.from({ length: 14 }, (_, k) => h('i', { style: `--k:${k}` }))) : null);
   const finish = () => {

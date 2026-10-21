@@ -54,6 +54,20 @@ describe('TypingCore', () => {
 });
 
 describe('styles', () => {
+  it('a mixed run dictates and remembers its targets in turns', () => {
+    const c = new TypingCore();
+    c.style = 'mixed';
+    const styles = ['les', 'dom', 'sad', 'kde'].map((w) => c.add(w).style);
+    expect(styles).toEqual(['dictation', 'memory', 'dictation', 'memory']);
+    const [heard, remembered] = c.targets;
+    c.update(0.01);
+    // Only the remembered one shows its letters first; the heard one types at once.
+    expect(c.letters(remembered)).toBe(true);
+    expect(c.letters(heard)).toBe(false);
+    expect(c.typable(heard)).toBe(true);
+    expect(c.typable(remembered)).toBe(false);
+  });
+
   it('dictation hides the letters and a wrong key reveals the whole target for good', () => {
     const c = new TypingCore();
     c.style = 'dictation';

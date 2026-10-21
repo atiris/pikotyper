@@ -75,9 +75,9 @@ export interface Settings {
   readAloud: boolean;
 }
 
-/** A little friend helped in a rescue mission: a dragon (story 1) or a robot (story 2). */
+/** A little friend helped in a rescue mission: a dragon (story 1), a robot (story 2) or a forest friend (story 3). */
 export interface Friend {
-  kind: 'dragon' | 'robot';
+  kind: 'dragon' | 'robot' | 'forest';
   name: string;
   hue: number;
   date: string;

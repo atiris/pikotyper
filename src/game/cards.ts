@@ -3,6 +3,7 @@ import { t, tMap } from '../i18n/i18n';
 import type { Layout } from '../keyboard/layouts';
 import type { Profile, Surprise } from '../storage/schema';
 import { surpriseCount } from './own-content';
+import type { Style } from './typing';
 import { type KeyboardGuide, fingerChip } from '../ui/keyboard-guide';
 import { button, h } from '../ui/dom';
 import { pikoElement } from '../gfx/piko';
@@ -53,16 +54,27 @@ export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = 
   });
 }
 
-/** One random preparation tip, never one of the last five shown. */
 /** Tips that only make sense on a Slovak keyboard, and those only on Slovak QWERTZ. */
 const SK_ONLY_TIPS = new Set(['yz-swap', 'z-finger', 'number-row', 'dead-keys', 'caron-shift', 'accent-pinky', 'diacritics-fun']);
 const QWERTZ_ONLY_TIPS = new Set(['yz-swap', 'z-finger']);
 /** Tips about keys far from the home row; shown once the child knows more keys. */
 const LATER_TIPS = new Set(['number-row', 'number-fingers', 'dead-keys', 'caron-shift', 'accent-pinky', 'diacritics-fun', 'shift-opposite', 'capital-a', 'yz-swap', 'z-finger', 'pinky-p', 'reach-t', 'middle-ei', 'ring-finger']);
 
-export function pickTip(p: Profile): { id: string; text: string } | null {
+/** The style a tip is about: listening tips for dictation, remembering tips for memory; null = any run. */
+function tipStyle(id: string): Style | null {
+  return id.startsWith('listen-') ? 'dictation' : id.startsWith('remember-') ? 'memory' : null;
+}
+
+/** A dictation or memory run gets a tip about its own way of typing, a copy run never does. */
+function fitsStyle(id: string, style: Style): boolean {
+  const own = tipStyle(id);
+  return style === 'copy' ? !own : style === 'mixed' ? !!own : own === style;
+}
+
+/** One random preparation tip for a run of this style, never one of the last five shown. */
+export function pickTip(p: Profile, style: Style = 'copy'): { id: string; text: string } | null {
   const tips = tMap('tips');
-  const ids = Object.keys(tips).filter((id) => (p.layout !== 'us-qwerty' || !SK_ONLY_TIPS.has(id)) && (p.layout === 'sk-qwertz' || !QWERTZ_ONLY_TIPS.has(id)) && (p.progress.unlockedKeys.length >= 12 || !LATER_TIPS.has(id)));
+  const ids = Object.keys(tips).filter((id) => fitsStyle(id, style) && (p.layout !== 'us-qwerty' || !SK_ONLY_TIPS.has(id)) && (p.layout === 'sk-qwertz' || !QWERTZ_ONLY_TIPS.has(id)) && (p.progress.unlockedKeys.length >= 12 || !LATER_TIPS.has(id)));
   if (!ids.length) return null;
   const fresh = ids.filter((id) => !p.progress.lastTips.includes(id));
   const id = (fresh.length ? fresh : ids)[Math.floor(Math.random() * (fresh.length || ids.length))];

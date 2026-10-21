@@ -8,6 +8,7 @@ import { Tweens } from '../engine/tween';
 import { drawBackground, drawWord, type G, wordBox } from '../gfx/draw';
 import { type Mood, pawColors, pikoElement, renderPikoInto } from '../gfx/piko';
 import { preload } from '../gfx/assets';
+import { type FairyMood, drawFairy } from '../gfx/fairy';
 import { type RobotMood, type RobotState, drawRobot, robotFor } from '../gfx/robot';
 import { t, tList } from '../i18n/i18n';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
@@ -58,12 +59,16 @@ const READ_TIME = 3;
 /** Extra seconds a target with a capital letter gets (the Shift chord is hard). */
 const CAPITAL_EXTRA = 1.5;
 /** Travel time of dictated and remembered targets: hearing or recalling a target takes longer. */
-const STYLE_PACE: Record<Style, number> = { copy: 1, dictation: 1.5, memory: 1.8 };
+const STYLE_PACE: Record<Style, number> = { copy: 1, dictation: 1.5, memory: 1.8, mixed: 1.8 };
 /** Seconds without a key after which a dictated target is said once more. */
 const DICTATION_REPEAT = 4;
 /** Bolt's place next to the DOM Piko, in CSS pixels from the left, and his height in game units. */
 const BOLT_CSS_X = 200;
 const BOLT_SIZE = 150;
+/** Melody's height, how high she floats above the friend's spot, and the seconds of her twirl. */
+const FAIRY_SIZE = 120;
+const FAIRY_FLOAT = 110;
+const FAIRY_SPIN = 0.6;
 /** The end of a level: Piko hops HOPS times of HOP_TIME seconds, his tool fades in TOOL_FADE, then the results open. */
 const HOPS = 3;
 const HOP_TIME = 0.4;
@@ -132,6 +137,11 @@ export class LevelRuntime {
   readonly robot: RobotState | null;
   private robotMood: RobotMood = 'idle';
   private robotMoodT = 0;
+  /** Melody floats next to Piko in story 3 levels and its rescue missions. */
+  readonly fairy: boolean;
+  private fairyMood: FairyMood = 'idle';
+  private fairyMoodT = 0;
+  private fairySpin = 0;
 
   private loop: Loop;
   private input: KeyInput | null = null;
@@ -212,6 +222,8 @@ export class LevelRuntime {
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
     this.robot = def.kind !== 'practice' && storyOf(def.world).id === 'robot' ? robotFor(def.id === 'rescue' ? WORLDS.length - 1 : def.world) : null;
     if (this.robot) this.el.dataset.bolt = this.robot.look;
+    this.fairy = def.kind !== 'practice' && storyOf(def.world).id === 'fairy';
+    if (this.fairy) this.el.dataset.fairy = 'melody';
     this.progressFill = h('div', { class: 'progress-fill' });
     const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.id === 'rescue' ? t('level.rescue') : t('level.title', { world: def.world + 1, level: def.index + 1 });
     const guideBtn = button('', () => this.toggleGuide(), 'icon-btn', 'keyboard');
@@ -275,7 +287,7 @@ export class LevelRuntime {
   }
 
   get pikoOnStage(): boolean {
-    return ['swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms'].includes(this.def.kind);
+    return ['swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection'].includes(this.def.kind);
   }
 
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
@@ -288,7 +300,7 @@ export class LevelRuntime {
     let tip: string | undefined;
     if (!app.tipShown && !this.opts.keys) {
       app.tipShown = true;
-      tip = pickTip(p)?.text;
+      tip = pickTip(p, this.style)?.text;
       saveProfile();
     }
     for (const key of this.opts.keys ? [] : keysToIntroduce(p)) {
@@ -298,18 +310,20 @@ export class LevelRuntime {
       saveProfile();
     }
     if (this.disposed) return;
-    // Without a voice of the language a dictation runs as copy typing, and the card says so.
-    const noVoice = this.style === 'dictation' && !speech.available(p.language);
-    if (noVoice) this.style = 'copy';
+    // Without a voice of the language a dictation runs as copy typing (a mixed run as memory), and the card says so.
+    const noVoice = this.dictating && !speech.available(p.language);
+    const voiceNote = noVoice ? t(this.style === 'mixed' ? 'level.noVoiceMemory' : 'level.noVoice') : undefined;
+    if (noVoice) this.style = this.style === 'mixed' ? 'memory' : 'copy';
     this.core.style = this.style;
     this.paintRead();
-    if (!this.opts.keys && await showPosture(host, p, tip, this.surprise, noVoice ? t('level.noVoice') : undefined) === 'cancel') return this.exit();
+    if (!this.opts.keys && await showPosture(host, p, tip, this.surprise, voiceNote) === 'cancel') return this.exit();
     if (this.disposed) return;
     const intro = this.mode.intro();
     if (intro) await showCard(host, h('p', {}, intro), { button: t('common.ok'), cls: 'mode-intro' });
     if (this.disposed) return;
     this.mode.start();
     this.started = true;
+    if (this.fairy) this.say(pickLine('fairy.start'), 3);
     this.piko.classList.remove('waiting');
     this.readySince = performance.now();
     this.input = new KeyInput(window, this.handlers());
@@ -345,10 +359,10 @@ export class LevelRuntime {
 
   // ---- words and pacing ------------------------------------------------------
 
-  /** Next target (a word, or a phrase of up to `words` words); avoids first letters already on screen. */
-  word(maxLen?: number, words = this.mode.phraseWords): string {
+  /** Next target (a word, a phrase of up to `words` words, or a sentence of at least `minWords`); avoids first letters already on screen. */
+  word(maxLen?: number, words = this.mode.phraseWords, minWords = this.mode.phraseMin): string {
     const avoid = new Set(this.core.active.map((t) => t.word[0].toLowerCase()));
-    return this.words.next(avoid, maxLen, words);
+    return this.words.next(avoid, maxLen, words, minWords);
   }
 
   /**
@@ -430,6 +444,7 @@ export class LevelRuntime {
       this.sfx(this.mode.wrongSfx);
       this.setMood('thinking', 1.2);
       this.setRobotMood('worried', 1);
+      this.setFairyMood('curious', 1);
       this.mode.onWrong(res.target);
     } else {
       recordPress(p, res.expected, c.ch, rt);
@@ -444,6 +459,7 @@ export class LevelRuntime {
         this.wordStreak++;
         this.setMood('happy', 1.4);
         this.setRobotMood('happy', 1.2);
+        this.setFairyMood('happy', 1.2);
         this.mode.onDone(res.target);
         this.cheer();
         if (this.pawsAllowed && this.wordStreak % PAW_STREAK === 0) this.chargePaw();
@@ -470,7 +486,7 @@ export class LevelRuntime {
     this.wordStreak = 0;
     if (this.wrongStreak.ch === expected) this.wrongStreak.n++;
     else this.wrongStreak = { ch: expected, n: 1 };
-    if (this.wrongStreak.n === 2) this.say(pickLine('piko.mistake'), 2);
+    if (this.wrongStreak.n === 2) this.say(pickLine(this.fairy ? 'fairy.mistake' : 'piko.mistake'), 2);
     if (this.wrongStreak.n === 3) this.showHint(expected);
   }
 
@@ -520,10 +536,15 @@ export class LevelRuntime {
     return p.settings.readAloud && speech.available(p.language);
   }
 
+  /** The run has dictated targets. */
+  private get dictating(): boolean {
+    return this.style === 'dictation' || this.style === 'mixed';
+  }
+
   /** The button shows only when the browser has a voice of the profile's language; in a dictation the voice is the task. */
   private paintRead(): void {
     const p = app.profile!;
-    this.readBtn.hidden = this.style === 'dictation' || !speech.available(p.language);
+    this.readBtn.hidden = this.dictating || !speech.available(p.language);
     this.readBtn.setAttribute('aria-pressed', String(p.settings.readAloud));
   }
 
@@ -542,9 +563,9 @@ export class LevelRuntime {
     if (!tg || this.pawWords || !this.started || this.paused) return;
     if (tg.id !== this.readId) {
       this.readId = tg.id;
-      if (this.style === 'dictation') this.dictate(tg, false);
-      else if (this.reading) speech.say(tg.word, app.profile!.language);
-    } else if (this.style === 'dictation' && tg.masked && !this.repeated && this.elapsed - Math.max(this.spokenAt, this.keyAt) >= DICTATION_REPEAT) {
+      if (tg.style === 'dictation') this.dictate(tg, false);
+      else if (this.reading && !this.dictating) speech.say(tg.word, app.profile!.language);
+    } else if (tg.style === 'dictation' && tg.masked && !this.repeated && this.elapsed - Math.max(this.spokenAt, this.keyAt) >= DICTATION_REPEAT) {
       this.dictate(tg, true);
     }
   }
@@ -560,16 +581,17 @@ export class LevelRuntime {
     speech.say(tg.word, app.profile!.language);
     this.spokenAt = this.elapsed;
     this.repeated = repeat;
+    this.setFairyMood('singing', 1.4);
   }
 
   /** A click or tap on a dictated target's label says it again. */
   private onStageClick(e: PointerEvent): void {
-    if (this.style !== 'dictation' || !this.started || this.paused || this.finished) return;
+    if (!this.dictating || !this.started || this.paused || this.finished) return;
     const r = this.stage.canvas.getBoundingClientRect();
     const x = (e.clientX - r.left) / this.stage.scale, y = (e.clientY - r.top) / this.stage.scale;
     const hit = this.labelRects.find((b) => x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1);
     const tg = hit && this.core.active.find((a) => a.id === hit.id);
-    if (tg) this.dictate(tg, true);
+    if (tg?.style === 'dictation') this.dictate(tg, true);
   }
 
   // ---- Piko --------------------------------------------------------------------
@@ -603,16 +625,31 @@ export class LevelRuntime {
     this.robotMoodT = seconds;
   }
 
-  /** Bolt's feet: where the mode puts him, else next to Piko. */
-  boltSpot(): { x: number; y: number } {
-    return this.mode.boltSpot() ?? { x: BOLT_CSS_X / this.stage.scale, y: VH - 6 };
+  /** Melody looks curious, sings, or twirls once (happy). */
+  setFairyMood(mood: FairyMood, seconds: number): void {
+    this.fairyMood = mood;
+    this.fairyMoodT = seconds;
+    if (mood === 'happy' && !this.reduceMotion) this.fairySpin = FAIRY_SPIN;
+  }
+
+  /** The story friend's feet (Bolt, Melody below where she floats): where the mode puts them, else next to Piko. */
+  friendSpot(): { x: number; y: number } {
+    return this.mode.friendSpot() ?? { x: BOLT_CSS_X / this.stage.scale, y: VH - 6 };
   }
 
   /** Bolt on the canvas, under the mode's objects; he hops with Piko at the end. */
   private drawBolt(g: G): void {
-    const { x, y } = this.boltSpot();
+    const { x, y } = this.friendSpot();
     if (this.endTime == null) return drawRobot(g, this.robot!, this.robotMood, x, y, BOLT_SIZE, this.mode.t);
     drawRobot(g, this.robot!, 'happy', x, y - Math.sin(this.endHop * Math.PI) * 24, BOLT_SIZE, this.mode.t);
+  }
+
+  /** Melody floats above the friend's spot, under the mode's objects; she twirls at a word and at the end. */
+  private drawMelody(g: G): void {
+    const { x, y } = this.friendSpot();
+    const spin = this.fairySpin > 0 ? 1 - this.fairySpin / FAIRY_SPIN : 0;
+    if (this.endTime == null) return drawFairy(g, this.fairyMood, x, y - FAIRY_FLOAT, FAIRY_SIZE, this.mode.t, spin);
+    drawFairy(g, 'happy', x, y - FAIRY_FLOAT - Math.sin(this.endHop * Math.PI) * 24, FAIRY_SIZE, this.mode.t, this.endHop);
   }
 
   // ---- paw help ------------------------------------------------------------------
@@ -761,7 +798,7 @@ export class LevelRuntime {
     this.lastKey = 0;
     this.readySince = performance.now();
     // The pause cut the voice: a dictated target is said again.
-    if (this.style === 'dictation') this.readId = 0;
+    if (this.dictating) this.readId = 0;
   }
 
   private exit(): void {
@@ -801,6 +838,8 @@ export class LevelRuntime {
     if (this.bubbleTimer > 0 && (this.bubbleTimer -= dt) <= 0) this.hideBubble();
     if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) renderPikoInto(this.piko, app.profile!.companion, 'idle');
     if (this.robotMoodT > 0 && (this.robotMoodT -= dt) <= 0) this.robotMood = 'idle';
+    if (this.fairyMoodT > 0 && (this.fairyMoodT -= dt) <= 0) this.fairyMood = 'idle';
+    this.fairySpin = Math.max(0, this.fairySpin - dt);
     this.progressFill.style.width = `${Math.round(this.mode.progress() * 100)}%`;
     const target = 0.9 + this.difficulty * 0.35;
     this.gauge.set(this.ema / target);
@@ -823,6 +862,7 @@ export class LevelRuntime {
     const g = this.stage.begin();
     drawBackground(g, this.mode.world, this.stage.vw, this.mode.scroll, !this.reduceMotion);
     if (this.robot) this.drawBolt(g);
+    if (this.fairy) this.drawMelody(g);
     this.labels = [];
     this.labelRects = [];
     this.mode.render(g);
@@ -894,7 +934,7 @@ export class LevelRuntime {
         highContrast: this.highContrast,
         locked: this.core.locked === l.tg,
         masked: !this.core.letters(l.tg),
-        icon: this.style === 'dictation' ? { kind: 'speaker' } : this.style === 'memory' ? { kind: 'ring', left: l.tg.showFor ? l.tg.showLeft / l.tg.showFor : 0 } : undefined,
+        icon: l.tg.style === 'dictation' ? { kind: 'speaker' } : l.tg.style === 'memory' ? { kind: 'ring', left: l.tg.showFor ? l.tg.showLeft / l.tg.showFor : 0 } : undefined,
       });
     }
     this.labelShift = shifts;
@@ -984,7 +1024,9 @@ export class LevelRuntime {
   /** Piko stays in place and hops happily before the results card; just the happy face with reduced motion. */
   private celebrate(): void {
     this.endAt = performance.now();
-    this.hideBubble();
+    // Melody thanks the child; a super-obstacle has said its own line.
+    if (this.fairy && !this.def.isSuper) this.say(pickLine('fairy.done'), RESULTS_AFTER);
+    else this.hideBubble();
     this.moodTimer = 0;
     renderPikoInto(this.piko, app.profile!.companion, 'happy');
     this.piko.classList.remove('jump');

@@ -26,6 +26,11 @@ const STRIP_HEIGHT = {
   'bg-raintown-mid': 0.4, 'bg-raintown-near': 0.2,
   'bg-robocity-mid': 0.4, 'bg-robocity-near': 0.2,
   'bg-robohome-mid': 0.4, 'bg-robohome-near': 0.2,
+  'bg-garden-mid': 0.45, 'bg-garden-near': 0.25,
+  'bg-forestpath-mid': 0.5, 'bg-forestpath-near': 0.25,
+  'bg-lilylake-mid': 0.4, 'bg-lilylake-near': 0.2,
+  'bg-musictree-mid': 0.45, 'bg-musictree-near': 0.2,
+  'bg-moonball-mid': 0.4, 'bg-moonball-near': 0.2,
 };
 // Content at least this tall (of the image height) marks a strip; older layer files
 // keep their content in the lower part (up to about 70 %) and are used as they are.
@@ -70,6 +75,10 @@ const SINGLES = {
   goggles: { slot: 'eyes' },
   jetpack: { slot: 'back' },
   'antenna-band': { slot: 'head' },
+  // Story 3 rewards.
+  feather: { slot: 'head' },
+  harp: { slot: 'hand' },
+  'fairy-wings': { slot: 'back' },
 };
 
 const run = promisify(execFile);
@@ -262,8 +271,8 @@ async function processImage(name, file, manifest) {
   if (name.startsWith('outfit-')) return processOutfit(name.slice(7), data, w, h, manifest);
   if (name.startsWith('acc-')) return processAccessory(name.slice(4), data, w, h, manifest);
   keyOut(data, w, h, { layer: name.startsWith('bg-') });
-  // Bolt's pictures stay square, so the raincoat overlay fits every one of them.
-  if (name === 'base-template' || name.startsWith('piko-') || name.startsWith('robot')) return writeSquare(name, data, w, h, manifest);
+  // Bolt's pictures stay square, so the raincoat overlay fits every one of them; Melody's keep her size in every mood.
+  if (name === 'base-template' || name.startsWith('piko-') || name.startsWith('robot') || name.startsWith('fairy-')) return writeSquare(name, data, w, h, manifest);
   if (STRIP_HEIGHT[name]) {
     const box = bbox(data, w, h);
     if (box.height >= h * STRIP_MIN) return writeStrip(name, data, w, h, box, manifest);

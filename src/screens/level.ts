@@ -2,7 +2,7 @@ import { app, go, pickLine, saveProfile } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
 import { t, tList } from '../i18n/i18n';
-import { LEVELS, type LevelDef, WORLDS, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
+import { LEVELS, type LevelDef, type StoryDef, WORLDS, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
 import type { LevelResult } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
@@ -69,14 +69,17 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   return () => rt.dispose();
 }
 
-const NAMES_FALLBACK: Record<Friend['kind'], string[]> = { dragon: ['Iskra', 'Mäta', 'Luna', 'Bubu'], robot: ['Bip', 'Zip', 'Kolík', 'Dioda'] };
+const NAMES_FALLBACK: Record<Friend['kind'], string[]> = { dragon: ['Iskra', 'Mäta', 'Luna', 'Bubu'], robot: ['Bip', 'Zip', 'Kolík', 'Dioda'], forest: ['Pipi', 'Iskrička', 'Perko', 'Lúčik'] };
+/** The friend a rescue mission helps, by the mission's story. */
+const FRIEND_OF: Record<StoryDef['id'], Friend['kind']> = { dragon: 'dragon', robot: 'robot', fairy: 'forest' };
+const RESCUED_LINE: Record<Friend['kind'], string> = { dragon: 'results.rescued', robot: 'results.repaired', forest: 'results.guided' };
 
 function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null): void {
   const p = app.profile!;
   let rescued: Friend | null = null;
   if (def.id === 'rescue') {
     // The friend helped follows the mission's story.
-    const kind = storyOf(def.world).id === 'robot' ? 'robot' : 'dragon';
+    const kind = FRIEND_OF[storyOf(def.world).id];
     const names = tList(`${kind}Names`);
     const pool = names.length ? names : NAMES_FALLBACK[kind];
     const same = p.progress.friends.filter((f) => f.kind === kind).length;
@@ -108,7 +111,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     const line = !r.badge.upgrade ? 'results.badgeNew' : r.badge.tier === 'gold' ? 'results.badgeGold' : 'results.badgeSilver';
     facts.push(chip('badge-fact', badge(r.badge.world, r.badge.tier, true), h('b', {}, t(line))));
   }
-  if (rescued) facts.push(chip('good', t(rescued.kind === 'robot' ? 'results.repaired' : 'results.rescued', { name: rescued.name })));
+  if (rescued) facts.push(chip('good', t(RESCUED_LINE[rescued.kind], { name: rescued.name })));
   if (r.growth) {
     facts.push(chip('growth', medal(r.growth.medal, true), h('span', {}, h('b', {}, t('results.growthTitle')), ' ',
       r.growth.kind === 'difficulty' ? t('results.growthDifficulty') : t('results.growthWordLen', { n: r.growth.value }))));

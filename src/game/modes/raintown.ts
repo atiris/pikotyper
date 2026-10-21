@@ -42,14 +42,14 @@ export class RainMode extends Mode {
   private umbrella = 0;
   private lastTickle = -TICKLE_GAP;
 
-  boltSpot(): { x: number; y: number } {
+  friendSpot(): { x: number; y: number } {
     return { x: this.L.vw * 0.5, y: VH - 6 };
   }
 
   update(dt: number): void {
     const L = this.L;
     const core = L.core;
-    const bx = this.boltSpot().x;
+    const bx = this.friendSpot().x;
     this.spawnTimer -= dt;
     if (this.spawned < L.def.count && this.spawnTimer <= 0 && core.active.length < L.maxActive) {
       const word = L.word();
@@ -104,13 +104,13 @@ export class RainMode extends Mode {
     this.resolved++;
     this.umbrella = 1;
     // The drop rolls off the umbrella's edge.
-    d.vx = (d.x < this.boltSpot().x ? -1 : 1) * this.L.rng.range(160, 240);
+    d.vx = (d.x < this.friendSpot().x ? -1 : 1) * this.L.rng.range(160, 240);
     d.vy = -220;
     this.L.particles.emit(d.x, d.y, 10, 'sparkle', ['#bff3ff', '#ffffff'], 150, 7);
   }
 
   render(g: G): void {
-    const b = this.boltSpot();
+    const b = this.friendSpot();
     if (this.umbrella > 0) {
       g.save();
       g.globalAlpha = Math.min(1, this.umbrella * 2) * this.L.toolAlpha;

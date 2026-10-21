@@ -12,6 +12,8 @@ export abstract class Mode {
   t = 0;
   /** Most words in one target once space is known: two for moving targets, more in calm modes. */
   readonly phraseWords: number = 2;
+  /** Fewest words in one target; above 2 the targets are sentences. */
+  readonly phraseMin: number = 2;
   /** The sound of a wrong key. */
   readonly wrongSfx: Sfx = 'wrong';
 
@@ -28,8 +30,8 @@ export abstract class Mode {
   /** Words typed so far / needed, for the progress bar. */
   abstract progress(): number;
   abstract get finished(): boolean;
-  /** Where Bolt stands in story 2 (his feet), or null for his place next to Piko. */
-  boltSpot(): { x: number; y: number } | null {
+  /** Where the story friend stands (feet; Bolt in story 2, Melody floats above it in story 3), or null for the place next to Piko. */
+  friendSpot(): { x: number; y: number } | null {
     return null;
   }
   onCorrect(_t: Target): void {}

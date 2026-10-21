@@ -11,11 +11,16 @@ const BY_LEVEL: Record<string, string> = {
   'w5-1': 'beanie', 'w5-2': 'neckerchief', 'w5-3': 'balloon', 'w5-4': 'hair-bow',
   'w8-2': 'raincoat',
 };
-const BY_WORLD = ['flower-wreath', 'explorer-hat', 'wizard-hat', 'green-boots', 'dragon-wings', 'hard-hat', 'goggles', 'umbrella', 'jetpack', 'antenna-band'];
+/** By world index; the garden and the lake give none (Piko already has the flower wreath, the lake gives its lily). */
+const BY_WORLD: Record<number, string> = {
+  0: 'flower-wreath', 1: 'explorer-hat', 2: 'wizard-hat', 3: 'green-boots', 4: 'dragon-wings',
+  5: 'hard-hat', 6: 'goggles', 7: 'umbrella', 8: 'jetpack', 9: 'antenna-band',
+  11: 'feather', 13: 'harp', 14: 'fairy-wings',
+};
 const BY_MASTERY: [number, string][] = [[8, 'heart-glasses'], [16, 'star-shirt'], [24, 'pink-sneakers'], [32, 'sunglasses']];
 
 /** Story rewards per world. */
-export const WORLD_REWARDS = ['invitation', 'landing', 'force', 'egg', 'hatched', 'friends', 'legs', 'raincoat', 'key', 'home'];
+export const WORLD_REWARDS = ['invitation', 'landing', 'force', 'egg', 'hatched', 'friends', 'legs', 'raincoat', 'key', 'home', 'wreath', 'feather', 'lily', 'harp', 'wings'];
 
 /** A world's badge: bronze when the world is done, better with the world's stars. */
 export type BadgeTier = 'bronze' | 'silver' | 'gold';
@@ -43,7 +48,7 @@ export interface UnlockRule {
 export function unlockRules(): UnlockRule[] {
   return [
     ...Object.entries(BY_LEVEL).map(([id, acc]) => ({ acc, rule: { kind: 'level' as const, id } })),
-    ...BY_WORLD.map((acc, world) => ({ acc, rule: { kind: 'world' as const, world } })),
+    ...Object.entries(BY_WORLD).map(([world, acc]) => ({ acc, rule: { kind: 'world' as const, world: Number(world) } })),
     ...BY_MASTERY.map(([keys, acc]) => ({ acc, rule: { kind: 'mastery' as const, keys } })),
   ];
 }

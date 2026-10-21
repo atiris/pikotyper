@@ -61,7 +61,12 @@
     "workshop": "Dielňa",
     "raintown": "Dážď",
     "robocity": "Mesto",
-    "robohome": "Domov"
+    "robohome": "Domov",
+    "garden": "Záhrada",
+    "forestpath": "Cestička",
+    "lilylake": "Jazero",
+    "musictree": "Strom",
+    "moonball": "Ples"
   },
   "map": {
     "ownText": "Môj text",
@@ -81,7 +86,8 @@
     "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Voľnom cvičení.",
     "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Voľnom cvičení.",
     "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Voľnom cvičení.",
-    "keysLocked": "potrebuješ viac písmen"
+    "keysLocked": "potrebuješ viac písmen",
+    "storyFairy": "Piko a víla Melódia"
   },
   "level": {
     "ownText": "Môj text",
@@ -102,7 +108,8 @@
     "layoutHint": "Tvoja klávesnica vyzerá ako {layout}. Popros rodiča, nech ju prepne v rodičovskej časti.",
     "shiftOtherHand": "Shift stlač druhou rukou: malíčkom na opačnej strane ako písmeno.",
     "memoryWait": "Počkaj, kým sa skryje.",
-    "noVoice": "Tento prehliadač nevie čítať nahlas, preto dnes slová uvidíš a odpíšeš ich."
+    "noVoice": "Tento prehliadač nevie čítať nahlas, preto dnes slová uvidíš a odpíšeš ich.",
+    "noVoiceMemory": "Tento prehliadač nevie čítať nahlas, preto dnes každá nôtka najprv zasvieti a napíšeš ju z pamäti."
   },
   "guide": {
     "deadStep1": "{ch}: najprv kláves s mäkčeňom alebo dĺžňom, potom písmeno",
@@ -224,7 +231,9 @@
     "repaired": "Robotík {name} je opravený!",
     "badgeNew": "Nový odznak!",
     "badgeSilver": "Odznak je teraz strieborný!",
-    "badgeGold": "Odznak je teraz zlatý!"
+    "badgeGold": "Odznak je teraz zlatý!",
+    "mixedClean": "Podľa sluchu a z pamäti bez chyby: {n} z {total}",
+    "guided": "{name} je vďaka tebe zase doma!"
   },
   "badge": {
     "bronze": "bronzový",
@@ -389,7 +398,77 @@
         "Slovo robot vymyslel pred sto rokmi český spisovateľ Karel Čapek."
       ]
     },
-    "asked": "Pamätáš si otázku?"
+    "asked": "Pamätáš si otázku?",
+    "garden": {
+      "q": [
+        "Vieš, prečo kvety voňajú?",
+        "Uhádneš, ktorý kvet sa otáča za slnkom?",
+        "Vieš, ako si včely povedia, kde sú kvety?",
+        "Vieš, ktorý kvet je najväčší na svete?"
+      ],
+      "a": [
+        "Vôňa láka včely a motýle a tie nosia peľ z kvetu na kvet.",
+        "Slnečnica! Mladé slnečnice cez deň otáčajú hlavičku od východu na západ.",
+        "Tancujú! Malý tanec ukáže ostatným včelám, ktorým smerom a ako ďaleko majú letieť.",
+        "Raflézia. Jej kvet je široký ako pneumatika auta a schválne smrdí, aby prilákal muchy."
+      ]
+    },
+    "forestpath": {
+      "q": [
+        "Vieš, prečo vtáky spievajú ráno?",
+        "Uhádneš, ako ďaleko otočí sova hlavu?",
+        "Vieš, ktorý vták vie lietať dozadu?",
+        "Vieš, ako sa mláďatá naučia spievať?"
+      ],
+      "a": [
+        "Ráno je vzduch pokojný, tak ich pieseň doletí ďaleko. Hovoria: toto je môj strom!",
+        "Skoro až dozadu! Oči jej nehýbu, preto otáča celú hlavu.",
+        "Kolibrík! Vie aj stáť vo vzduchu ako malá helikoptéra.",
+        "Počúvajú rodičov a cvičia, presne ako ty cvičíš písanie."
+      ]
+    },
+    "lilylake": {
+      "q": [
+        "Vieš, ako pije žaba vodu?",
+        "Uhádneš, prečo sa lekná nepotopia?",
+        "Vieš, na čo sa zmení žubrienka?",
+        "Vieš, prečo vyzerá jazero ako zrkadlo?"
+      ],
+      "a": [
+        "Kožou! Žaby nepijú ústami.",
+        "Ich listy majú drobné vzduchové komôrky, tak plávajú ako lodičky.",
+        "Na žabu! Najprv jej narastú nohy, potom zmizne chvost.",
+        "Pokojná voda odráža svetlo, preto v nej vidíš oblohu a stromy hore nohami."
+      ]
+    },
+    "musictree": {
+      "q": [
+        "Vieš, čo robí zvuk?",
+        "Uhádneš, koľko strún má veľká harfa?",
+        "Vieš, prečo nás hudba poteší?",
+        "Vieš, ktorý nástroj je z dutého konára?"
+      ],
+      "a": [
+        "Veci, ktoré sa veľmi rýchlo chvejú, napríklad struna alebo vzduch vo flaute. Naše uši to chvenie cítia.",
+        "Asi štyridsaťsedem! Každá struna hrá iný tón.",
+        "Mozog má rád opakujúce sa vzory a veselá melódia mu robí dobre.",
+        "Didžeridu! Termity vyžerú konár zvnútra a ľudia z neho urobia dlhú trúbu."
+      ]
+    },
+    "moonball": {
+      "q": [
+        "Vieš, prečo svetlušky svietia?",
+        "Uhádneš, prečo mesiac mení tvar?",
+        "Vieš, ktoré zvieratá sú hore v noci?",
+        "Vieš, či mesiac svieti sám?"
+      ],
+      "a": [
+        "Rozprávajú sa svetlom! Každý druh svetlušky bliká inak.",
+        "V skutočnosti sa nemení. Len vidíme viac alebo menej z jeho strany, na ktorú svieti slnko.",
+        "Sovy, netopiere, ježkovia a nočné motýle. Volajú sa nočné zvieratá.",
+        "Nie! Mesiac svieti, lebo ho osvetľuje slnko, ako veľké zrkadlo."
+      ]
+    }
   },
   "paw": {
     "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: {piko} napíše za teba {words} slová. Backspace: pomôže sám, keď bude ťažko.",
@@ -530,6 +609,56 @@
         "Šróbikova rodina je šťastná, že je doma.",
         "Ďakujú ti, {name}, za pomoc Šróbikovi.",
         "Teraz môžeš na záchranných misiách opravovať aj malých robotov."
+      ],
+      "world11": [
+        "Les stíchol. Nespieva ani vtáčik, nezašumí ani lístok.",
+        "Priletí malá víla s trblietavými krídlami. „Som Melódia. Les zabudol svoje piesne!“",
+        "Napíš slovo a spiaci púčik sa otvorí. Každý kvet zabzučí jeden tón."
+      ],
+      "wreath": [
+        "Veľký kvet sa zobudil a celá záhrada si pobzukuje!",
+        "{piko} dostane od Melódie kvetinový venček.",
+        "Záhrada má svoju pieseň späť. Jedna pieseň je doma, ešte štyri."
+      ],
+      "world12": [
+        "Vtáčiky na lesnej cestičke zabudli svoje slová.",
+        "Každý vtáčik potichu zaspieva slovo. Dobre počúvaj a napíš, čo počuješ.",
+        "Ťukni na slovo vtáčika, keď ho chceš počuť znova."
+      ],
+      "feather": [
+        "Hú, hú! Sove sa tvoje odpovede páčili.",
+        "{piko} od nej dostane mäkké pierko za klobúk.",
+        "Vtáčiky zase spievajú!"
+      ],
+      "world13": [
+        "Jazero je tiché ako zrkadlo.",
+        "Na hladine sa ukáže slovo a malá vlnka ho zmyje.",
+        "Zapamätaj si ho a napíš ho, a rozkvitne lekno."
+      ],
+      "lily": [
+        "Dlhý odraz je späť na hladine!",
+        "{piko} dostane od Melódie žiarivé lekno.",
+        "Žabky kvákajú pieseň jazera."
+      ],
+      "world14": [
+        "Uprostred lesa stojí Hudobný strom.",
+        "Na konároch visia nôtky. Niektoré spievajú, iné zasvietia a zhasnú.",
+        "Počúvaj alebo si zapamätaj, napíš a nôtka vyletí."
+      ],
+      "harp": [
+        "Hudobný strom zase hrá svoju pieseň!",
+        "{piko} dostane od Melódie malú harfu.",
+        "Chýba už len jedna pieseň, pieseň noci."
+      ],
+      "world15": [
+        "Vychádza mesiac a svetlušky prichádzajú na ples.",
+        "Melódia každej svetluške zaspieva krátku vetu.",
+        "Napíš ju a tanečný parket sa rozžiari."
+      ],
+      "wings": [
+        "Spieva celý les! Každý vtáčik, každá žabka, každý strom.",
+        "Les ti ďakuje, {name}. {piko} dostane od Melódie vílie krídla.",
+        "Teraz môžeš na záchranných misiách odprevadiť domov aj malé vtáčatá a svetlušky."
       ]
     },
     "junkStart": [
@@ -567,6 +696,47 @@
     "welcomeDone": [
       "Celá rodina ťa pozdravila!",
       "Píp píp píp! Malí roboti sa tešia."
+    ],
+    "flowerIntro": "Veľký kvet spí. Melódia zašepká slovo, počúvaj a napíš ho. Každé slovo kvet trochu prebudí.",
+    "flowerAwake": [
+      "Veľký kvet sa zobudil! Tak krásne vonia.",
+      "Záhrada zase spieva svoju pieseň!"
+    ],
+    "owlIntro": "Sova hovorí hádanku, po jednom slove. Počúvaj každé slovo a napíš ho.",
+    "owlSolved": [
+      "Hú, hú! Všetky hádanky sú vyriešené.",
+      "Sova sa teší, vtáčiky spievajú!"
+    ],
+    "reflectionIntro": "Jazero ukáže celú dlhú vetu, ale len raz. Dobre sa pozri a potom ju napíš slovo po slove.",
+    "reflectionDone": [
+      "Dlhý odraz je späť v jazere!",
+      "To je pamäť! Žabky tlieskajú."
+    ],
+    "treeSong": [
+      "Hudobný strom hrá svoju pieseň!",
+      "Pokojný stály rytmus to dokázal."
+    ],
+    "lastSongIntro": "Posledná pieseň noci. Melódia spieva krátke vety, jednu za druhou. Počúvaj a píš.",
+    "lastSongDone": [
+      "Spieva celý les!",
+      "Všetky piesne sú zase doma."
+    ]
+  },
+  "fairy": {
+    "start": [
+      "Melódia: Zaspievame si spolu?",
+      "Melódia: Počúvaj, les čaká.",
+      "Melódia: Som tu s tebou!"
+    ],
+    "mistake": [
+      "Melódia: Hm? Skús to ešte raz.",
+      "Melódia: Aj v pesničke sa niekedy pomýlime.",
+      "Melódia: Pomaly, ja počkám."
+    ],
+    "done": [
+      "Melódia: La la la, nádhera!",
+      "Melódia: Les ťa počul!",
+      "Melódia: Ďalšia pieseň je doma."
     ]
   },
   "wave": {
@@ -667,7 +837,10 @@
     "hard-hat": "Prilba",
     "goggles": "Ochranné okuliare",
     "jetpack": "Raketový batoh",
-    "antenna-band": "Čelenka s anténkami"
+    "antenna-band": "Čelenka s anténkami",
+    "feather": "Pierko",
+    "harp": "Malá harfa",
+    "fairy-wings": "Vílie krídla"
   },
   "dragonNames": [
     "Iskrička",
@@ -981,7 +1154,13 @@
     "stretch-fingers": "Roztiahni prsty, zovri päste a znova ich otvor.",
     "stretch-wrist": "Ohni zápästie a druhou rukou ho jemne potlač.",
     "take-break": "Po pár minútach vstaň, natiahni sa a napi sa vody.",
-    "celebrate": "Dobrá práca! Tvoj kamarát má z teba radosť."
+    "celebrate": "Dobrá práca! Tvoj kamarát má z teba radosť.",
+    "listen-whole": "Najprv si vypočuj celé slovo, potom ho napíš.",
+    "listen-again": "Chceš to počuť ešte raz? Ťukni na slovo a zaznie znova.",
+    "listen-sounds": "Potichu si slovo povedz, písmenko po písmenku.",
+    "remember-picture": "Pozri sa na celé slovo ako na obrázok, kým sa skryje.",
+    "remember-wait": "Počkaj, kým sa slovo skryje, a napíš ho z pamäti.",
+    "remember-slip": "Nevieš si spomenúť? Po chybe sa slovo na chvíľu ukáže znova."
   },
   "super": {
     "badge": "Superrežim: všetko odomknuté. Kliknutím ho ukončíš."
@@ -1121,7 +1300,9 @@
     "robots": "Robotíci",
     "firstDragon": "Môj prvý dráčik",
     "bolt": "Šróbik",
-    "empty": "Choď na záchrannú misiu a spoznáš nových malých priateľov."
+    "empty": "Choď na záchrannú misiu a spoznáš nových malých priateľov.",
+    "forests": "Lesní priatelia",
+    "melody": "Melódia"
   },
   "robotNames": [
     "Bip",
@@ -1144,5 +1325,23 @@
     "Klik",
     "Rolka",
     "Pípo"
+  ],
+  "forestNames": [
+    "Pípa",
+    "Iskrička",
+    "Pierko",
+    "Lúčik",
+    "Čvirik",
+    "Svetielko",
+    "Pipi",
+    "Hviezdička",
+    "Ťuťu",
+    "Blikotka",
+    "Červienka",
+    "Žiarka",
+    "Trilko",
+    "Muška",
+    "Vrabčik",
+    "Jasanka"
   ]
 }

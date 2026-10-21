@@ -31,9 +31,21 @@ Each world ends with a bigger, special challenge:
   code for the child), and the stars come from the accuracy as usual.
 - **Family welcome** (robot home): little robots pop out of boxes with short words, like
   the friendly mole.
+- **Sleeping flower** (garden): six short dictated words, one at a time; each wakes the
+  flower a little, one with a slip or a reveal half as much.
+- **Owl's riddles** (path): short sentences dictated word by word; the words typed so far
+  stand in the owl's speech bubble, so the riddle grows.
+- **Long reflection** (lake): a whole sentence shows once on the water, then hides and is
+  typed word by word from memory; a slip shows only that word again.
+- **Tree's song** (tree): a rhythm sequence like the energy wave, with dictated words and
+  a calmer beat, since hearing a word takes longer.
+- **Last song** (ball): short dictated sentences one after another; at the end the whole
+  forest sings.
 - None of them can fail the level; the main gate can only start again.
 
 ## Why
 - Variety keeps children engaged; low replay value is a top complaint about Dance Mat.
 - The last gate of the robot story asks for exact typing, the skill the story trains,
   and stays fair for every child because nothing hurries or ends the try.
+- The fairy story's super-obstacles grow listening and remembering from single words to
+  whole sentences, the skills the story trains.

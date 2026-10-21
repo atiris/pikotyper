@@ -48,7 +48,7 @@ test('the robot story is a second row on the map, and Bolt walks with Piko in it
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('superpikotyper', { delay: 40 });
-  await expect(page.locator('.story-row')).toHaveCount(2);
+  await expect(page.locator('.story-row')).toHaveCount(3);
   await page.locator('.story-robot .level-node').first().click();
   await expect(page.locator('.story-screen.world-junkyard')).toBeVisible();
   await page.keyboard.press('Escape');
@@ -172,7 +172,31 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await page.keyboard.press('Escape');
   await expect(page.locator('.island-meadow .badge.gold')).toBeVisible();
   await page.locator('.map-piko').click();
-  await expect(page.locator('.badge-shelf .badge')).toHaveCount(10);
-  await expect(page.locator('.badge-shelf .badge.none')).toHaveCount(7);
+  await expect(page.locator('.badge-shelf .badge')).toHaveCount(15);
+  await expect(page.locator('.badge-shelf .badge.none')).toHaveCount(12);
   await expect(page.locator('.badge-shelf .badge.none').first()).toHaveAttribute('aria-label', 'Finish world 4');
+});
+
+test('the fairy story is a third row; Melody floats with Piko, and dictation plays as copying without a voice', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  // A browser without voices.
+  await page.addInitScript(() => {
+    Object.defineProperty(window, 'speechSynthesis', { value: { getVoices: () => [], speak() {}, cancel() {}, addEventListener() {} } });
+  });
+  await page.goto('./');
+  await page.locator('.start-screen').waitFor();
+  await page.keyboard.type('superpikotyper', { delay: 40 });
+  const row = page.locator('.story-fairy');
+  await expect(row.locator('.story-name')).toHaveText('Piko and Melody the Fairy');
+  await expect(row.locator('.island')).toHaveCount(5);
+  // The forest path: dictation, here without a voice.
+  await row.locator('.island-forestpath .level-node').first().click();
+  await expect(page.locator('.story-screen.world-forestpath')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.posture-card')).toContainText('cannot read aloud');
+  await expect(page.locator('.level-screen.world-forestpath[data-fairy="melody"]')).toBeVisible();
+  const text = await playLevel(page, false);
+  expect(text).not.toContain('By ear');
+  expect(errors).toEqual([]);
 });

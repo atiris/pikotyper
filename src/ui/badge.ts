@@ -5,7 +5,7 @@ import { t } from '../i18n/i18n';
 import { h } from './dom';
 
 /** Disc colour of each world's badge when it has no picture. */
-const COLORS = ['#8fd18a', '#7fb2f0', '#6fd6c4', '#f3a46b', '#f1d36a', '#b7a99a', '#c9a27a', '#8fc8f0', '#a8b6cc', '#f4a6b8'];
+const COLORS = ['#8fd18a', '#7fb2f0', '#6fd6c4', '#f3a46b', '#f1d36a', '#b7a99a', '#c9a27a', '#8fc8f0', '#a8b6cc', '#f4a6b8', '#f7a8c9', '#8fcf8a', '#7fd0e0', '#c3a6e8', '#9a8ee0'];
 
 /**
  * A world's badge: a round medal with the world's picture (`badge-WORLD`, else its map

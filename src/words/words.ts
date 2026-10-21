@@ -159,14 +159,15 @@ export class WordSource {
   /**
    * Next target of at most `words` words (more than one only once space is known), each at
    * most `maxLen` letters; tries to start with a letter not in `avoidFirst` (targets already on screen).
+   * `minWords` above 2 asks for a sentence of `minWords` to `words` words.
    */
-  next(avoidFirst: Set<string> = new Set(), maxLen?: number, words = 1): string {
+  next(avoidFirst: Set<string> = new Set(), maxLen?: number, words = 1, minWords = 2): string {
     const own = this.opts.own && this.rng.chance(this.opts.own.share) ? this.ownTarget(avoidFirst, maxLen, words) : null;
     if (own) return this.remember(own);
     maxLen ??= this.opts.len[1];
     let target = '';
     for (let attempt = 0; attempt < 12; attempt++) {
-      target = this.candidate(maxLen, words);
+      target = this.candidate(maxLen, words, minWords);
       if (!avoidFirst.has(target[0].toLowerCase()) && !this.recent.includes(target)) break;
     }
     return this.remember(target);
@@ -205,14 +206,14 @@ export class WordSource {
     return r.pick(fresh.length ? fresh : list);
   }
 
-  private candidate(maxLen: number, words: number): string {
+  private candidate(maxLen: number, words: number, minWords: number): string {
     const r = this.rng;
     if (this.digits.length && r.chance(0.15)) {
       return Array.from({ length: r.int(1, Math.min(3, maxLen)) }, () => r.pick(this.digits)).join('');
     }
     const focusList = [...this.focus].filter((k) => this.letters.includes(k));
     const focus = focusList.length ? r.pick(focusList) : null;
-    const n = this.phraseLength(words);
+    const n = this.phraseLength(words, minWords);
     const short = words <= 2;
     const perWord = n === 1 ? maxLen : Math.min(maxLen, short ? SHORT_WORD : this.opts.len[1]);
     let list = Array.from({ length: n }, () => this.word(perWord, focus, n > 1));
@@ -222,10 +223,11 @@ export class WordSource {
     return this.punctuate(list);
   }
 
-  /** How many words: one before space is known; story targets one or two, calm modes two to four. */
-  private phraseLength(words: number): number {
+  /** How many words: one before space is known; story targets one or two, calm modes two to four, sentences as asked. */
+  private phraseLength(words: number, minWords: number): number {
     const r = this.rng;
     if (!this.space || words <= 1) return 1;
+    if (minWords > 2) return r.int(minWords, Math.max(minWords, words));
     const inner = [',', ':', '-'].some((k) => this.keys.has(k) && this.focus.has(k));
     if (words === 2) return this.focus.has(SPACE) || inner || r.chance(0.6) ? 2 : 1;
     return r.int(2, Math.max(2, Math.min(words, this.keys.has(',') ? 4 : 3)));

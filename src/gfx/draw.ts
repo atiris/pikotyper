@@ -129,6 +129,11 @@ export const PALETTES: Record<string, Palette> = {
   raintown: { sky: ['#8fa6bf', '#d5e1ec'], hills: ['#9fb0c4', '#7f93a8'], ground: '#6f8296', accent: '#ffd84a' },
   robocity: { sky: ['#c9b6e8', '#f0e6fb'], hills: ['#b8c4d4', '#9aa8bc'], ground: '#8796a8', accent: '#6ff3ff' },
   robohome: { sky: ['#f2d6b8', '#fff2e2'], hills: ['#d9b48c', '#c49a6c'], ground: '#b07f52', accent: '#ffe27a' },
+  garden: { sky: ['#bfe6f5', '#fdf3f7'], hills: ['#a8d98a', '#8cc770'], ground: '#7ab85e', accent: '#f7a8c9' },
+  forestpath: { sky: ['#a9d6c2', '#eef8ec'], hills: ['#6fae7a', '#4f8f5e'], ground: '#5d8a4a', accent: '#ffd25a' },
+  lilylake: { sky: ['#b8e2f2', '#f1fbff'], hills: ['#8fcfc4', '#5fb3b0'], ground: '#4f9fa8', accent: '#ffd1e6' },
+  musictree: { sky: ['#e8c9ec', '#fbf0fb'], hills: ['#b9a6dc', '#9c86c9'], ground: '#7f6aa8', accent: '#ffd25a' },
+  moonball: { sky: ['#1f2350', '#4a3a7a'], hills: ['#2f3a6e', '#3b2f6b'], ground: '#2a2456', accent: '#fff3a0' },
 };
 
 const seamless = new Map<HTMLImageElement, HTMLCanvasElement>();

@@ -480,3 +480,110 @@ face prompt of section 1 and the mood "surprised, big round eyes, small open mou
 | `music-raintown.mp3` | Gentle and cozy, 70 BPM, D major, soft piano and warm pads with very soft rain-like textures, a quiet walk in the rain. |
 | `music-robocity.mp3` | Wondering and bright, 84 BPM, A major, soft synth arpeggios, gentle electric piano, light pads, a friendly city of the future. |
 | `music-robohome.mp3` | Warm and happy, 80 BPM, G major, ukulele, celesta and soft strings, coming home to family. |
+
+## 8. Story 3: Piko and Melody the fairy
+
+Plan: `.todo/.done/24-story-fairy-forest.md`. Deliver in any order; the game draws a simple
+shape for anything still missing. Use the common prompts of sections 3, 4, 5 and 6 with the
+texts below. Suggested order: Melody first (she is in every level), then world by world.
+
+### Melody (sprites, section 4 prompt, BG green)
+Same fairy in every picture: "a small cute fairy girl about as tall as a child's hand,
+round friendly face with rosy cheeks and big kind eyes, short wavy lavender hair with one
+small yellow flower, a soft pink dress made of flower petals, two pairs of shimmering
+pale blue and pink wings, bare feet, floating in the air, front view". Green background,
+because her pink dress and wings are close to magenta. Make `fairy-idle` first, then attach
+it to the other prompts ("the same fairy as in the attached image"). The pictures are kept
+square, so she stays the same size in every mood.
+
+| File | OBJECT |
+|---|---|
+| `fairy-idle.jpg` | the fairy floating calmly, hands together, a gentle smile |
+| `fairy-happy.jpg` | the same fairy twirling with joy, arms up, eyes as smiling arcs |
+| `fairy-singing.jpg` | the same fairy singing, mouth a small round "o", one hand raised, two tiny music notes next to her |
+| `fairy-curious.jpg` | the same fairy looking curious, head a little tilted, one finger at her chin |
+
+### Map islands (section 5, ui-map prompt)
+| File | ISLAND |
+|---|---|
+| `ui-map-garden.jpg` | a small floating island with a flower garden of closed and open pastel buds and a little path |
+| `ui-map-forestpath.jpg` | a small floating island with a winding forest path between round trees with little birds on the branches |
+| `ui-map-lilylake.jpg` | a small floating island with a round calm pond, lily pads, pink water lilies and a little frog |
+| `ui-map-musictree.jpg` | a small floating island with one big round tree with colorful music notes hanging from its branches |
+| `ui-map-moonball.jpg` | a small floating island at night with a round glowing dance floor in a clearing and fireflies around it |
+
+### Backgrounds (section 3 prompts)
+The far layers have no sun and no moon (they repeat); mid and near are strips (plan 22).
+
+| File | SCENE / LAYER | Height |
+|---|---|---|
+| `bg-garden-far.jpg` | a quiet fairy flower garden in soft daylight with gentle hills of flower beds far away, a light blue sky with soft clouds | full |
+| `bg-garden-mid.jpg` | round bushes with closed pastel flower buds and a low garden hedge | 45 % |
+| `bg-garden-near.jpg` | soft grass, small daisies and a few petals on the ground | 25 % |
+| `bg-forestpath-far.jpg` | a calm fairy forest with tall round trees far away, soft green light between the trunks and a pale sky | full |
+| `bg-forestpath-mid.jpg` | tree trunks with low branches, ferns and soft moss | 50 % |
+| `bg-forestpath-near.jpg` | a soft forest path with small mushrooms, leaves and grass tufts | 25 % |
+| `bg-lilylake-far.jpg` | a still fairy lake like a mirror with soft reeds and round trees on the far shore, a pale blue sky | full |
+| `bg-lilylake-mid.jpg` | calm water with reeds and a few cattails along the shore | 40 % |
+| `bg-lilylake-near.jpg` | the water's edge with small round pebbles and soft ripples | 20 % |
+| `bg-musictree-far.jpg` | a magical clearing in the middle of the forest in soft lilac evening light, round trees far away | full |
+| `bg-musictree-mid.jpg` | soft bushes and flowers shaped like little bells around the clearing | 45 % |
+| `bg-musictree-near.jpg` | soft grass with small glowing flowers | 20 % |
+| `bg-moonball-far.jpg` | a fairy forest at night, deep blue and violet sky with soft glowing stars, round tree tops, no moon | full |
+| `bg-moonball-mid.jpg` | dark round bushes with tiny glowing lanterns and fireflies | 40 % |
+| `bg-moonball-near.jpg` | soft night grass with small glowing mushrooms | 20 % |
+
+### Game objects (section 4 prompt)
+| File | OBJECT | BG |
+|---|---|---|
+| **Flower garden** | | |
+| `obj-bud.jpg` | a closed pastel flower bud on a short green stem, sleeping | magenta |
+| `obj-flower-open.jpg` | the same flower, open, with pastel petals and a yellow middle | green |
+| `obj-big-flower.jpg` | a big closed flower bud on a tall stem with big leaves, asleep with a gentle face | green |
+| `obj-big-flower-open.jpg` | the same big flower, wide open and smiling, glowing softly | green |
+| **Forest path** | | |
+| `obj-bird.jpg` | a small round cute songbird sitting, facing left, beak a little open as if singing | magenta |
+| `obj-owl.jpg` | a round wise owl sitting on a branch, big friendly eyes | magenta |
+| **Lily lake** | | |
+| `obj-lily-pad.jpg` | a round green lily pad seen a little from above | magenta |
+| `obj-lily.jpg` | a pink and white water lily flower, open | green |
+| `obj-frog.jpg` | a small cute green frog sitting, big round eyes, a happy smile | magenta |
+| **Music tree** | | |
+| `obj-music-tree.jpg` | a big round friendly tree with a thick trunk and a wide round crown | magenta |
+| `obj-note.jpg` | a single colorful music note (an eighth note) with a soft glow | magenta |
+| **Moonlight ball** | | |
+| `obj-firefly.jpg` | a tiny cute firefly with a softly glowing yellow tail and small wings | magenta |
+| **Little friends** | | |
+| `obj-baby-bird.jpg` | a tiny fluffy baby bird with big eyes | magenta |
+
+The firefly is also the second little forest friend.
+
+### Accessories for Piko (section 2, "Needs new art" single-item prompts)
+Rewards of story 3 (the garden gives the flower wreath Piko already has, the lake its lily).
+
+| File | ITEM / FRAME |
+|---|---|
+| `acc-feather.jpg` | head: one soft long feather tucked behind the ear, pointing up |
+| `acc-harp.jpg` | hand: a small golden harp held in the right hand |
+| `acc-fairy-wings.jpg` | back: two pairs of shimmering pale blue and pink fairy wings |
+
+If the wings need straps over the shoulders, add `acc-fairy-wings-front.jpg` for them (like
+the jetpack). The lines in `SINGLES` of `scripts/assets.mjs` are done with the plan.
+
+### Badges (section 5, badge prompt)
+| File | BADGE |
+|---|---|
+| `badge-garden.jpg` | an open pastel pink flower with a yellow middle |
+| `badge-forestpath.jpg` | a soft long feather in blue and white |
+| `badge-lilylake.jpg` | a pink water lily on a round green pad |
+| `badge-musictree.jpg` | a golden music note with a small glow |
+| `badge-moonball.jpg` | a smiling crescent moon with a tiny firefly |
+
+### Music (section 6 prompt)
+| File | MOOD |
+|---|---|
+| `music-garden.mp3` | Gentle and blooming, 78 BPM, F major, harp arpeggios, soft flute and light celesta, flowers waking up in the morning. |
+| `music-forestpath.mp3` | Light and airy, 84 BPM, G major, wooden flute melody, soft pizzicato and harp, a walk through a singing forest. |
+| `music-lilylake.mp3` | Still and dreamy, 66 BPM, D major, slow harp, glassy celesta and soft pads, a calm lake like a mirror. |
+| `music-musictree.mp3` | Warm and wondering, 76 BPM, C major, music-box melody, harp and soft strings, a magical tree that plays. |
+| `music-moonball.mp3` | Soft and enchanted, 72 BPM, A major, celesta, harp and a gentle flute waltz in 3/4, a quiet dance under the moon. |
