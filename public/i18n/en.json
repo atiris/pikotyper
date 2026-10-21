@@ -265,6 +265,16 @@
       ]
     }
   },
+  "paw": {
+    "title": "Paw help: {n} words without a mistake charge a paw (3 at most). Enter: {piko} types {words} words for you. Backspace: help by itself when it gets hard.",
+    "aria": "Paw help, charged paws: {n}",
+    "auto": "AUTO",
+    "start": "Paws on the keys! My turn to type.",
+    "charged": "{n} words without a mistake! A paw is charged. Press Enter and I will type {words} words for you.",
+    "chargedAuto": "{n} words without a mistake! A paw is charged. When it gets hard, I will help by myself.",
+    "autoOn": "When it gets hard, I will type {words} words by myself. Backspace turns it off again.",
+    "autoOff": "You start the paw yourself with Enter."
+  },
   "story": {
     "next": "Next",
     "webCleared": [

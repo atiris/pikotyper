@@ -15,6 +15,15 @@
 - After each story level that has a next one, Piko asks a curious question about the
   world's theme (real facts about animals, space, eggs) and gives the answer only after
   the next level is finished.
+- **Paw help**: fifteen words in a row without a mistake charge one paw (three at most,
+  kept between levels). In story levels and rescue missions, Enter (or the paw button,
+  which shows the charges and the Enter sign) sends Piko's paws onto the keyboard in
+  place of the hands, and Piko types the three closest words with his own rhythm. These
+  keys never count in the child's statistics, accuracy or rhythm, and the child's own
+  keys wait meanwhile. Backspace switches the paw to automatic (the button shows AUTO):
+  Piko then helps by himself in a hard moment, when the screen holds three words (or as
+  many as the level allows), the closest one has used most of its time and the child is
+  not typing it.
 - Clicking Piko opens the statistics overlay ([statistics](../profiles/statistics.md)).
 - After world 5 a newly hatched friend (a baby dragon) joins; more friends come from
   rescue missions.
@@ -24,3 +33,5 @@
   child's progress visible and their own.
 - An open question is a gentle reason to play one more level, and the answer teaches
   something on the way.
+- Paw help is a reward for accuracy that makes play more fun and takes the edge off a
+  crowded moment, without blurring what the child really typed.

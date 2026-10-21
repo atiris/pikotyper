@@ -11,7 +11,9 @@ export interface InputHandlers {
   /** A dead key (accent mark) was pressed; the next char is composed by the browser. */
   onDead?(code: string, shift: boolean): void;
   onEscape?(): void;
-  onEnter?(): void;
+  /** True when the level used Enter, so a focused button does not take it too. */
+  onEnter?(): boolean;
+  onBackspace?(): void;
   /** Raw key events, for the layout mismatch detector. */
   onRaw?(code: string, key: string, shift: boolean): void;
 }
@@ -48,12 +50,17 @@ export class KeyInput {
       return;
     }
     if (key === 'Enter') {
-      this.handlers.onEnter?.();
+      if (this.handlers.onEnter?.()) e.preventDefault();
       return;
     }
     if (e.repeat || IGNORED.has(key)) return;
     // Shortcuts like Ctrl+R stay with the browser; AltGr (Ctrl+Alt) still types characters.
     if ((e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.altKey)) return;
+    if (key === 'Backspace') {
+      e.preventDefault();
+      this.handlers.onBackspace?.();
+      return;
+    }
     if (key === 'Dead') {
       e.preventDefault();
       this.pendingDead = e.code;

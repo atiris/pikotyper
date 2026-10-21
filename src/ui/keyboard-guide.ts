@@ -57,6 +57,7 @@ export class KeyboardGuide {
   readonly el: HTMLElement;
   private keys = new Map<string, HTMLElement>();
   private hands: HTMLElement;
+  private paws: HTMLElement;
   private hint: HTMLElement;
 
   constructor(private layout: Layout) {
@@ -85,10 +86,13 @@ export class KeyboardGuide {
     this.hands = document.createElement('div');
     this.hands.className = 'kb-hands';
     this.hands.innerHTML = handsSvg();
+    this.paws = document.createElement('div');
+    this.paws.className = 'kb-paws';
+    this.paws.innerHTML = pawSvg('l') + pawSvg('r');
     this.hint = document.createElement('div');
     this.hint.className = 'kb-hint';
     this.hint.setAttribute('aria-live', 'polite');
-    this.el.append(this.hint, board, this.hands);
+    this.el.append(this.hint, board, this.hands, this.paws);
   }
 
   /**
@@ -127,6 +131,24 @@ export class KeyboardGuide {
 
   setVisible(on: boolean): void {
     this.el.classList.toggle('hidden', !on);
+  }
+
+  /** Piko's paws (fur and toe-bean colors) take the hands' place; null brings the hands back. */
+  setPaws(colors: [string, string] | null): void {
+    this.el.classList.toggle('paws-on', !!colors);
+    if (!colors) return;
+    this.paws.style.setProperty('--paw', colors[0]);
+    this.paws.style.setProperty('--bean', colors[1]);
+  }
+
+  /** The paw on the side of the finger for `ch` presses a key. */
+  pawTap(ch: string): void {
+    const f = fingerFor(this.layout, ch);
+    const paw = f == null ? null : this.paws.querySelector(`.paw-${f < 5 ? 'l' : 'r'}`);
+    if (!paw) return;
+    paw.classList.remove('tap');
+    void (paw as HTMLElement).getBoundingClientRect();
+    paw.classList.add('tap');
   }
 
   /** Colors keys by score for the stats heat map (0 bad .. 1 good, null = no data). */
@@ -170,4 +192,12 @@ function handsSvg(): string {
     return `<svg viewBox="0 0 130 132" class="hand hand-${side}">${g}</svg>`;
   };
   return hand('l') + hand('r');
+}
+
+/** One of Piko's paws seen from above: a soft paw with four toes and toe beans. */
+function pawSvg(side: 'l' | 'r'): string {
+  const toes = [[22, 50], [48, 30], [82, 30], [108, 50]]
+    .map(([x, y]) => `<ellipse class="paw-fur" cx="${x}" cy="${y}" rx="15" ry="18"/><ellipse class="bean" cx="${x}" cy="${y + 3}" rx="7" ry="9"/>`).join('');
+  return `<svg viewBox="0 0 130 132" class="paw paw-${side}" aria-hidden="true">${toes}` +
+    `<ellipse class="paw-fur" cx="65" cy="96" rx="48" ry="34"/><ellipse class="bean" cx="65" cy="100" rx="24" ry="17"/></svg>`;
 }

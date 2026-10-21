@@ -1,5 +1,6 @@
 import { accessories } from '../gfx/assets';
 import { LEVELS, WORLDS } from '../game/levels';
+import { PAW_MAX } from '../game/paw';
 import { WORLD_REWARDS } from '../game/rewards';
 import { lessonOrder } from '../learning/lessons';
 import { type Lang, SUPER_ID, type Profile } from '../storage/schema';
@@ -41,5 +42,6 @@ export function superProfile(lang: Lang): Profile {
   p.progress.worldsDone = WORLDS.map((_, i) => i);
   p.progress.rewards = [...accessories().map((a) => `acc:${a.id}`), ...WORLD_REWARDS];
   p.progress.levels = Object.fromEntries(LEVELS.map((l) => [l.id, 0]));
+  p.progress.pawHelp = PAW_MAX;
   return p;
 }

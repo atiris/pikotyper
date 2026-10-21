@@ -39,6 +39,26 @@ test('the super password typed fast on the start page opens everything', async (
   await expect(page.locator('.super-badge')).toHaveCount(0);
 });
 
+test('Enter sends Piko\'s paws to type a few words', async ({ page }) => {
+  await page.goto('./');
+  await page.locator('.start-screen').waitFor();
+  await page.keyboard.type('superpikotyper', { delay: 40 });
+  await page.locator('.map-side .btn.primary').click();
+  await page.locator('.story-screen').waitFor();
+  await page.keyboard.press('Escape');
+  await page.locator('.tip-card').waitFor();
+  await page.keyboard.press('Space');
+  const pass = await page.locator('.posture-card').getAttribute('data-password');
+  await page.keyboard.type(pass!);
+  await expect(page.locator('.paw-pips i.on')).toHaveCount(3);
+  await expect(page.locator('.level-piko.waiting')).toHaveCount(0);
+  await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next')).not.toBe('');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.kb-guide.paws-on')).toBeVisible();
+  await expect(page.locator('.paw-pips i.on')).toHaveCount(2);
+  await expect(page.locator('.kb-guide.paws-on')).toHaveCount(0, { timeout: 15000 });
+});
+
 test('guest progress is forgotten in a new browser context', async ({ page, browser }) => {
   await page.goto('./');
   await page.locator('.start-screen .btn.ghost').first().click();

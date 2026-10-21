@@ -20,7 +20,7 @@ describe('Store', () => {
     s.add(newProfile('Ema', 'sk'));
     const again = new Store(local, mem());
     expect(again.profiles.map((p) => p.name)).toEqual(['Ema']);
-    expect(JSON.parse(local.getItem(STORE_KEY)!).version).toBe(2);
+    expect(JSON.parse(local.getItem(STORE_KEY)!).version).toBe(3);
   });
 
   it('keeps the guest only in session storage', () => {
@@ -60,6 +60,15 @@ describe('Store', () => {
     expect(out.stats.keys.f).toEqual({ presses: 10, errors: 2, recent: [400, 0, 400], recentWrong: ['g', 'g'], days: [] });
     expect(out.settings.autoDifficulty).toBe(false);
     expect(out.settings.autoWordLen).toBe(true);
+  });
+
+  it('gives v2 profiles an empty paw help', () => {
+    const p: any = newProfile('Ema', 'sk');
+    delete p.progress.pawHelp;
+    delete p.progress.pawAuto;
+    const out = migrate({ version: 2, profiles: [p] }).profiles[0];
+    expect(out.progress.pawHelp).toBe(0);
+    expect(out.progress.pawAuto).toBe(false);
   });
 });
 

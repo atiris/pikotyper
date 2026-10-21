@@ -199,6 +199,16 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .level-screen.world-space { background: #1d1b4b; }
 .hud { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.8rem; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(6px); z-index: 3; flex-wrap: wrap; }
 .hud-title { font-weight: 700; white-space: nowrap; }
+.paw-btn { display: inline-flex; align-items: center; gap: 0.35rem; height: 48px; padding: 0 0.7rem; border-radius: 24px; border: 0; cursor: pointer; background: #fff1e3; color: var(--brand-dark); box-shadow: 0 3px 0 rgba(90, 61, 43, 0.15); font-weight: 700; }
+.paw-btn .icon { width: 24px; height: 24px; }
+.paw-btn.empty { opacity: 0.55; cursor: default; }
+.paw-pips { display: inline-flex; gap: 3px; }
+.paw-pips i { width: 9px; height: 9px; border-radius: 50%; border: 2px solid var(--brand); }
+.paw-pips i.on { background: var(--brand); }
+.paw-btn kbd { font: inherit; font-size: 0.8rem; min-width: 1.8em; padding: 0.1em 0.4em; border-radius: 6px; background: #fff; box-shadow: inset 0 -2px 0 rgba(90, 61, 43, 0.2); }
+.paw-btn kbd.auto { background: var(--brand); color: #fff; }
+.paw-btn:not(.empty) kbd { animation: key-glow 1.4s ease-in-out infinite; }
+.paw-btn.charged { animation: pop-in 0.5s ease; }
 .progress { flex: 1; min-width: 120px; height: 16px; border-radius: 999px; background: rgba(90, 61, 43, 0.12); overflow: hidden; }
 .progress-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #8fd89f, var(--green)); transition: width 0.3s ease; }
 .meter { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; color: var(--ink-soft); }
@@ -244,13 +254,23 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .kb-key.shift-next { background: var(--finger); color: var(--finger-ink); }
 @keyframes key-glow { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.15); } }
 .kb-hands { display: contents; }
-.hand { width: clamp(60px, 9vw, 120px); align-self: end; opacity: calc(1 - var(--fade) * 0.7); }
+.hand { width: clamp(60px, 9vw, 120px); align-self: end; opacity: calc(1 - var(--fade) * 0.7); transition: transform 0.45s ease, opacity 0.3s; }
 .hand-l { grid-column: 1; grid-row: 2; justify-self: end; }
 .hand-r { grid-column: 3; grid-row: 2; justify-self: start; }
 .hand .palm { fill: #f3d2b3; stroke: #8b6650; stroke-width: 2; }
 .hand .finger { opacity: 0.35; stroke: #8b6650; stroke-width: 2; transition: opacity 0.15s, transform 0.15s; transform-box: fill-box; transform-origin: bottom; }
 .hand .finger.active { opacity: 1; transform: scaleY(1.12); }
 .kb-guide.hidden { display: none; }
+.kb-paws { display: contents; }
+.paw { width: clamp(60px, 9vw, 120px); align-self: end; transform: translateY(130%); opacity: 0; transition: transform 0.45s ease, opacity 0.3s; pointer-events: none; }
+.paw-l { grid-column: 1; grid-row: 2; justify-self: end; }
+.paw-r { grid-column: 3; grid-row: 2; justify-self: start; }
+.paw .paw-fur { fill: var(--paw); stroke: #8b6650; stroke-width: 2.5; }
+.paw .bean { fill: var(--bean); }
+.kb-guide.paws-on .hand { transform: translateY(130%); opacity: 0; }
+.kb-guide.paws-on .paw { transform: none; opacity: 1; }
+.paw.tap { animation: paw-tap 0.14s ease; }
+@keyframes paw-tap { 50% { transform: translateY(-8px) scale(0.95); } }
 .heatmap .kb-key, .picker .kb-key { box-shadow: inset 0 -5px 0 var(--finger), 0 2px 0 rgba(90, 61, 43, 0.2); }
 .heatmap .kb-key.heat-good { background: #c9efd3; }
 .heatmap .kb-key.heat-ok { background: #fff1b8; }

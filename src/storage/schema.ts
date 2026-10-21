@@ -88,6 +88,10 @@ export interface Progress {
   growth: number;
   /** Seconds of good play collected toward the next automatic step. */
   growthSeconds: number;
+  /** Paw helps charged by mistake-free streaks (Piko types a few words). */
+  pawHelp: number;
+  /** The child chose that Piko helps by himself in hard moments. */
+  pawAuto: boolean;
 }
 
 export interface Companion {
@@ -112,7 +116,7 @@ export interface Profile {
 }
 
 export interface StoreData {
-  version: 2;
+  version: 3;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;

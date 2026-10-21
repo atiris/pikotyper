@@ -265,6 +265,16 @@
       ]
     }
   },
+  "paw": {
+    "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: {piko} napíše za teba {words} slová. Backspace: pomôže sám, keď bude ťažko.",
+    "aria": "Labková pomoc, nabité labky: {n}",
+    "auto": "AUTO",
+    "start": "Labky na klávesy! Teraz píšem ja.",
+    "charged": "{n} slov bez chyby! Labka je nabitá. Stlač Enter a napíšem za teba {words} slová.",
+    "chargedAuto": "{n} slov bez chyby! Labka je nabitá. Keď bude ťažko, pomôžem ti sám.",
+    "autoOn": "Keď bude ťažko, napíšem {words} slová sám. Backspace to zase vypne.",
+    "autoOff": "Labku spustíš sám klávesom Enter."
+  },
   "story": {
     "next": "Ďalej",
     "webCleared": [

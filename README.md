@@ -27,6 +27,11 @@ hatch a new friend. No explosions, no punishment, no ads, no accounts.
   practise, with a one-minute drill.
 - **Grows with the child.** Difficulty and word length go up in small automatic steps
   after a few minutes of accurate play, and every step earns a medal.
+- **Piko keeps the child curious and helps out.** After a level he asks a question about
+  the next one and answers it only when that level is done. Fifteen words in a row
+  without a mistake charge a paw (three at most): on Enter, Piko's paws replace the hands
+  and type the three closest words, which never count in the stats. Backspace lets Piko
+  help by himself when the screen gets full and a word is close to its end.
 - **Per-key stats** count only the last 50 presses, show what a key is mixed up with and
   how it changed day by day; click any key on the stats keyboard.
 - **Good habits:** before every adventure a "Ready, steady, type!" card with one posture

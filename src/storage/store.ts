@@ -15,14 +15,21 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 2;
+export const STORE_VERSION = 3;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
   // v2: key stats keep recent mistakes and a daily history instead of lifetime sums;
   // automatic difficulty and word length; growth medals.
   1: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV1toV2) : data.profiles }),
+  // v3: Piko's paw help, charged by mistake-free streaks.
+  2: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV2toV3) : data.profiles }),
 };
+
+function profileV2toV3(p: any): any {
+  if (!p || typeof p !== 'object') return p;
+  return { ...p, progress: { ...p.progress, pawHelp: 0, pawAuto: false } };
+}
 
 function profileV1toV2(p: any): any {
   if (!p || typeof p !== 'object') return p;
@@ -101,6 +108,8 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
       scenesSeen: [],
       growth: 0,
       growthSeconds: 0,
+      pawHelp: 0,
+      pawAuto: false,
     },
     stats: { keys: {}, sessions: [] },
     createdAt: Date.now(),

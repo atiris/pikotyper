@@ -5,20 +5,21 @@ import { Particles } from '../engine/particles';
 import { Rng } from '../engine/rng';
 import { Tweens } from '../engine/tween';
 import { drawBackground, drawWord, type G } from '../gfx/draw';
-import { type Mood, pikoElement, renderPikoInto } from '../gfx/piko';
+import { type Mood, pawColors, pikoElement, renderPikoInto } from '../gfx/piko';
 import { preload } from '../gfx/assets';
 import { t } from '../i18n/i18n';
-import { KeyInput, type TypedChar } from '../input/input';
+import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { LAYOUTS, LayoutMismatchDetector, canType, fingerFor, stepsFor } from '../keyboard/layouts';
 import { activeKeys, keysToIntroduce, masteryLevel, newestGroup } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide } from '../ui/keyboard-guide';
-import { button, h } from '../ui/dom';
+import { button, h, icon } from '../ui/dom';
 import { soundButton } from '../ui/chrome';
 import { WordSource } from '../words/words';
 import type { LevelDef } from './levels';
 import { WORLDS } from './levels';
 import type { Mode } from './mode';
+import { PAW_MAX, PAW_STREAK, PAW_WORDS, isHardMoment } from './paw';
 import { createMode } from './modes';
 import { type LevelResult, completeLevel } from './progress';
 import { type Target, TypingCore } from './typing';
@@ -80,6 +81,15 @@ export class LevelRuntime {
   private moodTimer = 0;
   private hadKeydown = false;
 
+  /** Paw help: the HUD button, words Piko still types, seconds to his next key. */
+  private pawBtn: HTMLButtonElement | null = null;
+  private pawWords = 0;
+  private pawTimer = 0;
+  private pawIdle = 0;
+  private guideBeforePaws = true;
+  /** Seconds each visible word has been on screen (for the automatic help). */
+  private seen = new Map<number, number>();
+
   constructor(root: HTMLElement, readonly def: LevelDef, private opts: RuntimeOptions) {
     const p = app.profile!;
     this.difficulty = p.settings.difficulty;
@@ -120,6 +130,12 @@ export class LevelRuntime {
       h('div', { class: 'progress', title: t('level.progress') }, this.progressFill),
       h('div', { class: 'meter', title: t('level.rhythm') }, h('span', { class: 'meter-label' }, t('level.rhythm')), h('div', { class: 'meter-bar' }, this.meter)),
       guideBtn, soundButton());
+    if (this.pawsAllowed) {
+      this.pawBtn = h('button', { class: 'paw-btn', type: 'button', onClick: () => this.startPaws() });
+      this.pawBtn.title = t('paw.title', { n: PAW_STREAK, words: PAW_WORDS, piko: p.companion.name });
+      hud.insertBefore(this.pawBtn, guideBtn);
+      this.renderPawBtn();
+    }
     const stageWrap = h('div', { class: 'stage-wrap' });
     this.piko = pikoElement(p.companion, 'idle', 150);
     // Piko joins the stage when play starts; the preparation cards show him themselves.
@@ -143,6 +159,11 @@ export class LevelRuntime {
     this.onTouch = this.onTouch.bind(this);
     window.addEventListener('pointerdown', this.onTouch);
     void this.prepare();
+  }
+
+  /** Story levels and rescue missions; free practice and drills count every key. */
+  get pawsAllowed(): boolean {
+    return this.def.kind !== 'practice' && !this.opts.keys;
   }
 
   get pikoOnStage(): boolean {
@@ -173,13 +194,19 @@ export class LevelRuntime {
     this.started = true;
     this.piko.classList.remove('waiting');
     this.readySince = performance.now();
-    this.input = new KeyInput(window, {
+    this.input = new KeyInput(window, this.handlers());
+    this.updateGuide();
+  }
+
+  private handlers(): InputHandlers {
+    return {
       onChar: (c) => this.onChar(c),
       onDead: () => { this.deadPending = true; this.updateGuide(); },
       onEscape: () => (this.paused ? this.resume() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
-    });
-    this.updateGuide();
+      onEnter: () => this.startPaws(),
+      onBackspace: () => this.togglePawAuto(),
+    };
   }
 
   private disposed = false;
@@ -243,7 +270,7 @@ export class LevelRuntime {
   }
 
   private onChar(c: TypedChar): void {
-    if (!this.started || this.paused || this.finished) return;
+    if (!this.started || this.paused || this.finished || this.pawWords) return;
     if (c.ch === ' ') return;
     this.deadPending = false;
     const res = this.core.type(c.ch);
@@ -272,6 +299,7 @@ export class LevelRuntime {
         this.setMood('happy', 1.4);
         this.mode.onDone(res.target);
         this.cheer();
+        if (this.pawsAllowed && this.wordStreak % PAW_STREAK === 0) this.chargePaw();
       } else {
         this.sfx('key');
         this.mode.onCorrect(res.target);
@@ -318,12 +346,7 @@ export class LevelRuntime {
     this.input?.dispose();
     await showDrill(this.el.querySelector<HTMLElement>('.stage-wrap')!, [key], 20, this.guide);
     if (this.disposed) return;
-    this.input = new KeyInput(window, {
-      onChar: (c) => this.onChar(c),
-      onDead: () => { this.deadPending = true; this.updateGuide(); },
-      onEscape: () => (this.paused ? this.resume() : this.pause()),
-      onRaw: (code, k, shift) => this.onRaw(code, k, shift),
-    });
+    this.input = new KeyInput(window, this.handlers());
     this.paused = false;
     this.wrongStreak.n = 0;
     this.readySince = performance.now();
@@ -368,6 +391,109 @@ export class LevelRuntime {
       this.piko.classList.add('jump');
     }
     this.moodTimer = seconds;
+  }
+
+  // ---- paw help ------------------------------------------------------------------
+
+  private renderPawBtn(): void {
+    if (!this.pawBtn) return;
+    const { pawHelp, pawAuto } = app.profile!.progress;
+    this.pawBtn.classList.toggle('empty', pawHelp === 0);
+    this.pawBtn.setAttribute('aria-label', t('paw.aria', { n: pawHelp }));
+    this.pawBtn.replaceChildren(icon('paw'),
+      h('span', { class: 'paw-pips' }, ...Array.from({ length: PAW_MAX }, (_, i) => h('i', { class: i < pawHelp ? 'on' : '' }))),
+      h('kbd', { class: pawAuto ? 'auto' : '' }, pawAuto ? t('paw.auto') : '⏎'));
+  }
+
+  /** A mistake-free streak charges one paw help. */
+  private chargePaw(): void {
+    const p = app.profile!;
+    if (p.progress.pawHelp >= PAW_MAX) return;
+    p.progress.pawHelp++;
+    saveProfile();
+    this.say(t(p.progress.pawAuto ? 'paw.chargedAuto' : 'paw.charged', { n: PAW_STREAK, words: PAW_WORDS }), 4);
+    this.renderPawBtn();
+    this.pawBtn?.classList.remove('charged');
+    void this.pawBtn?.offsetWidth;
+    this.pawBtn?.classList.add('charged');
+  }
+
+  private togglePawAuto(): void {
+    if (!this.pawsAllowed || !this.started || this.paused || this.finished) return;
+    const p = app.profile!;
+    p.progress.pawAuto = !p.progress.pawAuto;
+    saveProfile();
+    this.say(t(p.progress.pawAuto ? 'paw.autoOn' : 'paw.autoOff', { words: PAW_WORDS }), 3);
+    this.renderPawBtn();
+  }
+
+  /** Piko's paws replace the hands and type the closest words for the child. */
+  private startPaws(): boolean {
+    const p = app.profile!;
+    if (!this.pawsAllowed || !this.started || this.paused || this.finished || this.pawWords) return false;
+    if (p.progress.pawHelp <= 0 || !this.core.focus()) return false;
+    p.progress.pawHelp--;
+    saveProfile();
+    this.pawWords = PAW_WORDS;
+    this.pawTimer = this.reduceMotion ? 0.2 : 0.6;
+    this.pawIdle = 0;
+    this.guideBeforePaws = this.guideOn;
+    if (!this.guideOn) this.toggleGuide();
+    this.guide.setPaws(pawColors(p.companion.kind));
+    this.say(t('paw.start', { piko: p.companion.name }), 2.5);
+    this.setMood('happy', 1.4);
+    this.renderPawBtn();
+    return true;
+  }
+
+  private stopPaws(): void {
+    this.pawWords = 0;
+    this.guide.setPaws(null);
+    if (this.guideOn !== this.guideBeforePaws) this.toggleGuide();
+    // The child's next reaction time starts now, not with Piko's last key.
+    this.lastKey = 0;
+    this.readySince = performance.now();
+    this.updateGuide();
+  }
+
+  private updatePaws(dt: number): void {
+    const seen = new Map<number, number>();
+    for (const tg of this.core.active) if (tg.selectable) seen.set(tg.id, (this.seen.get(tg.id) ?? 0) + dt);
+    this.seen = seen;
+    if (this.pawWords) return this.pikoTypes(dt);
+    const p = app.profile!;
+    if (p.progress.pawAuto && p.progress.pawHelp > 0 &&
+      isHardMoment(this.core.targets, this.core.locked, (tg) => this.seen.get(tg.id) ?? 0, (tg) => this.travelTime(tg.word), this.maxActive)) {
+      this.startPaws();
+    }
+  }
+
+  /** One key at a time, with Piko's rhythm; none of it counts in the child's statistics. */
+  private pikoTypes(dt: number): void {
+    if ((this.pawTimer -= dt) > 0) return;
+    const tg = this.core.focus();
+    if (!tg) {
+      // Wait a moment for the next word; stop when none comes.
+      this.pawTimer = 0.2;
+      if ((this.pawIdle += 0.2) > 4) this.stopPaws();
+      return;
+    }
+    this.pawIdle = 0;
+    const ch = tg.word[tg.typed];
+    this.core.locked = tg;
+    const res = this.core.type(ch);
+    this.guide.pawTap(ch);
+    if (res.kind === 'done') {
+      this.sfx('word');
+      this.mode.onDone(tg);
+      this.pawTimer = 0.4;
+      if (--this.pawWords === 0) this.stopPaws();
+    } else {
+      this.sfx('key');
+      this.mode.onCorrect(tg);
+      this.pawTimer = 0.13;
+    }
+    this.updateGuide();
   }
 
   // ---- pause -------------------------------------------------------------------
@@ -424,6 +550,7 @@ export class LevelRuntime {
     this.mode.t += dt;
     this.mode.update(dt);
     if (!hadFocus && this.core.focus()) this.readySince = performance.now();
+    if (this.pawsAllowed) this.updatePaws(dt);
     if (this.bubbleTimer > 0 && (this.bubbleTimer -= dt) <= 0) this.hideBubble();
     if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) renderPikoInto(this.piko, app.profile!.companion, 'idle');
     this.progressFill.style.width = `${Math.round(this.mode.progress() * 100)}%`;
@@ -470,6 +597,7 @@ export class LevelRuntime {
 
   private finish(): void {
     this.finished = true;
+    if (this.pawWords) this.stopPaws();
     this.input?.dispose();
     this.input = null;
     this.guide.show(null);
