@@ -130,10 +130,29 @@ Then run `npm run assets`.
 Dress the attached character template in this one item, and nothing else: ITEM. Keep exactly the same front view, symmetry, pose, size, position, colors and outline of the character. The item must fit the figure closely, be symmetrical where possible, be complete (no part cut off) and must not hide the eyes. Same style: cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft dark-brown outlines. No text. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow. Same square size.
 ```
 
+Glasses need their own two prompts: the eyes behind the lenses must go, and nothing
+white may stay inside a lens (the script cannot tell an eye's white from a glass
+highlight). The highlight is painted pale green; the script turns key-tinted light
+pixels inside a lens into a soft white glass shine.
+
+Glasses dress prompt (replace FRAME, for example "yellow star-shaped glasses with a soft
+dark-brown outline, a thin bridge between the two stars, and two short temple arms
+reaching toward the sides of the head"):
+```
+Dress the attached character template in exactly one item and nothing else: FRAME. The glasses sit over the eyes, centered and perfectly symmetrical, and are complete: nothing is cut off or hidden. The lenses are clear and empty: no tint, no color, no pattern inside them; each lens has only one small solid white highlight stroke in its upper left part. Keep exactly the same front view, symmetry, pose, size, position, colors and outline of the character. Same style: cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft dark-brown outlines. No text. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow. Same square size.
+```
+
+Glasses remove prompt (tested with `star-glasses`):
+```
+Keep only the glasses frames, exactly where they are, with the same size, shape, colors and outline. Remove everything else completely: the whole character with its head, fur, skin, ears, eyelashes, eyebrows, the pink blush on the cheeks, nose, mouth and body, and both eyes entirely, including the white of the eyes, the pupils and every white shine dot or white circle in them. Fill all removed areas, including the whole inside of both lenses, with one perfectly flat solid pure green color (#00FF00). Inside each lens draw only one small soft oval highlight in its upper left part, painted in a pale light green (a lighter shade of the background green), not white. There must be no white pixels anywhere inside the lenses. Do not redraw or add any part of the character, no shading, no shadow, no outline where the character was, no gradient. The rest of the image is the same flat green (#00FF00). Same square size.
+```
+If a piece of an eye stays, add in the same chat: "Inside both lenses there must be only
+flat green (#00FF00) and the one pale green highlight; remove every remaining part of the eyes."
+
 | File | ITEM | What is wrong now |
 |---|---|---|
-| `acc-round-glasses.jpg` | round orange glasses with clear lenses | top edge cut off by the cap, green spots in the lenses |
-| `acc-star-glasses.jpg` | yellow star-shaped glasses with clear lenses | lower points cut off, small stray bits |
+| `acc-round-glasses.jpg` | glasses: FRAME = round orange glasses with a soft dark-brown outline, a short curved bridge, and two short temple arms reaching toward the sides of the head | top edge cut off by the cap, green spots in the lenses |
+| `acc-star-glasses.jpg` | glasses: FRAME = yellow star-shaped glasses with a soft dark-brown outline, a thin bridge between the two stars, and two short temple arms reaching toward the sides of the head | lower points cut off, small stray bits |
 | `acc-dragon-wings.jpg` | small soft orange baby-dragon wings on the back, visible on both sides | the right wing is crossed by the balloon string |
 | `acc-star-cape.jpg` | a dark blue cape with stars hanging from the shoulders behind the body, visible on both sides | broken into pieces, crossed by the wand |
 | `acc-knit-vest.jpg` | a cozy green knitted vest on the body | backpack straps left at both sides |
