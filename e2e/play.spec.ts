@@ -12,7 +12,7 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   expect(text).toMatch(/%/);
   await expect(page.locator('.results-card .star.on').first()).toBeVisible();
   await expect(page.locator('.results-card .teaser.ask')).toBeVisible();
-  await page.locator('.results-card .btn').last().click();
+  await page.keyboard.press('Escape');
   await expect(page.locator('.level-node.done')).toHaveCount(1);
   await page.locator('.map-piko').click();
   await page.locator('.heatmap .kb-key[data-heat]').first().click();
@@ -49,8 +49,8 @@ test('the robot story is a second row on the map, and Bolt walks with Piko in it
   await page.locator('.story-robot .level-node').first().click();
   await expect(page.locator('.story-screen.world-junkyard')).toBeVisible();
   await page.keyboard.press('Escape');
-  const pass = await page.locator('.posture-card').getAttribute('data-password');
-  await page.keyboard.type(pass!);
+  await page.locator('.posture-card').waitFor();
+  await page.keyboard.press('Space');
   await expect(page.locator('.level-screen.world-junkyard[data-bolt="broken"]')).toBeVisible();
   await expect(page.locator('.level-piko.waiting')).toHaveCount(0);
   await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next')).not.toBe('');
@@ -64,8 +64,8 @@ test('Enter sends Piko\'s paws to type a few words', async ({ page }) => {
   await page.locator('.map-side .btn.primary').click();
   await page.locator('.story-screen').waitFor();
   await page.keyboard.press('Escape');
-  const pass = await page.locator('.posture-card').getAttribute('data-password');
-  await page.keyboard.type(pass!);
+  await page.locator('.posture-card').waitFor();
+  await page.keyboard.press('Space');
   await expect(page.locator('.paw-btn')).toHaveAttribute('data-charged', '3');
   await expect(page.locator('.level-piko.waiting')).toHaveCount(0);
   await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next')).not.toBe('');
@@ -86,8 +86,8 @@ test('a level left during its get-ready card does not swallow the next level\'s 
   await page.goBack();
   await page.locator('.map-screen').waitFor();
   await page.locator('.map-side .btn.primary').click();
-  const pass = await page.locator('.posture-card').getAttribute('data-password');
-  await page.keyboard.type(pass!);
+  await page.locator('.posture-card').waitFor();
+  await page.keyboard.press('Space');
   await expect(page.locator('.level-piko.waiting')).toHaveCount(0);
   // The level listens on the window after all capturing cards; a key must get that far.
   await page.evaluate(() => window.addEventListener('keydown', () => document.body.dataset.reached = '1'));

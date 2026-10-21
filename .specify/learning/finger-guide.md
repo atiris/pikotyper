@@ -11,9 +11,10 @@
 - "Ready, steady, type!" card before every adventure (story level, rescue, free practice)
   and at breaks: a picture of good posture and **one** line - the session's preparation
   tip when one is due, else one random reminder (sit straight, feet on the floor, wrists
-  relaxed, index fingers on the `F` and `J` bumps, eyes on the screen). It closes only
-  when the child types the adventure's password: two random letters the child already
-  knows. Esc goes back to the map. It is the only card before a level, apart from new keys.
+  relaxed, index fingers on the `F` and `J` bumps, eyes on the screen). It asks the child
+  to put the fingers on the home keys and press the space bar, shown as a drawn key; the
+  space bar (or a tap on the drawing) starts, Esc goes back to the map. It is the only card
+  before a level, apart from new keys.
 - A new key is introduced by Piko on its own card, with the finger's name highlighted in
   that finger's color; game objects (Piko's fan) appear only when play starts. The space
   bar is pressed by a thumb; a Shift card names its hand and asks for three capitals of the

@@ -390,7 +390,7 @@ function dataTab(p: Profile): HTMLElement {
       button(t('parent.exportAll'), () => download('pikotyper-profiles.json', app.store.exportJson()), 'btn', 'download'),
       button(t('parent.import'), () => importDialog(() => go('parent', { granted: true })), 'btn', 'upload'),
       button(t('parent.print'), () => printCard(p), 'btn', 'print')),
-    guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : h('div', { class: 'danger' },
+    guest ? h('p', { class: 'hint' }, t('parent.guestNote')) : h('div', { class: 'danger-zone' },
       h('h3', {}, t('parent.deleteTitle')),
       button(t('parent.delete', { name: p.name }), async () => {
         const yes = await confirmDialog({

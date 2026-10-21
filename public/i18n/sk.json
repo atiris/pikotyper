@@ -16,6 +16,7 @@
     "whoPlays": "Kto sa dnes hrá?",
     "newProfile": "Nový hráč",
     "guest": "Hrať ako hosť",
+    "guestName": "Hosť",
     "import": "Načítať profily",
     "language": "Jazyk",
     "stars": "Hviezdičky: {n}"
@@ -75,7 +76,7 @@
     "storyName": "Piko a dračie vajíčko",
     "settings": "Nastavenia pre rodičov",
     "storyRobot": "Piko a robot Šróbik",
-    "storyOpens": "Otvorí sa, keď prejdeš svet {world}.",
+    "storyOpens": "Otvorí sa, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
     "friends": "Malí priatelia",
     "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Voľnom cvičení.",
     "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Voľnom cvičení.",
@@ -124,7 +125,8 @@
     "wrists": "Zápästia uvoľnené vo vzduchu, nie opreté o stôl.",
     "home": "Ukazováky na výstupkoch klávesov F a J, ostatné prsty vedľa nich.",
     "eyes": "Oči na obrazovke, nie na klávesnici.",
-    "password": "Heslo tohto dobrodružstva. Napíš ho a môžeme začať:",
+    "space": "Polož prsty na domov a stlač medzerník.",
+    "spaceKey": "medzerník",
     "escHint": "Esc: späť na mapu"
   },
   "newKey": {
@@ -134,10 +136,6 @@
     "shiftL": "Ľavý Shift drž ľavým malíčkom a pravou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "shiftR": "Pravý Shift drž pravým malíčkom a ľavou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "space": "Ostatné prsty ostanú doma. Stlač ho trikrát."
-  },
-  "drill": {
-    "title": "Malé cvičenie: {keys}",
-    "left": "{s} s"
   },
   "practice": {
     "parts": "Časti: {n} z {total}",
@@ -168,13 +166,6 @@
       "Kláves {key} skús {finger}.",
       "{key} patrí pod prst: stláčaj ho {finger}. Potom späť domov!",
       "Pomaly: {key} stláčaš {finger}."
-    ],
-    "drillYes": "Precvičiť {key} (20 s)",
-    "drillNo": "Hrať ďalej",
-    "drill_done": [
-      "Super! Tento kláves je už tvoj kamarát.",
-      "Pekne precvičené!",
-      "Tvoje prsty silnejú!"
     ],
     "level_done": [
       "Podarilo sa ti to, {name}!",
@@ -362,7 +353,7 @@
   },
   "paw": {
     "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: {piko} napíše za teba {words} slová. Backspace: pomôže sám, keď bude ťažko.",
-    "aria": "Labková pomoc, nabité labky: {n}",
+    "aria": "Labková pomoc (Enter), nabité labky: {n}",
     "start": "Labky na klávesy! Teraz píšem ja.",
     "charged": "{n} slov bez chyby! Labka je nabitá. Stlač Enter a napíšem za teba {words} slová.",
     "chargedAuto": "{n} slov bez chyby! Labka je nabitá. Keď bude ťažko, pomôžem ti sám.",

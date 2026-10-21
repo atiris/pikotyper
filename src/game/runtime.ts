@@ -28,7 +28,7 @@ import { createMode } from './modes';
 import { PressureValve, perChar } from './pace';
 import { type LevelResult, completeLevel } from './progress';
 import { type Target, TypingCore } from './typing';
-import { pickTip, showCard, showDrill, showNewKey, showPosture } from './cards';
+import { pickTip, showCard, showNewKey, showPosture } from './cards';
 import { surpriseFor } from './own-content';
 
 /** A word label a mode asked for in this frame, at its object's anchor. */
@@ -429,7 +429,7 @@ export class LevelRuntime {
     if (this.wrongStreak.ch === expected) this.wrongStreak.n++;
     else this.wrongStreak = { ch: expected, n: 1 };
     if (this.wrongStreak.n === 2) this.say(pickLine('piko.mistake'), 2);
-    if (this.wrongStreak.n === 3) this.offerDrill(expected);
+    if (this.wrongStreak.n === 3) this.showHint(expected);
   }
 
   private cheer(): void {
@@ -441,33 +441,11 @@ export class LevelRuntime {
     }
   }
 
-  private offerDrill(ch: string): void {
+  /** After three misses of one key Piko shows which key and finger it is. */
+  private showHint(ch: string): void {
     const finger = fingerFor(layout(), ch);
     const fingerName = finger != null ? t(`fingers.${FINGER_KEYS[finger]}`) : '';
-    const hint = pickLine('piko.hint', { key: keyLabel(ch), finger: fingerName });
-    // The mini drill is made of letters; space and punctuation only get the hint.
-    if (this.opts.keys || !isLetterKey(ch.toLowerCase())) {
-      this.say(hint, 5);
-      return;
-    }
-    const key = ch.toLowerCase();
-    this.say(h('div', {},
-      h('p', {}, hint),
-      h('div', { class: 'bubble-actions' },
-        button(t('piko.drillYes', { key }), () => { this.hideBubble(); void this.runDrill(key); }, 'btn small'),
-        button(t('piko.drillNo'), () => this.hideBubble(), 'btn small ghost'))), 9);
-  }
-
-  private async runDrill(key: string): Promise<void> {
-    this.paused = true;
-    this.input?.dispose();
-    await showDrill(this.el.querySelector<HTMLElement>('.stage-wrap')!, [key], 20, this.guide);
-    if (this.disposed) return;
-    this.input = new KeyInput(window, this.handlers());
-    this.paused = false;
-    this.wrongStreak.n = 0;
-    this.readySince = performance.now();
-    this.updateGuide();
+    this.say(pickLine('piko.hint', { key: keyLabel(ch), finger: fingerName }), 5);
   }
 
   updateGuide(): void {
@@ -516,25 +494,20 @@ export class LevelRuntime {
     else this.readFocus();
   }
 
-  private read(text: string): void {
-    if (this.reading) speech.say(text, app.profile!.language);
-  }
-
   private readFocus(): void {
     const tg = this.core.focus();
     if (!tg || tg.id === this.readId || this.pawWords || !this.started || this.paused) return;
     this.readId = tg.id;
-    this.read(tg.word);
+    if (this.reading) speech.say(tg.word, app.profile!.language);
   }
 
   // ---- Piko --------------------------------------------------------------------
 
-  say(content: string | HTMLElement, seconds = 3.5): void {
-    this.bubble.replaceChildren(typeof content === 'string' ? h('p', {}, content) : content);
+  /** Piko's line in the bubble; only screen readers hear it, the voice reads the targets alone. */
+  say(text: string, seconds = 3.5): void {
+    this.bubble.replaceChildren(h('p', {}, text));
     this.bubble.classList.remove('hidden');
     this.bubbleTimer = seconds;
-    // Buttons in the bubble are not read, only its line.
-    this.read(typeof content === 'string' ? content : content.querySelector('p')?.textContent ?? content.textContent ?? '');
   }
 
   hideBubble(): void {
@@ -578,13 +551,12 @@ export class LevelRuntime {
   private renderPawBtn(): void {
     if (!this.pawBtn) return;
     const p = app.profile!;
-    const { pawHelp, pawAuto } = p.progress;
+    const { pawHelp } = p.progress;
     this.pawBtn.classList.toggle('empty', pawHelp === 0);
     this.pawBtn.classList.toggle('auto-helping', this.pawSelf && this.pawWords > 0);
     this.pawBtn.dataset.charged = String(pawHelp);
     this.pawBtn.setAttribute('aria-label', t('paw.aria', { n: pawHelp }));
     this.pawBtn.innerHTML = pawRingSvg(pawHelp, PAW_MAX, pawColors(p.companion.kind)[0]);
-    if (!pawAuto) this.pawBtn.append(h('span', { class: 'paw-badge', 'aria-hidden': 'true' }, '⏎'));
   }
 
   /** A mistake-free streak charges one paw help. */
@@ -794,9 +766,12 @@ export class LevelRuntime {
   private labelShift = new Map<number, number>();
   private labelTime = 0;
 
-  /** Word label above a target (helper for modes); drawn after the mode, so labels never overlap. */
+  /**
+   * Word label above a target (helper for modes); drawn after the mode, so labels never overlap.
+   * A word the child sees can be typed at once, so a target not selectable yet gets no label.
+   */
   label(_g: G, tg: Target, x: number, y: number, size = 40): void {
-    this.labels.push({ tg, x, y, size });
+    if (tg.selectable) this.labels.push({ tg, x, y, size });
   }
 
   /**
@@ -844,7 +819,6 @@ export class LevelRuntime {
       drawWord(g, l.tg.word, l.tg.typed, l.x, l.y + shift, l.tg.wobble, {
         size: l.size,
         highContrast: this.highContrast,
-        dim: !l.tg.selectable,
         locked: this.core.locked === l.tg,
       });
     }

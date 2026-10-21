@@ -3,20 +3,25 @@ import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { LEVELS, STORIES, isLevelUnlocked, isWorldUnlocked, levelById, nextLevel, rescueLevel, rescueUnlocked, worldLevels } from './levels';
 
+const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
+
 describe('story unlocks', () => {
-  it('opens the robot story after world 2 of the dragon story', () => {
+  it('opens the robot story when the child knows ten keys', () => {
     const p = newProfile('Ema', 'sk');
     expect(isWorldUnlocked(p, 0)).toBe(true);
     expect(isWorldUnlocked(p, 5)).toBe(false);
-    p.progress.worldsDone = [0];
-    expect(isWorldUnlocked(p, 5)).toBe(false);
+    p.progress.unlockedKeys = KEYS.slice(0, 9);
     p.progress.worldsDone = [0, 1];
+    expect(isWorldUnlocked(p, 5)).toBe(false);
+    p.progress.unlockedKeys = KEYS.slice(0, 10);
+    p.progress.worldsDone = [];
     expect(isWorldUnlocked(p, 5)).toBe(true);
     expect(isWorldUnlocked(p, 6)).toBe(false);
   });
 
   it('lets both stories go on independently', () => {
     const p = newProfile('Ema', 'sk');
+    p.progress.unlockedKeys = KEYS.slice(0, 10);
     p.progress.worldsDone = [0, 1, 5, 6];
     expect(isWorldUnlocked(p, 2)).toBe(true);
     expect(isWorldUnlocked(p, 3)).toBe(false);
@@ -26,6 +31,7 @@ describe('story unlocks', () => {
 
   it('plays the dragon story first, then the robot story', () => {
     const p = newProfile('Ema', 'sk');
+    p.progress.unlockedKeys = KEYS;
     p.progress.worldsDone = [0, 1];
     for (const l of LEVELS.filter((x) => x.world < 2)) p.progress.levels[l.id] = 3;
     expect(nextLevel(p)?.id).toBe('w3-1');
@@ -43,7 +49,6 @@ describe('story unlocks', () => {
 });
 
 describe('keys needed per level', () => {
-  const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h'];
   /** A profile with every level of world 2 reached (world 1 done, earlier levels with stars) and `n` keys. */
   const withKeys = (n: number) => {
     const p = newProfile('Ema', 'sk');
@@ -67,6 +72,19 @@ describe('keys needed per level', () => {
     p.settings.activeKeysMode = 'manual';
     p.settings.manualKeys = KEYS.slice(0, 8);
     expect(open(p)).toEqual([true, true, true, true, false]);
+  });
+
+  it('needs 10 / 14 / 18 / 22 / 26 keys in the robot story', () => {
+    const p = newProfile('Ema', 'sk');
+    p.progress.worldsDone = [5];
+    for (const l of LEVELS.filter((x) => x.world === 6)) p.progress.levels[l.id] = 2;
+    const robot = () => worldLevels(6).map((l) => isLevelUnlocked(p, l));
+    p.progress.unlockedKeys = KEYS.slice(0, 10);
+    expect(robot()).toEqual([true, false, false, false, false]);
+    p.progress.unlockedKeys = KEYS.slice(0, 18);
+    expect(robot()).toEqual([true, true, true, false, false]);
+    p.progress.unlockedKeys = KEYS.slice(0, 26);
+    expect(robot()).toEqual([true, true, true, true, true]);
   });
 
   it('does not gate the super profile', () => {

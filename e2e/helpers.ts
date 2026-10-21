@@ -8,12 +8,11 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
       if (res) return { kind: 'results', text: res.innerText };
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
-      const pass = document.querySelector<HTMLElement>('.posture-card')?.dataset.password;
-      if (pass) return { kind: 'password', key: pass };
+      if (document.querySelector('.posture-card')) return { kind: 'ready' };
       return { kind: 'play', next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '' };
     });
     if (state.kind === 'results') return state.text!;
-    if (state.kind === 'password') await page.keyboard.type(state.key!);
+    if (state.kind === 'ready') await page.keyboard.press('Space');
     else if (state.kind === 'newkey') await typeChar(page, state.key!);
     else if (state.next) {
       if (mistakes && typed.length % 13 === 4) await page.keyboard.type('q');

@@ -251,8 +251,6 @@ export function resetFontFamily(): void {
 export interface WordStyle {
   size?: number;
   highContrast?: boolean;
-  /** Not reachable yet (e.g. behind the web). */
-  dim?: boolean;
   locked?: boolean;
 }
 
@@ -282,7 +280,6 @@ export function drawWord(g: G, word: string, typed: number, x: number, y: number
   const padX = size * 0.45, h = size * 1.45;
   const shake = wobble > 0 ? Math.sin(wobble * 60) * 5 * (wobble / 0.35) : 0;
   const bx = x - total / 2 - padX + shake;
-  g.globalAlpha *= st.dim ? 0.55 : 1;
   g.shadowColor = 'rgba(40,30,20,0.25)';
   g.shadowBlur = 8;
   g.shadowOffsetY = 3;

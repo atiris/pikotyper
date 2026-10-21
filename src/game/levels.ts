@@ -10,14 +10,17 @@ export interface StoryDef {
   title: string;
   /** World indexes of the story, in order. */
   worlds: number[];
-  /** The story opens when this world (of another story) is done; null = open from the start. */
-  opensAfter: number | null;
+  /** The story opens when the child knows this many keys; null = open from the start. */
+  opensAtKeys: number | null;
+  /** Keys its first level needs, and how many more each next level of a world needs. */
+  keysBase: number;
+  keysStep: number;
 }
 
 /** Story rows on the map; each story goes on independently once it is open. */
 export const STORIES: StoryDef[] = [
-  { id: 'dragon', title: 'map.storyName', worlds: [0, 1, 2, 3, 4], opensAfter: null },
-  { id: 'robot', title: 'map.storyRobot', worlds: [5, 6, 7, 8, 9], opensAfter: 1 },
+  { id: 'dragon', title: 'map.storyName', worlds: [0, 1, 2, 3, 4], opensAtKeys: null, keysBase: 2, keysStep: 2 },
+  { id: 'robot', title: 'map.storyRobot', worlds: [5, 6, 7, 8, 9], opensAtKeys: 10, keysBase: 10, keysStep: 4 },
 ];
 
 export function storyOf(world: number): StoryDef {
@@ -82,19 +85,25 @@ export function worldLevels(world: number): LevelDef[] {
   return LEVELS.filter((l) => l.world === world);
 }
 
+/** The story opens with enough known keys (the super profile needs none). */
+export function storyOpen(p: Profile, story: StoryDef): boolean {
+  return story.opensAtKeys === null || p.id === SUPER_ID || activeKeys(p).length >= story.opensAtKeys;
+}
+
 /** The first world of a story opens with the story, every other one after the world before it. */
 export function isWorldUnlocked(p: Profile, world: number): boolean {
   const story = storyOf(world);
   if (world !== story.worlds[0]) return p.progress.worldsDone.includes(world - 1);
-  return story.opensAfter === null || p.progress.worldsDone.includes(story.opensAfter);
+  return storyOpen(p, story);
 }
 
 /**
- * Keys a story level needs, so its words are varied enough: 2 / 4 / 6 / 8 / 10, again
- * in every world. Ten keys are enough for the whole story.
+ * Keys a story level needs, so its words are varied enough, again in every world: the
+ * dragon story 2 / 4 / 6 / 8 / 10, the robot story 10 / 14 / 18 / 22 / 26.
  */
 export function keysNeeded(l: LevelDef): number {
-  return 2 * (l.index + 1);
+  const story = storyOf(l.world);
+  return story.keysBase + story.keysStep * l.index;
 }
 
 /** Keys the child still needs for a level (0 = enough); the super profile needs none. */

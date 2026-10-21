@@ -57,8 +57,9 @@ worried at a mistake and happy at a finished word.
     also repair little robots.
 
 ### Both stories
-- Story 2 opens when world 2 of story 1 is finished; from then on both stories go on
-  independently. Lesson keys do not depend on stories.
+- Story 2 opens when the child knows 10 keys; from then on both stories go on
+  independently. Lesson keys do not depend on stories, and story 2 levels need more keys
+  ([lesson progression](../learning/lesson-progression.md)), since its words are harder.
 - Worlds of a story unlock in order; finished levels can always be replayed. A level also
   needs a few known keys ([lesson progression](../learning/lesson-progression.md)).
 - On the map each story is one row with its name above its world cards, left aligned with

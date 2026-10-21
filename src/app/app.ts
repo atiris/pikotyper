@@ -123,6 +123,8 @@ export async function selectProfile(p: Profile): Promise<void> {
     app.store.save();
   }
   await useLanguage(p.language);
+  // The guest is greeted in the language of the game.
+  if (p.id === GUEST_ID) p.name = t('start.guestName');
   applyProfileLook(p);
 }
 

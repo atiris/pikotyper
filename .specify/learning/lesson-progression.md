@@ -21,8 +21,9 @@
   The parent can override and pick the active keys by hand.
 - Adaptive practice: keys with low accuracy or slow reaction appear more often in words.
 - Story levels use the child's current key set, so the story and the lessons move together.
-- Each story level needs a few known keys: 2, 4, 6, 8 and 10 for the five levels of a
-  world, again in every world. All unlocked keys count (space, punctuation and Shifts too);
+- Each story level needs a few known keys, again in every world of the story: in the
+  dragon story 2, 4, 6, 8 and 10 for the five levels of a world, in the robot story 10, 14,
+  18, 22 and 26. All unlocked keys count (space, punctuation and Shifts too);
   with the parent's own key choice, its keys count. A level reached (the one before has its
   star) but still short of keys shows a key on the map; tapping it, Piko says how many
   letters are missing and offers free practice. "Continue" skips such levels: it replays
@@ -39,8 +40,9 @@
   alone at a middle point with plenty of known words
   ([research](../../.research/learning/space-punctuation-capitals.md)).
 - A level with only two letters makes dull words; a small key need per level keeps them
-  varied. Starting it again in every world means ten keys are enough for the whole story,
-  so a child who knows few keys still plays a whole world, and one who knows more is not
-  held back.
+  varied. Starting it again in every world means ten keys are enough for the whole dragon
+  story, so a child who knows few keys still plays a whole world, and one who knows more
+  is not held back. The robot story opens with ten keys and asks for more, so it grows
+  with the child instead of waiting for finished worlds.
 - Mirrored pairs keep the hands balanced, and a lighter unlock target keeps the first
   world from feeling like endless `f j` drills; mastery still asks for solid accuracy.

@@ -1,15 +1,12 @@
-import { app, pickLine, saveProfile } from '../app/app';
 import { audio } from '../audio/audio';
 import { t, tMap } from '../i18n/i18n';
 import type { Layout } from '../keyboard/layouts';
-import { recordPress } from '../learning/stats';
 import type { Profile } from '../storage/schema';
 import { type KeyboardGuide, fingerChip } from '../ui/keyboard-guide';
 import { button, h } from '../ui/dom';
 import { pikoElement } from '../gfx/piko';
-import { WordSource, letterKeys } from '../words/words';
 import { imageUrl } from '../gfx/assets';
-import { SHIFT_L, SHIFT_R, SPACE, activeKeys } from '../learning/lessons';
+import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 
 interface CardOpts {
   button?: string;
@@ -20,7 +17,7 @@ interface CardOpts {
  * Captures keys for a card while it is on screen. A card that leaves together with its
  * screen (back button, map) lets go by itself, so it never swallows the next level's keys.
  */
-function captureKeys(overlay: HTMLElement, onKey: (e: KeyboardEvent) => void): () => void {
+export function captureKeys(overlay: HTMLElement, onKey: (e: KeyboardEvent) => void): () => void {
   const stop = () => window.removeEventListener('keydown', listener, true);
   const listener = (e: KeyboardEvent) => (overlay.isConnected ? onKey(e) : stop());
   window.addEventListener('keydown', listener, true);
@@ -84,60 +81,33 @@ export function postureContent(line?: string): HTMLElement {
     h('p', { class: 'posture-tip' }, line ?? t(`posture.${tip}`)));
 }
 
-/** Two different random letters the child already knows: the password of this adventure. */
-export function adventurePassword(p: Profile, rnd = Math.random): string {
-  const letters = [...new Set(letterKeys(activeKeys(p), true).filter((k) => /^\p{Ll}$/u.test(k)))];
-  const pool = letters.length >= 2 ? letters : ['f', 'j'];
-  const a = pool[Math.floor(rnd() * pool.length)];
-  const rest = pool.filter((c) => c !== a);
-  return a + rest[Math.floor(rnd() * rest.length)];
-}
-
 /**
  * Get-ready card before every adventure, with the session's preparation tip when one is due
- * and the question of a parent's surprise waiting here; it opens the adventure only with its
- * password typed. Escape cancels the adventure.
+ * and the question of a parent's surprise waiting here; the space bar (or a tap on its
+ * drawing) opens the adventure, Escape cancels it.
  */
 export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: string): Promise<'start' | 'cancel'> {
   return new Promise((resolve) => {
-    const password = adventurePassword(p);
-    const slots = [...password].map((c) => h('span', { class: 'pass-key' }, c));
-    const pass = h('div', { class: 'pass' }, ...slots);
-    const card = h('div', { class: 'card posture-card', 'data-password': password },
+    const close = (how: 'start' | 'cancel') => {
+      stop();
+      overlay.remove();
+      resolve(how);
+    };
+    const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.space'), onClick: () => close('start') }, t('posture.spaceKey'));
+    const card = h('div', { class: 'card posture-card' },
       postureContent(tip),
       surprise ? surpriseAsk(p, surprise) : null,
-      h('p', { class: 'pass-label' }, t('posture.password')),
-      pass,
+      h('p', { class: 'space-label' }, t('posture.space')),
+      space,
       h('p', { class: 'hint' }, t('posture.escHint')));
     const overlay = h('div', { class: 'overlay' }, card);
-    let n = 0;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        e.stopPropagation();
-        stop();
-        overlay.remove();
-        resolve('cancel');
-        return;
-      }
-      if (e.repeat || [...e.key].length !== 1) return;
+      if (e.repeat || (e.key !== ' ' && e.key !== 'Escape')) return;
       e.preventDefault();
       e.stopPropagation();
-      if (e.key.normalize('NFC').toLowerCase() === password[n]) {
-        slots[n++].classList.add('on');
-        audio.sfx('pop');
-        if (n === password.length) {
-          stop();
-          setTimeout(() => { overlay.remove(); resolve('start'); }, 350);
-        }
-      } else {
-        n = 0;
-        slots.forEach((sl) => sl.classList.remove('on'));
-        pass.classList.remove('wobble');
-        void pass.offsetWidth;
-        pass.classList.add('wobble');
-        audio.sfx('wrong');
-      }
+      if (e.key === 'Escape') return close('cancel');
+      audio.sfx('pop');
+      close('start');
     };
     const stop = captureKeys(overlay, onKey);
     host.append(overlay);
@@ -222,71 +192,6 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
       resolve();
     };
     const stop = captureKeys(overlay, onKey);
-  });
-}
-
-/** Short calm drill of a few keys (Piko's mini practice); records stats. */
-export function showDrill(host: HTMLElement, keys: string[], seconds: number, guide: KeyboardGuide): Promise<void> {
-  return new Promise((resolve) => {
-    const p = app.profile!;
-    const src = new WordSource(app.words, { keys, len: [2, 4], noDiacritics: p.settings.noDiacritics });
-    const word = h('div', { class: 'drill-word' });
-    const timer = h('div', { class: 'drill-timer' });
-    const card = h('div', { class: 'card drill-card' }, h('h2', {}, t('drill.title', { keys: keys.join(' ') })), word, timer);
-    const overlay = h('div', { class: 'overlay' }, card);
-    host.append(overlay);
-    let current = '';
-    let typed = 0;
-    let last = performance.now();
-    const end = performance.now() + seconds * 1000;
-    const draw = () => {
-      word.replaceChildren(...[...current].map((c, i) => h('span', { class: i < typed ? 'done' : i === typed ? 'next' : '' }, c)));
-      guide.show(current[typed] ?? null);
-    };
-    const nextWord = () => {
-      current = src.drill(4);
-      typed = 0;
-      draw();
-    };
-    const tick = setInterval(() => {
-      const left = Math.max(0, Math.ceil((end - performance.now()) / 1000));
-      timer.textContent = t('drill.left', { s: left });
-      if (left <= 0) finish();
-    }, 200);
-    const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || [...e.key].length !== 1 || e.key === ' ') return;
-      e.preventDefault();
-      e.stopPropagation();
-      const now = performance.now();
-      const exp = current[typed];
-      recordPress(p, exp, e.key, now - last);
-      last = now;
-      if (e.key === exp) {
-        typed++;
-        audio.sfx('key');
-        if (typed >= current.length) {
-          audio.sfx('word');
-          nextWord();
-        } else draw();
-      } else {
-        audio.sfx('wrong');
-        word.classList.remove('wobble');
-        void word.offsetWidth;
-        word.classList.add('wobble');
-      }
-    };
-    let finished = false;
-    const finish = () => {
-      if (finished) return;
-      finished = true;
-      clearInterval(tick);
-      stop();
-      saveProfile();
-      card.replaceChildren(h('h2', {}, pickLine('piko.drill_done')), button(t('common.continue'), () => { overlay.remove(); guide.show(null); resolve(); }, 'btn primary'));
-      (card.querySelector('button') as HTMLButtonElement).focus();
-    };
-    const stop = captureKeys(overlay, onKey);
-    nextWord();
   });
 }
 

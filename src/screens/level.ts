@@ -6,7 +6,7 @@ import { LEVELS, type LevelDef, WORLDS, levelById, practiceLevel, rescueLevel, s
 import type { LevelResult } from '../game/progress';
 import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
-import { surpriseAsk } from '../game/cards';
+import { captureKeys, surpriseAsk } from '../game/cards';
 import { surpriseReached, teaserLines } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
 import type { Friend, Profile, Surprise, Task } from '../storage/schema';
@@ -114,7 +114,8 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     actions.append(button(t('results.nextRescue'), () => go('level', { id: 'rescue' }), `btn ${calm ? '' : 'primary'}`, 'rescue'));
   }
   actions.append(button(t('results.replay'), () => go('level', params), 'btn', 'replay'));
-  actions.append(button(t('level.toMap'), () => go('map'), 'btn ghost', 'map'));
+  const toMap = () => go('map');
+  actions.append(button(t('level.toMap'), toMap, 'btn ghost', 'map'));
 
   const card = h('div', { class: 'card results-card' },
     h('h2', {}, def.kind === 'practice' ? t('results.practiceDone') : t('results.title')),
@@ -129,6 +130,13 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
   (actions.querySelector('button') as HTMLButtonElement).focus();
+  // Escape closes the results like every other card (back to the map); a dialog over them closes first.
+  const stop = captureKeys(overlay, (e) => {
+    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
+    e.preventDefault();
+    stop();
+    toMap();
+  });
 }
 
 /**

@@ -3,8 +3,9 @@ import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
 import { t } from '../i18n/i18n';
-import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, worldLevels } from '../game/levels';
+import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels } from '../game/levels';
 import type { Profile } from '../storage/schema';
+import { activeKeys } from '../learning/lessons';
 import { button, h, icon } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
 import { ownTextPhrases } from '../game/modes/practice';
@@ -105,9 +106,9 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysB
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
       h('div', { class: 'level-row' }, ...levels));
   });
-  const closed = story.opensAfter !== null && !isWorldUnlocked(p, story.worlds[0]);
+  const closed = !storyOpen(p, story);
   return h('section', { class: `story-row story-${story.id}` },
     h('h2', { class: 'story-name' }, t(story.title)),
-    closed ? h('p', { class: 'story-opens' }, t('map.storyOpens', { world: story.opensAfter! + 1 })) : null,
+    closed ? h('p', { class: 'story-opens' }, t('map.storyOpens', { n: story.opensAtKeys!, have: activeKeys(p).length })) : null,
     h('div', { class: 'islands' }, ...islands));
 }

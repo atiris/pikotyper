@@ -67,7 +67,6 @@ export class RainMode extends Mode {
         // Drops drift toward Bolt as they fall.
         d.x += (bx - d.x) * dt * 0.35;
         tg.urgency = d.y;
-        tg.selectable = d.y > 20;
         if (d.y >= HEAD) {
           d.state = 'splash';
           core.release(tg);

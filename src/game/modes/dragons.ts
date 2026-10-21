@@ -52,7 +52,6 @@ export class ShieldMode extends Mode {
         r.y = Math.min(limit, r.y + r.vy * dt);
         r.x += (r.d.x - r.x) * dt * 0.3;
         tg.urgency = r.y;
-        tg.selectable = r.y > 20;
         if (r.y >= r.d.y - 90) {
           // Piko's soft bubble catches the rock: nothing bad happens.
           r.state = 'bounce';

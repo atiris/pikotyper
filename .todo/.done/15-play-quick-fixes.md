@@ -71,18 +71,46 @@ The owner's list after playing (2026-10-21). Each item is small and clear:
   {have}." Update tests in `levels.test.ts`.
 
 ## Steps
-- [ ] Voice only reads targets.
-- [ ] Danger button class fix.
-- [ ] Bubble tail as one shape (level bubble both spots + map bubble).
-- [ ] Esc closes the results.
-- [ ] Guest name from i18n.
-- [ ] Paw badge removed.
-- [ ] Typable as soon as visible (all modes checked).
-- [ ] Mini drill removed.
-- [ ] Get-ready card starts with space; password removed; e2e helpers.
-- [ ] Robot story opens at 10 keys, robot levels 10 + 4 x index; map text; tests.
-- [ ] Specs updated (WHAT and WHY) for each item.
-- [ ] Build, vitest, e2e; Playwright MCP: reading aloud on, play a meadow level (only
+- [x] Voice only reads targets.
+- [x] Danger button class fix.
+- [x] Bubble tail as one shape (level bubble both spots + map bubble).
+- [x] Esc closes the results.
+- [x] Guest name from i18n.
+- [x] Paw badge removed.
+- [x] Typable as soon as visible (all modes checked).
+- [x] Mini drill removed.
+- [x] Get-ready card starts with space; password removed; e2e helpers.
+- [x] Robot story opens at 10 keys, robot levels 10 + 4 x index; map text; tests.
+- [x] Specs updated (WHAT and WHY) for each item.
+- [x] Build, vitest, e2e; Playwright MCP: reading aloud on, play a meadow level (only
   words spoken), world 4 level 3 (type a word right when it appears), get-ready card
   with space, results closed with Esc, guest greeting, parent screen delete button,
   bubble tail screenshot, map with a profile of 9 and 10 keys (robot story closed/open).
+
+## Done - 2026-10-21
+Shipped every item:
+- Voice reads only targets (`say()` takes a plain line and never speaks; aria-live stays).
+- Danger zone wrapper renamed to `danger-zone`, so the delete button (and the confirm
+  dialog's danger button) lost the dashed border.
+- Bubble tail is a rotated square with `background: inherit`, the shadow is a
+  `drop-shadow` filter on the bubble: one shape in the level (side and top spot) and on
+  the map; checked on screenshots.
+- Esc on the results goes to the map (same handler as its Map button); an open dialog over
+  the results closes first.
+- Guest name set from `start.guestName` in `selectProfile`, so it follows the language on
+  every load ("Ahoj, Hosť!").
+- Paw badge removed; the aria-label now names Enter too (the title already did).
+- Drawn means typable, enforced in one place: `LevelRuntime.label()` skips targets that
+  are not selectable (covers approach, meadow, egg, robohome moles), and dragons/raintown
+  no longer wait for `y > 20`. The unused `dim` word style went with it.
+- Mini drill removed (`runDrill`, `showDrill`, its texts and CSS); three misses show the
+  key and finger hint only.
+- Get-ready card starts with the space bar or a tap on its drawn space key; password,
+  `adventurePassword` and texts removed; e2e helpers press Space.
+- Robot story opens at 10 known keys (`opensAtKeys`), levels need `keysBase + keysStep x
+  index` per story (dragon 2/2, robot 10/4); map text names the keys needed and known;
+  tests for both.
+- Specs: accessibility, piko, story, finger-guide, lesson-progression, feedback,
+  mechanics, profiles.
+Verified: build, vitest (118), e2e (11), Playwright MCP run of every check in the last step.
+Left out: nothing.
