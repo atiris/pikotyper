@@ -288,7 +288,7 @@ function taskTab(p: Profile): HTMLElement {
       linkBox(link),
       button(t('task.giveHere', { name: p.name }), () => { addTask(p, spec); saveProfile(); paint(); }, 'btn small', 'plus'));
   };
-  const paint = () => list.replaceChildren(...p.tasks.map((x) => h('li', { class: x.doneAt ? 'revealed' : '' },
+  const paint = () => list.replaceChildren(...(p.tasks.length ? [] : [h('li', { class: 'hint' }, t('task.none'))]), ...p.tasks.map((x) => h('li', { class: x.doneAt ? 'revealed' : '' },
     h('div', {}, h('b', {}, x.title || t('task.untitled')),
       h('small', {}, `${t(`task.kind.${x.kind}`)} · ${x.doneAt ? t('task.doneAt', { date: new Date(x.doneAt).toLocaleDateString(p.language) }) : t('task.played', { n: Math.floor(x.seconds / 60), total: x.minutes })}`)),
     x.doneAt ? button(t('task.handIn'), () => void handInDialog(p, x), 'btn small', 'upload') : null,
@@ -307,7 +307,6 @@ function taskTab(p: Profile): HTMLElement {
       button(t('task.make'), () => void make(), 'btn primary', 'code'),
       out),
     h('fieldset', { class: 'task-own' }, h('legend', {}, t('task.group.list', { name: p.name })),
-      p.tasks.length ? null : h('p', { class: 'hint' }, t('task.none')),
       list));
 }
 

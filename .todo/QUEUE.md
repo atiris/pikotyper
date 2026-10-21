@@ -6,6 +6,5 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P2] 10-teacher-links.md - tasks and results reuse 09's own words and text
 - [P2] 13-meadow-leaf-goalkeeper.md - replaces the web story in world 1; independent, after 10 which may be running
 - [P3] 11-story-robot.md - second story; needs the owner's media (fallbacks work without them); after the core plans

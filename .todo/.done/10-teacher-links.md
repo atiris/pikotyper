@@ -43,10 +43,10 @@ and a child wants to move to another computer without copying JSON files.
 - [x] Routes and screens: task import, result view, teacher table, move import.
 - [x] Parent area: task builder, transfer link/QR.
 - [x] Map task card and the "Odovzdať" flow after the task.
-- [ ] Specs (`.specify/profiles/teacher-links.md` new, index updated,
+- [x] Specs (`.specify/profiles/teacher-links.md` new, index updated,
   `privacy.md`: still nothing leaves the browser except what the user copies),
   i18n sk + en, README section "For teachers".
-- [ ] Build, vitest, e2e: parent builds a task -> second context opens the link ->
+- [x] Build, vitest, e2e: parent builds a task -> second context opens the link ->
   plays it -> opens the result link in a third context -> teacher table shows one row.
 
 ## Notes (decisions taken while implementing)
@@ -64,3 +64,13 @@ and a child wants to move to another computer without copying JSON files.
 - The map shows a finished task's "Odovzdať" card only on the day it was finished; later
   the hand-in stays reachable in the parent area's task list.
 - The start page footer has "Pre učiteľov" next to "O aplikácii".
+
+## Done - 2026-10-21
+Shipped: `src/share/` (deflate-raw + base64url codec with a version byte, tasks, results
+with checksum, teacher store, profile move), routes `#/task/`, `#/result/`, `#/move/`,
+`#/teacher`, the parent "Úloha" tab (link + QR, give to this player, the player's tasks with
+hand-in), "Preniesť na iný počítač" in the data tab, the map's "Úloha na dnes" card and the
+"Odovzdať" hand-in, the teacher table with delete and CSV, schema v8 with migration, specs,
+i18n sk + en, README "For teachers", unit tests and the e2e flow (parent -> child -> teacher).
+Left out on purpose: a QR code for links over ~2900 characters (most move links); they are
+copy-only, as a QR cannot hold them. Nothing went to the backlog.
