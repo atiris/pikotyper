@@ -124,8 +124,8 @@ export function confirmDialog(o: ConfirmOpts): Promise<boolean> {
   });
 }
 
-export function download(filename: string, text: string): void {
-  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+export function download(filename: string, text: string, type = 'application/json'): void {
+  const url = URL.createObjectURL(new Blob([text], { type }));
   const a = h('a', { href: url, download: filename });
   document.body.append(a);
   a.click();

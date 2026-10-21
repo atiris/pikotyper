@@ -467,7 +467,7 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .range input:disabled + output { color: var(--ink-soft); }
 .auto-field { display: flex; flex-direction: column; gap: 0.2rem; }
 .auto-check { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; cursor: pointer; }
-.own-tab textarea { width: 100%; resize: vertical; }
+.own-tab textarea, .task-tab textarea { width: 100%; resize: vertical; }
 .own-list { padding-left: 1.2rem; margin: 0.8rem 0 0; display: flex; flex-direction: column; gap: 0.5rem; }
 .own-list li { display: flex; gap: 0.5rem; align-items: flex-start; justify-content: space-between; }
 .own-list li > div { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
@@ -544,3 +544,35 @@ body.reduce-motion *, body.reduce-motion *::before, body.reduce-motion *::after 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; transition-duration: 0.001s !important; }
 }
+
+/* ---------- Tasks, links, teacher ---------- */
+.task-card { background: #fff6d6; border: 3px solid var(--sun); border-radius: 18px; padding: 0.7rem 0.8rem; display: flex; flex-direction: column; gap: 0.4rem; }
+.task-card.done { background: #e6f6ea; border-color: var(--green); }
+.task-card h2 { margin: 0; font-size: 1.1rem; color: var(--brand-dark); }
+.task-card.done h2 { color: var(--green-dark); }
+.task-card .task-title { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.task-card .hint { margin: 0; }
+.task-line { font-weight: 600; }
+.task-line.good { color: var(--green-dark); }
+.task-summary { background: var(--paper-2); border-radius: 18px; padding: 0.8rem 1rem; margin-bottom: 1rem; overflow-wrap: anywhere; }
+.task-summary h3 { margin: 0 0 0.3rem; }
+.task-summary p { margin: 0.3rem 0; }
+.task-words, .task-text { color: var(--ink-soft); }
+.task-out:not(:empty) { margin-top: 1rem; border-top: 2px dashed var(--line); padding-top: 0.5rem; }
+.link-box { display: flex; flex-direction: column; gap: 0.6rem; margin: 0.6rem 0; }
+.link-text { font-family: ui-monospace, monospace; font-size: 0.85rem; word-break: break-all; resize: vertical; }
+.qr { width: min(240px, 70vw); align-self: center; background: #fff; border-radius: 12px; }
+.qr svg { display: block; width: 100%; height: auto; }
+.share-modal { width: min(560px, 100%); }
+.hand-in { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.hand-in .link-box { align-self: stretch; }
+.link-screen .bar h1 { flex: 1; }
+.link-screen main { text-align: center; }
+.link-screen .profile-list { justify-content: center; }
+.teacher-screen form.row { flex-wrap: nowrap; }
+.teacher-screen form input { flex: 1; }
+.teacher-table { overflow-x: auto; margin: 1rem 0; }
+.teacher-table table { width: 100%; border-collapse: collapse; }
+.teacher-table th, .teacher-table td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--line); }
+.teacher-table .task-row th { background: var(--paper-2); font-size: 1.05rem; padding-top: 0.7rem; }
+.teacher-table tr.broken td { color: var(--danger); }

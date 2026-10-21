@@ -9,12 +9,14 @@ import { LevelRuntime } from '../game/runtime';
 import { surpriseAsk } from '../game/cards';
 import { surpriseReached, teaserLines } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
-import type { Profile, Surprise } from '../storage/schema';
+import type { Profile, Surprise, Task } from '../storage/schema';
+import { recordTaskRun, taskOwn } from '../share/task';
 import { localDate } from '../learning/stats';
 import { button, h } from '../ui/dom';
 import { keyLabel } from '../ui/keyboard-guide';
 import { medal } from '../ui/medal';
 import { playLevel } from './map';
+import { handInDialog, minutesLeft, startTask } from './task';
 
 interface LevelParams {
   id: string;
@@ -23,6 +25,8 @@ interface LevelParams {
   seconds?: number;
   /** Free practice of the parent's own text. */
   text?: boolean;
+  /** Id of the task this level is played for. */
+  task?: string;
 }
 
 export function levelScreen(root: HTMLElement, params: LevelParams): () => void {
@@ -31,15 +35,21 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   if (params.id === 'practice') def = practiceLevel(params.seconds ?? null, params.text ? ownTextPhrases(p) : undefined);
   else if (params.id === 'rescue') def = rescueLevel(p.progress.dragons.length * 7 + Math.floor(Math.random() * 5));
   else def = levelById(params.id) ?? LEVELS[0];
+  const task = p.tasks.find((x) => x.id === params.task && !x.doneAt) ?? null;
   let rt: LevelRuntime;
   const exit = () => go('map');
   rt = new LevelRuntime(root, def, {
     keys: params.keys,
     seconds: params.seconds ?? null,
+    own: task ? taskOwn(task) : undefined,
     onExit: exit,
     onFinish: (result) => {
       if (!result) return exit();
-      showResults(root, def, result, params, rt.surprise);
+      if (task) {
+        recordTaskRun(task, result);
+        saveProfile();
+      }
+      showResults(root, def, result, params, rt.surprise, task);
     },
   });
   if (def.kind === 'practice' && !params.seconds) {
@@ -51,7 +61,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
 
 const DRAGON_NAMES_FALLBACK = ['Iskra', 'Mäta', 'Luna', 'Bubu'];
 
-function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null): void {
+function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null): void {
   const p = app.profile!;
   let rescued: { name: string; hue: number } | null = null;
   if (def.id === 'rescue') {
@@ -85,15 +95,20 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const sentence = pickLine('piko.level_done', { name: p.name }, p.customMessages);
 
   const actions = h('div', { class: 'row center' });
+  const taskOn = task && !task.doneAt ? task : null;
+  if (task?.doneAt) actions.append(button(t('task.handIn'), () => void handInDialog(p, task), 'btn primary', 'upload'));
+  else if (taskOn && def.kind === 'practice') actions.append(button(t('task.continue'), () => startTask(p, taskOn), 'btn primary', 'play'));
   const breakDue = app.sessionSeconds >= p.settings.sessionMinutes * 60;
+  // A break or a finished task's hand-in is the main action then.
+  const calm = breakDue || !!task?.doneAt;
   const nextDef = def.index >= 0 && !def.isSuper ? LEVELS.find((l) => l.world === def.world && l.index === def.index + 1) : undefined;
   if (breakDue) actions.append(button(t('results.takeBreak'), () => go('break'), 'btn primary', 'play'));
   if (r.worldDone !== null) {
-    actions.append(button(t('results.reward'), () => go('story', { scene: WORLD_REWARDS[r.worldDone!], next: 'map' }), `btn ${breakDue ? '' : 'primary'}`, 'star'));
+    actions.append(button(t('results.reward'), () => go('story', { scene: WORLD_REWARDS[r.worldDone!], next: 'map' }), `btn ${calm ? '' : 'primary'}`, 'star'));
   } else if (nextDef) {
-    actions.append(button(t('results.next'), () => playLevel(nextDef.id), `btn ${breakDue ? '' : 'primary'}`, 'next'));
+    actions.append(button(t('results.next'), () => playLevel(nextDef.id, taskOn?.id), `btn ${calm ? '' : 'primary'}`, 'next'));
   } else if (def.id === 'rescue') {
-    actions.append(button(t('results.nextRescue'), () => go('level', { id: 'rescue' }), `btn ${breakDue ? '' : 'primary'}`, 'rescue'));
+    actions.append(button(t('results.nextRescue'), () => go('level', { id: 'rescue' }), `btn ${calm ? '' : 'primary'}`, 'rescue'));
   }
   actions.append(button(t('results.replay'), () => go('level', params), 'btn', 'replay'));
   actions.append(button(t('level.toMap'), () => go('map'), 'btn ghost', 'map'));
@@ -105,6 +120,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
       h('div', { class: 'results-piko' }, pikoElement(p.companion, 'happy', 140), h('p', { class: 'bubble static' }, breakDue ? pickLine('piko.break') : sentence)),
       h('div', { class: 'results-lines' }, ...lines)),
     ...(surprise ? surpriseResult(p, def, r, surprise) : []),
+    task ? h('p', { class: `task-line ${task.doneAt ? 'good' : ''}` }, task.doneAt ? t('task.doneLine', { title: task.title }) : t('task.leftLine', { title: task.title, n: minutesLeft(task) })) : null,
     ...teaser(p, def, !!nextDef && r.worldDone === null),
     actions);
   const overlay = h('div', { class: 'overlay results' }, card);

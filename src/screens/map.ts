@@ -8,19 +8,20 @@ import { button, h, icon } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
 import { ownTextPhrases } from '../game/modes/practice';
 import { openStats } from './stats';
+import { taskCard } from './task';
 
-/** Starts a level, showing the world's intro scene the first time. */
-export function playLevel(id: string): void {
+/** Starts a level (for a task, with its words), showing the world's intro scene the first time. */
+export function playLevel(id: string, task?: string): void {
   const p = app.profile!;
   const l = LEVELS.find((x) => x.id === id);
   if (l && l.index === 0) {
     const scene = `world${l.world + 1}`;
     if (!p.progress.scenesSeen.includes(scene)) {
-      go('story', { scene, next: 'level', nextParams: { id } });
+      go('story', { scene, next: 'level', nextParams: { id, task } });
       return;
     }
   }
-  go('level', { id });
+  go('level', { id, task });
 }
 
 function settingsButton(): HTMLButtonElement {
@@ -73,6 +74,7 @@ export function mapScreen(root: HTMLElement): void {
       h('aside', { class: 'map-side' },
         h('h1', { class: 'map-hello' }, t('map.hello', { name: p.name })),
         piko,
+        taskCard(p),
         play,
         button(t('map.practice'), () => go('level', { id: 'practice' }), 'btn', 'practice'),
         ownTextPhrases(p).length ? button(t('map.ownText'), () => go('level', { id: 'practice', text: true }), 'btn', 'read') : null,

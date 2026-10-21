@@ -5,7 +5,12 @@ import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
 import { OWN_QUESTIONS_MAX, OWN_QUESTION_LEN, SURPRISES_MAX, SURPRISE_LEN } from '../game/own-content';
 import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder } from '../learning/lessons';
-import { COMPANION_KINDS, GUEST_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type OwnMix, type Profile } from '../storage/schema';
+import { COMPANION_KINDS, GUEST_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type OwnMix, type Profile, type TaskKind } from '../storage/schema';
+import { linkOf } from '../share/codec';
+import { TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, taskCode } from '../share/task';
+import { moveCode } from '../share/transfer';
+import { linkBox } from '../ui/link-box';
+import { handInDialog } from './task';
 import { applyImport, parseImport, planImport } from '../storage/store';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
@@ -32,13 +37,13 @@ function parentAccess(): Promise<boolean> {
 export async function parentScreen(root: HTMLElement, params: { granted?: boolean }): Promise<void> {
   if (!params.granted && !(await parentAccess())) return go('map');
   const p = app.profile!;
-  const tabs = ['settings', 'own', 'keys', 'dashboard', 'data'] as const;
+  const tabs = ['settings', 'own', 'task', 'keys', 'dashboard', 'data'] as const;
   type Tab = (typeof tabs)[number];
   const body = h('div', { class: 'parent-body' });
   const nav = h('nav', { class: 'tabs', role: 'tablist' });
   const show = (tab: Tab) => {
     nav.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
-    body.replaceChildren(tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'keys' ? keysTab(p) : tab === 'dashboard' ? dashboardTab(p) : dataTab(p));
+    body.replaceChildren(tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'task' ? taskTab(p) : tab === 'keys' ? keysTab(p) : tab === 'dashboard' ? dashboardTab(p) : dataTab(p));
   };
   for (const tab of tabs) {
     const b = button(t(`parent.tab.${tab}`), () => show(tab), 'tab');
@@ -262,6 +267,50 @@ function ownWordsEditors(p: Profile): HTMLElement[] {
   ];
 }
 
+/** A task for this child or a whole class: a link (and QR) with words, text, minutes and what to play. */
+function taskTab(p: Profile): HTMLElement {
+  const title = h('input', { type: 'text', maxlength: TASK_TITLE_MAX, placeholder: t('task.titlePlaceholder') });
+  const words = h('textarea', { rows: 3, placeholder: t('own.wordsPlaceholder') });
+  const text = h('textarea', { rows: 4, maxlength: OWN_TEXT_MAX, placeholder: t('own.textPlaceholder') });
+  let minutes = 10;
+  const kind = select<TaskKind>('practice', [['practice', t('task.kind.practice')], ['story', t('task.kind.story')]], () => undefined);
+  const msg = h('p', { class: 'error', role: 'alert' });
+  const out = h('div', { class: 'task-out' });
+  const list = h('ul', { class: 'own-list task-list' });
+  const make = async () => {
+    msg.textContent = '';
+    const spec: TaskSpec = { id: newId(), title: title.value.trim(), words: parseOwnWords(words.value), text: text.value.slice(0, OWN_TEXT_MAX).trim(), minutes, kind: kind.value as TaskKind };
+    if (!spec.words.length && !spec.text) return void (msg.textContent = t('task.needContent'));
+    const link = linkOf('task', await taskCode(spec));
+    out.replaceChildren(
+      h('h3', {}, t('task.linkTitle')),
+      h('p', { class: 'hint' }, t('task.linkHint')),
+      linkBox(link),
+      button(t('task.giveHere', { name: p.name }), () => { addTask(p, spec); saveProfile(); paint(); }, 'btn small', 'plus'));
+  };
+  const paint = () => list.replaceChildren(...p.tasks.map((x) => h('li', { class: x.doneAt ? 'revealed' : '' },
+    h('div', {}, h('b', {}, x.title || t('task.untitled')),
+      h('small', {}, `${t(`task.kind.${x.kind}`)} · ${x.doneAt ? t('task.doneAt', { date: new Date(x.doneAt).toLocaleDateString(p.language) }) : t('task.played', { n: Math.floor(x.seconds / 60), total: x.minutes })}`)),
+    x.doneAt ? button(t('task.handIn'), () => void handInDialog(p, x), 'btn small', 'upload') : null,
+    button(t('own.remove'), () => { p.tasks = p.tasks.filter((y) => y !== x); saveProfile(); paint(); }, 'btn small ghost', 'trash'))));
+  paint();
+  return h('div', { class: 'settings-grid task-tab' },
+    h('fieldset', { class: 'task-new' }, h('legend', {}, t('task.group.new')),
+      h('p', { class: 'hint' }, t('task.intro')),
+      field(t('task.title'), title),
+      field(t('own.words'), words, t('own.wordsHint')),
+      field(t('own.text'), text),
+      h('div', { class: 'row' },
+        field(t('task.minutes'), range(minutes, TASK_MINUTES[0], TASK_MINUTES[1], 1, (v) => (minutes = v), (v) => t('parent.minutes', { n: v }))),
+        field(t('task.kindLabel'), kind)),
+      msg,
+      button(t('task.make'), () => void make(), 'btn primary', 'code'),
+      out),
+    h('fieldset', { class: 'task-own' }, h('legend', {}, t('task.group.list', { name: p.name })),
+      p.tasks.length ? null : h('p', { class: 'hint' }, t('task.none')),
+      list));
+}
+
 function keysTab(p: Profile): HTMLElement {
   const s = p.settings;
   const lay = LAYOUTS[p.layout];
@@ -337,7 +386,8 @@ function dataTab(p: Profile): HTMLElement {
   return h('div', { class: 'data-tab' },
     h('p', {}, t('parent.dataText')),
     h('div', { class: 'row' },
-      guest ? null : button(t('parent.exportOne'), () => download(`pikotyper-${slug(p.name)}.json`, app.store.exportJson([p.id])), 'btn', 'download'),
+      guest ? null : button(t('parent.exportOne'), () => exportOne(p), 'btn', 'download'),
+      guest ? null : button(t('move.button'), () => void moveDialog(p), 'btn', 'next'),
       button(t('parent.exportAll'), () => download('pikotyper-profiles.json', app.store.exportJson()), 'btn', 'download'),
       button(t('parent.import'), () => importDialog(() => go('parent', { granted: true })), 'btn', 'upload'),
       button(t('parent.print'), () => printCard(p), 'btn', 'print')),
@@ -357,6 +407,19 @@ function dataTab(p: Profile): HTMLElement {
         app.profile = null;
         go('start');
       }, 'btn danger', 'trash')));
+}
+
+const exportOne = (p: Profile) => download(`pikotyper-${slug(p.name)}.json`, app.store.exportJson([p.id]));
+
+/** The whole player as a link for another computer; a file when the link would be too long. */
+async function moveDialog(p: Profile): Promise<void> {
+  const prefix = linkOf('move', '');
+  const code = await moveCode(p, prefix);
+  modal(h('div', { class: 'move' },
+    h('h2', {}, t('move.title')),
+    ...(code
+      ? [h('p', {}, t('move.text', { name: p.name })), linkBox(prefix + code), h('p', { class: 'hint' }, t('move.privacy'))]
+      : [h('p', {}, t('move.tooLong')), button(t('parent.exportOne'), () => exportOne(p), 'btn primary', 'download')])), { cls: 'share-modal' });
 }
 
 const slug = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/gi, '-').toLowerCase() || 'profile';

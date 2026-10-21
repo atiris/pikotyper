@@ -27,6 +27,13 @@ export function isBlocked(word: string): boolean {
   return BLOCK.some((b) => w.includes(b));
 }
 
+/** Own words and text, and the share of targets taken from them (0..1). */
+export interface WordSourceOwn {
+  words: string[];
+  text: string;
+  share: number;
+}
+
 export interface WordOptions {
   keys: string[];
   len: [number, number];
@@ -41,8 +48,8 @@ export interface WordOptions {
   names?: string[];
   /** 0..1 how well each Shift goes; capitals grow from 1 target in 6 to every phrase start. */
   shiftMastery?: Record<string, number>;
-  /** The parent's own words and text, and the share of targets taken from them (0..1). */
-  own?: { words: string[]; text: string; share: number };
+  /** The parent's (or a task's) own words and text. */
+  own?: WordSourceOwn;
   seed?: number;
 }
 

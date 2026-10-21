@@ -53,7 +53,9 @@ export function startScreen(root: HTMLElement): () => void {
         button(t('start.import'), () => importDialog(() => go('start')), 'btn ghost', 'upload'))),
     h('footer', { class: 'privacy-note' },
       h('p', {}, t('privacy.short')),
-      button(t('about.title'), () => go('about'), 'link-btn', 'info'))));
+      h('div', { class: 'row center' },
+        button(t('about.title'), () => go('about'), 'link-btn', 'info'),
+        button(t('teacher.title'), () => go('teacher'), 'link-btn', 'chart')))));
   return listenForSuperPassword(async () => {
     app.superPlayer = superProfile(language());
     await selectProfile(app.superPlayer);

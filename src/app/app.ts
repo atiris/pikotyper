@@ -5,9 +5,10 @@ import { h, icon } from '../ui/dom';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { Store } from '../storage/store';
 import { GUEST_ID, type Lang, type Profile, SUPER_ID } from '../storage/schema';
+import type { TaskSpec } from '../share/task';
 import { loadWords } from '../words/words';
 
-export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'dragons' | 'about' | 'break';
+export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'dragons' | 'about' | 'break' | 'teacher' | 'taskImport' | 'moveImport';
 export type Screen = (root: HTMLElement, params: any) => (() => void) | void;
 
 const screens = new Map<ScreenName, Screen>();
@@ -27,6 +28,8 @@ export const app = {
   breakCount: 0,
   /** The super player while super mode is on (memory only). */
   superPlayer: null as Profile | null,
+  /** A task from a link that waits for the new player being created. */
+  pendingTask: null as TaskSpec | null,
 };
 
 export function layout(): Layout {
@@ -41,20 +44,30 @@ export function registerScreen(name: ScreenName, s: Screen): void {
 const ROUTES: Partial<Record<ScreenName, string>> = { wardrobe: 'wardrobe', dragons: 'dragons', parent: 'settings', level: 'play', story: 'play', break: 'play' };
 const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'dragons', 'parent'];
 
+/** Screens of a link with data in it, by the link's first part. */
+const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };
+
 /** Address of a screen, so a player's map can be bookmarked or put on the desktop. */
-export function routeOf(name: ScreenName): string {
+export function routeOf(name: ScreenName, params: { code?: string } = {}): string {
   if (name === 'newProfile') return '#/new';
   if (name === 'about') return '#/about';
+  // A result link is read once into the teacher's table.
+  if (name === 'teacher') return '#/teacher';
+  if (name === 'taskImport') return `#/task/${params.code ?? ''}`;
+  if (name === 'moveImport') return `#/move/${params.code ?? ''}`;
   const id = app.profile?.id;
   if (name === 'start' || !id) return '#/';
   const sub = ROUTES[name];
   return `#/p/${encodeURIComponent(id)}${sub ? `/${sub}` : ''}`;
 }
 
-export function parseRoute(hash: string): { name: ScreenName; profileId: string | null } {
+export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string } {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   if (parts[0] === 'new') return { name: 'newProfile', profileId: null };
   if (parts[0] === 'about') return { name: 'about', profileId: null };
+  if (parts[0] === 'teacher') return { name: 'teacher', profileId: null };
+  const link = LINKS[parts[0]];
+  if (link && parts[1]) return { name: link, profileId: null, code: parts[1] };
   if (parts[0] !== 'p' || !parts[1]) return { name: 'start', profileId: null };
   const name = (Object.keys(ROUTES) as ScreenName[]).find((n) => ROUTES[n] === parts[2] && OWN_ROUTE.includes(n)) ?? 'map';
   return { name, profileId: parts[1] };
@@ -66,11 +79,11 @@ export async function openRoute(hash: string): Promise<void> {
   const p = r.profileId === SUPER_ID ? app.superPlayer : r.profileId ? app.store.get(r.profileId) : null;
   if (r.profileId && !p) return go('start', {}, false);
   if (p && app.profile?.id !== p.id) await selectProfile(p);
-  go(r.name, {}, false);
+  go(r.name, r.code ? { code: r.code } : {}, false);
 }
 
 export function go(name: ScreenName, params: any = {}, push = true): void {
-  const route = routeOf(name);
+  const route = routeOf(name, params);
   if (route !== location.hash) history[push ? 'pushState' : 'replaceState'](null, '', route);
   const root = document.querySelector<HTMLElement>('#app')!;
   try { cleanup?.(); } catch (e) { console.error(e); }

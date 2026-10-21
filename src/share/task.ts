@@ -1,6 +1,6 @@
 import type { Profile, Task, TaskKind } from '../storage/schema';
 import { localDate } from '../learning/stats';
-import { OWN_SHARE, OWN_TEXT_MAX, parseOwnWords } from '../words/words';
+import { OWN_SHARE, OWN_TEXT_MAX, type WordSourceOwn, parseOwnWords } from '../words/words';
 import { decode, encode } from './codec';
 
 /** What a task link carries: the task without the child's play. */
@@ -60,6 +60,6 @@ export function recordTaskRun(task: Task, r: { seconds: number; chars: number; e
 }
 
 /** The task's words and text as the levels' own content: practice only them, story levels mostly. */
-export function taskOwn(task: Task): { words: string[]; text: string; share: number } {
+export function taskOwn(task: Task): WordSourceOwn {
   return { words: task.words, text: task.text, share: task.kind === 'practice' ? 1 : OWN_SHARE.most };
 }

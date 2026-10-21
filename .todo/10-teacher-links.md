@@ -40,9 +40,9 @@ and a child wants to move to another computer without copying JSON files.
 
 ## Steps
 - [x] Codec with unit tests (round trip, version byte, broken input).
-- [ ] Routes and screens: task import, result view, teacher table, move import.
-- [ ] Parent area: task builder, transfer link/QR.
-- [ ] Map task card and the "Odovzdať" flow after the task.
+- [x] Routes and screens: task import, result view, teacher table, move import.
+- [x] Parent area: task builder, transfer link/QR.
+- [x] Map task card and the "Odovzdať" flow after the task.
 - [ ] Specs (`.specify/profiles/teacher-links.md` new, index updated,
   `privacy.md`: still nothing leaves the browser except what the user copies),
   i18n sk + en, README section "For teachers".
@@ -58,3 +58,9 @@ and a child wants to move to another computer without copying JSON files.
 - The teacher store keeps one result per child and task; a newer hand-in replaces it.
 - QR: `qrcode-generator` 2.0.4 (7.5 kB gzip). A QR holds at most ~2900 bytes, so it is shown
   only for links that fit; longer links (most move links) are copy-only.
+- A story task plays the next story level with the task's words at the "most" share; the
+  results card's Next button keeps the task. A practice task is a timed practice of the
+  minutes still left, only the task's words and text (share 1).
+- The map shows a finished task's "Odovzdať" card only on the day it was finished; later
+  the hand-in stays reachable in the parent area's task list.
+- The start page footer has "Pre učiteľov" next to "O aplikácii".

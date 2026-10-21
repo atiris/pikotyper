@@ -8,11 +8,13 @@ import { aboutScreen } from './screens/about';
 import { breakScreen } from './screens/break';
 import { dragonsScreen } from './screens/dragons';
 import { levelScreen } from './screens/level';
+import { moveImportScreen, taskImportScreen } from './screens/link-import';
 import { mapScreen } from './screens/map';
 import { newProfileScreen } from './screens/new-profile';
 import { parentScreen } from './screens/parent';
 import { startScreen } from './screens/start';
 import { storyScreen } from './screens/story';
+import { teacherScreen } from './screens/teacher';
 import { wardrobeScreen } from './screens/wardrobe';
 
 /** Screens that need a selected profile go back to the start without one. */
@@ -24,6 +26,9 @@ const needsProfile = (s: (root: HTMLElement, params: any) => any) => (root: HTML
 registerScreen('start', startScreen);
 registerScreen('newProfile', newProfileScreen);
 registerScreen('about', aboutScreen);
+registerScreen('teacher', teacherScreen);
+registerScreen('taskImport', taskImportScreen);
+registerScreen('moveImport', moveImportScreen);
 registerScreen('map', needsProfile(mapScreen));
 registerScreen('level', needsProfile(levelScreen));
 registerScreen('story', needsProfile(storyScreen));

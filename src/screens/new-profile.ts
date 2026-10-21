@@ -3,6 +3,7 @@ import { pikoElement } from '../gfx/piko';
 import { language, t } from '../i18n/i18n';
 import { COMPANION_KINDS, type CompanionKind, type Lang, type LayoutId } from '../storage/schema';
 import { newProfile } from '../storage/store';
+import { addTask } from '../share/task';
 import { button, h } from '../ui/dom';
 import { LAYOUT_IDS } from '../keyboard/layouts';
 import { soundButton } from '../ui/chrome';
@@ -38,6 +39,8 @@ export function newProfileScreen(root: HTMLElement): void {
     }
     const p = newProfile(n, lang.value as Lang, lay.value as LayoutId, kind);
     p.companion.name = pikoName.value.trim() || 'Piko';
+    if (app.pendingTask) addTask(p, app.pendingTask);
+    app.pendingTask = null;
     app.store.add(p);
     await selectProfile(p);
     go('story', { scene: 'intro', next: 'map' });
@@ -52,7 +55,7 @@ export function newProfileScreen(root: HTMLElement): void {
     h('p', { class: 'hint' }, t('newProfile.parentHint')),
     error,
     h('div', { class: 'row' },
-      button(t('common.back'), () => go('start'), 'btn ghost', 'back'),
+      button(t('common.back'), () => { app.pendingTask = null; go('start'); }, 'btn ghost', 'back'),
       h('button', { class: 'btn primary', type: 'submit' }, t('newProfile.create'))));
   root.append(h('div', { class: 'screen form-screen' }, h('div', { class: 'top-right' }, soundButton()), form));
 }
