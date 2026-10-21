@@ -63,6 +63,8 @@ Piko can be one of nine animals and wears 28 accessories earned by progress (nev
 
 - **Private:** 100 % in the browser. No backend, no tracking, no cookies. Profiles stay in
   `localStorage` and can be exported / imported as a `.json` file. Guest mode keeps nothing.
+  Links (tasks, results, moving a player) carry their data in the address hash, which never
+  reaches a server.
 - **Parent area** (gear button, one confirm question): child and companion names, keyboard layout, active keys (automatic or picked by hand), word
   length and difficulty 1-10 (automatic or fixed), words without diacritics, no time pressure, session length,
   guide visibility, volumes, fonts (Lexend, Atkinson Hyperlegible, OpenDyslexic), large
@@ -87,6 +89,23 @@ Piko can be one of nine animals and wears 28 accessories earned by progress (nev
   every world, level, key and accessory unlocked, to look around or test. Nothing it does
   is saved or counted in anyone's statistics; end it with the star in the top right corner or a reload.
 - **Offline:** installable PWA; works without internet after the first visit.
+- **Move to another computer:** the data tab makes a link (and a QR code) with the whole
+  player; open it on the other computer. Very large profiles go by file export instead.
+
+## For teachers
+
+No accounts and no server: tasks and results travel as links you send yourself (Edupage,
+e-mail), with the data inside the link.
+
+- **Give a task:** parent area, tab "Task": a name, the words and/or a text, 1-20 minutes,
+  and free practice or story levels with those words. Copy the link or show the QR code.
+- **The child** opens the link, picks their player (or makes a new one) and sees
+  "Today's task" first on the map. When the minutes are played, "Hand in" gives a result
+  link to send back.
+- **Your table:** "For teachers" at the bottom of the start page. Open or paste result
+  links; each child's result (minutes, accuracy, rhythm, five weakest keys) is kept in your
+  browser only, grouped by task, with CSV export. A checksum shows damaged links; it does
+  not stop cheating.
 
 ## Development
 

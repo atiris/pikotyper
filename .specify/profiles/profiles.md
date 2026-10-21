@@ -7,6 +7,7 @@
   progress, unlocked items, statistics.
 - Export a profile (or all of them) to a `.json` file and import it on another device.
   Import validates the file and never silently overwrites (it asks: replace or keep both).
+  A player can also move by link ([teacher-links.md](teacher-links.md)).
 - Stored data has a version; older data is migrated on load.
 - Every player has an address (`#/p/<id>`, plus `/wardrobe`, `/dragons`, `/settings`), so a
   link or desktop shortcut opens that child's map directly; the browser's back and forward

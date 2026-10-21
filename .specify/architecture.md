@@ -14,6 +14,8 @@
 - Audio: sound effects are always synthesized with the Web Audio API; background music
   uses the generated tracks when present, otherwise a synthesized calm loop.
 - Data: `localStorage` only, versioned schema, export/import as `.json`.
+  Tasks, results and moving a player travel as links with compressed data in the address
+  hash; a teacher's collected results have their own `localStorage` key.
 - Language data (UI texts, word lists) are separate JSON files loaded on demand per
   language, so adding a language does not grow the main bundle.
 - Installable offline PWA (a service worker caches the app after the first visit).
