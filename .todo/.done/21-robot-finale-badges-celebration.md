@@ -71,7 +71,7 @@ No schema change: badges and their tier come from `worldsDone` and the stars in
 - [x] Badges: tier logic in `rewards.ts` (+ test), badge component, map corner, results
   line, progress view shelf, prompts in `PROMPTS.md`.
 - [x] Specs (WHAT and WHY).
-- [ ] Build, vitest, e2e; Playwright MCP: play 9-5 with a super profile (one mistake
+- [x] Build, vitest, e2e; Playwright MCP: play 9-5 with a super profile (one mistake
   restarts, then finish), the end of a meadow level (Piko jumps, fan gone, no run-off),
   map with badges (prepared profile with bronze / silver / gold), results with a badge
   upgrade. Screenshots.
@@ -94,3 +94,14 @@ Decisions taken while implementing:
 - Badge fallback: the world's map island picture, else its number on a coloured disc.
 - e2e: the gate (intro, restart on a mistake, no paw button) and badges (prepared
   profile: map tiers, gold upgrade on the results, shelf of 10).
+
+## Done - 2026-10-21
+Shipped: the perfect-run main gate (8 x 6 code from the child's keys, restart on a
+mistake with a soft buzz, intro card, Piko's line after 3 restarts, no paws); Piko
+celebrates in place with three hops (Bolt too) while his fan, umbrella or shields fade;
+short world names Dážď / Mesto / Domov (Rain / City / Home); world badges with bronze /
+silver / gold tiers on the map cards, the results and a shelf of ten in the progress
+view; badge prompts in `PROMPTS.md`; specs and README. Verified with build, vitest,
+e2e (16) and the Playwright MCP (gate intro, restart, finish; meadow end; map tiers;
+gold upgrade on the results; badge shelf).
+Left out: the badge pictures themselves (owner's art; the island picture stands in).
