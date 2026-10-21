@@ -58,13 +58,12 @@ Do this after plan 16 (compact results card).
   On a narrow screen the table turns into cards.
 - **Removed:** the own questions editor and data, and their use in the teaser rotation
   (`own-content.ts`). Built-in Piko teasers stay.
-- **Migration:** old surprises become rules: `place` = level id -> `trigger 'level'`,
-  `next` -> `trigger 'levels'` with `n = 1`, `practice` -> `trigger 'minutes'` with
-  `n = 1`. `minStars` is dropped. A `revealedAt` becomes `doneAt`, `repeat: false`.
-  Drop `ownQuestions` and the progress fields for own questions.
+- **Migration:** no backward compatibility (owner, 2026-10-21: alpha, nobody uses it).
+  The migration only resets `surprises` to `[]` and drops `ownQuestions` and the
+  progress fields for own questions. Old surprises are not converted.
 
 ## Steps
-- [ ] Schema + migration + store tests (old surprise of each place, own questions gone).
+- [ ] Schema + migration (surprises reset, own questions gone) + store tests.
 - [ ] Rule engine in `own-content.ts`: pick the rule for a run, progress text, reveal
   and repeat. Unit tests for every trigger, repeat on/off, one per run, random once a day.
 - [ ] Get-ready card teaser and the results block with question + answer; built-in
