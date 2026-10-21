@@ -1,6 +1,35 @@
-import { defineConfig } from 'vite';
+/// <reference types="vitest/config" />
+import { createHash } from 'node:crypto';
+import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
+import { type Plugin, defineConfig } from 'vite';
+
+function publicFiles(dir: string): string[] {
+  return readdirSync(dir).flatMap((name) => {
+    const path = join(dir, name);
+    return statSync(path).isDirectory() ? publicFiles(path) : [relative('public', path).split(sep).join('/')];
+  });
+}
+
+/** Writes sw.js with the list of files to keep offline (music is cached as it plays). */
+function serviceWorker(): Plugin {
+  return {
+    name: 'pikotyper-sw',
+    apply: 'build',
+    generateBundle(_options, bundle) {
+      const files = ['./', ...Object.keys(bundle), ...publicFiles('public').filter((f) => !f.endsWith('.mp3') && !f.endsWith('.txt'))];
+      const version = createHash('sha256').update(files.join('\n')).digest('hex').slice(0, 12);
+      const source = readFileSync('scripts/sw-template.js', 'utf8')
+        .replace('__VERSION__', version)
+        .replace('__FILES__', JSON.stringify(files));
+      this.emitFile({ type: 'asset', fileName: 'sw.js', source });
+    },
+  };
+}
 
 // GitHub Pages serves the site from /pikotyper/
 export default defineConfig({
   base: '/pikotyper/',
+  plugins: [serviceWorker()],
+  test: { include: ['src/**/*.test.ts'] },
 });

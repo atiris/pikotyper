@@ -52,6 +52,7 @@ export class ShieldMode extends Mode {
         r.y = Math.min(limit, r.y + r.vy * dt);
         r.x += (r.d.x - r.x) * dt * 0.3;
         tg.urgency = r.y;
+        tg.selectable = r.y > 20;
         if (r.y >= r.d.y - 90) {
           // Piko's soft bubble catches the rock: nothing bad happens.
           r.state = 'bounce';
@@ -116,7 +117,7 @@ export class ShieldMode extends Mode {
       drawSprite(g, r.sprite, r.x, r.y, 110, { rot: r.rot }, blob('#9a8a7a', true));
       g.restore();
     }
-    for (const tg of this.L.core.targets) if (tg.data.state === 'fall') this.L.label(g, tg, tg.data.x, Math.max(36, tg.data.y - 90));
+    for (const tg of this.L.core.targets) if (tg.data.state === 'fall') this.L.label(g, tg, tg.data.x, Math.max(40, tg.data.y - 85));
   }
 
   progress(): number {

@@ -87,6 +87,7 @@ export class SlopeMode extends Mode {
     if (!(this.L.noPressure && !o.cleared && !tg.gone && o.x <= stopX)) o.x += o.vx * dt;
     if (this.L.noPressure && !o.cleared && !tg.gone) o.x = Math.max(stopX, o.x);
     tg.urgency = -o.x;
+    tg.selectable = o.x < this.L.vw - 30;
     if (!o.passed && o.x < EGG_X + 90) {
       o.passed = true;
       if (o.cleared) this.hop(1);
@@ -134,6 +135,17 @@ export class SlopeMode extends Mode {
       g.save();
       g.globalAlpha = 1 - o.fade;
       drawSprite(g, o.sprite, o.x, GROUND() - 45, o.sprite === 'obj-stump' ? 120 : 95, {}, blob(o.sprite === 'obj-stump' ? '#a0703c' : '#9aa0a6', true));
+      if (o.cleared && !o.passed) {
+        // Typed: a little glowing star says the egg will jump over it.
+        g.globalAlpha *= 0.6 + Math.sin(this.t * 6) * 0.3;
+        g.fillStyle = '#ffe27a';
+        g.beginPath();
+        for (let i = 0; i < 10; i++) {
+          const r = i % 2 ? 7 : 17, a = -Math.PI / 2 + (i * Math.PI) / 5;
+          g.lineTo(o.x + Math.cos(a) * r, GROUND() - 130 + Math.sin(a) * r);
+        }
+        g.fill();
+      }
       g.restore();
     }
     this.drawEgg(g);

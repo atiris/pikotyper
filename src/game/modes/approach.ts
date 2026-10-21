@@ -64,6 +64,8 @@ export abstract class ApproachMode extends Mode {
       if (m.state === 'come') {
         this.moveComing(m, dt, tg);
         tg.urgency = -m.x;
+        // Only targets the child can see can be typed.
+        tg.selectable = m.x < this.L.vw - 30;
         if (m.x < this.playerX) {
           m.state = 'pass';
           core.release(tg);

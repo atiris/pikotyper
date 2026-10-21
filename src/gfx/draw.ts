@@ -128,8 +128,11 @@ export const PALETTES: Record<string, Palette> = {
 
 /** Draws a background layer image at full screen height, tiled horizontally by `offset`. */
 function tiled(g: G, img: HTMLImageElement, vw: number, offset: number): void {
+  // Skip a thin edge of the image: generated images often have a faint border line.
+  const inset = 3;
+  const sw = img.naturalWidth - inset * 2;
   const s = VH / img.naturalHeight;
-  const w = img.naturalWidth * s, h = img.naturalHeight * s;
+  const w = sw * s, h = img.naturalHeight * s;
   const y = VH - h;
   let x = -(((offset % w) + w) % w);
   // Mirror every other tile so the seam always matches.
@@ -139,9 +142,9 @@ function tiled(g: G, img: HTMLImageElement, vw: number, offset: number): void {
       g.save();
       g.translate(x + w, y);
       g.scale(-1, 1);
-      g.drawImage(img, 0, 0, w, h);
+      g.drawImage(img, inset, 0, sw, img.naturalHeight, 0, 0, w, h);
       g.restore();
-    } else g.drawImage(img, x, y, w, h);
+    } else g.drawImage(img, inset, 0, sw, img.naturalHeight, x, y, w, h);
     x += w;
     i++;
   }
@@ -160,12 +163,20 @@ export function drawBackground(g: G, world: string, vw: number, scroll: number, 
     g.fillRect(0, 0, vw, VH);
     if (world === 'space') starField(g, vw, scroll * 0.1);
   }
+  if (world === 'space') {
+    // Calm the busy sky so words stay readable.
+    g.fillStyle = 'rgba(24,18,60,0.35)';
+    g.fillRect(0, 0, vw, VH);
+  }
+  g.save();
+  if (world === 'space') g.globalAlpha = 0.55;
   const mid = sprite(`bg-${world}-mid`);
   if (mid) tiled(g, mid, vw, motion ? scroll * 0.35 : 0);
   else hills(g, vw, scroll * 0.35, VH * 0.62, 70, pal.hills[0]);
   const near = sprite(`bg-${world}-near`);
   if (near) tiled(g, near, vw, motion ? scroll : 0);
   else if (world !== 'space') hills(g, vw, scroll, VH * 0.82, 30, pal.hills[1]);
+  g.restore();
 }
 
 function hills(g: G, vw: number, offset: number, base: number, amp: number, color: string): void {

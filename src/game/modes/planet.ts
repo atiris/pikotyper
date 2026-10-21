@@ -103,16 +103,19 @@ export class SwampMode extends HeroMode {
     }
     if (this.current) {
       const x = this.spot.x - this.scroll;
+      // Where the next stone will appear: a glowing ring on the water.
       g.save();
-      g.globalAlpha = 0.45 + Math.sin(this.t * 4) * 0.15;
+      const pulse = 0.5 + Math.sin(this.t * 4) * 0.2;
+      g.fillStyle = `rgba(255,255,255,${0.25 * pulse + 0.1})`;
       g.strokeStyle = '#ffffff';
-      g.setLineDash([10, 8]);
-      g.lineWidth = 4;
+      g.setLineDash([12, 8]);
+      g.lineWidth = 5;
       g.beginPath();
-      g.ellipse(x, this.spot.y + 16, 70, 22, 0, 0, Math.PI * 2);
+      g.ellipse(x, this.spot.y + 16, 66, 22, 0, 0, Math.PI * 2);
+      g.fill();
       g.stroke();
       g.restore();
-      this.L.label(g, this.current, x, this.spot.y - 210);
+      this.L.label(g, this.current, x, this.spot.y - 70);
     }
     if (this.done >= this.L.def.count) {
       // The far bank.
