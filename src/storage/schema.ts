@@ -1,4 +1,4 @@
-// Storage schema v5. These types are the data contract of `localStorage['pikotyper:v1']`
+// Storage schema v6. These types are the data contract of `localStorage['pikotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -94,6 +94,8 @@ export interface Progress {
   pawHelp: number;
   /** The child chose that Piko helps by himself in hard moments. */
   pawAuto: boolean;
+  /** Companion kinds the child may pick: the starting kind first, then the ones earned by stars. */
+  companionsUnlocked: CompanionKind[];
 }
 
 export interface Companion {
@@ -118,7 +120,7 @@ export interface Profile {
 }
 
 export interface StoreData {
-  version: 5;
+  version: 6;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;

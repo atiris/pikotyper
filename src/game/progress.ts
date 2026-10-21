@@ -1,7 +1,7 @@
 import { advanceLesson } from '../learning/lessons';
-import type { Profile } from '../storage/schema';
+import type { CompanionKind, Profile } from '../storage/schema';
 import { type LevelDef, starsFor } from './levels';
-import { grantAccessories } from './rewards';
+import { grantAccessories, grantCompanions } from './rewards';
 
 export interface LevelResult {
   stars: number;
@@ -12,6 +12,7 @@ export interface LevelResult {
   seconds: number;
   newKeys: string[];
   newAccessories: string[];
+  newCompanions: CompanionKind[];
   /** The world finished with this level (super-obstacle), else null. */
   worldDone: number | null;
   /** Rhythm compared with the sessions of a week ago, as a ratio (null = no data). */
@@ -69,7 +70,7 @@ export function grow(p: Profile, seconds: number, accuracy: number): GrowthStep 
 }
 
 /** Applies a finished level to the profile. Unlocks keys, worlds and accessories. */
-export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'worldDone' | 'trend' | 'growth' | 'byPiko'>): LevelResult {
+export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'newCompanions' | 'worldDone' | 'trend' | 'growth' | 'byPiko'>): LevelResult {
   // Accuracy of a handful of keys says nothing; such a level earns one star and no growth time.
   const byPiko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
   const stars = byPiko ? 1 : starsFor(r.accuracy);
@@ -83,8 +84,9 @@ export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 's
   }
   const newKeys = advanceLesson(p);
   const newAccessories = grantAccessories(p);
+  const newCompanions = grantCompanions(p);
   const growth = byPiko ? null : grow(p, r.seconds, r.accuracy);
-  return { ...r, stars, newKeys, newAccessories, worldDone, trend: rhythmTrend(p), growth, byPiko };
+  return { ...r, stars, newKeys, newAccessories, newCompanions, worldDone, trend: rhythmTrend(p), growth, byPiko };
 }
 
 /** Current rhythm vs. a week ago (only positive framing is shown). */

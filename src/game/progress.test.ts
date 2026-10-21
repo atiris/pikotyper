@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { LEVELS } from './levels';
 import { AUTO_DIFFICULTY_MAX, MIN_OWN_KEYS, completeLevel, grow, growthNeed } from './progress';
+import { STARS_PER_FRIEND, friendStars, grantCompanions } from './rewards';
 
 describe('automatic growth', () => {
   it('steps up after enough good play, difficulty and word length in turn', () => {
@@ -47,5 +48,20 @@ describe('a level Piko typed for the child', () => {
     expect(r).toMatchObject({ byPiko: false, stars: 3 });
     expect(p.progress.levels['w1-1']).toBe(3);
     expect(p.progress.growthSeconds).toBe(120);
+  });
+});
+
+describe('companions earned by stars', () => {
+  it('unlocks one kind every 6 stars, skipping the starting kind', () => {
+    const p = newProfile('Ema', 'sk', undefined, 'cat');
+    p.progress.levels = { 'w1-1': 3, 'w1-2': 2 };
+    expect(grantCompanions(p)).toEqual([]);
+    expect(friendStars(p, 'bunny')).toBe(STARS_PER_FRIEND);
+    p.progress.levels['w1-3'] = 3;
+    p.progress.levels['w1-4'] = 3;
+    p.progress.levels['w2-1'] = 1;
+    expect(grantCompanions(p)).toEqual(['bunny', 'owl']);
+    expect(p.progress.companionsUnlocked).toEqual(['cat', 'bunny', 'owl']);
+    expect(friendStars(p, 'fox')).toBe(8 * STARS_PER_FRIEND);
   });
 });

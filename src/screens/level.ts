@@ -69,6 +69,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   if (r.trend && r.trend > 1.05) lines.push(h('p', { class: 'good' }, t('results.trendUp')));
   for (const k of r.newKeys) lines.push(h('p', { class: 'new-key' }, t('results.newKey', { key: keyLabel(k) })));
   if (r.newAccessories.length) lines.push(h('p', { class: 'new-acc' }, t('results.newAccessory', { n: r.newAccessories.length })));
+  for (const kind of r.newCompanions) lines.push(h('p', { class: 'new-acc' }, t('results.newCompanion', { kind: t(`kinds.${kind}`) })));
   if (rescued) lines.push(h('p', { class: 'good' }, t('results.rescued', { name: rescued.name })));
   if (r.growth) {
     lines.push(h('div', { class: 'growth' }, medal(r.growth.medal),

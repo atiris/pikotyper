@@ -113,6 +113,13 @@ describe('Store', () => {
     const fresh = migrate({ version: 4, profiles: [{ ...p, settings: { ...p.settings, noDiacritics: false } }] }).profiles[0];
     expect(fresh.progress.unlockedKeys).not.toContain('!');
   });
+
+  it('starts v5 profiles with their current companion kind', () => {
+    const p: any = newProfile('Ema', 'sk', undefined, 'owl');
+    delete p.progress.companionsUnlocked;
+    const out = migrate({ version: 5, profiles: [p] }).profiles[0];
+    expect(out.progress.companionsUnlocked).toEqual(['owl']);
+  });
 });
 
 describe('export and import', () => {

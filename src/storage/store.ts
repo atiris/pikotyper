@@ -15,7 +15,7 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 5;
+export const STORE_VERSION = 6;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -28,7 +28,15 @@ const migrations: Record<number, (data: any) => any> = {
   3: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV3toV4) : data.profiles }),
   // v5: space and punctuation in the lesson path; the one Shift key splits into left and right.
   4: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV4toV5) : data.profiles }),
+  // v6: the child earns other companion kinds by stars; the current kind is the starting one.
+  5: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV5toV6) : data.profiles }),
 };
+
+function profileV5toV6(p: any): any {
+  if (!p || typeof p !== 'object') return p;
+  const kind = COMPANION_KINDS.includes(p.companion?.kind) ? p.companion.kind : 'fox';
+  return { ...p, progress: { ...p.progress, companionsUnlocked: [kind] } };
+}
 
 /** Keys the v5 lesson path added. */
 const V5_KEYS = new Set([SPACE, SHIFT_L, SHIFT_R, ...PUNCTUATION]);
@@ -131,11 +139,12 @@ export function isProfile(p: any): p is Profile {
 
 export function newProfile(name: string, language: Lang, layout?: LayoutId, kind: CompanionKind = 'fox'): Profile {
   const lay: LayoutId = layout ?? (language === 'sk' ? 'sk-qwertz' : 'us-qwerty');
+  const start: CompanionKind = COMPANION_KINDS.includes(kind) ? kind : 'fox';
   return {
     id: Math.random().toString(36).slice(2, 10) + Date.now().toString(36),
     name,
-    avatar: COMPANION_KINDS.includes(kind) ? kind : 'fox',
-    companion: { name: 'Piko', kind: COMPANION_KINDS.includes(kind) ? kind : 'fox', accessories: [] },
+    avatar: start,
+    companion: { name: 'Piko', kind: start, accessories: [] },
     customMessages: [],
     layout: lay,
     language,
@@ -153,6 +162,7 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
       growthSeconds: 0,
       pawHelp: 0,
       pawAuto: false,
+      companionsUnlocked: [start],
     },
     stats: { keys: {}, sessions: [] },
     createdAt: Date.now(),

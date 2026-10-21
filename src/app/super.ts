@@ -3,7 +3,7 @@ import { LEVELS, WORLDS } from '../game/levels';
 import { PAW_MAX } from '../game/paw';
 import { WORLD_REWARDS } from '../game/rewards';
 import { lessonOrder } from '../learning/lessons';
-import { type Lang, SUPER_ID, type Profile } from '../storage/schema';
+import { COMPANION_KINDS, type Lang, SUPER_ID, type Profile } from '../storage/schema';
 import { newProfile } from '../storage/store';
 
 /** Typed on the start screen (no field) fast enough to prove it is not a learner. */
@@ -43,5 +43,6 @@ export function superProfile(lang: Lang): Profile {
   p.progress.rewards = [...accessories().map((a) => `acc:${a.id}`), ...WORLD_REWARDS];
   p.progress.levels = Object.fromEntries(LEVELS.map((l) => [l.id, 0]));
   p.progress.pawHelp = PAW_MAX;
+  p.progress.companionsUnlocked = [...COMPANION_KINDS];
   return p;
 }

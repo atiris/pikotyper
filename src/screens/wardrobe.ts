@@ -2,14 +2,33 @@ import { app, go, saveProfile } from '../app/app';
 import { accessories, imageUrl } from '../gfx/assets';
 import { SLOTS, pikoElement, renderPikoInto } from '../gfx/piko';
 import { t } from '../i18n/i18n';
-import { hasAccessory, unlockRules } from '../game/rewards';
+import { friendStars, grantCompanions, hasAccessory, hasCompanion, totalStars, unlockRules } from '../game/rewards';
+import { COMPANION_KINDS } from '../storage/schema';
 import { button, h, icon } from '../ui/dom';
 import { soundButton } from '../ui/chrome';
 
-/** Wardrobe: one item per body area, mixed freely; locked items show how to earn them. */
+/** Longest companion name the child can type. */
+const NAME_MAX = 16;
+
+/**
+ * Buddy and wardrobe: the child renames the companion and picks a kind earned by
+ * stars; then one item per body area, mixed freely; locked things show how to earn them.
+ */
 export function wardrobeScreen(root: HTMLElement): void {
   const p = app.profile!;
+  // Stars earned before friends could be earned count too.
+  if (grantCompanions(p).length) saveProfile();
   const preview = pikoElement(p.companion, 'happy', 280);
+  const name = h('input', { id: 'buddy-name', type: 'text', maxlength: String(NAME_MAX), value: p.companion.name, autocomplete: 'off', spellcheck: 'false' });
+  name.addEventListener('input', () => {
+    const n = name.value.trim();
+    if (!n) return;
+    p.companion.name = n;
+    saveProfile();
+  });
+  name.addEventListener('change', () => (name.value = p.companion.name));
+  const stars = totalStars(p);
+  const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('wardrobe.buddy') });
   const rules = new Map(unlockRules().map((r) => [r.acc, r.rule]));
   const howTo = (id: string): string => {
     const r = rules.get(id);
@@ -24,6 +43,26 @@ export function wardrobeScreen(root: HTMLElement): void {
   const grid = h('div', { class: 'wardrobe-grid' });
   const render = () => {
     renderPikoInto(preview, p.companion, 'happy');
+    kinds.replaceChildren(...COMPANION_KINDS.map((k) => {
+      const owned = hasCompanion(p, k);
+      const on = p.companion.kind === k;
+      const missing = t('wardrobe.kindLocked', { n: Math.max(1, friendStars(p, k) - stars) });
+      return h('button', {
+        class: `kind ${on ? 'on' : ''} ${owned ? '' : 'locked'}`,
+        type: 'button',
+        role: 'radio',
+        'aria-checked': String(on),
+        'aria-label': owned ? t(`kinds.${k}`) : `${t(`kinds.${k}`)} (${missing})`,
+        disabled: !owned,
+        onClick: () => {
+          p.companion.kind = k;
+          p.avatar = k;
+          saveProfile();
+          render();
+        },
+      }, pikoElement({ name: '', kind: k, accessories: [] }, 'idle', 72), owned ? null : h('span', { class: 'lock' }, icon('lock')),
+        h('span', {}, owned ? t(`kinds.${k}`) : missing));
+    }));
     grid.replaceChildren(...SLOTS.flatMap((slot) => {
       const items = accessories().filter((a) => a.slot === slot);
       if (!items.length) return [];
@@ -53,9 +92,15 @@ export function wardrobeScreen(root: HTMLElement): void {
   render();
   const owned = accessories().filter((a) => hasAccessory(p, a.id)).length;
   root.append(h('div', { class: 'screen wardrobe-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title', { piko: p.companion.name })), soundButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title')), soundButton()),
     h('div', { class: 'wardrobe-body' },
       h('div', { class: 'wardrobe-preview' }, preview, h('p', {}, t('wardrobe.count', { n: owned, total: accessories().length })),
         button(t('wardrobe.clear'), () => { p.companion.accessories = []; saveProfile(); render(); }, 'btn ghost small')),
-      grid)));
+      h('div', { class: 'wardrobe-main' },
+        h('section', { class: 'buddy' },
+          h('h2', {}, t('wardrobe.buddy')),
+          h('label', { for: 'buddy-name', class: 'field-label' }, t('wardrobe.name')), name,
+          kinds),
+        h('h2', {}, t('wardrobe.wardrobe')),
+        grid))));
 }

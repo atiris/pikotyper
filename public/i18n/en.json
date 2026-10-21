@@ -59,10 +59,9 @@
   },
   "map": {
     "hello": "Hi, {name}!",
-    "sub": "{piko} is ready. Fingers on the home row!",
-    "play": "Play {level}",
+    "continue": "Continue",
     "practice": "Free practice",
-    "wardrobe": "Wardrobe",
+    "wardrobe": "Buddy and wardrobe",
     "rescue": "Rescue missions",
     "dragons": "My dragons",
     "switchProfile": "Players",
@@ -184,6 +183,7 @@
     "trendUp": "Your rhythm is smoother than last week!",
     "newKey": "New key unlocked: {key}",
     "newAccessory": "New things in the wardrobe: {n}",
+    "newCompanion": "A new buddy in the wardrobe: {kind}",
     "rescued": "You rescued the dragon {name}!",
     "next": "Next level",
     "nextRescue": "Another mission",
@@ -382,10 +382,15 @@
     "keySpeedTrend": "Time to press by day",
     "keyHistorySoon": "Play on at least two days to see how it changes.",
     "practiceKey": "Practice {key} (1 min)",
-    "medals": "My medals"
+    "medals": "My medals",
+    "shifted": "⇧ symbols"
   },
   "wardrobe": {
-    "title": "{piko}'s wardrobe",
+    "title": "Buddy and wardrobe",
+    "buddy": "Buddy",
+    "name": "Name",
+    "kindLocked": "{n} more ★",
+    "wardrobe": "Wardrobe",
     "count": "{n} of {total} things",
     "clear": "Remove accessories",
     "byLevel": "Finish {level}",

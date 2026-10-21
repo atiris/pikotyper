@@ -2,6 +2,7 @@ import { app, applyProfileLook, go, selectProfile, useLanguage } from '../app/ap
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
+import { totalStars } from '../game/rewards';
 import { LANGS, language, t } from '../i18n/i18n';
 import type { Lang } from '../storage/schema';
 import { button, h, icon } from '../ui/dom';
@@ -28,7 +29,7 @@ export function startScreen(root: HTMLElement): () => void {
       const card = h('button', { class: 'profile-card', type: 'button', onClick: async () => { await selectProfile(p); go('map'); } },
         pikoElement(p.companion, 'idle', 110),
         h('span', { class: 'profile-name' }, p.name),
-        h('span', { class: 'profile-sub' }, t('start.stars', { n: Object.values(p.progress.levels).reduce((a, b) => a + b, 0) })));
+        h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(p) })));
       return card;
     }),
     h('button', { class: 'profile-card new', type: 'button', onClick: () => go('newProfile') },

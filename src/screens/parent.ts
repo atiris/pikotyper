@@ -11,7 +11,7 @@ import { pikoElement } from '../gfx/piko';
 import { soundButton } from '../ui/chrome';
 import { clickableHeatmap } from './stats';
 import { barChart, lineChart } from '../ui/charts';
-import { masteredCount } from '../game/rewards';
+import { hasCompanion, masteredCount } from '../game/rewards';
 
 /** Settings are for parents: one calm question instead of a lock a child solves anyway. */
 function parentAccess(): Promise<boolean> {
@@ -95,7 +95,7 @@ function settingsTab(p: Profile): HTMLElement {
     h('fieldset', {}, h('legend', {}, t('parent.group.child')),
       field(t('parent.childName'), name),
       field(t('parent.companionName'), pikoName),
-      field(t('parent.companionKind'), select<CompanionKind>(p.companion.kind, COMPANION_KINDS.map((k) => [k, t(`kinds.${k}`)]), (v) => { p.companion.kind = v; p.avatar = v; save(); })),
+      field(t('parent.companionKind'), select<CompanionKind>(p.companion.kind, COMPANION_KINDS.map((k) => [k, t(`kinds.${k}`)]), (v) => { p.companion.kind = v; p.avatar = v; if (!hasCompanion(p, v)) p.progress.companionsUnlocked.push(v); save(); })),
       field(t('parent.messages'), messages, t('parent.messagesHint')),
       field(t('parent.language'), select<Lang>(p.language, [['sk', 'Slovenčina'], ['en', 'English']], async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
       field(t('parent.layout'), select<LayoutId>(p.layout, LAYOUT_IDS.map((id) => [id, t(`layouts.${id}`)]), (v) => {
@@ -175,7 +175,7 @@ function dashboardTab(p: Profile): HTMLElement {
   const sessions = p.stats.sessions.slice(-14);
   const labels = sessions.map((s) => s.date.slice(5));
   const detail = h('div', { class: 'key-detail-host' }, h('p', { class: 'hint' }, t('stats.clickKey')));
-  const kb = clickableHeatmap(p, detail);
+  const heat = clickableHeatmap(p, detail);
   const levelsDone = LEVELS.filter((l) => p.progress.levels[l.id]).length;
   const totalChars = sessions.reduce((a, s) => a + s.chars, 0);
   return h('div', { class: 'dashboard' },
@@ -185,7 +185,7 @@ function dashboardTab(p: Profile): HTMLElement {
       h('div', { class: 'stat' }, h('b', {}, String(masteredCount(p))), h('span', {}, t('parent.keysMastered'))),
       h('div', { class: 'stat' }, h('b', {}, String(totalChars)), h('span', {}, t('parent.charsTyped')))),
     h('h3', {}, t('parent.heatmap')),
-    h('div', { class: 'heat-split' }, kb.el, detail),
+    h('div', { class: 'heat-split' }, heat, detail),
     h('div', { class: 'chart-grid' },
       h('section', {}, h('h3', {}, t('parent.accuracyTrend')),
         lineChart(sessions.map((s) => Math.round((s.chars / Math.max(1, s.chars + s.errors)) * 100)), labels, '%', '#3f8fd6')),

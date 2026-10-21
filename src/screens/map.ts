@@ -57,18 +57,22 @@ export function mapScreen(root: HTMLElement): void {
       h('div', { class: 'level-row' }, ...levels));
   });
   const rescue = rescueUnlocked(p);
+  const play = button(t('map.continue'), () => playLevel(next.id), 'btn primary big', 'play');
+  const nextName = t('level.title', { world: next.world + 1, level: next.index + 1 });
+  play.title = nextName;
+  play.setAttribute('aria-label', `${t('map.continue')}: ${nextName}`);
   root.append(h('div', { class: 'screen map-screen' },
     h('header', { class: 'map-top' },
       button(t('map.switchProfile'), () => go('start'), 'btn ghost small', 'back'),
-      h('div', { class: 'map-hello' }, h('h1', {}, t('map.hello', { name: p.name })), h('p', {}, t('map.sub', { piko: p.companion.name }))),
       h('div', { class: 'top-actions' },
         settingsButton(),
         soundButton(),
         fullscreenButton())),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
+        h('h1', { class: 'map-hello' }, t('map.hello', { name: p.name })),
         piko,
-        button(t('map.play', { level: t('level.title', { world: next.world + 1, level: next.index + 1 }) }), () => playLevel(next.id), 'btn primary big', 'play'),
+        play,
         button(t('map.practice'), () => go('level', { id: 'practice' }), 'btn', 'practice'),
         button(t('map.wardrobe'), () => go('wardrobe'), 'btn', 'shirt'),
         button(t('stats.title'), () => openStats(), 'btn', 'chart'),

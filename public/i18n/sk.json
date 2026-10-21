@@ -59,10 +59,9 @@
   },
   "map": {
     "hello": "Ahoj, {name}!",
-    "sub": "{piko} už čaká. Prsty na základný rad!",
-    "play": "Hrať: {level}",
+    "continue": "Pokračovať",
     "practice": "Voľné cvičenie",
-    "wardrobe": "Šatník",
+    "wardrobe": "Kamarát a šatník",
     "rescue": "Záchranné misie",
     "dragons": "Moje dráčiky",
     "switchProfile": "Hráči",
@@ -184,6 +183,7 @@
     "trendUp": "Tvoj rytmus je plynulejší ako minulý týždeň!",
     "newKey": "Nový kláves: {key}",
     "newAccessory": "Nové veci v šatníku: {n}",
+    "newCompanion": "Nový kamarát v šatníku: {kind}",
     "rescued": "Dráčik {name} je zachránený!",
     "next": "Ďalšia úroveň",
     "nextRescue": "Ďalšia misia",
@@ -382,10 +382,15 @@
     "keySpeedTrend": "Čas na stlačenie po dňoch",
     "keyHistorySoon": "Vývoj po dňoch uvidíš, keď budeš hrať aspoň dva dni.",
     "practiceKey": "Precvičiť {key} (1 min)",
-    "medals": "Moje medaily"
+    "medals": "Moje medaily",
+    "shifted": "⇧ znaky"
   },
   "wardrobe": {
-    "title": "Šatník: {piko}",
+    "title": "Kamarát a šatník",
+    "buddy": "Kamarát",
+    "name": "Meno",
+    "kindLocked": "ešte {n} ★",
+    "wardrobe": "Šatník",
     "count": "{n} z {total} vecí",
     "clear": "Odstrániť doplnky",
     "byLevel": "Dokonči {level}",

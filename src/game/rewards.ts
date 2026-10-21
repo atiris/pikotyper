@@ -1,5 +1,5 @@
 import { isMastered } from '../learning/lessons';
-import type { Profile } from '../storage/schema';
+import type { CompanionKind, Profile } from '../storage/schema';
 
 /** Accessory unlocks: tied to levels, worlds and key mastery; never random. */
 const BY_LEVEL: Record<string, string> = {
@@ -34,6 +34,34 @@ export function masteredCount(p: Profile): number {
 
 export function hasAccessory(p: Profile, id: string): boolean {
   return p.progress.rewards.includes(`acc:${id}`);
+}
+
+/** Stars (summed over all levels) for each next companion kind. */
+export const STARS_PER_FRIEND = 6;
+/** The order other kinds are earned in; the starting kind is skipped (fox last, as it is the usual start). */
+const FRIEND_ORDER: CompanionKind[] = ['cat', 'bunny', 'owl', 'dog', 'bear', 'panda', 'penguin', 'lion', 'fox'];
+
+export function totalStars(p: Profile): number {
+  return Object.values(p.progress.levels).reduce((a, b) => a + b, 0);
+}
+
+/** Stars a kind needs; 0 for the starting kind. */
+export function friendStars(p: Profile, kind: CompanionKind): number {
+  const start = p.progress.companionsUnlocked[0] ?? p.companion.kind;
+  if (kind === start) return 0;
+  return (FRIEND_ORDER.filter((k) => k !== start).indexOf(kind) + 1) * STARS_PER_FRIEND;
+}
+
+export function hasCompanion(p: Profile, kind: CompanionKind): boolean {
+  return p.progress.companionsUnlocked.includes(kind);
+}
+
+/** Grants every companion kind the stars reach; returns the new ones. */
+export function grantCompanions(p: Profile): CompanionKind[] {
+  const stars = totalStars(p);
+  const fresh = FRIEND_ORDER.filter((k) => !hasCompanion(p, k) && friendStars(p, k) <= stars);
+  p.progress.companionsUnlocked.push(...fresh);
+  return fresh;
 }
 
 /** Grants every accessory whose rule is met; returns the newly unlocked ids. */

@@ -10,17 +10,24 @@ import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
 import { medal } from '../ui/medal';
 
-/** Map key code -> the lesson key it measures (letters by their unshifted char, Shifts by side, space). */
-export function keyForCode(code: string): string | null {
+/**
+ * Map key code -> the key it measures: letters by their unshifted char (capitals count
+ * there too), Shifts by side, space. `shifted`: a key's shifted symbol (`?`, a Slovak
+ * digit) instead of its base.
+ */
+export function keyForCode(code: string, shifted = false): string | null {
   const def = allKeys(layout()).find((d) => d.code === code);
-  return def ? lessonKeyOf(def) : null;
+  if (!def) return null;
+  const base = lessonKeyOf(def);
+  const symbol = shifted && base && [...def.shift].length === 1 && def.shift !== base.toUpperCase();
+  return symbol ? def.shift : base;
 }
 
-export function heatScores(): Record<string, number | null> {
+export function heatScores(shifted = false): Record<string, number | null> {
   const p = app.profile!;
   const scores: Record<string, number | null> = {};
   for (const def of allKeys(layout())) {
-    const key = lessonKeyOf(def);
+    const key = keyForCode(def.code, shifted);
     if (!key) continue;
     const r = keyReport(p, key);
     scores[key] = r && r.window >= 3 ? r.score : null;
@@ -55,19 +62,34 @@ export function keyDetail(p: Profile, key: string, practice?: () => void): HTMLE
     practice ? button(t('stats.practiceKey', { key: keyLabel(key) }), practice, 'btn primary', 'practice') : null);
 }
 
-/** Heat map keyboard whose keys open their detail in `detail`. */
-export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (key: string) => void): KeyboardGuide {
+/**
+ * Heat map keyboard whose keys open their detail in `detail`, with a switch between
+ * the keys' base characters and their shifted symbols.
+ */
+export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (key: string) => void): HTMLElement {
   const kb = new KeyboardGuide(layout());
+  let shifted = false;
   kb.el.classList.add('heatmap', 'clickable');
-  kb.heat(heatScores(), keyForCode);
+  const paint = () => {
+    kb.el.classList.toggle('shifted', shifted);
+    kb.el.querySelectorAll('.selected').forEach((k) => k.classList.remove('selected'));
+    kb.heat(heatScores(shifted), (code) => keyForCode(code, shifted));
+  };
   kb.onKeyClick((code, el) => {
-    const key = keyForCode(code);
+    const key = keyForCode(code, shifted);
     if (!key) return;
     kb.el.querySelectorAll('.selected').forEach((k) => k.classList.remove('selected'));
     el.classList.add('selected');
     detail.replaceChildren(keyDetail(p, key, practice && (() => practice(key))));
   });
-  return kb;
+  const toggle = h('button', { class: 'chip shift-toggle', type: 'button', 'aria-pressed': 'false', onClick: () => {
+    shifted = !shifted;
+    toggle.classList.toggle('on', shifted);
+    toggle.setAttribute('aria-pressed', String(shifted));
+    paint();
+  } }, t('stats.shifted'));
+  paint();
+  return h('div', { class: 'heat-host' }, toggle, kb.el);
 }
 
 /** The child's friendly statistics overlay (click on Piko). */
@@ -76,14 +98,14 @@ export function openStats(): void {
   let close = () => {};
   const practice = (keys: string[]) => { close(); go('level', { id: 'practice', keys, seconds: 60 }); };
   const detail = h('div', { class: 'key-detail-host' }, h('p', { class: 'hint' }, t('stats.clickKey')));
-  const kb = clickableHeatmap(p, detail, (key) => practice([key]));
+  const heat = clickableHeatmap(p, detail, (key) => practice([key]));
   const showKey = (key: string) => detail.replaceChildren(keyDetail(p, key, () => practice([key])));
   const weak = weakKeys(p, activeKeys(p));
   const total = Object.values(p.stats.keys).reduce((a, s) => a + s.presses, 0);
   const content = h('div', { class: 'stats' },
     h('div', { class: 'stats-head' }, pikoElement(p.companion, 'happy', 110),
       h('div', {}, h('h2', {}, t('stats.title')), h('p', {}, total ? t('stats.intro', { piko: p.companion.name, n: STATS_WINDOW }) : t('stats.empty')))),
-    kb.el,
+    heat,
     h('p', { class: 'legend' },
       h('span', { class: 'lg heat-good' }, `✓ ${t('stats.good')}`),
       h('span', { class: 'lg heat-ok' }, `~ ${t('stats.ok')}`),

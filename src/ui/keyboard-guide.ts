@@ -25,12 +25,30 @@ function luminance(hex: string): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
+export function contrast(a: string, b: string): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+
 /** Text color on a highlighted key: white or dark, whichever reads better on the finger color. */
 export function inkOn(hex: string): string {
-  const l = luminance(hex);
-  const onWhite = 1.05 / (l + 0.05);
-  const onDark = (l + 0.05) / (luminance(DARK_INK) + 0.05);
-  return onWhite >= onDark ? '#ffffff' : DARK_INK;
+  return contrast(hex, '#ffffff') >= contrast(hex, DARK_INK) ? '#ffffff' : DARK_INK;
+}
+
+/** WCAG AA contrast for normal-size text. */
+const TEXT_CONTRAST = 4.5;
+
+/**
+ * Background and ink for text on a finger color: the color itself when one ink reaches
+ * AA, else the color darkened step by step until white text does.
+ */
+export function textColorsOn(hex: string): [string, string] {
+  let bg = hex;
+  for (let k = 0.95; contrast(bg, inkOn(bg)) < TEXT_CONTRAST && k > 0.5; k -= 0.05) {
+    const n = parseInt(hex.slice(1), 16);
+    bg = `#${[(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => Math.round(v * k).toString(16).padStart(2, '0')).join('')}`;
+  }
+  return [bg, inkOn(bg)];
 }
 
 /** How a lesson key is named in texts: space and the Shifts by name, other keys as they are. */
@@ -49,8 +67,9 @@ export function fingerChip(layout: Layout, key: string): HTMLElement | null {
   if (f == null) return null;
   const chip = document.createElement('b');
   chip.className = 'finger-chip';
-  chip.style.setProperty('--finger', FINGER_COLORS[f]);
-  chip.style.setProperty('--finger-ink', inkOn(FINGER_COLORS[f]));
+  const [bg, ink] = textColorsOn(FINGER_COLORS[f]);
+  chip.style.setProperty('--finger', bg);
+  chip.style.setProperty('--finger-ink', ink);
   chip.textContent = t(`fingers.${FINGER_KEYS[f]}`);
   return chip;
 }

@@ -8,7 +8,9 @@
   by how well each key goes, the 3 keys to practice, the growth medals earned, and a
   button to practice them now. Clicking a key (or a key in the list) shows that key's
   details: its finger, accuracy, what it is mixed up with, its history, and a one-minute
-  practice of just that key.
+  practice of just that key. A switch ("⇧ symbols") shows the shifted symbols of the keys
+  instead (question mark, exclamation mark, colon, Slovak digits), each with its own
+  statistics; capitals count for their letter and its Shift.
 - The parent dashboard has the same clickable key map, and the trends over sessions
   (accuracy, rhythm, time per day) as charts side by side on wide screens.
 
