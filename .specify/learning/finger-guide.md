@@ -4,20 +4,21 @@
 - On-screen keyboard (matching the profile layout) with a color per finger and a
   highlight on the next key; for dead-key letters both steps are shown. The letter on a
   highlighted key is dark or white, whichever reads better on that finger's color.
-- Optional hand outline showing which finger presses the key.
+- Optional hands seen from above (natural fingers, a fingertip band in each finger's
+  color); the finger that presses the key lifts and is fully opaque.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. Colors also carry a pattern or label (colorblind-safe).
 - "Ready, steady, type!" card before every adventure (story level, rescue, free practice)
-  and at breaks: a picture of good posture and **one** random reminder (sit straight, feet
-  on the floor, wrists relaxed, index fingers on the `F` and `J` bumps, eyes on the
-  screen). It closes only when the child types the adventure's password: two random
-  letters the child already knows.
+  and at breaks: a picture of good posture and **one** line - the session's preparation
+  tip when one is due, else one random reminder (sit straight, feet on the floor, wrists
+  relaxed, index fingers on the `F` and `J` bumps, eyes on the screen). It closes only
+  when the child types the adventure's password: two random letters the child already
+  knows. Esc goes back to the map. It is the only card before a level, apart from new keys.
 - A new key is introduced by Piko on its own card, with the finger's name highlighted in
   that finger's color; game objects (the swatter) appear only when play starts.
 - Preparation tip: at the start of every training session one short, random tip about
-  getting ready to type well (posture, hands, fingers, eyes, rhythm, breaks), shown by
-  Piko for a few seconds and dismissed by any key. A pool of 40+ tips per language, no
-  repeat of the last few shown.
+  getting ready to type well (posture, hands, fingers, eyes, rhythm, breaks), shown on the
+  get-ready card. A pool of 40+ tips per language, no repeat of the last few shown.
 
 ## Why
 - Weak finger guidance is a frequent complaint (Dance Mat); masking or fading the keyboard

@@ -14,7 +14,8 @@
 - **Super mode** for parents and testers: typing `superpikotyper` fast (within 4 seconds,
   no field) on the start screen opens a temporary player with every world, level,
   key and accessory open. It lives in memory only, never touches real players'
-  statistics, and ends with its badge at the top or a reload.
+  statistics, and ends with its round star button in the top right corner or a reload;
+  the star never pushes the screen down.
 
 ## Why
 - Families and classrooms share devices; export/import gives portability without accounts.

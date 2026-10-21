@@ -9,9 +9,14 @@
   and stays smooth on any screen refresh rate; layer edges are clean (no key color fringe).
 - Big, readable words on targets, with high contrast against the scene; practice words
   and their info line keep a minimum on-screen size in small windows.
+- The level's top bar uses round buttons of one size with clear symbols (pause, paw help,
+  rhythm gauge, keyboard guide, sound, fullscreen).
+- Fullscreen: a round button on the map and in levels; a parent can set a profile to
+  start in fullscreen (browsers allow it only after the first key press or click).
 - Responsive layout for laptop and desktop screens; wide screens use the space (wardrobe
   in two columns, dashboard charts side by side). A physical keyboard is required;
   tablets without a keyboard get a friendly notice.
 
 ## Why
 - Children judge quality visually; a calm, cute style supports the peaceful philosophy.
+- Mixed shapes in the top bar looked untidy; fullscreen hides the browser's distractions.

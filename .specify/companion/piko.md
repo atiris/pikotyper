@@ -18,11 +18,13 @@
   world's theme (real facts about animals, space, eggs) and gives the answer only after
   the next level is finished.
 - **Paw help**: fifteen words in a row without a mistake charge one paw (three at most,
-  kept between levels). In story levels and rescue missions, Enter (or the paw button,
-  which shows the charges and the Enter sign) sends Piko's paws onto the keyboard in
+  kept between levels). In story levels and rescue missions, Enter (or the round paw
+  button next to pause: a paw in the companion's color, ringed by three arcs for the
+  charges, with an Enter badge) sends Piko's paws onto the keyboard in
   place of the hands, and Piko types the three closest words with his own rhythm. These
   keys never count in the child's statistics, accuracy or rhythm, and the child's own
-  keys wait meanwhile. Backspace switches the paw to automatic (the button shows AUTO):
+  keys wait meanwhile. Backspace switches the paw to automatic (the button pulses gently
+  and shows an `A` badge):
   Piko then helps by himself in a hard moment, when the screen holds three words (or as
   many as the level allows), the closest one has used most of its time and the child is
   not typing it.

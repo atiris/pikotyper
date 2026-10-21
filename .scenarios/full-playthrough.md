@@ -43,7 +43,7 @@ Assertions:
 
 ### P02 - The first keys are taught one at a time (budget: 5 min)
 
-- S1: Start the first level. Read the preparation tip (dismiss it with a key), learn the new keys, then type the two-letter password on the "Ready, steady, type!" card.
+- S1: Start the first level. Learn the new keys, then read the preparation tip and type the two-letter password on the "Ready, steady, type!" card.
 - S2: Learn the first new keys when the game introduces them.
 
 Assertions:

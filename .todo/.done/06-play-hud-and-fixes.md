@@ -90,10 +90,10 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   card, Piko (the stage Piko element, or the canvas Piko in planet modes) turns and
   runs off to the right edge with a small hop (about 0.9 s, ease-in), with a short
   happy sound; the results card then opens. With reduced motion: a quick fade.
-- [ ] Specs: `.specify/game/mechanics.md` (labels never overlap), `.specify/companion/piko.md`
+- [x] Specs: `.specify/game/mechanics.md` (labels never overlap), `.specify/companion/piko.md`
   (paw button), `.specify/experience/visuals.md` (round HUD, fullscreen),
   `.specify/profiles/profiles.md` (super badge). i18n sk + en for every new text.
-- [ ] Build, `vitest`, `playwright test`; drive the level screen with the
+- [x] Build, `vitest`, `playwright test`; drive the level screen with the
   Playwright MCP at 1366x768 and 1920x1080 and check HUD, labels and results card.
 
 ## Decisions
@@ -120,3 +120,16 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
 - Hands: the active finger lifts 3 px (not more: a lone lifted middle finger reads rude).
 - w3-1 played to the end with a new profile in the Playwright MCP: no hang. The super
   profile stalls there only because Playwright cannot send a real key press for `š`.
+
+## Done - 2026-10-21
+
+Shipped: round HUD (paw button with charge arcs and A/Enter badge, rhythm gauge,
+fullscreen button), round super star, Esc on the get-ready card, one get-ready card
+with the session tip, `autoFullscreen` setting with store v4 migration, labels that
+never overlap, accuracy only from the child's keys (`byPiko`), calm pause with "Slower",
+new hands, Piko running off at the end, gentler map Piko hop. Specs, README and the
+full-playthrough scenario updated. Build, vitest (55) and playwright (8) pass; the
+level screen was driven in the Playwright MCP at 1366x768 and 1920x1080.
+
+Left out: nothing. The canvas run-off in the planet modes was type-checked and
+follows the same timing, but was not watched frame by frame.

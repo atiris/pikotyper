@@ -72,7 +72,7 @@ Piko can be one of nine animals and wears 28 accessories earned by progress (nev
 - **Super mode (secret password):** on the start screen, type `superpikotyper` quickly
   (within 4 seconds, no text field needed). A temporary "Super Piko" player opens with
   every world, level, key and accessory unlocked, to look around or test. Nothing it does
-  is saved or counted in anyone's statistics; end it with the badge at the top or a reload.
+  is saved or counted in anyone's statistics; end it with the star in the top right corner or a reload.
 - **Offline:** installable PWA; works without internet after the first visit.
 
 ## Development
