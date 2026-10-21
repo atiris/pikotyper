@@ -24,7 +24,12 @@
   and one word is on screen at a time.
 - Level length is about 1-3 minutes. At the end Piko runs off to the right (a quick fade
   with reduced motion), then the end screen shows stars (accuracy), new keys, and a
-  sentence from Piko. Accuracy counts only the child's own keys: a level where the child
+  sentence from Piko. The end screen is a compact card that fits a small laptop screen
+  (1024x600) without scrolling, also with a new key, a medal and a surprise: title and
+  stars in one line, a small Piko with his sentence beside him, the facts (accuracy
+  first, rhythm, new keys, new things, a rescued friend, a medal) as small chips, the
+  task, surprise and Piko's question in one small framed block, and one main button with
+  Replay and Map as smaller ones next to it. Accuracy counts only the child's own keys: a level where the child
   typed fewer than 5 keys (Piko's paws did the rest) says so, gives one star, never
   lowers a better result and adds no time toward automatic growth. Esc on the end screen
   goes back to the map, like closing any other card.
@@ -34,6 +39,8 @@
   automatic growth may raise it again after accurate play.
 
 ## Why
+- A results card that fills the screen hides the game and slows the next try; the child
+  reads the stars and one or two facts, so those must be visible at a glance.
 - Arcade-style typing (ZType, Typer Shark, Epistory) is praised as motivating; the peaceful
   variant keeps the fun without destruction or stress.
 - Overlapping words cannot be read, and a child who cannot read the word cannot type it.

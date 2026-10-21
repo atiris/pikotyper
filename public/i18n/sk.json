@@ -148,7 +148,7 @@
     "text": "PikoTyper učí písať na skutočnej klávesnici. Pripoj ku tabletu klávesnicu alebo sa hraj na počítači."
   },
   "piko": {
-    "statsHint": "Klikni na mňa a uvidíš, ako ti idú klávesy",
+    "statsHint": "Klikni na mňa a uvidíš, ako ti to ide",
     "correct_streak": [
       "Krásny rytmus, {name}!",
       "Tvoje prsty poznajú cestu!",
@@ -188,6 +188,7 @@
     "rhythm": "Rytmus {n} písmen za minútu",
     "trendUp": "Tvoj rytmus je plynulejší ako minulý týždeň!",
     "newKey": "Nový kláves: {key}",
+    "newKeys": "Nové klávesy: {keys}",
     "newAccessory": "Nové veci v šatníku: {n}",
     "newCompanion": "Nový kamarát v šatníku: {kind}",
     "rescued": "Dráčik {name} je zachránený!",
@@ -196,7 +197,7 @@
     "replay": "Hrať znova",
     "reward": "Pozrieť odmenu",
     "takeBreak": "Prestávka na pretiahnutie",
-    "growthTitle": "Nová medaila! Si šikovnejší a hra rastie s tebou.",
+    "growthTitle": "Nová medaila!",
     "growthDifficulty": "Predmety sa budú hýbať o kúsok rýchlejšie.",
     "growthWordLen": "Slová môžu mať už {n} písmen.",
     "medalAria": "medaila číslo {n}",
@@ -531,6 +532,16 @@
     "onBeat": "Presne v rytme!",
     "good": "Dobre!"
   },
+  "progress": {
+    "title": "Môj postup",
+    "stars": "Hviezdičky spolu: {n}",
+    "story": "Svety {done} z {worlds} · úrovne s hviezdičkou {levels} z {total}",
+    "lastToday": "Naposledy sme trénovali dnes.",
+    "lastYesterday": "Naposledy sme trénovali včera.",
+    "lastDays": "Naposledy sme trénovali pred {n} dňami.",
+    "never": "Ešte sme spolu netrénovali.",
+    "week": "Za posledných 7 dní: {n} min"
+  },
   "stats": {
     "title": "Moje klávesy",
     "intro": "Rátam posledných {n} stlačení každého klávesu, staré chyby sa nepočítajú. Ťukni na kláves a uvidíš, ako ti ide.",
@@ -567,7 +578,8 @@
     "clear": "Odstrániť doplnky",
     "byLevel": "Dokonči {level}",
     "byWorld": "Dokonči svet {world}",
-    "byMastery": "Zvládni {n} klávesov"
+    "byMastery": "Zvládni {n} klávesov",
+    "stars": "Hviezdičky: {n}"
   },
   "slots": {
     "head": "Hlava",

@@ -36,7 +36,7 @@ function settingsButton(): HTMLButtonElement {
 export function mapScreen(root: HTMLElement): void {
   const p = app.profile!;
   audio.music(app.menuTrack);
-  const piko = h('button', { class: 'map-piko', type: 'button', title: t('piko.statsHint'), 'aria-label': t('stats.title'), onClick: () => openStats() },
+  const piko = h('button', { class: 'map-piko', type: 'button', title: t('piko.statsHint'), 'aria-label': t('progress.title'), onClick: () => openStats() },
     pikoElement(p.companion, 'idle', 130));
   // Piko's bubble on the map: why a level waits for more keys.
   const bubble = h('div', { class: 'bubble static map-bubble', role: 'status', 'aria-live': 'polite' });
@@ -71,7 +71,7 @@ export function mapScreen(root: HTMLElement): void {
         button(t('map.practice'), () => go('level', { id: 'practice' }), 'btn', 'practice'),
         ownTextPhrases(p).length ? button(t('map.ownText'), () => go('level', { id: 'practice', text: true }), 'btn', 'read') : null,
         button(t('map.wardrobe'), () => go('wardrobe'), 'btn', 'shirt'),
-        button(t('stats.title'), () => openStats(), 'btn', 'chart'),
+        button(t('progress.title'), () => openStats(), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
       h('div', { class: 'story-rows' }, ...STORIES.map((s) => storyRow(p, s, next?.id, keysBubble))))));

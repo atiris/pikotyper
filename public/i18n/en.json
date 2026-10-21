@@ -148,7 +148,7 @@
     "text": "PikoTyper teaches typing on a real keyboard. Please connect a keyboard to this tablet or play on a computer."
   },
   "piko": {
-    "statsHint": "Click me to see how your keys are doing",
+    "statsHint": "Click me to see how you are doing",
     "correct_streak": [
       "Great rhythm, {name}!",
       "Your fingers know the way!",
@@ -188,6 +188,7 @@
     "rhythm": "Rhythm {n} letters per minute",
     "trendUp": "Your rhythm is smoother than last week!",
     "newKey": "New key unlocked: {key}",
+    "newKeys": "New keys unlocked: {keys}",
     "newAccessory": "New things in the wardrobe: {n}",
     "newCompanion": "A new buddy in the wardrobe: {kind}",
     "rescued": "You rescued the dragon {name}!",
@@ -196,7 +197,7 @@
     "replay": "Play again",
     "reward": "See the reward",
     "takeBreak": "Stretch break",
-    "growthTitle": "A new medal! You got better and the game grows with you.",
+    "growthTitle": "A new medal!",
     "growthDifficulty": "Things will move a little faster now.",
     "growthWordLen": "Words can now have {n} letters.",
     "medalAria": "medal number {n}",
@@ -531,6 +532,16 @@
     "onBeat": "On the beat!",
     "good": "Good!"
   },
+  "progress": {
+    "title": "My progress",
+    "stars": "Stars in total: {n}",
+    "story": "Worlds {done} of {worlds} · levels with a star {levels} of {total}",
+    "lastToday": "We last trained today.",
+    "lastYesterday": "We last trained yesterday.",
+    "lastDays": "We last trained {n} days ago.",
+    "never": "We have not trained together yet.",
+    "week": "Last 7 days: {n} min"
+  },
   "stats": {
     "title": "My keys",
     "intro": "I count the last {n} presses of every key, so old mistakes stop counting. Tap a key to see how it goes.",
@@ -567,7 +578,8 @@
     "clear": "Remove accessories",
     "byLevel": "Finish {level}",
     "byWorld": "Finish world {world}",
-    "byMastery": "Master {n} keys"
+    "byMastery": "Master {n} keys",
+    "stars": "Stars: {n}"
   },
   "slots": {
     "head": "Head",

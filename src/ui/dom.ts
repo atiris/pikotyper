@@ -1,7 +1,7 @@
 /** Tiny DOM helpers. */
 
 type Attrs = Record<string, string | number | boolean | ((e: any) => void) | undefined | null>;
-type Child = Node | string | number | null | undefined | false;
+export type Child = Node | string | number | null | undefined | false;
 
 export function h<K extends keyof HTMLElementTagNameMap>(tag: K, attrs: Attrs = {}, ...children: (Child | Child[])[]): HTMLElementTagNameMap[K] {
   const el = document.createElement(tag);

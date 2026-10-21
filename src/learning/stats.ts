@@ -62,6 +62,21 @@ export function recordSession(profile: Profile, seconds: number, chars: number, 
   if (sessions.length > 365) sessions.splice(0, sessions.length - 365);
 }
 
+/** Whole days from local date `from` to `to` (both `YYYY-MM-DD`). */
+function daysBetween(from: string, to: string): number {
+  const day = (d: string) => Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10));
+  return Math.round((day(to) - day(from)) / 86_400_000);
+}
+
+/** When the child last trained (days ago, null = never) and the minutes of the last 7 days. */
+export function lastTraining(profile: Profile, now = new Date()): { daysAgo: number | null; weekMinutes: number } {
+  const today = localDate(now);
+  const sessions = profile.stats.sessions.filter((s) => s.seconds > 0);
+  const last = sessions[sessions.length - 1];
+  const week = sessions.filter((s) => daysBetween(s.date, today) < 7).reduce((a, s) => a + s.seconds, 0);
+  return { daysAgo: last ? Math.max(0, daysBetween(last.date, today)) : null, weekMinutes: Math.round(week / 60) };
+}
+
 export interface KeyReport {
   key: string;
   /** All presses ever. */

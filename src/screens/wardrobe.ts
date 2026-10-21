@@ -91,8 +91,10 @@ export function wardrobeScreen(root: HTMLElement): void {
   };
   render();
   const owned = accessories().filter((a) => hasAccessory(p, a.id)).length;
+  const star = imageUrl('ui-star');
   root.append(h('div', { class: 'screen wardrobe-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title')), soundButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title'),
+      h('span', { class: 'star-count', role: 'img', 'aria-label': t('wardrobe.stars', { n: stars }) }, star ? h('img', { src: star, alt: '' }) : '★', String(stars))), soundButton()),
     h('div', { class: 'wardrobe-body' },
       h('div', { class: 'wardrobe-preview' }, preview, h('p', {}, t('wardrobe.count', { n: owned, total: accessories().length })),
         button(t('wardrobe.clear'), () => { p.companion.accessories = []; saveProfile(); render(); }, 'btn ghost small')),

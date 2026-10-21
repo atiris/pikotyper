@@ -45,11 +45,37 @@ surprise result block).
   the title. Locked items keep saying how many stars they need.
 
 ## Steps
-- [ ] Results card redesign (DOM + CSS). All variants still render: practice, rescue,
+- [x] Results card redesign (DOM + CSS). All variants still render: practice, rescue,
   world done, task, break due, by Piko.
-- [ ] Progress section in the stats modal; Piko title text.
-- [ ] Stars in the wardrobe header.
-- [ ] Specs (WHAT and WHY).
-- [ ] Build, vitest, e2e; Playwright MCP: results at 1366x768 and 1024x600 (normal, and
+- [x] Progress section in the stats modal; Piko title text.
+- [x] Stars in the wardrobe header.
+- [x] Specs (WHAT and WHY).
+- [x] Build, vitest, e2e; Playwright MCP: results at 1366x768 and 1024x600 (normal, and
   with a new key and a medal from a prepared profile), Piko click on the map and in a
   level, wardrobe header. Screenshots.
+
+## Progress
+- Level Piko had only the title, no click. It now pauses the level and opens the same
+  modal; the runtime gets it as an `onPiko` option, so `game/` does not import screens.
+- Several new keys in one level share one chip ("Nové klávesy: s, l").
+- The medal title got short ("Nová medaila!") so it fits a chip; the detail line stays.
+- "Last trained" is said by Piko as "we" ("Naposledy sme trénovali..."), which avoids a
+  gendered verb; sessions with 0 seconds do not count as training.
+- The map's stats button and Piko's aria-label say "Môj postup" now (the modal starts with
+  it); the key part keeps its "Moje klávesy" heading.
+- Short screens (max-height 700px) get a tighter results card.
+
+## Done - 2026-10-21
+Shipped:
+- Compact results card (max 520 px): title and stars in one line, 80 px Piko with a side
+  bubble, facts as chips (medal chip with a small medal), task/surprise/teaser in one
+  framed block, one primary button with smaller Replay and Map; tighter on short screens.
+- "Môj postup" at the top of the Piko modal: total stars, per open story worlds x/5 and
+  levels with a star x/25 with world pictures, last training and minutes of the last 7
+  days (`lastTraining` in `learning/stats.ts`, unit test). Piko in a level opens it too.
+- Wardrobe header shows the current stars.
+- Specs: mechanics, statistics, piko.
+Verified: build, vitest (all), e2e (11), Playwright MCP at 1366x768 and 1024x600 with new
+keys, a medal, a new friend and a surprise (card 561/455 px, no scroll), Piko click on the
+map and in a level (pauses, Esc closes the modal, pause card stays), wardrobe header.
+Left out: nothing.

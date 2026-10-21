@@ -12,10 +12,11 @@ import { ownTextPhrases } from '../game/modes/practice';
 import type { Friend, Profile, Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
 import { localDate } from '../learning/stats';
-import { button, h } from '../ui/dom';
+import { type Child, button, h } from '../ui/dom';
 import { keyLabel } from '../ui/keyboard-guide';
 import { medal } from '../ui/medal';
 import { playLevel } from './map';
+import { openStats } from './stats';
 import { handInDialog, minutesLeft, startTask } from './task';
 
 interface LevelParams {
@@ -43,6 +44,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     seconds: params.seconds ?? null,
     own: task ? taskOwn(task) : undefined,
     onExit: exit,
+    onPiko: openStats,
     onFinish: (result) => {
       if (!result) return exit();
       if (task) {
@@ -81,19 +83,22 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
       const src = on ? star : empty;
       return src ? h('img', { class: `star ${on ? 'on' : ''}`, src, alt: '', style: `--i:${i}` }) : h('span', { class: `star-fallback ${on ? 'on' : ''}`, style: `--i:${i}` }, '★');
     }));
-  const lines: HTMLElement[] = [
-    h('p', { class: 'big-line' }, r.byPiko ? t('results.byPiko', { piko: p.companion.name }) : t('results.accuracy', { n: Math.round(r.accuracy * 100) })),
+  // The facts as small chips in one wrapping row, accuracy first.
+  const chip = (cls: string, ...kids: Child[]) => h('span', { class: `fact ${cls}` }, ...kids);
+  const facts: HTMLElement[] = [
+    chip('main', r.byPiko ? t('results.byPiko', { piko: p.companion.name }) : t('results.accuracy', { n: Math.round(r.accuracy * 100) })),
   ];
-  if (r.cpm > 0) lines.push(h('p', {}, t('results.rhythm', { n: r.cpm })));
-  if (r.trend && r.trend > 1.05) lines.push(h('p', { class: 'good' }, t('results.trendUp')));
-  for (const k of r.newKeys) lines.push(h('p', { class: 'new-key' }, t('results.newKey', { key: keyLabel(k) })));
-  if (r.newAccessories.length) lines.push(h('p', { class: 'new-acc' }, t('results.newAccessory', { n: r.newAccessories.length })));
-  for (const kind of r.newCompanions) lines.push(h('p', { class: 'new-acc' }, t('results.newCompanion', { kind: t(`kinds.${kind}`) })));
-  if (rescued) lines.push(h('p', { class: 'good' }, t(rescued.kind === 'robot' ? 'results.repaired' : 'results.rescued', { name: rescued.name })));
+  if (r.cpm > 0) facts.push(chip('', t('results.rhythm', { n: r.cpm })));
+  if (r.trend && r.trend > 1.05) facts.push(chip('good', t('results.trendUp')));
+  if (r.newKeys.length) {
+    facts.push(chip('new-key', r.newKeys.length === 1 ? t('results.newKey', { key: keyLabel(r.newKeys[0]) }) : t('results.newKeys', { keys: r.newKeys.map(keyLabel).join(', ') })));
+  }
+  if (r.newAccessories.length) facts.push(chip('good', t('results.newAccessory', { n: r.newAccessories.length })));
+  for (const kind of r.newCompanions) facts.push(chip('good', t('results.newCompanion', { kind: t(`kinds.${kind}`) })));
+  if (rescued) facts.push(chip('good', t(rescued.kind === 'robot' ? 'results.repaired' : 'results.rescued', { name: rescued.name })));
   if (r.growth) {
-    lines.push(h('div', { class: 'growth' }, medal(r.growth.medal),
-      h('p', {}, h('b', {}, t('results.growthTitle')), h('br'),
-        r.growth.kind === 'difficulty' ? t('results.growthDifficulty') : t('results.growthWordLen', { n: r.growth.value }))));
+    facts.push(chip('growth', medal(r.growth.medal, true), h('span', {}, h('b', {}, t('results.growthTitle')), ' ',
+      r.growth.kind === 'difficulty' ? t('results.growthDifficulty') : t('results.growthWordLen', { n: r.growth.value }))));
   }
   const sentence = pickLine('piko.level_done', { name: p.name }, p.customMessages);
 
@@ -113,19 +118,23 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   } else if (def.id === 'rescue') {
     actions.append(button(t('results.nextRescue'), () => go('level', { id: 'rescue' }), `btn ${calm ? '' : 'primary'}`, 'rescue'));
   }
-  actions.append(button(t('results.replay'), () => go('level', params), 'btn', 'replay'));
+  actions.append(button(t('results.replay'), () => go('level', params), 'btn small', 'replay'));
   const toMap = () => go('map');
-  actions.append(button(t('level.toMap'), toMap, 'btn ghost', 'map'));
+  actions.append(button(t('level.toMap'), toMap, 'btn ghost small', 'map'));
 
-  const card = h('div', { class: 'card results-card' },
-    h('h2', {}, def.kind === 'practice' ? t('results.practiceDone') : t('results.title')),
-    def.kind === 'practice' ? null : stars,
-    h('div', { class: 'results-body' },
-      h('div', { class: 'results-piko' }, pikoElement(p.companion, 'happy', 140), h('p', { class: 'bubble static' }, breakDue ? pickLine('piko.break') : sentence)),
-      h('div', { class: 'results-lines' }, ...lines)),
+  // The task, the surprise and Piko's question share one small framed block.
+  const notes = [
     ...(surprise ? surpriseResult(p, def, r, surprise) : []),
     task ? h('p', { class: `task-line ${task.doneAt ? 'good' : ''}` }, task.doneAt ? t('task.doneLine', { title: task.title }) : t('task.leftLine', { title: task.title, n: minutesLeft(task) })) : null,
     ...teaser(p, def, !!nextDef && r.worldDone === null),
+  ].filter((x) => x !== null);
+  const card = h('div', { class: 'card results-card' },
+    h('div', { class: 'results-top' },
+      h('h2', {}, def.kind === 'practice' ? t('results.practiceDone') : t('results.title')),
+      def.kind === 'practice' ? null : stars),
+    h('div', { class: 'results-piko' }, pikoElement(p.companion, 'happy', 80), h('p', { class: 'bubble static side' }, breakDue ? pickLine('piko.break') : sentence)),
+    h('div', { class: 'results-facts' }, ...facts),
+    notes.length ? h('div', { class: 'results-notes' }, ...notes) : null,
     actions);
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);

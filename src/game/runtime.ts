@@ -89,6 +89,8 @@ export interface RuntimeOptions {
   own?: WordSourceOwn;
   onFinish(result: LevelResult | null): void;
   onExit(): void;
+  /** A click on Piko during play (the level pauses first). */
+  onPiko(): void;
 }
 
 /** Runs one level: input, typing state, mode, HUD, guide, Piko, stats. */
@@ -219,6 +221,11 @@ export class LevelRuntime {
     // Piko joins the stage when play starts; the preparation cards show him themselves.
     this.piko.classList.add('level-piko', 'waiting');
     this.piko.title = t('piko.statsHint');
+    this.piko.addEventListener('click', () => {
+      if (this.finished || !this.started) return;
+      this.pause();
+      this.opts.onPiko();
+    });
     this.bubble = h('div', { class: 'bubble hidden', role: 'status', 'aria-live': 'polite' });
     stageWrap.append(this.piko, this.bubble);
     this.guide = new KeyboardGuide(lay);

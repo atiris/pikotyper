@@ -1,9 +1,12 @@
 import { app, go, layout } from '../app/app';
+import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
+import { STORIES, WORLDS, storyOpen, worldLevels } from '../game/levels';
+import { totalStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
-import { STATS_WINDOW, keyHistory, keyReport, weakKeys } from '../learning/stats';
+import { STATS_WINDOW, keyHistory, keyReport, lastTraining, weakKeys } from '../learning/stats';
 import type { Profile } from '../storage/schema';
 import { lineChart } from '../ui/charts';
 import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
@@ -92,7 +95,30 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
   return h('div', { class: 'heat-host' }, toggle, kb.el);
 }
 
-/** The child's friendly statistics overlay (click on Piko). */
+/** Stars, the open stories' worlds and levels done, and when the child last trained. */
+function progressSection(p: Profile): HTMLElement {
+  const star = imageUrl('ui-star');
+  const stories = STORIES.filter((s) => storyOpen(p, s)).map((s) => {
+    const levels = s.worlds.flatMap((w) => worldLevels(w));
+    const done = s.worlds.filter((w) => p.progress.worldsDone.includes(w)).length;
+    return h('div', { class: 'progress-story' },
+      h('h4', {}, t(s.title)),
+      h('div', { class: 'world-icons' }, ...s.worlds.map((w) => {
+        const src = imageUrl(`ui-map-${WORLDS[w]}`);
+        const on = p.progress.worldsDone.includes(w);
+        return src ? h('img', { class: on ? 'done' : '', src, alt: '', title: t(`worlds.${WORLDS[w]}`) }) : h('span', { class: `world-dot ${on ? 'done' : ''}` });
+      })),
+      h('p', {}, t('progress.story', { done, worlds: s.worlds.length, levels: levels.filter((l) => (p.progress.levels[l.id] ?? 0) > 0).length, total: levels.length })));
+  });
+  const { daysAgo, weekMinutes } = lastTraining(p);
+  const last = daysAgo === null ? t('progress.never') : daysAgo === 0 ? t('progress.lastToday') : daysAgo === 1 ? t('progress.lastYesterday') : t('progress.lastDays', { n: daysAgo });
+  return h('section', { class: 'progress-view' },
+    h('p', { class: 'progress-stars' }, star ? h('img', { src: star, alt: '' }) : '★', t('progress.stars', { n: totalStars(p) })),
+    ...stories,
+    h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
+}
+
+/** The child's friendly progress and statistics overlay (click on Piko). */
 export function openStats(): void {
   const p = app.profile!;
   let close = () => {};
@@ -104,7 +130,9 @@ export function openStats(): void {
   const total = Object.values(p.stats.keys).reduce((a, s) => a + s.presses, 0);
   const content = h('div', { class: 'stats' },
     h('div', { class: 'stats-head' }, pikoElement(p.companion, 'happy', 110),
-      h('div', {}, h('h2', {}, t('stats.title')), h('p', {}, total ? t('stats.intro', { piko: p.companion.name, n: STATS_WINDOW }) : t('stats.empty')))),
+      h('div', {}, h('h2', {}, t('progress.title')), progressSection(p))),
+    h('h3', {}, t('stats.title')),
+    h('p', {}, total ? t('stats.intro', { piko: p.companion.name, n: STATS_WINDOW }) : t('stats.empty')),
     heat,
     h('p', { class: 'legend' },
       h('span', { class: 'lg heat-good' }, `✓ ${t('stats.good')}`),

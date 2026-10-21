@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { LAYOUTS } from '../keyboard/layouts';
 import { advanceLesson, firstKeys, isMastered, keysToIntroduce, lessonOrder, reactionLimit, shiftKeyOf } from './lessons';
-import { STATS_WINDOW, keyReport, recordPress, weakKeys } from './stats';
+import { STATS_WINDOW, keyReport, lastTraining, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
   it('starts on the home row with the index fingers', () => {
@@ -127,5 +127,21 @@ describe('statistics', () => {
     expect(r.accuracy).toBe(1);
     expect(r.presses).toBe(30 + STATS_WINDOW);
     expect(r.confusions).toEqual([{ ch: 'g', n: 30 }]);
+  });
+});
+
+describe('last training', () => {
+  it('counts days since the last session and the minutes of the last 7 days', () => {
+    const p = newProfile('Ema', 'sk');
+    const now = new Date(2026, 9, 21, 9);
+    expect(lastTraining(p, now)).toEqual({ daysAgo: null, weekMinutes: 0 });
+    p.stats.sessions.push(
+      { date: '2026-10-10', seconds: 600, chars: 0, errors: 0, cpm: 0 },
+      { date: '2026-10-15', seconds: 300, chars: 0, errors: 0, cpm: 0 },
+      { date: '2026-10-19', seconds: 150, chars: 0, errors: 0, cpm: 0 },
+    );
+    expect(lastTraining(p, now)).toEqual({ daysAgo: 2, weekMinutes: 8 });
+    p.stats.sessions.push({ date: '2026-10-21', seconds: 0, chars: 0, errors: 0, cpm: 0 });
+    expect(lastTraining(p, now).daysAgo).toBe(2);
   });
 });

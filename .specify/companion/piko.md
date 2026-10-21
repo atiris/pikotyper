@@ -18,7 +18,8 @@
 - In the same screen the child renames the companion (up to 16 characters, never empty)
   and picks another animal kind. Other kinds are earned by stars: every 6 stars over all
   levels unlock the next one (cat, bunny, owl, dog, bear, panda, penguin, lion, then fox;
-  the starting kind is skipped). Locked kinds show a lock and how many stars are missing;
+  the starting kind is skipped). The screen's header shows the stars the child has now,
+  so the missing stars are easy to compare. Locked kinds show a lock and how many stars are missing;
   a new friend is announced on the level results. Accessories stay on when the kind
   changes.
   A back item can have a front part (a cape's clasp, a backpack's straps) that lies
@@ -42,7 +43,9 @@
 - Piko's speech bubble never covers a word: when it would, it moves to the top left of
   the scene, and when that spot is covered too, it hides until a spot is free. The bubble
   and its tail pointing to Piko read as one shape, with one shadow around both.
-- Clicking Piko opens the statistics overlay ([statistics](../profiles/statistics.md)).
+- Clicking Piko, on the map or in a level, opens the progress and statistics overlay
+  ([statistics](../profiles/statistics.md)); his title says "Click me to see how you are
+  doing".
 - After world 5 a newly hatched friend (a baby dragon) joins; in story 2 the robot Bolt
   walks next to Piko ([story](../game/story.md)). More little friends, dragons and
   robots, come from rescue missions.
