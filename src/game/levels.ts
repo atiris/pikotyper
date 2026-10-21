@@ -1,3 +1,4 @@
+import { activeKeys } from '../learning/lessons';
 import { type Profile, SUPER_ID } from '../storage/schema';
 
 export type WorldId = 'meadow' | 'space' | 'planet' | 'dragons' | 'egg' | 'junkyard' | 'workshop' | 'raintown' | 'robocity' | 'robohome';
@@ -88,7 +89,22 @@ export function isWorldUnlocked(p: Profile, world: number): boolean {
   return story.opensAfter === null || p.progress.worldsDone.includes(story.opensAfter);
 }
 
-export function isLevelUnlocked(p: Profile, l: LevelDef): boolean {
+/**
+ * Keys a story level needs, so its words are varied enough: 2 / 4 / 6 / 8 / 10, again
+ * in every world. Ten keys are enough for the whole story.
+ */
+export function keysNeeded(l: LevelDef): number {
+  return 2 * (l.index + 1);
+}
+
+/** Keys the child still needs for a level (0 = enough); the super profile needs none. */
+export function keysMissing(p: Profile, l: LevelDef): number {
+  if (p.id === SUPER_ID) return 0;
+  return Math.max(0, keysNeeded(l) - activeKeys(p).length);
+}
+
+/** The level before it has its star (the first level opens with its world). */
+export function isLevelReached(p: Profile, l: LevelDef): boolean {
   if (p.id === SUPER_ID) return true;
   if (!isWorldUnlocked(p, l.world)) return false;
   if (l.index === 0) return true;
@@ -96,10 +112,15 @@ export function isLevelUnlocked(p: Profile, l: LevelDef): boolean {
   return (p.progress.levels[prev.id] ?? 0) > 0;
 }
 
-/** The next level to play: the first unlocked level without stars, else the last unlocked one. */
-export function nextLevel(p: Profile): LevelDef {
+/** Reached and the child knows enough keys for it. */
+export function isLevelUnlocked(p: Profile, l: LevelDef): boolean {
+  return isLevelReached(p, l) && keysMissing(p, l) === 0;
+}
+
+/** The next level to play: the first open level without stars, else the last open one; null when none is open. */
+export function nextLevel(p: Profile): LevelDef | null {
   const open = LEVELS.filter((l) => isLevelUnlocked(p, l));
-  return open.find((l) => !p.progress.levels[l.id]) ?? open[open.length - 1];
+  return open.find((l) => !p.progress.levels[l.id]) ?? open[open.length - 1] ?? null;
 }
 
 /** Rescue missions (and the little friends) open with the first finished story. */

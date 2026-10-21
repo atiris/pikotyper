@@ -27,6 +27,8 @@ export type TypeResult =
 export class TypingCore {
   targets: Target[] = [];
   locked: Target | null = null;
+  /** Targets that left the scene untyped (passed by the child). */
+  missed = 0;
   private nextId = 1;
 
   add(word: string, data: any = {}, selectable = true): Target {
@@ -53,9 +55,10 @@ export class TypingCore {
     return f ? f.word[f.typed] : null;
   }
 
-  /** Lets a target leave without being typed. */
-  release(t: Target): void {
+  /** Lets a target leave without being typed; `missed` = false when the child chose another one. */
+  release(t: Target, missed = true): void {
     t.gone = true;
+    if (missed) this.missed++;
     if (this.locked === t) this.locked = null;
   }
 

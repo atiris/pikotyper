@@ -159,6 +159,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .map-top { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
 .top-actions { display: flex; gap: var(--sp-2); }
 .map-body { display: grid; grid-template-columns: 260px 1fr; gap: var(--sp-5); margin-top: var(--sp-3); }
+@media (max-width: 1299px) { .map-body { grid-template-columns: 200px 1fr; } }
 .map-side { display: flex; flex-direction: column; gap: var(--sp-3); align-items: stretch; }
 .map-hello { margin: 0; font-size: 2rem; overflow-wrap: anywhere; }
 .map-side .btn { min-height: 56px; }
@@ -166,12 +167,12 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .map-piko { border: 0; background: radial-gradient(circle at 50% 70%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 70%); cursor: pointer; align-self: center; border-radius: 50%; padding: 0; }
 .map-piko:hover .piko-stack { animation: jump-small 0.6s ease; }
 .story-rows { display: grid; gap: var(--sp-5); align-content: start; }
-.story-row { display: grid; gap: var(--sp-3); align-content: start; }
+.story-row { display: grid; gap: var(--sp-3); align-content: start; container: story / inline-size; }
 .story-opens { margin: 0; color: var(--ink-soft); }
 .story-name { margin: 0; font-size: 1.5rem; color: var(--brand-dark); }
 /* The row gap leaves room for the even cards, which sit 18 px lower. */
-.islands { display: flex; flex-wrap: wrap; justify-content: flex-start; align-content: flex-start; gap: calc(var(--sp-3) + 18px) var(--sp-3); }
-.island { width: 196px; background: rgba(255, 255, 255, 0.55); border-radius: 26px; padding: 0.6rem 0.5rem 0.9rem; text-align: center; box-shadow: var(--shadow); position: relative; }
+.islands { display: grid; grid-template-columns: repeat(5, 196px); justify-content: start; align-content: start; gap: calc(var(--sp-3) + 18px) var(--sp-3); }
+.island { min-width: 0; background: rgba(255, 255, 255, 0.55); border-radius: 26px; padding: 0.6rem 0.5rem 0.9rem; text-align: center; box-shadow: var(--shadow); position: relative; }
 .island:nth-child(even) { transform: translateY(18px); }
 .island-art { position: relative; height: 150px; display: grid; place-items: center; }
 .island-art img { height: 150px; width: auto; max-width: 100%; object-fit: contain; animation: float 5s ease-in-out infinite; filter: drop-shadow(0 12px 10px rgba(60, 40, 30, 0.2)); }
@@ -198,6 +199,29 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .mini-stars { display: flex; gap: 1px; }
 .mini-stars i { width: 8px; height: 8px; clip-path: polygon(50% 0, 63% 35%, 100% 38%, 71% 60%, 80% 100%, 50% 77%, 20% 100%, 29% 60%, 0 38%, 37% 35%); background: #ddd; }
 .mini-stars i.on { background: #f5b301; }
+.level-node.keys { background: #f3ece2; color: var(--ink-soft); }
+.level-key { width: 16px; height: 16px; }
+.map-bubble { align-self: center; max-width: 100%; }
+.map-bubble[hidden] { display: none; }
+/* World cards follow the room of their row: five in one row down to 640 px, then three and two. */
+@container story (max-width: 999px) {
+  .islands { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .island { padding: 0.5rem 0.3rem 0.7rem; border-radius: 20px; }
+  .island-art, .island-art img { height: max(96px, calc((100cqi - 4rem) / 5 * 0.75)); }
+  .island h3 { font-size: 0.95rem; }
+  .level-row { gap: 0.2rem; }
+  .level-node { flex: 0 1 34px; min-width: 22px; height: 44px; border-radius: 11px; font-size: 1rem; }
+  .mini-stars i { width: 6px; height: 6px; }
+}
+@container story (max-width: 639px) {
+  .islands { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: var(--sp-3); }
+  .island:nth-child(even) { transform: none; }
+  .island-art, .island-art img { height: min(150px, max(96px, calc((100cqi - 2rem) / 3 * 0.75))); }
+}
+@container story (max-width: 439px) {
+  .islands { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .island-art, .island-art img { height: min(150px, max(96px, calc((100cqi - 1rem) / 2 * 0.75))); }
+}
 
 /* ---------- Level ---------- */
 .level-screen { position: fixed; inset: 0; display: flex; flex-direction: column; background: #a8dcf0; overflow: hidden; }
@@ -235,6 +259,10 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 }
 .bubble::before { content: ''; position: absolute; left: -10px; bottom: 18px; border: 10px solid transparent; border-right-color: #fff; border-left: 0; }
 .bubble p { margin: 0; }
+/* Second spot, when the first one would cover a word: top left, the tail pointing down. */
+.bubble.top { top: 0.8rem; bottom: auto; left: 0.8rem; }
+.bubble.top::before { left: 40px; bottom: -10px; border: 10px solid transparent; border-top-color: #fff; border-bottom: 0; }
+.bubble.covered { visibility: hidden; }
 .bubble-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
 .bubble.static { position: relative; left: auto; bottom: auto; animation: none; margin: 0; background: #fff1e3; }
 .bubble.static::before { left: 50%; top: -10px; bottom: auto; border: 10px solid transparent; border-bottom-color: #fff1e3; border-top: 0; transform: translateX(-50%); }
@@ -537,9 +565,10 @@ body.super-on .hud, body.super-on .bar, body.super-on .map-top { padding-right: 
   .map-body { grid-template-columns: 1fr; }
   .map-side { flex-direction: row; flex-wrap: wrap; justify-content: center; }
   .map-side .btn.primary, .map-hello { flex-basis: 100%; text-align: center; }
+  /* One column: the worlds keep the three and two cards of a narrow row. */
+  .story-row { width: min(100%, 639px); justify-self: center; }
   .wardrobe-body { grid-template-columns: 1fr; }
   .wardrobe-preview { position: static; }
-  .island:nth-child(even) { transform: none; }
   .newkey-body { flex-direction: column; }
 }
 @media (max-height: 640px) {

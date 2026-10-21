@@ -289,7 +289,6 @@ export class MeadowMode extends ApproachMode {
   readonly world = 'meadow';
   protected fan: Fan;
   private pops: Pop[] = [];
-  private goals = 0;
 
   constructor(L: LevelRuntime) {
     super(L);
@@ -481,7 +480,6 @@ export class MeadowMode extends ApproachMode {
     L.sfx('cheer');
     this.pops.push({ x: this.playerX + 60, y: Math.max(70, this.pikoTop() - 110), age: 0 });
     this.cheerGoal(m);
-    if (this.goals++ === 0 || L.rng.chance(0.25)) L.say(pickLine('story.goal'), 2.5);
   }
 
   /** The creature that sent the leaf jumps with joy, then goes home. */

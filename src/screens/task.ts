@@ -14,7 +14,12 @@ import { playLevel } from './map';
 /** Plays the task: a timed practice of what is left, or the next story level. */
 export function startTask(p: Profile, task: Task): void {
   if (task.kind === 'practice') go('level', { id: 'practice', seconds: taskLeft(task), task: task.id });
-  else playLevel(nextLevel(p).id, task.id);
+  else {
+    const next = nextLevel(p);
+    // No level open for the child's keys: practice the task's minutes instead.
+    if (next) playLevel(next.id, task.id);
+    else go('level', { id: 'practice', seconds: taskLeft(task), task: task.id });
+  }
 }
 
 /** Minutes of a task still to play, rounded up. */

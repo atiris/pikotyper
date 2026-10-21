@@ -25,6 +25,7 @@ import { WORLDS, storyOf } from './levels';
 import type { Mode } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS, isHardMoment } from './paw';
 import { createMode } from './modes';
+import { PressureValve, perChar } from './pace';
 import { type LevelResult, completeLevel } from './progress';
 import { type Target, TypingCore } from './typing';
 import { pickTip, showCard, showDrill, showNewKey, showPosture } from './cards';
@@ -38,11 +39,20 @@ interface PendingLabel {
   size: number;
 }
 
+interface Rect {
+  x0: number;
+  x1: number;
+  y0: number;
+  y1: number;
+}
+
 /** Space kept between two labels, and the move from which a line points back to the object. */
 const LABEL_GAP = 6;
 const LABEL_LINE_FROM = 30;
 /** A long label shrinks to fit, down to this font size. */
 const LABEL_MIN_SIZE = 28;
+/** Seconds every target gets to be read. */
+const READ_TIME = 3;
 /** Extra seconds a target with a capital letter gets (the Shift chord is hard). */
 const CAPITAL_EXTRA = 1.5;
 /** Bolt's place next to the DOM Piko, in CSS pixels from the left, and his height in game units. */
@@ -136,6 +146,16 @@ export class LevelRuntime {
   private lastCheer = 0;
   private moodTimer = 0;
   private hadKeydown = false;
+  /** Rhythm of the last session (characters per second), the pace before the child's own words. */
+  private readonly lastCps: number;
+  /** Seconds per character of each target the child finished, reading and the first key included. */
+  private paceSamples: number[] = [];
+  /** Level time when each visible target became selectable. */
+  private shownAt = new Map<number, number>();
+  private valve = new PressureValve();
+  /** Targets the child typed, and the misses already given to the valve. */
+  private typedTargets = 0;
+  private missesSeen = 0;
 
   /** Paw help: the HUD button, words Piko still types, seconds to his next key. */
   private pawBtn: HTMLButtonElement | null = null;
@@ -158,6 +178,7 @@ export class LevelRuntime {
     this.particles.enabled = !this.reduceMotion;
     const lastCpm = p.stats.sessions[p.stats.sessions.length - 1]?.cpm ?? 0;
     this.ema = lastCpm ? lastCpm / 60 : 1;
+    this.lastCps = this.ema;
     this.mismatch = new LayoutMismatchDetector(p.layout);
 
     const lay = LAYOUTS[p.layout];
@@ -291,23 +312,41 @@ export class LevelRuntime {
     return this.words.next(avoid, maxLen, words);
   }
 
-  /** Seconds a target takes to reach the player, from difficulty and the child's rhythm; a capital gets more. */
+  /**
+   * Seconds a target takes to reach the player: difficulty, the child's word pace (reading
+   * included) and time to read it; a capital gets more, and the pressure valve slows it down.
+   */
   travelTime(word: string): number {
-    const d = this.difficulty;
-    const cps = Math.max(0.5, this.ema * 0.85);
-    const perChar = Math.min(2.2, Math.max(0.4, 1 / cps));
-    return (9 - d * 0.5) * 0.55 + word.length * perChar + 2 + (/\p{Lu}/u.test(word) ? CAPITAL_EXTRA : 0);
+    const base = (9 - this.difficulty * 0.5) * 0.55;
+    const read = READ_TIME + (/\p{Lu}/u.test(word) ? CAPITAL_EXTRA : 0);
+    return (base + word.length * perChar(this.paceSamples, this.lastCps) + read) * this.valve.factor;
   }
 
   /** How many targets may be on screen at once. */
   get maxActive(): number {
     const d = this.difficulty;
-    return d <= 2 ? 1 : d <= 5 ? 2 : d <= 8 ? 3 : 4;
+    return d <= 3 ? 1 : d <= 6 ? 2 : d <= 9 ? 3 : 4;
   }
 
   /** Seconds between spawns. */
   get spawnGap(): number {
-    return Math.max(0.8, 3.2 - this.difficulty * 0.25);
+    return Math.max(1.2, 3.6 - this.difficulty * 0.25);
+  }
+
+  /** Word pace and valve: visible targets get their start time, misses slow the level down. */
+  private trackPace(): void {
+    const shown = new Map<number, number>();
+    for (const tg of this.core.active) if (tg.selectable) shown.set(tg.id, this.shownAt.get(tg.id) ?? this.elapsed);
+    this.shownAt = shown;
+    for (; this.missesSeen < this.core.missed; this.missesSeen++) this.valve.miss();
+  }
+
+  /** A target the child typed (not Piko's paws). */
+  private targetTyped(tg: Target): void {
+    const since = this.shownAt.get(tg.id);
+    if (since != null) this.paceSamples.push((this.elapsed - since) / tg.word.length);
+    this.typedTargets++;
+    this.valve.hit();
   }
 
   get vw(): number {
@@ -359,6 +398,7 @@ export class LevelRuntime {
       this.ema = this.ema * 0.85 + (1 / interval) * 0.15;
       if (res.kind === 'done') {
         this.sfx('word');
+        this.targetTyped(res.target);
         this.wordStreak++;
         this.setMood('happy', 1.4);
         this.setRobotMood('happy', 1.2);
@@ -711,6 +751,7 @@ export class LevelRuntime {
     this.mode.t += dt;
     this.mode.update(dt);
     if (!hadFocus && this.core.focus()) this.readySince = performance.now();
+    this.trackPace();
     if (this.pawsAllowed) this.updatePaws(dt);
     this.readFocus();
     if (this.bubbleTimer > 0 && (this.bubbleTimer -= dt) <= 0) this.hideBubble();
@@ -739,12 +780,16 @@ export class LevelRuntime {
     drawBackground(g, this.mode.world, this.stage.vw, this.mode.scroll, !this.reduceMotion);
     if (this.robot) this.drawBolt(g);
     this.labels = [];
+    this.labelRects = [];
     this.mode.render(g);
     this.drawLabels(g);
     this.particles.render(g);
+    this.placeBubble();
   }
 
   private labels: PendingLabel[] = [];
+  /** Where this frame's labels were drawn, in stage units. */
+  private labelRects: Rect[] = [];
   /** Vertical shift of each target's label, smoothed over frames. */
   private labelShift = new Map<number, number>();
   private labelTime = 0;
@@ -765,7 +810,7 @@ export class LevelRuntime {
     // 0.25 of the way per frame at 60 Hz, the same at any frame rate.
     const follow = 1 - Math.pow(0.75, dt * 60);
     const rank = (l: PendingLabel) => (this.core.locked === l.tg ? Infinity : l.tg.urgency);
-    const placed: { x0: number; x1: number; y0: number; y1: number }[] = [];
+    const placed: Rect[] = [];
     const shifts = new Map<number, number>();
     for (const l of [...this.labels].sort((a, b) => rank(b) - rank(a))) {
       // Phrases shrink to fit: in calm modes the stage around their place, moving targets half of it.
@@ -784,6 +829,7 @@ export class LevelRuntime {
       const prev = this.labelShift.get(l.tg.id);
       const shift = prev == null ? want : prev + (want - prev) * follow;
       shifts.set(l.tg.id, shift);
+      this.labelRects.push({ x0: l.x - w / 2, x1: l.x + w / 2, y0: l.y + shift - h / 2, y1: l.y + shift + h / 2 });
       if (Math.abs(shift) > LABEL_LINE_FROM) {
         g.save();
         g.strokeStyle = 'rgba(255,253,246,0.7)';
@@ -803,6 +849,25 @@ export class LevelRuntime {
       });
     }
     this.labelShift = shifts;
+  }
+
+  /**
+   * The word is the task, so Piko's bubble never covers one: over a label it moves to its
+   * second spot (top left), and when that is covered too it hides until a spot is free.
+   */
+  private placeBubble(): void {
+    const b = this.bubble;
+    if (b.classList.contains('hidden')) return;
+    const s = this.stage.scale;
+    const covers = () => {
+      const x0 = b.offsetLeft / s - LABEL_GAP, x1 = (b.offsetLeft + b.offsetWidth) / s + LABEL_GAP;
+      const y0 = b.offsetTop / s - LABEL_GAP, y1 = (b.offsetTop + b.offsetHeight) / s + LABEL_GAP;
+      return this.labelRects.some((r) => r.x0 < x1 && r.x1 > x0 && r.y0 < y1 && r.y1 > y0);
+    };
+    b.classList.remove('top', 'covered');
+    if (!covers()) return;
+    b.classList.add('top');
+    if (covers()) b.classList.add('covered');
   }
 
   // ---- end ---------------------------------------------------------------------
@@ -828,12 +893,15 @@ export class LevelRuntime {
     const seconds = this.elapsed;
     const cpm = Math.round(this.ema * 60);
     const chars = this.chars, errors = this.errors;
+    // Targets Piko's paws typed count neither way.
+    const resolved = this.typedTargets + this.core.missed;
+    const typedShare = resolved ? this.typedTargets / resolved : 1;
     this.flushSession();
     if (this.def.kind === 'practice' && !this.def.count && total === 0) {
       this.opts.onFinish(null);
       return;
     }
-    const result = completeLevel(p, this.def, { accuracy, chars, errors, cpm, seconds });
+    const result = completeLevel(p, this.def, { accuracy, chars, errors, cpm, seconds }, typedShare);
     saveProfile();
     this.sfx('reward');
     this.runOff();

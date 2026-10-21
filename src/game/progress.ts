@@ -36,6 +36,8 @@ export const AUTO_DIFFICULTY_MAX = 8;
 export const AUTO_WORD_MAX = 9;
 /** Accuracy a level needs for its time to count toward the next step. */
 const GROWTH_ACCURACY = 0.9;
+/** Share of a level's targets the child typed (not let pass) for its time to count. */
+export const GROWTH_TYPED_SHARE = 0.85;
 /** Fewer keys of the child's own in a story level: Piko did most of it. */
 export const MIN_OWN_KEYS = 5;
 
@@ -45,15 +47,15 @@ export function growthNeed(step: number): number {
 }
 
 /**
- * Automatic difficulty and word length: good play time collects, and when there
- * is enough, one setting goes up by one step (they take turns).
+ * Automatic difficulty and word length: good play time (accurate, and few targets let
+ * pass) collects, and when there is enough, one setting goes up by one step (they take turns).
  */
-export function grow(p: Profile, seconds: number, accuracy: number): GrowthStep | null {
+export function grow(p: Profile, seconds: number, accuracy: number, typedShare: number): GrowthStep | null {
   const s = p.settings;
   const options: GrowthStep['kind'][] = [];
   if (s.autoDifficulty && s.difficulty < AUTO_DIFFICULTY_MAX) options.push('difficulty');
   if (s.autoWordLen && s.wordLen[1] < AUTO_WORD_MAX) options.push('wordLen');
-  if (!options.length || accuracy < GROWTH_ACCURACY) return null;
+  if (!options.length || accuracy < GROWTH_ACCURACY || typedShare < GROWTH_TYPED_SHARE) return null;
   p.progress.growthSeconds += Math.round(seconds);
   if (p.progress.growthSeconds < growthNeed(p.progress.growth)) return null;
   const kind = options[p.progress.growth % options.length];
@@ -69,8 +71,11 @@ export function grow(p: Profile, seconds: number, accuracy: number): GrowthStep 
   return { kind, value, medal: p.progress.growth };
 }
 
-/** Applies a finished level to the profile. Unlocks keys, worlds and accessories. */
-export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'newCompanions' | 'worldDone' | 'trend' | 'growth' | 'byPiko'>): LevelResult {
+/**
+ * Applies a finished level to the profile. Unlocks keys, worlds and accessories.
+ * `typedShare`: targets the child typed / targets typed or let pass.
+ */
+export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'newCompanions' | 'worldDone' | 'trend' | 'growth' | 'byPiko'>, typedShare: number): LevelResult {
   // Accuracy of a handful of keys says nothing; such a level earns one star and no growth time.
   const byPiko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
   const stars = byPiko ? 1 : starsFor(r.accuracy);
@@ -85,7 +90,7 @@ export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 's
   const newKeys = advanceLesson(p);
   const newAccessories = grantAccessories(p);
   const newCompanions = grantCompanions(p);
-  const growth = byPiko ? null : grow(p, r.seconds, r.accuracy);
+  const growth = byPiko ? null : grow(p, r.seconds, r.accuracy, typedShare);
   return { ...r, stars, newKeys, newAccessories, newCompanions, worldDone, trend: rhythmTrend(p), growth, byPiko };
 }
 

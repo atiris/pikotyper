@@ -189,7 +189,7 @@ export class SignsMode extends HeroMode {
     this.done++;
     this.busy = true;
     this.happy();
-    for (const s of this.signs) if (s !== tg) this.L.core.release(s);
+    for (const s of this.signs) if (s !== tg) this.L.core.release(s, false);
     this.L.particles.emit(this.postX, tg.data.y, 14, 'leaf', ['#a6e3c9', '#f5a3d3', '#ffe27a'], 150, 8);
     if (this.L.rng.chance(0.4)) this.L.say(pickLine('story.signView'), 2.5);
     const dist = this.L.vw * 0.5;

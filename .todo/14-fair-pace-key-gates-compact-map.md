@@ -110,16 +110,16 @@ No schema change and no new stored field: the gate is computed from
   layout unless it breaks.
 
 ## Steps
-- [ ] **Pace:** word pace in the runtime, new `travelTime`, `maxActive`, `spawnGap`,
+- [x] **Pace:** word pace in the runtime, new `travelTime`, `maxActive`, `spawnGap`,
   pressure valve. Unit-test the pure parts (pace average and clamp, valve steps) by
   moving them into a small pure module, e.g. `src/game/pace.ts` + test.
-- [ ] **Growth gate:** typed share passed from runtime to `completeLevel` -> `grow`;
+- [x] **Growth gate:** typed share passed from runtime to `completeLevel` -> `grow`;
   test in `progress.test.ts`.
-- [ ] **Key gates:** `keysNeeded`, `isLevelUnlocked`, `nextLevel`, map key badge and
+- [x] **Key gates:** `keysNeeded`, `isLevelUnlocked`, `nextLevel`, map key badge and
   bubble with the practice button, texts sk + en; tests.
-- [ ] **Bubble vs. labels:** label rects per frame, bubble second spot, hide/show.
-- [ ] **Meadow goal lines removed.**
-- [ ] **Compact map cards** (CSS + any class change in `map.ts`).
+- [x] **Bubble vs. labels:** label rects per frame, bubble second spot, hide/show.
+- [x] **Meadow goal lines removed.**
+- [x] **Compact map cards** (CSS + any class change in `map.ts`).
 - [ ] **Specs:** `lesson-progression.md` (keys needed per level, why), `mechanics.md`
   (pace from word pace, pressure valve, growth needs typed share; why),
   `story.md` (no goal comments), `piko.md` (bubble never covers a word),
@@ -130,3 +130,18 @@ No schema change and no new stored field: the gate is computed from
   target must be reachable. Let 2 pass and see the valve slow new targets. Map at the
   widths above, key badge on a level and its bubble. A level with Piko talking while
   targets come: the word is never covered. Screenshots at 1366x768 and 1024x768.
+
+## State
+- Decisions taken while implementing:
+  - Misses are counted in `TypingCore.release` (`missed`); the planet's sign choice
+    releases the signs not chosen with `missed = false`, so a choice is not a miss.
+  - Targets typed by Piko's paws count neither as typed nor as missed (no pace sample,
+    no valve step, not in the typed share).
+  - Before 5 finished targets the pace uses the rhythm of the last session as it was at
+    level start (not the live `ema`).
+  - Slovak has no plural support in i18n, so the map bubble has three texts
+    (`map.keysOne` / `keysFew` / `keysMany`) to say "1 písmeno / 2-4 písmená / 5+ písmen".
+  - The task's "story" kind plays practice for the task's minutes when no level is open.
+  - One-column body (window <= 900 px): the story row is at most 639 px wide and centered,
+    so its container query gives 3 + 2; below 440 px of container 2 columns (one 196 px
+    column per row looked broken next to the new grid).

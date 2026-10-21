@@ -76,7 +76,11 @@
     "settings": "Nastavenia pre rodičov",
     "storyRobot": "Piko a robot Šróbik",
     "storyOpens": "Otvorí sa, keď prejdeš svet {world}.",
-    "friends": "Malí priatelia"
+    "friends": "Malí priatelia",
+    "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Voľnom cvičení.",
+    "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Voľnom cvičení.",
+    "keysMany": "Na túto úroveň potrebuješ ešte {n} písmen. Nové písmenká získaš hraním alebo vo Voľnom cvičení.",
+    "keysLocked": "potrebuješ viac písmen"
   },
   "level": {
     "ownText": "Môj text",
@@ -370,11 +374,6 @@
     "meadowStart": [
       "Zvieratká chcú hrať! Ty si brankár.",
       "Chyť listy vejárom!"
-    ],
-    "goal": [
-      "Góól! Ten bol pekný!",
-      "Gól! Zvieratká sa tešia.",
-      "Nevadí, ďalší chytíme!"
     ],
     "goalShout": "GÓÓL!",
     "hedgehogStart": [

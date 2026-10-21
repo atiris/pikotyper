@@ -76,7 +76,11 @@
     "settings": "Settings for parents",
     "storyRobot": "Piko and Bolt the Robot",
     "storyOpens": "Opens when you finish world {world}.",
-    "friends": "Little friends"
+    "friends": "Little friends",
+    "keysOne": "You need one more letter for this level. You get new letters by playing or in Free practice.",
+    "keysFew": "You need {n} more letters for this level. You get new letters by playing or in Free practice.",
+    "keysMany": "You need {n} more letters for this level. You get new letters by playing or in Free practice.",
+    "keysLocked": "needs more letters"
   },
   "level": {
     "ownText": "My text",
@@ -370,11 +374,6 @@
     "meadowStart": [
       "The animals want to play! You are the goalkeeper.",
       "Catch the leaves with the fan!"
-    ],
-    "goal": [
-      "Goal! That was a nice one!",
-      "Goal! The animals are happy.",
-      "Never mind, we catch the next one!"
     ],
     "goalShout": "GOAL!",
     "hedgehogStart": [

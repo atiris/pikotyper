@@ -3,7 +3,7 @@ import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
 import { t } from '../i18n/i18n';
-import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelUnlocked, isWorldUnlocked, nextLevel, rescueUnlocked, worldLevels } from '../game/levels';
+import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, worldLevels } from '../game/levels';
 import type { Profile } from '../storage/schema';
 import { button, h, icon } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
@@ -37,10 +37,20 @@ export function mapScreen(root: HTMLElement): void {
   audio.music(app.menuTrack);
   const piko = h('button', { class: 'map-piko', type: 'button', title: t('piko.statsHint'), 'aria-label': t('stats.title'), onClick: () => openStats() },
     pikoElement(p.companion, 'idle', 130));
+  // Piko's bubble on the map: why a level waits for more keys.
+  const bubble = h('div', { class: 'bubble static map-bubble', role: 'status', 'aria-live': 'polite' });
+  bubble.hidden = true;
+  const keysBubble = (n: number) => {
+    bubble.replaceChildren(
+      h('p', {}, t(n === 1 ? 'map.keysOne' : n < 5 ? 'map.keysFew' : 'map.keysMany', { n })),
+      h('div', { class: 'bubble-actions' }, button(t('map.practice'), () => go('level', { id: 'practice' }), 'btn small', 'practice')));
+    bubble.hidden = false;
+  };
   const next = nextLevel(p);
   const rescue = rescueUnlocked(p);
-  const play = button(t('map.continue'), () => playLevel(next.id), 'btn primary big', 'play');
-  const nextName = t('level.title', { world: next.world + 1, level: next.index + 1 });
+  // Nothing open for the child's keys: continue means practice, which brings new keys.
+  const play = button(t('map.continue'), () => (next ? playLevel(next.id) : go('level', { id: 'practice' })), 'btn primary big', 'play');
+  const nextName = next ? t('level.title', { world: next.world + 1, level: next.index + 1 }) : t('map.practice');
   play.title = nextName;
   play.setAttribute('aria-label', `${t('map.continue')}: ${nextName}`);
   root.append(h('div', { class: 'screen map-screen' },
@@ -54,6 +64,7 @@ export function mapScreen(root: HTMLElement): void {
       h('aside', { class: 'map-side' },
         h('h1', { class: 'map-hello' }, t('map.hello', { name: p.name })),
         piko,
+        bubble,
         taskCard(p),
         play,
         button(t('map.practice'), () => go('level', { id: 'practice' }), 'btn', 'practice'),
@@ -62,27 +73,31 @@ export function mapScreen(root: HTMLElement): void {
         button(t('stats.title'), () => openStats(), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
-      h('div', { class: 'story-rows' }, ...STORIES.map((s) => storyRow(p, s, next.id))))));
+      h('div', { class: 'story-rows' }, ...STORIES.map((s) => storyRow(p, s, next?.id, keysBubble))))));
   (root.querySelector('.btn.primary') as HTMLElement | null)?.focus();
 }
 
-/** One story: its title and its worlds as islands; a story still closed says when it opens. */
-function storyRow(p: Profile, story: StoryDef, nextId: string): HTMLElement {
+/**
+ * One story: its title and its worlds as islands; a story still closed says when it opens.
+ * A level reached without enough keys shows a key and lets Piko say how many are missing.
+ */
+function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysBubble: (n: number) => void): HTMLElement {
   const islands = story.worlds.map((wi) => {
     const w = WORLDS[wi];
     const open = isWorldUnlocked(p, wi);
     const img = imageUrl(`ui-map-${w}`);
     const levels = worldLevels(wi).map((l) => {
-      const unlocked = isLevelUnlocked(p, l);
+      const reached = isLevelReached(p, l);
+      const missing = reached ? keysMissing(p, l) : 0;
       const stars = p.progress.levels[l.id] ?? 0;
       const b = h('button', {
-        class: `level-node ${l.isSuper ? 'super' : ''} ${stars ? 'done' : ''} ${l.id === nextId ? 'current' : ''}`,
+        class: `level-node ${l.isSuper ? 'super' : ''} ${stars ? 'done' : ''} ${l.id === nextId ? 'current' : ''} ${missing ? 'keys' : ''}`,
         type: 'button',
-        disabled: !unlocked,
-        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : l.index + 1}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}`,
-        onClick: () => playLevel(l.id),
+        disabled: !reached,
+        'aria-label': `${t(`worlds.${w}`)} ${l.isSuper ? t('map.super') : l.index + 1}${stars ? `, ${t('map.starsAria', { n: stars })}` : ''}${missing ? `, ${t('map.keysLocked')}` : ''}`,
+        onClick: () => (missing ? keysBubble(missing) : playLevel(l.id)),
       }, h('span', { class: 'num' }, l.isSuper ? '★' : String(l.index + 1)),
-        h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
+        missing ? icon('key', 'icon level-key') : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
       return b;
     });
     return h('div', { class: `island ${open ? '' : 'locked'} island-${w}` },
