@@ -39,7 +39,7 @@ and a child wants to move to another computer without copying JSON files.
   migration adds `tasks: []`.
 
 ## Steps
-- [ ] Codec with unit tests (round trip, version byte, broken input).
+- [x] Codec with unit tests (round trip, version byte, broken input).
 - [ ] Routes and screens: task import, result view, teacher table, move import.
 - [ ] Parent area: task builder, transfer link/QR.
 - [ ] Map task card and the "Odovzdať" flow after the task.
@@ -48,3 +48,13 @@ and a child wants to move to another computer without copying JSON files.
   i18n sk + en, README section "For teachers".
 - [ ] Build, vitest, e2e: parent builds a task -> second context opens the link ->
   plays it -> opens the result link in a third context -> teacher table shows one row.
+
+## Notes (decisions taken while implementing)
+- `Task` also keeps the play collected over all its runs (`seconds`, `chars`, `errors`,
+  `cpm`): a story task needs several levels to fill its minutes, and the result sums them.
+  A task is done when its minutes are played (2 s slack); a timed practice task does it in one run.
+- The result's 5 weakest keys are the child's weakest keys now (recent window), not only
+  the keys of the task's runs: same statistics the parent dashboard shows.
+- The teacher store keeps one result per child and task; a newer hand-in replaces it.
+- QR: `qrcode-generator` 2.0.4 (7.5 kB gzip). A QR holds at most ~2900 bytes, so it is shown
+  only for links that fit; longer links (most move links) are copy-only.

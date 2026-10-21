@@ -15,7 +15,7 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 7;
+export const STORE_VERSION = 8;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -32,6 +32,8 @@ const migrations: Record<number, (data: any) => any> = {
   5: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV5toV6) : data.profiles }),
   // v7: the parent's own content (questions, surprises, words, text) and reading aloud.
   6: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV6toV7) : data.profiles }),
+  // v8: tasks from a teacher's or parent's link.
+  7: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => (p && typeof p === 'object' ? { ...p, tasks: [] } : p)) : data.profiles }),
 };
 
 function profileV6toV7(p: any): any {
@@ -161,6 +163,7 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
     customMessages: [],
     ownQuestions: [],
     surprises: [],
+    tasks: [],
     layout: lay,
     language,
     settings: defaultSettings(),

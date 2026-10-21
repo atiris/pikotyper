@@ -1,4 +1,4 @@
-// Storage schema v7. These types are the data contract of `localStorage['pikotyper:v1']`
+// Storage schema v8. These types are the data contract of `localStorage['pikotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -141,6 +141,29 @@ export interface Companion {
   accessories: string[];
 }
 
+export type TaskKind = 'practice' | 'story';
+
+/**
+ * A task from a teacher or parent, taken from a link: its own words and text, how long, and
+ * what to play; with the play collected so far over all its runs.
+ */
+export interface Task {
+  id: string;
+  title: string;
+  words: string[];
+  text: string;
+  minutes: number;
+  /** Free practice of the task's words only, or the next story levels with them mixed in. */
+  kind: TaskKind;
+  seconds: number;
+  chars: number;
+  errors: number;
+  /** Rhythm of the last run, correct characters per minute. */
+  cpm: number;
+  /** Local date the task was finished. */
+  doneAt?: string;
+}
+
 export interface Profile {
   id: string;
   name: string;
@@ -149,6 +172,8 @@ export interface Profile {
   customMessages: string[];
   ownQuestions: OwnQuestion[];
   surprises: Surprise[];
+  /** Tasks from links, newest first. */
+  tasks: Task[];
   layout: LayoutId;
   language: Lang;
   settings: Settings;
@@ -158,7 +183,7 @@ export interface Profile {
 }
 
 export interface StoreData {
-  version: 7;
+  version: 8;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;

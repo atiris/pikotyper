@@ -132,6 +132,12 @@ describe('Store', () => {
     expect(out.settings).toMatchObject({ ownWords: [], ownText: '', ownMix: 'some', readAloud: false });
     expect(out.progress).toMatchObject({ teasersAsked: 0, ownQuestionNext: 0, pendingQuestion: null });
   });
+
+  it('v7 -> v8 adds an empty task list', () => {
+    const p: any = newProfile('Ema', 'sk');
+    delete p.tasks;
+    expect(migrate({ version: 7, profiles: [p] }).profiles[0].tasks).toEqual([]);
+  });
 });
 
 describe('export and import', () => {
