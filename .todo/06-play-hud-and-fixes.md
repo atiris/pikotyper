@@ -1,0 +1,83 @@
+# 06 Play screen HUD and fixes
+
+Owner feedback of 2026-10-21 about the level screen. All changes are client side
+(Vite + TypeScript, `src/game/runtime.ts`, `src/ui/*`, `src/styles.css`,
+`public/i18n/*.json`, `.specify/`). Store schema: one new setting (fullscreen),
+so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
+
+## Why
+- The HUD is a row of mixed shapes; the owner wants round buttons with clear symbols.
+- Words that overlap cannot be read; accuracy after Piko's paw help looked wrong.
+- Small polish items the owner listed.
+
+## Steps
+
+- [ ] **Paw help button, round.** Move it from the right of the HUD to just after the
+  pause button (next to the level progress). A round `icon-btn` (48 px) with a better
+  paw in the middle: one big pad and four toe pads, filled, in the companion's paw
+  color (`pawColors` in `src/gfx/piko.ts`). The ring around it is an SVG circle split
+  in three arcs: charged arcs in `--brand`, empty arcs light. Automatic mode: the
+  whole button pulses gently (CSS animation, off with reduced motion) and a small
+  `A` badge sits at the bottom right; manual mode shows a small `⏎` badge.
+  Remove the pips and the `kbd` label of today. Keep title/aria texts.
+- [ ] **Rhythm as a round gauge.** Replace the bar "Rytmus" with a round element of
+  the same size as the keyboard button: a half-circle tachometer (SVG arc, needle
+  rotated by the same ratio the bar uses today: `ema / (0.9 + difficulty * 0.35)`),
+  colored arc from calm blue to green; no red. Title shows
+  "Rytmus: N písmen za minútu". Clicking it does nothing (it is not a button: use a
+  `div role="img"` with an aria-label that updates at most once a second).
+- [ ] **Super badge as a round icon.** `superBadge()` in `src/app/app.ts` becomes a
+  round 44 px star button fixed at the top right corner, over the page, not a
+  full-width bar; the screen gets no extra top padding (remove the padding that was
+  added for the bar). Title/aria "Superrežim: všetko odomknuté. Kliknutím ho
+  ukončíš." Click ends super mode as today.
+- [ ] **Esc on the get-ready card.** In `showPosture` (`src/game/cards.ts`) Escape
+  cancels the adventure: the card closes and the player goes back to the map (the
+  runtime's `onExit`). Add the hint "Esc: späť na mapu" under the password.
+  `showPosture` resolves with `'start' | 'cancel'`.
+- [ ] **Fullscreen.** A round fullscreen button (icon: four corner arrows; when in
+  fullscreen, inward arrows) in the HUD next to the sound button and in the map's
+  top actions. New setting `autoFullscreen: boolean` (default false) in the parent
+  settings ("Spúšťať na celú obrazovku"): browsers allow fullscreen only after a
+  user gesture, so when on, the app asks for fullscreen on the first key press or
+  click after start. Migration v3 -> v4 adds `autoFullscreen: false`.
+- [ ] **Words never overlap.** Add a label layout pass to `LevelRuntime`: modes keep
+  calling `L.label(...)`, but labels are collected during `mode.render` and drawn
+  after it. Before drawing, sort by urgency (most urgent keeps its place) and move
+  each later label up (or down if at the top edge) until its box does not intersect
+  any placed one, with 6 px gap; when moved more than 30 px, draw a thin soft line
+  from the label to its object anchor. Smooth the moved offset over frames (lerp
+  0.25 per frame at 60 Hz, time based) so labels do not jump. Test with
+  `meadow`, `space`, `dragons` (Shield), `planet` modes at difficulty 9.
+- [ ] **Accuracy only from the child's keys.** Already true for `chars`/`errors`;
+  but when the child typed fewer than 5 keys in a level (Piko did the rest), the
+  results card shows "Túto úroveň zvládol hlavne {piko}" instead of the accuracy
+  line, gives 1 star, does not change best stars of the level if already higher, and
+  `grow()` gets no seconds. Unit test in `src/game/progress.test.ts`.
+- [ ] **Piko on the map jumps less.** Halve the hover lift/scale of `.map-piko`
+  (`src/styles.css`).
+- [ ] **World 3 level 1 typing.** The owner saw "hora" with no reaction; most likely
+  the key-swallowing card bug fixed in e3d90ab. Verify with Playwright: play
+  `w3-1` to the end typing the guide's next char (see `e2e/helpers.ts`); if it
+  still fails, find the cause in `src/game/modes/planet.ts` and fix it.
+- [ ] **Accessory art.** Defects in `acc-round-glasses` (green spill at the lenses),
+  `acc-knit-vest` (white/brown strips at both sides), `acc-lantern` (stray vertical
+  line), `acc-dragon-wings` (cut line in the right wing), `acc-pink-sneakers` (check
+  edges on Piko). In `scripts/assets.mjs`: remove green key spill for green-keyed
+  sources like the magenta one, and drop small disconnected components (area < 1.5 %
+  of the item's largest component and farther than 12 px from it). Re-run
+  `npm run assets`, then render a contact sheet of every accessory on a dark and a
+  light background and on each companion kind; fix what remains or list it under
+  `## State` as "needs new art" with the item names.
+- [ ] **Accessories overlap.** Glasses partly under hats and similar. Render a
+  contact sheet of every head item with every eyes item (and body x neck, back x
+  body) on the fox. Fix by a per-accessory placement table in `src/gfx/piko.ts`
+  (`{ dy, scale }` per accessory id, applied when drawing) so hats sit above the
+  eyebrows and glasses stay fully visible; layer order stays `SLOT_ORDER`. Items
+  that cannot be fixed by placement go to `## State` as "needs new art", each with
+  the reason.
+- [ ] Specs: `.specify/game/mechanics.md` (labels never overlap), `.specify/companion/piko.md`
+  (paw button), `.specify/experience/visuals.md` (round HUD, fullscreen),
+  `.specify/profiles/profiles.md` (super badge). i18n sk + en for every new text.
+- [ ] Build, `vitest`, `playwright test`; drive the level screen with the
+  Playwright MCP at 1366x768 and 1920x1080 and check HUD, labels and results card.
