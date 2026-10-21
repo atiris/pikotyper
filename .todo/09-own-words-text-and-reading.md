@@ -11,9 +11,9 @@ game (top research proposals); reading aloud helps young and dyslexic readers.
 
 ## Decisions
 - **One tab for own content.** The parent area gets a new tab "Vlastné" / "Own content"
-  between Settings and Keys, with four sections in this order: own encouragements
-  (moved here from the Settings tab, same data `customMessages`), own questions and
-  answers, own words, own text with the mix choice. The Settings tab no longer shows
+  between Settings and Keys, with five sections in this order: own encouragements
+  (moved here from the Settings tab, same data `customMessages`), surprises, own
+  questions and answers, own words, own text with the mix choice. The Settings tab no longer shows
   the encouragements.
 - **Own questions and answers**: `ownQuestions: { q: string; a: string }[]` (max 30,
   each max 160 chars, both required). They take turns with Piko's built-in teasers:
@@ -21,6 +21,21 @@ game (top research proposals); reading aloud helps young and dyslexic readers.
   from the start again). The answer comes, as for built-in teasers, on the results card
   of the next finished story level; the pending question is kept in
   `progress.pendingQuestion: number | null` so a break between levels does not lose it.
+- **Surprises** (a parent hides a real reward, e.g. "Vieš, kde ti ocko schoval sladkú
+  odmenu, keď zvládneš toto cvičenie? Ja to viem a prezradím ti to, keď ho zvládneš
+  dostatočne správne." -> "Malá čokoláda je pre teba schovaná v skrini za chladničkou.").
+  Data: `surprises: { id, q, a, place, minStars, revealedAt? }[]` (max 20; q and a max
+  200 chars). `place` is a story level id, `'next'` (the next story level or rescue
+  mission the child plays) or `'practice'` (the next free practice of at least one
+  minute). `minStars` 1-3, default 2 ("dostatočne správne"); free practice uses the
+  same accuracy limits as stars. Piko asks the question on the get-ready card of that
+  place (plan 06 merged card) and repeats it on the results card. Reached the stars:
+  the results card shows the answer, highlighted, and `revealedAt` is set; from then on
+  the surprise is never asked or shown to the child again (the parent still sees it
+  as "odhalené {date}" and can delete it). Not reached: Piko says "Skoro! Skús to ešte
+  raz a potom ti to prezradím." and the surprise waits for the next try. Several
+  surprises on one place: the oldest first, one per level. A surprise never counts
+  in statistics and is not part of the turn-taking of own questions.
 - Settings per profile: `ownWords: string[]` (max 300, trimmed, lowercased unless
   the parent typed capitals), `ownText: string` (max 4000 chars),
   `ownMix: 'off' | 'some' | 'half' | 'most'` (share of targets taken from own
@@ -45,6 +60,10 @@ game (top research proposals); reading aloud helps young and dyslexic readers.
 - [ ] Own content tab: encouragements moved from Settings; questions editor (list of
   question + answer pairs, add/remove, max 30) and the teaser turn-taking in
   `src/screens/level.ts` with a unit test for the order.
+- [ ] Surprises: editor (question, answer, place picker with world/level names, "next
+  level" and "free practice", stars 1-3, list with state "čaká" / "odhalené {date}",
+  delete); get-ready card and results card hooks; unit tests: revealed once, not
+  revealed below `minStars`, oldest first, never shown after `revealedAt`.
 - [ ] In that tab: "Vlastné slová" (textarea, one word per line or separated by
   commas/spaces) and "Vlastný text" (textarea) with the mix choice and a preview
   of five sample targets; validation messages.
@@ -53,6 +72,9 @@ game (top research proposals); reading aloud helps young and dyslexic readers.
 - [ ] Speech module with a unit-testable voice picker; HUD button; reads focus
   target and bubbles; stops on pause/exit.
 - [ ] Specs (`.specify/learning/words.md`, `.specify/profiles/parent-controls.md`,
-  `.specify/experience/accessibility.md`), i18n sk + en, README.
+  `.specify/experience/accessibility.md`), i18n sk + en, README: a "Surprises" part
+  saying it is intended that a parent hides real rewards (a treat, a trip, a game
+  evening) behind a level, and that the answer is shown to the child only once, after
+  the level is done well enough.
 - [ ] Build, vitest, e2e: parent adds two own words with mix "most", the child's
   next level shows one of them. Playwright MCP check of the editor and HUD.
