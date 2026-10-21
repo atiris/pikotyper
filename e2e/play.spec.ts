@@ -59,6 +59,28 @@ test('Enter sends Piko\'s paws to type a few words', async ({ page }) => {
   await expect(page.locator('.kb-guide.paws-on')).toHaveCount(0, { timeout: 15000 });
 });
 
+test('a level left during its get-ready card does not swallow the next level\'s keys', async ({ page }) => {
+  await page.goto('./');
+  await page.locator('.start-screen').waitFor();
+  await page.keyboard.type('superpikotyper', { delay: 40 });
+  await page.locator('.map-side .btn.primary').click();
+  await page.locator('.story-screen').waitFor();
+  await page.keyboard.press('Escape');
+  await page.locator('.tip-card').waitFor();
+  await page.keyboard.press('Space');
+  await page.locator('.posture-card').waitFor();
+  await page.goBack();
+  await page.locator('.map-screen').waitFor();
+  await page.locator('.map-side .btn.primary').click();
+  const pass = await page.locator('.posture-card').getAttribute('data-password');
+  await page.keyboard.type(pass!);
+  await expect(page.locator('.level-piko.waiting')).toHaveCount(0);
+  // The level listens on the window after all capturing cards; a key must get that far.
+  await page.evaluate(() => window.addEventListener('keydown', () => document.body.dataset.reached = '1'));
+  await page.keyboard.type('a');
+  await expect(page.locator('body[data-reached]')).toHaveCount(1);
+});
+
 test('guest progress is forgotten in a new browser context', async ({ page, browser }) => {
   await page.goto('./');
   await page.locator('.start-screen .btn.ghost').first().click();

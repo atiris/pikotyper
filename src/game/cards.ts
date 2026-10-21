@@ -18,13 +18,24 @@ interface CardOpts {
   cls?: string;
 }
 
+/**
+ * Captures keys for a card while it is on screen. A card that leaves together with its
+ * screen (back button, map) lets go by itself, so it never swallows the next level's keys.
+ */
+function captureKeys(overlay: HTMLElement, onKey: (e: KeyboardEvent) => void): () => void {
+  const stop = () => window.removeEventListener('keydown', listener, true);
+  const listener = (e: KeyboardEvent) => (overlay.isConnected ? onKey(e) : stop());
+  window.addEventListener('keydown', listener, true);
+  return stop;
+}
+
 /** Overlay card over the stage; resolves when dismissed. */
 export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = {}): Promise<void> {
   return new Promise((resolve) => {
     const card = h('div', { class: `card ${o.cls ?? ''}` }, content);
     const overlay = h('div', { class: 'overlay' }, card);
     const done = () => {
-      window.removeEventListener('keydown', onKey, true);
+      stop();
       overlay.remove();
       resolve();
     };
@@ -42,7 +53,7 @@ export function showCard(host: HTMLElement, content: HTMLElement, o: CardOpts = 
       queueMicrotask(() => b.focus());
     }
     if (o.anyKey) card.append(h('p', { class: 'hint' }, t('common.anyKey')));
-    window.addEventListener('keydown', onKey, true);
+    const stop = captureKeys(overlay, onKey);
     host.append(overlay);
   });
 }
@@ -113,7 +124,7 @@ export function showPosture(host: HTMLElement, p: Profile): Promise<void> {
         slots[n++].classList.add('on');
         audio.sfx('pop');
         if (n === password.length) {
-          window.removeEventListener('keydown', onKey, true);
+          stop();
           setTimeout(() => { overlay.remove(); resolve(); }, 350);
         }
       } else {
@@ -125,7 +136,7 @@ export function showPosture(host: HTMLElement, p: Profile): Promise<void> {
         audio.sfx('wrong');
       }
     };
-    window.addEventListener('keydown', onKey, true);
+    const stop = captureKeys(overlay, onKey);
     host.append(overlay);
   });
 }
@@ -173,12 +184,12 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
     const done = () => {
       if (finished) return;
       finished = true;
-      window.removeEventListener('keydown', onKey, true);
+      stop();
       overlay.remove();
       guide.show(null);
       resolve();
     };
-    window.addEventListener('keydown', onKey, true);
+    const stop = captureKeys(overlay, onKey);
   });
 }
 
@@ -237,12 +248,12 @@ export function showDrill(host: HTMLElement, keys: string[], seconds: number, gu
       if (finished) return;
       finished = true;
       clearInterval(tick);
-      window.removeEventListener('keydown', onKey, true);
+      stop();
       saveProfile();
       card.replaceChildren(h('h2', {}, pickLine('piko.drill_done')), button(t('common.continue'), () => { overlay.remove(); guide.show(null); resolve(); }, 'btn primary'));
       (card.querySelector('button') as HTMLButtonElement).focus();
     };
-    window.addEventListener('keydown', onKey, true);
+    const stop = captureKeys(overlay, onKey);
     nextWord();
   });
 }
