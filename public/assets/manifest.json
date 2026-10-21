@@ -12,6 +12,14 @@
    "w": 160,
    "h": 160
   },
+  "acc-knit-vest": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-knit-vest-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-round-glasses": {
    "w": 512,
    "h": 512
@@ -336,14 +344,6 @@
    "w": 160,
    "h": 160
   },
-  "acc-knit-vest": {
-   "w": 512,
-   "h": 512
-  },
-  "acc-knit-vest-thumb": {
-   "w": 160,
-   "h": 160
-  },
   "acc-balloon": {
    "w": 512,
    "h": 512
@@ -588,6 +588,11 @@
    "set": "e"
   },
   {
+   "id": "knit-vest",
+   "slot": "body",
+   "set": "d"
+  },
+  {
    "id": "round-glasses",
    "slot": "eyes",
    "set": "a"
@@ -665,11 +670,6 @@
   {
    "id": "backpack",
    "slot": "back",
-   "set": "d"
-  },
-  {
-   "id": "knit-vest",
-   "slot": "body",
    "set": "d"
   },
   {
