@@ -11,3 +11,4 @@ skipped, and the session that finishes a plan removes its line.
 - [P2] 08-map-companion-redesign.md - map and wardrobe polish; its "My keys" step shows the keys 07 adds
 - [P2] 09-own-words-text-and-reading.md - own words and text need 07's phrases; reading aloud
 - [P2] 10-teacher-links.md - tasks and results reuse 09's own words and text
+- [P3] 11-story-robot.md - second story; needs the owner's media (fallbacks work without them); after the core plans

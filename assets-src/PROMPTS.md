@@ -331,3 +331,120 @@ Calm, gentle instrumental background music for a peaceful children's educational
 | `music-dragons.mp3` | Warm and brave but calm, 80 BPM, E-flat major, gentle hand drums, ocarina melody, soft strings, a friendly dragon valley at sunset. |
 | `music-egg.mp3` | Hopeful and bouncy, 95 BPM, A major, ukulele, light claps, glockenspiel, a happy little journey down a hill. |
 | `music-break.mp3` | Very slow and relaxing, 60 BPM, C major, soft piano and warm pads, for a short stretching break and deep breathing. |
+
+## 7. Story 2: Piko and Bolt the robot
+
+Plan: `.todo/11-story-robot.md`. Deliver in any order; the game draws a simple shape for
+anything still missing. Use the common prompts of sections 3, 4, 5 and 6 with the texts
+below. Suggested order: Bolt first (he is in every level), then world by world.
+
+### Bolt (sprites, section 4 prompt, BG magenta)
+Same robot in every picture: "a small cute round robot about as tall as a child's knee,
+light grey-blue metal body with soft rounded edges, a round head with a dark glass face
+showing two big friendly glowing cyan eyes, one short antenna with a tiny orange ball,
+small claw hands, short stubby legs, a few small rivets, front view". Make `robot-idle`
+first, then attach it to the other prompts ("the same robot as in the attached image").
+
+| File | OBJECT |
+|---|---|
+| `robot-idle.jpg` | the robot standing calmly, front view |
+| `robot-happy.jpg` | the same robot, happy, eyes as smiling arcs, one claw waving |
+| `robot-worried.jpg` | the same robot, a little worried, eyes looking up, claws together |
+| `robot-wet.jpg` | the same robot shaking off a few water drops, eyes squeezed shut, smiling |
+| `robot-broken.jpg` | the same robot but older: a few soft rust spots, one leg missing, antenna bent, sad but hopeful eyes |
+| `robot2-idle.jpg` | the same robot with new longer legs and a bright yellow antenna ball, standing proudly |
+| `robot2-happy.jpg` | the robot of `robot2-idle`, happy, waving |
+| `robot-raincoat.jpg` | only a small yellow raincoat with a hood that fits the robot of `robot2-idle`, same position and size (overlay) |
+
+### Map islands (section 5, ui-map prompt)
+| File | ISLAND |
+|---|---|
+| `ui-map-junkyard.jpg` | a small floating island with friendly piles of old tires, crates and cogs and a little magnet crane |
+| `ui-map-workshop.jpg` | a small floating island with a cozy workshop shed, a conveyor belt and gears |
+| `ui-map-raintown.jpg` | a small floating island with tiny colorful houses under a soft rain cloud and puddles |
+| `ui-map-robocity.jpg` | a small floating island with rounded silver towers and a big round door with a keypad |
+| `ui-map-robohome.jpg` | a small floating island with a cozy round robot house with warm lit windows |
+
+### Backgrounds (section 3 prompts)
+| File | SCENE / LAYER |
+|---|---|
+| `bg-junkyard-far.jpg` | a friendly sunny junkyard with soft hills of old things far away, a rusty but cheerful crane and a light blue sky |
+| `bg-junkyard-mid.jpg` | soft piles of old tires, wooden crates and round metal cans, bottom 45 % |
+| `bg-junkyard-near.jpg` | scattered small springs, bolts and grass tufts on the ground, bottom 25 % |
+| `bg-workshop-far.jpg` | the inside of a warm cozy workshop with wooden walls, shelves with jars of screws, hanging tools and a round window |
+| `bg-workshop-mid.jpg` | a long workbench with drawers and small toolboxes, bottom 45 % |
+| `bg-workshop-near.jpg` | a conveyor belt running across the whole image with rollers below, bottom 25 % |
+| `bg-raintown-far.jpg` | a calm small town on a rainy afternoon, soft grey-blue sky with gentle rain lines, colorful rounded houses with lit windows |
+| `bg-raintown-mid.jpg` | wet cobblestone street with small lamp posts and round bushes, bottom 40 % |
+| `bg-raintown-near.jpg` | shiny puddles with ripples and a few fallen leaves, bottom 20 % |
+| `bg-robocity-far.jpg` | a friendly futuristic city with rounded silver and pastel towers, soft light trails and a lilac evening sky |
+| `bg-robocity-mid.jpg` | a smooth metal walkway with glowing pastel lines and rounded railings, bottom 40 % |
+| `bg-robocity-near.jpg` | floor tiles with soft glowing seams and small round lights, bottom 20 % |
+| `bg-robohome-far.jpg` | the inside of a cozy robot home: round windows, warm lamps, soft sofa, shelves with little gadgets, pastel colors |
+| `bg-robohome-mid.jpg` | a row of cozy furniture: a low cabinet, a plant in a pot, a round rug, bottom 40 % |
+| `bg-robohome-near.jpg` | a warm wooden floor with a soft round rug edge, bottom 20 % |
+
+### Game objects (section 4 prompt)
+| File | OBJECT | BG |
+|---|---|---|
+| **Junkyard** | | |
+| `obj-tire.jpg` | an old rubber tire with a friendly face | magenta |
+| `obj-crate.jpg` | a small wooden crate with a friendly face | magenta |
+| `obj-can.jpg` | a round metal tin can with a friendly face | magenta |
+| `obj-spring.jpg` | a big coiled metal spring with a friendly face, bouncing | magenta |
+| `obj-magnet.jpg` | a red and silver horseshoe magnet hanging on a short chain from above | green |
+| `obj-cable-knot.jpg` | a big tangled knot of soft colorful cables with a friendly face | magenta |
+| **Workshop** | | |
+| `obj-gear.jpg` | a shiny golden gear | magenta |
+| `obj-bolt.jpg` | a big silver bolt with a nut | magenta |
+| `obj-wheel.jpg` | a small rubber wheel | magenta |
+| `obj-antenna.jpg` | a short robot antenna with a yellow ball on top | magenta |
+| `obj-battery.jpg` | a big friendly battery with four empty charge bars on its side | magenta |
+| `obj-basket.jpg` | a small wire basket | magenta |
+| **Rainy town** | | |
+| `obj-raindrop.jpg` | a big round friendly raindrop with a sleepy smile | magenta |
+| `obj-umbrella.jpg` | a big open red umbrella seen from the side, no hand | green |
+| `obj-storm-cloud.jpg` | a grumpy but cute grey storm cloud with a small yellow lightning bolt | magenta |
+| **Robot city** | | |
+| `obj-door.jpg` | a rounded metal door, closed, with a small keypad panel on the right | magenta |
+| `obj-door-open.jpg` | the same door, open, with warm light inside | magenta |
+| `obj-panel.jpg` | a small keypad panel with a tiny screen and a green light | magenta |
+| `obj-gate.jpg` | a big round main gate with three panels and a glowing ring, closed | magenta |
+| **Robot home** | | |
+| `obj-lamp.jpg` | a cute round floor lamp, switched off | magenta |
+| `obj-lamp-on.jpg` | the same lamp, switched on, warm glow | magenta |
+| `obj-vacuum-robot.jpg` | a small round vacuum robot with friendly eyes | magenta |
+| `obj-toaster-robot.jpg` | a toaster robot with little arms and a friendly face | magenta |
+| `obj-box.jpg` | a cardboard box with the lid open | magenta |
+| **Little friends** | | |
+| `obj-robot-small-1.jpg` | a tiny cute robot shaped like a ball with one wheel | magenta |
+| `obj-robot-small-2.jpg` | a tiny cute square robot with two springy legs | magenta |
+| `obj-robot-small-3.jpg` | a tiny cute robot with a propeller on top, flying | magenta |
+
+### Accessories for Piko (section 2, "Needs new art" single-item prompts)
+Rewards of story 2. Glasses use the glasses prompts; the jetpack is a back item with a
+front part (`acc-jetpack-front.jpg` for its straps).
+
+| File | ITEM / FRAME |
+|---|---|
+| `acc-umbrella.jpg` | hand: a small open red umbrella held up in the right hand |
+| `acc-raincoat.jpg` | body: a yellow raincoat with big round buttons |
+| `acc-hard-hat.jpg` | head: a yellow hard hat |
+| `acc-goggles.jpg` | glasses: FRAME = round safety goggles with a green rubber strap and a thick frame |
+| `acc-jetpack.jpg` | back: a small silver jetpack with two round orange nozzles |
+| `acc-antenna-band.jpg` | head: a headband with two springy antennas with little lights |
+
+New accessories also need a line in `SINGLES` of `scripts/assets.mjs` (done with the
+plan), otherwise the script skips them.
+
+Optional, only for the meeting scene: `piko-KIND-surprised.jpg` for every kind, with the
+face prompt of section 1 and the mood "surprised, big round eyes, small open mouth".
+
+### Music (section 6 prompt)
+| File | MOOD |
+|---|---|
+| `music-junkyard.mp3` | Curious and playful, 88 BPM, F major, soft mallets on metal-like tones, light pizzicato, gentle shaker, a sunny treasure hunt among old things. |
+| `music-workshop.mp3` | Busy but calm, 92 BPM, C major, ticking clock-like percussion, music-box melody, soft bass, a cozy workshop at work. |
+| `music-raintown.mp3` | Gentle and cozy, 70 BPM, D major, soft piano and warm pads with very soft rain-like textures, a quiet walk in the rain. |
+| `music-robocity.mp3` | Wondering and bright, 84 BPM, A major, soft synth arpeggios, gentle electric piano, light pads, a friendly city of the future. |
+| `music-robohome.mp3` | Warm and happy, 80 BPM, G major, ukulele, celesta and soft strings, coming home to family. |
