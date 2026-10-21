@@ -245,10 +245,14 @@ class Fan {
   }
 
   draw(g: G, t: number): void {
-    // It joins Piko when the game starts, not during the preparation cards.
-    if (!this.L.started) return;
+    // It joins Piko when the game starts, not during the preparation cards, and fades out at the end.
+    const alpha = this.L.toolAlpha;
+    if (!this.L.started || alpha <= 0) return;
     this.bob = Math.sin(t * 2) * 4;
+    g.save();
+    g.globalAlpha *= alpha;
     drawSprite(g, 'obj-fan', this.x, this.y + this.bob, Fan.H, { rot: this.tilt, ay: 1 }, fanFallback);
+    g.restore();
   }
 }
 

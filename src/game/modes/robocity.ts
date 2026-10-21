@@ -1,7 +1,10 @@
-import { pickLine } from '../../app/app';
+import { app, pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
-import { type G, drawSprite, roundRect } from '../../gfx/draw';
+import { type G, drawSprite, drawWord, roundRect } from '../../gfx/draw';
+import { t } from '../../i18n/i18n';
+import { activeKeys } from '../../learning/lessons';
+import { gateCode } from '../gate';
 import type { Target } from '../typing';
 import { HeroMode } from './planet';
 
@@ -136,25 +139,41 @@ export class DoorsMode extends HeroMode {
   }
 }
 
-/** Super-obstacle: the main gate's long code, split into short groups; each one lights a part of its ring. */
+/**
+ * Super-obstacle: the main gate wants its whole long code without a single mistake. The
+ * code shows at once, one panel per group in two rows; each typed group lights a part of
+ * the ring. A wrong key darkens it all and the same code starts again. No timer runs.
+ */
 export class GateMode extends HeroMode {
   readonly world = 'robocity';
+  readonly wrongSfx = 'bzzt';
+  private code: string[] = [];
   private lit = 0;
   private group: Target | null = null;
   private opened = 0;
+  private restarts = 0;
+  /** Seconds left of the soft red flash after a restart. */
+  private flash = 0;
+
+  intro(): string {
+    return t('story.gateIntro');
+  }
 
   start(): void {
     this.heroY = VH * 0.8;
+    const p = app.profile!;
+    this.code = gateCode(activeKeys(p), this.L.def.count, p.settings.noDiacritics, this.L.rng);
     this.next();
   }
 
   private next(): void {
-    this.group = this.L.core.add(this.L.word(4, 1), {});
+    this.group = this.L.core.add(this.code[this.lit], {});
   }
 
   update(dt: number): void {
     super.update(dt);
-    if (this.lit >= this.L.def.count) this.opened = Math.min(1, this.opened + dt * 0.8);
+    this.flash = Math.max(0, this.flash - dt);
+    if (this.lit >= this.code.length) this.opened = Math.min(1, this.opened + dt * 0.8);
   }
 
   onDone(tg: Target): void {
@@ -164,18 +183,31 @@ export class GateMode extends HeroMode {
     this.L.sfx('click');
     this.L.core.prune();
     this.group = null;
-    if (this.lit >= this.L.def.count) {
+    if (this.lit >= this.code.length) {
       this.L.sfx('cheer');
       this.L.say(pickLine('story.gateOpen'), 3);
     } else this.next();
   }
 
+  /** A mistake starts the code again from its first group (nothing to lose before the first key). */
+  onWrong(): void {
+    super.onWrong();
+    const group = this.group;
+    if (!group || (this.lit === 0 && group.typed === 0)) return;
+    this.lit = 0;
+    this.flash = 0.6;
+    this.L.core.release(group, false);
+    this.L.core.prune();
+    this.next();
+    if (++this.restarts === 3) this.L.say(t('story.gateSlow'), 4);
+  }
+
   render(g: G): void {
-    const x = this.L.vw * 0.62, y = VH * 0.52;
-    const n = this.L.def.count;
+    const x = this.L.vw * 0.62, y = VH * 0.64;
+    const n = this.code.length;
     g.save();
     g.globalAlpha = 1 - this.opened * 0.7;
-    drawSprite(g, 'obj-gate', x, y, 340, { sx: 1 - this.opened * 0.3 }, (g2, w, h) => {
+    drawSprite(g, 'obj-gate', x, y, 280, { sx: 1 - this.opened * 0.3 }, (g2, w, h) => {
       g2.fillStyle = '#b8c4d4';
       g2.strokeStyle = '#4a5a6e';
       g2.lineWidth = 6;
@@ -187,25 +219,52 @@ export class GateMode extends HeroMode {
     g.restore();
     // The glowing ring: one part per code group.
     g.save();
-    g.lineWidth = 14;
+    g.lineWidth = 12;
     g.lineCap = 'round';
     for (let i = 0; i < n; i++) {
       const a0 = -Math.PI / 2 + (i / n) * Math.PI * 2 + 0.06, a1 = -Math.PI / 2 + ((i + 1) / n) * Math.PI * 2 - 0.06;
-      g.strokeStyle = i < this.lit ? '#6ff3ff' : 'rgba(255,255,255,0.35)';
+      g.strokeStyle = i < this.lit ? '#6ff3ff' : this.flash > 0 ? 'rgba(255,140,120,0.6)' : 'rgba(255,255,255,0.35)';
       g.shadowColor = '#6ff3ff';
       g.shadowBlur = i < this.lit ? 14 : 0;
       g.beginPath();
-      g.arc(x, y, 180, a0, a1);
+      g.arc(x, y, 150, a0, a1);
       g.stroke();
     }
     g.restore();
-    if (this.group) this.L.label(g, this.group, x, VH * 0.1, 46);
+    this.drawCode(g);
     if (this.opened > 0) this.heroX = 220 + this.opened * (x - 260);
     this.drawHero(g);
   }
 
+  /** The whole code at the top in two rows; the current group is typed in its own panel. */
+  private drawCode(g: G): void {
+    const n = this.code.length, cols = Math.ceil(n / 2), gap = 14;
+    const w = Math.min(210, (this.L.vw * 0.94 - gap * (cols - 1)) / cols);
+    const size = Math.min(40, w / 5);
+    this.code.forEach((word, i) => {
+      const col = i % cols, row = Math.floor(i / cols);
+      const x = this.L.vw / 2 + (col - (cols - 1) / 2) * (w + gap), y = 60 + row * 92;
+      const current = i === this.lit && !!this.group;
+      g.save();
+      g.fillStyle = 'rgba(24,34,56,0.55)';
+      g.strokeStyle = i < this.lit ? '#6ff3ff' : current ? '#ffd76a' : this.flash > 0 ? 'rgba(255,140,120,0.8)' : 'rgba(255,255,255,0.3)';
+      g.lineWidth = current ? 4 : 3;
+      g.shadowColor = g.strokeStyle;
+      g.shadowBlur = i < this.lit || current ? 12 : 0;
+      roundRect(g, x - w / 2, y - 40, w, 80, 16);
+      g.fill();
+      g.stroke();
+      g.restore();
+      if (current) return this.L.label(g, this.group!, x, y, size);
+      g.save();
+      if (i > this.lit) g.globalAlpha = 0.6;
+      drawWord(g, word, i < this.lit ? word.length : 0, x, y, 0, { size, highContrast: this.L.highContrast });
+      g.restore();
+    });
+  }
+
   progress(): number {
-    return Math.min(1, this.lit / this.L.def.count);
+    return this.code.length ? this.lit / this.code.length : 0;
   }
 
   get finished(): boolean {

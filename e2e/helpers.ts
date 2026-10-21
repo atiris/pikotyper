@@ -9,10 +9,12 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
       const nk = document.querySelector<HTMLElement>('.newkey-card');
       if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       if (document.querySelector('.posture-card')) return { kind: 'ready' };
+      if (document.querySelector('.mode-intro')) return { kind: 'intro' };
       return { kind: 'play', next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '' };
     });
     if (state.kind === 'results') return state.text!;
     if (state.kind === 'ready') await page.keyboard.press('Space');
+    else if (state.kind === 'intro') await page.keyboard.press('Enter');
     else if (state.kind === 'newkey') await typeChar(page, state.key!);
     else if (state.next) {
       if (mistakes && typed.length % 13 === 4) await page.keyboard.type('q');

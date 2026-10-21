@@ -30,7 +30,8 @@
   the next level is finished, with the question shown again above it. A run with a
   parent's surprise has no teaser ([parent controls](../profiles/parent-controls.md)).
 - **Paw help**: fifteen words in a row without a mistake charge one paw (three at most,
-  kept between levels). In story levels and rescue missions, Enter (or the round paw
+  kept between levels). In story levels and rescue missions (not at the main gate, whose
+  code must be the child's own), Enter (or the round paw
   button next to pause: a paw in the companion's color, ringed by three arcs for the
   charges; its label names Enter) sends Piko's paws onto the keyboard in
   place of the hands, and Piko types the three closest words with his own rhythm. These

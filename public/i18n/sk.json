@@ -59,9 +59,9 @@
     "egg": "Cesta vajíčka",
     "junkyard": "Šrotisko",
     "workshop": "Dielňa",
-    "raintown": "Daždivé mesto",
-    "robocity": "Robotické mesto",
-    "robohome": "Robotická domácnosť"
+    "raintown": "Dážď",
+    "robocity": "Mesto",
+    "robohome": "Domov"
   },
   "map": {
     "ownText": "Môj text",
@@ -213,7 +213,17 @@
     "growthDifficulty": "Predmety sa budú hýbať o kúsok rýchlejšie.",
     "growthWordLen": "Slová môžu mať už {n} písmen.",
     "medalAria": "medaila číslo {n}",
-    "repaired": "Robotík {name} je opravený!"
+    "repaired": "Robotík {name} je opravený!",
+    "badgeNew": "Nový odznak!",
+    "badgeSilver": "Odznak je teraz strieborný!",
+    "badgeGold": "Odznak je teraz zlatý!"
+  },
+  "badge": {
+    "bronze": "bronzový",
+    "silver": "strieborný",
+    "gold": "zlatý",
+    "aria": "Odznak sveta {world}: {tier}",
+    "locked": "Prejdi svet {n}"
   },
   "surprise": {
     "ask": "{piko} má tajomstvo:",
@@ -544,6 +554,8 @@
       "Veľká brána sa otvára! Vitaj v Robotickom meste.",
       "Celý kód je správne!"
     ],
+    "gateIntro": "Hlavná brána chce celý kód bez chyby. Keď sa pomýliš, začneš znova. Nikam sa neponáhľaj.",
+    "gateSlow": "Pomaly a presne. Čas tu nebeží.",
     "welcomeDone": [
       "Celá rodina ťa pozdravila!",
       "Píp píp píp! Malí roboti sa tešia."
@@ -561,7 +573,8 @@
     "lastYesterday": "Naposledy sme trénovali včera.",
     "lastDays": "Naposledy sme trénovali pred {n} dňami.",
     "never": "Ešte sme spolu netrénovali.",
-    "week": "Za posledných 7 dní: {n} min"
+    "week": "Za posledných 7 dní: {n} min",
+    "badges": "Odznaky"
   },
   "stats": {
     "title": "Moje klávesy",

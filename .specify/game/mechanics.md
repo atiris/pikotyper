@@ -22,12 +22,15 @@
   (up, or down near the top), and a far-moved word gets a thin line to its object.
 - The start is slow: at difficulty 3 a short word needs about 10 seconds to reach Piko
   and one word is on screen at a time.
-- Level length is about 1-3 minutes. At the end Piko runs off to the right (a quick fade
-  with reduced motion), then the end screen shows stars (accuracy), new keys, and a
+- Level length is about 1-3 minutes. At the end Piko stays where he is and jumps happily
+  three times (Bolt hops with him in story 2), and any tool he held in the level (fan,
+  umbrella, shield) fades away; with reduced motion he only smiles and the tool is gone
+  at once. About 1.4 seconds later the end screen shows stars (accuracy), new keys, and a
   sentence from Piko. The end screen is a compact card that fits a small laptop screen
   (1024x600) without scrolling, also with a new key, a medal and a surprise: title and
   stars in one line, a small Piko with his sentence beside him, the facts (accuracy
-  first, rhythm, new keys, new things, a rescued friend, a medal) as small chips, the
+  first, rhythm, new keys, new things, a rescued friend, a medal, a new or better world
+  badge) as small chips, the
   task, surprise and Piko's question in one small framed block, and one main button with
   Replay and Map as smaller ones next to it. Accuracy counts only the child's own keys: a level where the child
   typed fewer than 5 keys (Piko's paws did the rest) says so, gives one star, never

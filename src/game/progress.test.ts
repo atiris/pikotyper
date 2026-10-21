@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
-import { LEVELS } from './levels';
+import { LEVELS, worldLevels } from './levels';
 import { AUTO_DIFFICULTY_MAX, GROWTH_TYPED_SHARE, MIN_OWN_KEYS, completeLevel, grow, growthNeed } from './progress';
-import { STARS_PER_FRIEND, friendStars, grantCompanions } from './rewards';
+import { STARS_PER_FRIEND, badgeTier, friendStars, grantCompanions } from './rewards';
 
 describe('automatic growth', () => {
   it('steps up after enough good play, difficulty and word length in turn', () => {
@@ -71,5 +71,24 @@ describe('companions earned by stars', () => {
     expect(grantCompanions(p)).toEqual(['bunny', 'owl']);
     expect(p.progress.companionsUnlocked).toEqual(['cat', 'bunny', 'owl']);
     expect(friendStars(p, 'fox')).toBe(8 * STARS_PER_FRIEND);
+  });
+});
+
+describe('world badges', () => {
+  const run = { accuracy: 0.9, chars: 100, errors: 10, cpm: 60, seconds: 120 };
+  const perfect = { ...run, accuracy: 1, errors: 0 };
+
+  it('is earned with the world and grows with its stars', () => {
+    const p = newProfile('Ema', 'sk');
+    const [l1, l2, l3, l4, gate] = worldLevels(0);
+    for (const l of [l1, l2, l3, l4]) expect(completeLevel(p, l, run, 1).badge).toBeNull();
+    expect(badgeTier(p, 0)).toBeNull();
+    expect(completeLevel(p, gate, run, 1).badge).toEqual({ world: 0, tier: 'bronze', upgrade: false });
+    // 10 stars: still bronze; 12 make it silver.
+    expect(completeLevel(p, l1, perfect, 1).badge).toBeNull();
+    expect(completeLevel(p, l2, perfect, 1).badge).toEqual({ world: 0, tier: 'silver', upgrade: true });
+    for (const l of [l3, l4]) completeLevel(p, l, perfect, 1);
+    expect(completeLevel(p, gate, perfect, 1).badge).toEqual({ world: 0, tier: 'gold', upgrade: true });
+    expect(completeLevel(p, gate, perfect, 1).badge).toBeNull();
   });
 });

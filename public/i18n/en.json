@@ -59,9 +59,9 @@
     "egg": "Egg Journey",
     "junkyard": "Junkyard",
     "workshop": "Workshop",
-    "raintown": "Rainy Town",
-    "robocity": "Robot City",
-    "robohome": "Robot Home"
+    "raintown": "Rain",
+    "robocity": "City",
+    "robohome": "Home"
   },
   "map": {
     "ownText": "My text",
@@ -213,7 +213,17 @@
     "growthDifficulty": "Things will move a little faster now.",
     "growthWordLen": "Words can now have {n} letters.",
     "medalAria": "medal number {n}",
-    "repaired": "You repaired the little robot {name}!"
+    "repaired": "You repaired the little robot {name}!",
+    "badgeNew": "New badge!",
+    "badgeSilver": "Your badge is silver now!",
+    "badgeGold": "Your badge is gold now!"
+  },
+  "badge": {
+    "bronze": "bronze",
+    "silver": "silver",
+    "gold": "gold",
+    "aria": "Badge of {world}: {tier}",
+    "locked": "Finish world {n}"
   },
   "surprise": {
     "ask": "{piko} has a secret:",
@@ -544,6 +554,8 @@
       "The big gate is opening! Welcome to Robot City.",
       "The whole code is right!"
     ],
+    "gateIntro": "The main gate wants the whole code without a mistake. If you slip, you start again. There is no hurry.",
+    "gateSlow": "Slowly and exactly. No clock runs here.",
     "welcomeDone": [
       "The whole family said hello!",
       "Beep beep beep! The little robots are happy."
@@ -561,7 +573,8 @@
     "lastYesterday": "We last trained yesterday.",
     "lastDays": "We last trained {n} days ago.",
     "never": "We have not trained together yet.",
-    "week": "Last 7 days: {n} min"
+    "week": "Last 7 days: {n} min",
+    "badges": "Badges"
   },
   "stats": {
     "title": "My keys",

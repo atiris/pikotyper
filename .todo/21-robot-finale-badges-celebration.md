@@ -64,14 +64,33 @@ No schema change: badges and their tier come from `worldsDone` and the stars in
   - Story reward scenes stay as they are; the badge comes in addition.
 
 ## Steps
-- [ ] Perfect-run gate with restart, intro card, hidden paws, "bzzt" sound; unit test
+- [x] Perfect-run gate with restart, intro card, hidden paws, "bzzt" sound; unit test
   for the code builder (8 x 6, uses only active keys, symbols when known).
-- [ ] Piko celebrates in place; run-off removed; tools fade out; reduced motion.
-- [ ] World names sk + en; spec and README.
-- [ ] Badges: tier logic in `rewards.ts` (+ test), badge component, map corner, results
+- [x] Piko celebrates in place; run-off removed; tools fade out; reduced motion.
+- [x] World names sk + en; spec and README.
+- [x] Badges: tier logic in `rewards.ts` (+ test), badge component, map corner, results
   line, progress view shelf, prompts in `PROMPTS.md`.
-- [ ] Specs (WHAT and WHY).
+- [x] Specs (WHAT and WHY).
 - [ ] Build, vitest, e2e; Playwright MCP: play 9-5 with a super profile (one mistake
   restarts, then finish), the end of a meadow level (Piko jumps, fan gone, no run-off),
   map with badges (prepared profile with bronze / silver / gold), results with a badge
   upgrade. Screenshots.
+
+## State
+Decisions taken while implementing:
+- The code builder lives in `src/game/gate.ts` (pure, tested); a symbol or digit never
+  opens a group, so the first key of a group is always a letter. Odd groups get 1-2
+  marks, even groups sometimes one.
+- A wrong key with nothing typed yet (first group, first key) restarts nothing and does
+  not count as a restart; every wrong key at the gate plays "bzzt" instead of the usual
+  wrong sound (`Mode.wrongSfx`).
+- The intro card is a generic `Mode.intro()` shown by the runtime after the get-ready
+  card, before input starts, so keys typed while it is open go nowhere.
+- The results open 1.4 s after the level ends (the mode's own end delay comes first);
+  three hops of 0.4 s. With reduced motion the results come after the same 1.4 s.
+- Tools that fade: the meadow fan, the rain umbrella and the dragon shields. The junkyard
+  magnet belongs to the crane and is gone with its piece anyway; the space rocket is a
+  vehicle, not a tool.
+- Badge fallback: the world's map island picture, else its number on a coloured disc.
+- e2e: the gate (intro, restart on a mistake, no paw button) and badges (prepared
+  profile: map tiers, gold upgrade on the results, shelf of 10).

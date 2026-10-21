@@ -312,6 +312,27 @@ Cute, soft 2D children's game icon, flat vector style with gentle gradients, sof
 The same star with exactly the same shape, size, position and outline, but empty: filled with flat soft light grey, no highlight. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
 ```
 
+### badge-*.jpg (world badges)
+One round badge picture per world, shown in a medal on the map, the results and the
+progress view. The ring (bronze, silver, gold) is drawn by the game, so the picture has
+no ring or frame. Replace BADGE with the text from the table.
+```
+Cute, soft 2D children's game icon, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. A single badge picture: BADGE. Front view, centered, the whole object visible, wide empty margin around it, it fits inside a circle. No ring, no frame, no ribbon, no text, no letters, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
+| File | BADGE | Status |
+|---|---|---|
+| `badge-meadow.jpg` | a sealed envelope with a small star seal, a secret invitation | new |
+| `badge-space.jpg` | a cute round red rocket flying up with a small flame | new |
+| `badge-planet.jpg` | an open paw-like hand with a soft glowing turquoise light around it (the Force) | new |
+| `badge-dragons.jpg` | a big spotted dragon egg in pastel green and cream | new |
+| `badge-egg.jpg` | a happy baby dragon peeking out of a cracked egg shell | new |
+| `badge-junkyard.jpg` | a small friendly round robot waving one arm, a bit rusty | new |
+| `badge-workshop.jpg` | a silver gear standing on one springy coil leg | new |
+| `badge-raintown.jpg` | an open red umbrella with a few raindrops | new |
+| `badge-robocity.jpg` | a blue key card with a small chip and a key symbol | new |
+| `badge-robohome.jpg` | a cozy little house with a big red heart on the door | new |
+
 ### ui-posture.jpg ("Ready, steady, type!" card before every adventure)
 ```
 Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, soft dark-brown outlines (not black), warm pastel palette, light soft shading. Calm and friendly, suitable for children aged 8 to 12. No text, no letters, no numbers, no watermark.

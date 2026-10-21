@@ -20,11 +20,20 @@ Each world ends with a bigger, special challenge:
   whole loop, one with mistakes half of it.
 - **Battery** (workshop) and **storm cloud** (rainy town): rhythm sequences like the
   energy wave; the battery fills four bars, the cloud shrinks and the sun comes out.
-- **Main gate** (robot city): a long code split into short groups; each group lights one
-  part of the gate's ring.
+- **Main gate** (city): a test of accuracy. The code is eight groups of six characters
+  from the child's own keys, letters with any known punctuation and digits (every second
+  group has at least one of them). The whole code shows at once in two rows of panels;
+  the current group is typed in its panel and each typed group lights one part of the
+  gate's ring. A wrong key starts the code again: the lit groups go dark with a soft
+  buzz and the same code starts from its first group. A card says so before the first
+  group, and after three restarts Piko says once to go slowly and exactly, since no clock
+  runs. There is no timer and no other loss, Piko's paws are off (they would type the
+  code for the child), and the stars come from the accuracy as usual.
 - **Family welcome** (robot home): little robots pop out of boxes with short words, like
   the friendly mole.
-- None of them can fail the level.
+- None of them can fail the level; the main gate can only start again.
 
 ## Why
 - Variety keeps children engaged; low replay value is a top complaint about Dance Mat.
+- The last gate of the robot story asks for exact typing, the skill the story trains,
+  and stays fair for every child because nothing hurries or ends the try.

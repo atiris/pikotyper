@@ -14,6 +14,7 @@ import { recordTaskRun, taskOwn } from '../share/task';
 import { localDate } from '../learning/stats';
 import { type Child, button, h } from '../ui/dom';
 import { keyLabel } from '../ui/keyboard-guide';
+import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
 import { playLevel } from './map';
 import { openStats } from './stats';
@@ -98,6 +99,10 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   }
   if (r.newAccessories.length) facts.push(chip('good', t('results.newAccessory', { n: r.newAccessories.length })));
   for (const kind of r.newCompanions) facts.push(chip('good', t('results.newCompanion', { kind: t(`kinds.${kind}`) })));
+  if (r.badge) {
+    const line = !r.badge.upgrade ? 'results.badgeNew' : r.badge.tier === 'gold' ? 'results.badgeGold' : 'results.badgeSilver';
+    facts.push(chip('badge-fact', badge(r.badge.world, r.badge.tier, true), h('b', {}, t(line))));
+  }
   if (rescued) facts.push(chip('good', t(rescued.kind === 'robot' ? 'results.repaired' : 'results.rescued', { name: rescued.name })));
   if (r.growth) {
     facts.push(chip('growth', medal(r.growth.medal, true), h('span', {}, h('b', {}, t('results.growthTitle')), ' ',

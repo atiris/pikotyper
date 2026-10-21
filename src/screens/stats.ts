@@ -2,7 +2,7 @@ import { app, go, layout } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
 import { STORIES, WORLDS, storyOpen, worldLevels } from '../game/levels';
-import { totalStars } from '../game/rewards';
+import { badgeTier, totalStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
@@ -11,6 +11,7 @@ import type { Profile } from '../storage/schema';
 import { lineChart } from '../ui/charts';
 import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
+import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
 
 /**
@@ -95,7 +96,7 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
   return h('div', { class: 'heat-host' }, toggle, kb.el);
 }
 
-/** Stars, the open stories' worlds and levels done, and when the child last trained. */
+/** Stars, the open stories' worlds and levels done, the badge shelf, and when the child last trained. */
 function progressSection(p: Profile): HTMLElement {
   const star = imageUrl('ui-star');
   const stories = STORIES.filter((s) => storyOpen(p, s)).map((s) => {
@@ -115,6 +116,8 @@ function progressSection(p: Profile): HTMLElement {
   return h('section', { class: 'progress-view' },
     h('p', { class: 'progress-stars' }, star ? h('img', { src: star, alt: '' }) : '★', t('progress.stars', { n: totalStars(p) })),
     ...stories,
+    h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')),
+      h('div', { class: 'badge-row' }, ...WORLDS.map((_, w) => badge(w, badgeTier(p, w), true)))),
     h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
 }
 

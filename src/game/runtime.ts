@@ -58,6 +58,11 @@ const CAPITAL_EXTRA = 1.5;
 /** Bolt's place next to the DOM Piko, in CSS pixels from the left, and his height in game units. */
 const BOLT_CSS_X = 200;
 const BOLT_SIZE = 150;
+/** The end of a level: Piko hops HOPS times of HOP_TIME seconds, his tool fades in TOOL_FADE, then the results open. */
+const HOPS = 3;
+const HOP_TIME = 0.4;
+const TOOL_FADE = 0.4;
+const RESULTS_AFTER = 1.4;
 
 /**
  * The targets of a profile: its active keys (or a drill's, or the keys chosen for free practice),
@@ -249,9 +254,9 @@ export class LevelRuntime {
     void this.prepare();
   }
 
-  /** Story levels and rescue missions; free practice and drills count every key. */
+  /** Story levels and rescue missions; free practice and drills count every key, and the main gate's code is the child's own. */
   get pawsAllowed(): boolean {
-    return this.def.kind !== 'practice' && !this.opts.keys;
+    return this.def.kind !== 'practice' && this.def.kind !== 'gate' && !this.opts.keys;
   }
 
   get pikoOnStage(): boolean {
@@ -279,6 +284,9 @@ export class LevelRuntime {
     }
     if (this.disposed) return;
     if (!this.opts.keys && await showPosture(host, p, tip, this.surprise) === 'cancel') return this.exit();
+    if (this.disposed) return;
+    const intro = this.mode.intro();
+    if (intro) await showCard(host, h('p', {}, intro), { button: t('common.ok'), cls: 'mode-intro' });
     if (this.disposed) return;
     this.mode.start();
     this.started = true;
@@ -395,7 +403,7 @@ export class LevelRuntime {
         this.errors++;
         this.trackWrong(res.expected);
       }
-      this.sfx('wrong');
+      this.sfx(this.mode.wrongSfx);
       this.setMood('thinking', 1.2);
       this.setRobotMood('worried', 1);
       this.mode.onWrong(res.target);
@@ -547,13 +555,11 @@ export class LevelRuntime {
     return this.mode.boltSpot() ?? { x: BOLT_CSS_X / this.stage.scale, y: VH - 6 };
   }
 
-  /** Bolt on the canvas, under the mode's objects; he runs off with Piko at the end. */
+  /** Bolt on the canvas, under the mode's objects; he hops with Piko at the end. */
   private drawBolt(g: G): void {
     const { x, y } = this.boltSpot();
-    const run = this.exitRun;
-    if (run == null) return drawRobot(g, this.robot!, this.robotMood, x, y, BOLT_SIZE, this.mode.t);
-    if (this.reduceMotion) return drawRobot(g, this.robot!, 'happy', x, y, BOLT_SIZE, this.mode.t, 1 - run);
-    drawRobot(g, this.robot!, 'happy', x + (this.vw + 150 - x) * run * run, y - Math.abs(Math.sin(run * Math.PI * 4)) * 20, BOLT_SIZE, this.mode.t);
+    if (this.endTime == null) return drawRobot(g, this.robot!, this.robotMood, x, y, BOLT_SIZE, this.mode.t);
+    drawRobot(g, this.robot!, 'happy', x, y - Math.sin(this.endHop * Math.PI) * 24, BOLT_SIZE, this.mode.t);
   }
 
   // ---- paw help ------------------------------------------------------------------
@@ -888,31 +894,43 @@ export class LevelRuntime {
     const result = completeLevel(p, this.def, { accuracy, chars, errors, cpm, seconds }, typedShare);
     saveProfile();
     this.sfx('reward');
-    this.runOff();
-    // Leaving during the run-off (back button, map) must not open the results.
-    setTimeout(() => { if (!this.disposed) this.opts.onFinish(result); }, this.reduceMotion ? 300 : 900);
+    this.celebrate();
+    // Leaving during the celebration (back button, map) must not open the results.
+    setTimeout(() => { if (!this.disposed) this.opts.onFinish(result); }, RESULTS_AFTER * 1000);
   }
 
-  private runOffStart = 0;
+  private endAt = 0;
 
-  /** 0..1 while Piko runs off at the end of the level, else null (modes with a canvas Piko read it). */
-  get exitRun(): number | null {
-    if (!this.runOffStart) return null;
-    return Math.min(1, (performance.now() - this.runOffStart) / (this.reduceMotion ? 250 : 900));
+  /** Seconds since the level ended, null while it runs. */
+  get endTime(): number | null {
+    return this.endAt ? (performance.now() - this.endAt) / 1000 : null;
   }
 
-  /** Piko runs off to the right edge with small hops before the results card; a quick fade with reduced motion. */
-  private runOff(): void {
-    this.runOffStart = performance.now();
+  /** Phase 0..1 of the current end hop, 0 when there is none (and always with reduced motion); canvas heroes and Bolt read it. */
+  get endHop(): number {
+    const e = this.endTime;
+    if (e == null || this.reduceMotion || e >= HOPS * HOP_TIME) return 0;
+    return (e % HOP_TIME) / HOP_TIME;
+  }
+
+  /** Opacity of the tool Piko holds in the mode: it fades out at the end, at once with reduced motion. */
+  get toolAlpha(): number {
+    const e = this.endTime;
+    if (e == null) return 1;
+    return this.reduceMotion ? 0 : Math.max(0, 1 - e / TOOL_FADE);
+  }
+
+  /** Piko stays in place and hops happily before the results card; just the happy face with reduced motion. */
+  private celebrate(): void {
+    this.endAt = performance.now();
     this.hideBubble();
-    if (this.pikoOnStage) return;
-    // Web animations: the reduced-motion CSS rules would cut a CSS animation to nothing.
-    if (this.reduceMotion) {
-      this.piko.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: 'forwards' });
-      return;
+    this.moodTimer = 0;
+    renderPikoInto(this.piko, app.profile!.companion, 'happy');
+    this.piko.classList.remove('jump');
+    if (!this.reduceMotion) {
+      void this.piko.offsetWidth;
+      this.piko.classList.add('celebrate');
     }
-    const hop = (x: number, y: number) => ({ transform: `translate(${x}vw, ${-y}px)` });
-    this.piko.animate([hop(0, 0), hop(3, 28), hop(12, 0), hop(28, 24), hop(50, 0), hop(75, 18), hop(105, 0)], { duration: 900, easing: 'ease-in', fill: 'forwards' });
   }
 
   /** Ends an untimed practice on request. */

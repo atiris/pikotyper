@@ -113,7 +113,7 @@ export class RainMode extends Mode {
     const b = this.boltSpot();
     if (this.umbrella > 0) {
       g.save();
-      g.globalAlpha = Math.min(1, this.umbrella * 2);
+      g.globalAlpha = Math.min(1, this.umbrella * 2) * this.L.toolAlpha;
       drawUmbrella(g, b.x, HEAD - 70, 200, ease.outBack(Math.min(1, (1 - this.umbrella) * 5 + 0.2)));
       g.restore();
     }

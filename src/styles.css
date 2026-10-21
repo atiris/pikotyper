@@ -251,6 +251,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .level-piko { position: absolute; left: 0.6rem; bottom: 0; z-index: 2; cursor: pointer; filter: drop-shadow(0 6px 8px rgba(40, 30, 20, 0.25)); }
 .level-piko.waiting { visibility: hidden; }
 .level-piko.jump { animation: jump 0.6s ease; }
+.level-piko.celebrate { animation: jump 0.4s ease 3; }
 .bubble {
   position: absolute; left: 150px; bottom: 120px; z-index: 3; max-width: min(360px, 60vw);
   background: #fff; border-radius: 20px; padding: 0.7rem 1rem; font-weight: 600;
@@ -436,6 +437,24 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .world-dot { display: inline-block; border-radius: 50%; background: var(--line); }
 .world-dot.done { background: var(--green); }
 .progress-last { color: var(--ink-soft); font-weight: 600; }
+/* World badges: the world's picture on a disc, the ring shows the tier. */
+.badge { --ring: #c98a4b; --c: #ccc; position: relative; display: inline-grid; place-items: center; flex: none; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 35% 30%, #fff, var(--c) 75%); box-shadow: inset 0 0 0 5px var(--ring), 0 3px 6px rgba(40, 30, 20, 0.2); }
+.badge img { width: 78%; height: 78%; object-fit: contain; }
+.badge-num { font-weight: 800; font-size: 1.5rem; color: rgba(40, 30, 20, 0.7); }
+.badge.silver { --ring: #b9c3cf; }
+.badge.gold { --ring: #f5b301; box-shadow: inset 0 0 0 5px var(--ring), 0 0 10px rgba(245, 179, 1, 0.6); }
+.badge.none { --ring: var(--line); background: transparent; box-shadow: inset 0 0 0 3px var(--line); }
+.badge.none img { filter: grayscale(1); opacity: 0.25; }
+.badge.none .badge-num { color: var(--ink-soft); opacity: 0.5; }
+.badge.small { width: 40px; height: 40px; box-shadow: inset 0 0 0 3px var(--ring), 0 2px 4px rgba(40, 30, 20, 0.2); }
+.badge.small.gold { box-shadow: inset 0 0 0 3px var(--ring), 0 0 8px rgba(245, 179, 1, 0.6); }
+.badge.small.none { box-shadow: inset 0 0 0 2px var(--line); }
+.badge.small .badge-num { font-size: 1rem; }
+.island-art .badge { position: absolute; top: 0; right: 0; }
+.island-art .badge img { animation: none; filter: none; height: 78%; }
+.badge-shelf h4 { margin: 0.2rem 0; font-size: 0.95rem; color: var(--ink-soft); }
+.badge-row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.fact.badge-fact { background: #fff3c9; box-shadow: none; padding: 0.2em 0.75em 0.2em 0.25em; }
 .legend { display: flex; gap: 0.6rem; flex-wrap: wrap; font-size: 0.9rem; }
 .lg { padding: 0.2em 0.6em; border-radius: 10px; font-weight: 600; }
 .lg.heat-good { background: #c9efd3; } .lg.heat-ok { background: #fff1b8; } .lg.heat-practice { background: #ffd4c4; }

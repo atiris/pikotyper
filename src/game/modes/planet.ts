@@ -54,12 +54,9 @@ export abstract class HeroMode extends Mode {
   }
 
   protected drawHero(g: G): void {
-    const run = this.L.exitRun;
-    if (run == null) return drawPiko(g, app.profile!.companion, this.mood, this.heroX, this.heroY, 170, { t: this.t, jump: this.jump });
-    // The level is done: Piko runs off to the right with small hops (fades with reduced motion).
-    if (this.L.reduceMotion) return drawPiko(g, app.profile!.companion, 'happy', this.heroX, this.heroY, 170, { t: this.t, alpha: 1 - run });
-    const x = this.heroX + (this.L.vw + 150 - this.heroX) * ease.inQuad(run);
-    drawPiko(g, app.profile!.companion, 'happy', x, this.heroY, 170, { t: this.t, jump: (run * 4) % 1 });
+    // The level is done: Piko hops happily in place.
+    if (this.L.endTime != null) return drawPiko(g, app.profile!.companion, 'happy', this.heroX, this.heroY, 170, { t: this.t, jump: this.L.endHop });
+    drawPiko(g, app.profile!.companion, this.mood, this.heroX, this.heroY, 170, { t: this.t, jump: this.jump });
   }
 }
 

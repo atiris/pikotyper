@@ -4,7 +4,7 @@ import { DIACRITICS, SHIFT_L, SHIFT_R, SPACE, isLetterKey, shiftKeyOf } from '..
 import type { OwnMix } from '../storage/schema';
 
 const VOWELS = new Set([...'aeiouyáéíóúýäô']);
-const DIGITS = new Set([...'0123456789']);
+export const DIGITS = new Set([...'0123456789']);
 /** Pseudo-words must not contain these (sk + en). */
 const BLOCK = ['sex', 'fuck', 'shit', 'piss', 'kurv', 'pič', 'kokot', 'jeb', 'hovn', 'debil', 'srat', 'prd', 'ass', 'dick', 'cock', 'fag', 'nazi', 'kill', 'dead', 'hitl', 'nig', 'cum', 'tit', 'pis', 'kret', 'idiot', 'hnus', 'smrt'];
 

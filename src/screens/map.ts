@@ -6,6 +6,8 @@ import { t } from '../i18n/i18n';
 import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels } from '../game/levels';
 import type { Profile } from '../storage/schema';
 import { activeKeys } from '../learning/lessons';
+import { badgeTier } from '../game/rewards';
+import { badge } from '../ui/badge';
 import { button, h, icon } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
 import { ownTextPhrases } from '../game/modes/practice';
@@ -102,8 +104,10 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysB
         missing ? icon('key', 'icon level-key') : h('span', { class: 'mini-stars' }, ...[1, 2, 3].map((s) => h('i', { class: s <= stars ? 'on' : '' }))));
       return b;
     });
+    const tier = badgeTier(p, wi);
     return h('div', { class: `island ${open ? '' : 'locked'} island-${w}` },
-      h('div', { class: 'island-art' }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock' }, icon('lock'))),
+      h('div', { class: 'island-art' }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock' }, icon('lock')),
+        tier ? badge(wi, tier, true) : null),
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
       h('div', { class: 'level-row' }, ...levels));
   });

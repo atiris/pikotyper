@@ -67,10 +67,11 @@ no punishment, no ads, no accounts.
 |---|---|---|---|
 | 6. Junkyard | a magnet crane lifts junk off the pile where Bolt beeps | tangled cable knot | Bolt becomes a friend |
 | 7. Workshop | parts on a conveyor belt go into Bolt's basket | battery charged by rhythm | new legs and antenna |
-| 8. Rainy Town | Piko's umbrella catches raindrops before Bolt gets wet | grumpy storm cloud | a raincoat and an umbrella |
-| 9. Robot City | doors open with passwords typed on their panels | main gate with a long code | the home key card |
-| 10. Robot Home | lamps switch on and helper robots wake up | little robots popping out of boxes | Bolt's family, little robots in rescue missions |
+| 8. Rain | Piko's umbrella catches raindrops before Bolt gets wet | grumpy storm cloud | a raincoat and an umbrella |
+| 9. City | doors open with passwords typed on their panels | main gate: a long code without a mistake | the home key card |
+| 10. Home | lamps switch on and helper robots wake up | little robots popping out of boxes | Bolt's family, little robots in rescue missions |
 
+Every finished world gives a badge that turns silver and gold with more stars.
 Rescued dragons and repaired robots collect on the Little friends screen.
 
 Piko can be one of nine animals and wears 35 accessories earned by progress (never by chance).

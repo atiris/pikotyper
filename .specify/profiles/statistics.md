@@ -6,7 +6,8 @@
   to press).
 - An overlay opened by clicking Piko (on the map, or in a level, which pauses first)
   starts with "My progress": all stars earned, for each open story the worlds done and
-  the levels with a star (with the worlds' pictures, the done ones in colour), and when
+  the levels with a star (with the worlds' pictures, the done ones in colour), the shelf
+  of world badges ([story](../game/story.md)), and when
   the child last trained (today, yesterday, n days ago) with the minutes of the last 7
   days. Below it a friendly view of the keys: a keyboard colored
   by how well each key goes, the 3 keys to practice, the growth medals earned, and a

@@ -1,5 +1,6 @@
 import { isMastered } from '../learning/lessons';
 import type { CompanionKind, Profile } from '../storage/schema';
+import { worldLevels } from './levels';
 
 /** Accessory unlocks: tied to levels, worlds and key mastery; never random. */
 const BY_LEVEL: Record<string, string> = {
@@ -15,6 +16,24 @@ const BY_MASTERY: [number, string][] = [[8, 'heart-glasses'], [16, 'star-shirt']
 
 /** Story rewards per world. */
 export const WORLD_REWARDS = ['invitation', 'landing', 'force', 'egg', 'hatched', 'friends', 'legs', 'raincoat', 'key', 'home'];
+
+/** A world's badge: bronze when the world is done, better with the world's stars. */
+export type BadgeTier = 'bronze' | 'silver' | 'gold';
+export const BADGE_TIERS: BadgeTier[] = ['bronze', 'silver', 'gold'];
+/** World stars (5 levels x 3) for a silver and a gold badge. */
+export const BADGE_SILVER = 12;
+export const BADGE_GOLD = 15;
+
+export function worldStars(p: Profile, world: number): number {
+  return worldLevels(world).reduce((a, l) => a + (p.progress.levels[l.id] ?? 0), 0);
+}
+
+/** The badge of a world, null until the world is done. */
+export function badgeTier(p: Profile, world: number): BadgeTier | null {
+  if (!p.progress.worldsDone.includes(world)) return null;
+  const stars = worldStars(p, world);
+  return stars >= BADGE_GOLD ? 'gold' : stars >= BADGE_SILVER ? 'silver' : 'bronze';
+}
 
 export interface UnlockRule {
   acc: string;

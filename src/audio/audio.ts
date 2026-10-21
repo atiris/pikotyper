@@ -1,6 +1,6 @@
 import { assetUrl, hasMusic } from '../gfx/assets';
 
-export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'cheer';
+export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'cheer' | 'bzzt';
 /** Quick sound switch: normal, quiet (20 % of normal) or off. */
 export type SoundLevel = 'normal' | 'quiet' | 'off';
 
@@ -133,6 +133,7 @@ class AudioEngine {
     switch (kind) {
       case 'key': tone(880 + Math.random() * 60, 0, 0.07, 'triangle', 0.12); break;
       case 'wrong': tone(300, 0, 0.18, 'sine', 0.12, 240); break;
+      case 'bzzt': tone(150, 0, 0.16, 'square', 0.03, 120); tone(150, 0.08, 0.12, 'square', 0.025, 110); break;
       case 'word': tone(660, 0, 0.12, 'triangle', 0.2); tone(990, 0.08, 0.18, 'triangle', 0.18); break;
       case 'pop': tone(520, 0, 0.12, 'sine', 0.25, 1040); break;
       case 'whoosh': tone(200, 0, 0.35, 'sine', 0.12, 900); break;

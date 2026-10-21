@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createProfile, playLevel } from './helpers';
+import { createProfile, playLevel, typeChar } from './helpers';
 
 test('a new child plays the first level by typing and sees stars', async ({ page }) => {
   const errors: string[] = [];
@@ -10,6 +10,8 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   await page.keyboard.press('Escape');
   const text = await playLevel(page);
   expect(text).toMatch(/%/);
+  // Piko celebrated in place, not running off.
+  await expect(page.locator('.level-piko.celebrate')).toHaveCount(1);
   await expect(page.locator('.results-card .star.on').first()).toBeVisible();
   await expect(page.locator('.results-card .teaser.ask')).toBeVisible();
   await page.keyboard.press('Escape');
@@ -117,4 +119,60 @@ test('Escape on the get-ready card goes back to the map', async ({ page }) => {
   await page.locator('.posture-card').waitFor();
   await page.keyboard.press('Escape');
   await expect(page.locator('.map-screen')).toBeVisible();
+});
+
+test('the main gate wants its whole code without a mistake and starts again after one', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('./');
+  await page.locator('.start-screen').waitFor();
+  await page.keyboard.type('superpikotyper', { delay: 40 });
+  await page.locator('.story-robot .island-robocity .level-node.super').click();
+  await page.locator('.posture-card').waitFor();
+  await page.keyboard.press('Space');
+  await expect(page.locator('.mode-intro')).toContainText('without a mistake');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.paw-btn')).toHaveCount(0);
+  const next = () => page.locator('.kb-guide').getAttribute('data-next');
+  await expect.poll(next).not.toBe('');
+  for (let i = 0; i < 7; i++) {
+    await typeChar(page, (await next())!);
+    await page.waitForTimeout(60);
+  }
+  await expect.poll(() => page.locator('.progress-fill').evaluate((e) => e.style.width)).toBe('13%');
+  const expected = (await next())!;
+  await page.keyboard.type(expected === 'a' ? 's' : 'a');
+  await expect.poll(() => page.locator('.progress-fill').evaluate((e) => e.style.width)).toBe('0%');
+  expect(await playLevel(page, false)).toMatch(/%/);
+  expect(errors).toEqual([]);
+});
+
+test('world badges sit on the map, grow with stars and line up on the progress shelf', async ({ page }) => {
+  await createProfile(page, 'Bea');
+  await page.evaluate(() => {
+    const d = JSON.parse(localStorage.getItem('pikotyper:v1')!);
+    const p = d.profiles[0];
+    p.progress.worldsDone = [0, 1, 2];
+    Object.assign(p.progress.levels, {
+      'w1-1': 2, 'w1-2': 3, 'w1-3': 3, 'w1-4': 3, 'w1-5': 3,
+      'w2-1': 3, 'w2-2': 3, 'w2-3': 2, 'w2-4': 2, 'w2-5': 2,
+      'w3-1': 1, 'w3-2': 1, 'w3-3': 1, 'w3-4': 1, 'w3-5': 1,
+    });
+    localStorage.setItem('pikotyper:v1', JSON.stringify(d));
+  });
+  await page.reload();
+  await expect(page.locator('.island-meadow .badge.silver')).toBeVisible();
+  await expect(page.locator('.island-space .badge.silver')).toBeVisible();
+  await expect(page.locator('.island-planet .badge.bronze')).toBeVisible();
+  await expect(page.locator('.island-dragons .badge')).toHaveCount(0);
+  await page.locator('.island-meadow .level-node').first().click();
+  await page.locator('.story-screen').waitFor();
+  await page.keyboard.press('Escape');
+  expect(await playLevel(page, false)).toContain('Your badge is gold now!');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.island-meadow .badge.gold')).toBeVisible();
+  await page.locator('.map-piko').click();
+  await expect(page.locator('.badge-shelf .badge')).toHaveCount(10);
+  await expect(page.locator('.badge-shelf .badge.none')).toHaveCount(7);
+  await expect(page.locator('.badge-shelf .badge.none').first()).toHaveAttribute('aria-label', 'Finish world 4');
 });

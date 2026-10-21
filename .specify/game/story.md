@@ -44,14 +44,14 @@ worried at a mistake and happy at a finished word.
 7. **Workshop** - parts (gears, bolts, wheels, springs, an antenna) ride on a conveyor
    belt; a typed part lands in Bolt's basket, the others ride on. Super-obstacle: Bolt's
    battery, charged bar by bar by a steady rhythm. Reward: new legs and antenna.
-8. **Rainy Town** - raindrops fall toward Bolt, who must not rust; a typed drop is caught
+8. **Rain** (Dážď) - raindrops fall toward Bolt, who must not rust; a typed drop is caught
    under Piko's umbrella, a missed one lands on Bolt, who shakes like a dog and giggles
    (no failure). Super-obstacle: a grumpy storm cloud calmed by rhythm. Reward: a raincoat
    for Bolt and an umbrella for Piko.
-9. **Robot City** - locked doors with one to three password panels; typing every panel's
-   password opens the door with a chime. Super-obstacle: the main gate, whose long code is
-   typed in short groups. Reward: Bolt's home key card.
-10. **Robot Home** - dark rooms; each typed word switches on a lamp and wakes a helper
+9. **City** (Mesto) - locked doors with one to three password panels; typing every panel's
+   password opens the door with a chime. Super-obstacle: the main gate, whose long code
+   must be typed without a single mistake. Reward: Bolt's home key card.
+10. **Home** (Domov) - dark rooms; each typed word switches on a lamp and wakes a helper
     robot that waves. Super-obstacle: Bolt's family welcome, little robots popping out of
     boxes (like the friendly mole). Reward: the family thanks Piko, and rescue missions
     also repair little robots.
@@ -69,9 +69,25 @@ worried at a mistake and happy at a finished word.
   robot. They collect on the **Little friends** screen, in two groups.
 - Every level can be finished by any child: obstacles that are not cleared in time just
   pass by or are helped by Piko; they never cause failure.
+- World names are short words a young child reads at once (Dážď, Mesto, Domov).
+
+### World badges
+- Every finished world gives a badge to collect, a round medal with the world's picture:
+  meadow an invitation envelope, space a rocket, planet a glowing hand (the Force),
+  dragons a dragon egg, egg journey the hatched baby dragon, junkyard Bolt waving,
+  workshop a gear with a spring leg, rain an umbrella, city a key card, home a house with
+  a heart. The story reward scenes stay; the badge comes in addition.
+- Its tier follows the world's stars (5 levels x 3): bronze when the world is done, silver
+  at 12 stars, gold at 15 (three stars everywhere). The tier is the colour of its ring.
+- The end screen says "New badge!" or "Your badge is silver / gold now!" when a level
+  earns or improves one. The badge sits in the corner of its world card on the map, and
+  the progress view has a badge shelf with all ten places: earned ones in colour with
+  their tier, the others as grey outlines that say which world to finish.
 
 ## Why
 - The story gives a reason to practice without competition; replayable rescue missions
   give long-term variety without streak pressure.
 - More stories keep older children playing; typing passwords at locked doors fits a
   typing game, and machines appeal to children whom dragons do not.
+- Badges are things to collect, like the dragon egg, and a badge that grows with stars
+  gives replaying a finished world a goal.

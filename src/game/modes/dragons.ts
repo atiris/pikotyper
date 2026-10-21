@@ -97,7 +97,7 @@ export class ShieldMode extends Mode {
       drawSprite(g, d.sprite, d.x, d.y - 70 - hop, 150, { sy: 1 + Math.sin(this.t * 2.5 + d.x) * 0.02 }, blob(DRAGON_COLORS[Number(d.sprite.slice(-1)) - 1] ?? '#7fd6a8'));
       if (d.shield > 0) {
         g.save();
-        g.globalAlpha = d.shield * 0.8;
+        g.globalAlpha = d.shield * 0.8 * this.L.toolAlpha;
         const grad = g.createRadialGradient(d.x, d.y - 80, 40, d.x, d.y - 80, 130);
         grad.addColorStop(0, 'rgba(190,240,255,0.05)');
         grad.addColorStop(0.8, 'rgba(160,230,255,0.45)');

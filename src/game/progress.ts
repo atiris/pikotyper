@@ -1,7 +1,7 @@
 import { advanceLesson } from '../learning/lessons';
 import type { CompanionKind, Profile } from '../storage/schema';
 import { type LevelDef, starsFor } from './levels';
-import { grantAccessories, grantCompanions } from './rewards';
+import { type BadgeTier, badgeTier, grantAccessories, grantCompanions } from './rewards';
 
 export interface LevelResult {
   stars: number;
@@ -21,6 +21,8 @@ export interface LevelResult {
   growth: GrowthStep | null;
   /** The child typed too few keys; Piko's paws did most of the level. */
   byPiko: boolean;
+  /** The world's badge, when this level earned it (`upgrade` false) or made it better. */
+  badge: { world: number; tier: BadgeTier; upgrade: boolean } | null;
 }
 
 export interface GrowthStep {
@@ -75,27 +77,31 @@ export function grow(p: Profile, seconds: number, accuracy: number, typedShare: 
  * Applies a finished level to the profile. Unlocks keys, worlds and accessories.
  * `typedShare`: targets the child typed / targets typed or let pass.
  */
-export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'newCompanions' | 'worldDone' | 'trend' | 'growth' | 'byPiko'>, typedShare: number): LevelResult {
+export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 'stars' | 'newKeys' | 'newAccessories' | 'newCompanions' | 'worldDone' | 'trend' | 'growth' | 'byPiko' | 'badge'>, typedShare: number): LevelResult {
   // Accuracy of a handful of keys says nothing; such a level earns one star and no growth time.
   const byPiko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
   const stars = byPiko ? 1 : starsFor(r.accuracy);
   let worldDone: number | null = null;
+  let badge: LevelResult['badge'] = null;
   if (def.kind !== 'practice') {
     p.progress.levelsFinished++;
     p.progress.starsEarned += stars;
   }
   if (def.index >= 0 && def.kind !== 'practice') {
+    const before = badgeTier(p, def.world);
     p.progress.levels[def.id] = Math.max(p.progress.levels[def.id] ?? 0, stars);
     if (def.isSuper && !p.progress.worldsDone.includes(def.world)) {
       p.progress.worldsDone.push(def.world);
       worldDone = def.world;
     }
+    const tier = badgeTier(p, def.world);
+    if (tier && tier !== before) badge = { world: def.world, tier, upgrade: before !== null };
   }
   const newKeys = advanceLesson(p);
   const newAccessories = grantAccessories(p);
   const newCompanions = grantCompanions(p);
   const growth = byPiko ? null : grow(p, r.seconds, r.accuracy, typedShare);
-  return { ...r, stars, newKeys, newAccessories, newCompanions, worldDone, trend: rhythmTrend(p), growth, byPiko };
+  return { ...r, stars, newKeys, newAccessories, newCompanions, worldDone, trend: rhythmTrend(p), growth, byPiko, badge };
 }
 
 /** Current rhythm vs. a week ago (only positive framing is shown). */
