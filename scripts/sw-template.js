@@ -22,14 +22,14 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   event.respondWith(
-    caches.match(req, { ignoreSearch: req.mode === 'navigate' }).then((hit) => hit || fetch(req).catch(() => (req.mode === 'navigate' ? caches.match('./') : Response.error()))),
+    caches.match(req, { ignoreSearch: req.mode === 'navigate', ignoreVary: true }).then((hit) => hit || fetch(req).catch(() => (req.mode === 'navigate' ? caches.match('./', { ignoreVary: true }) : Response.error()))),
   );
 });
 
 /** Music is cached as it plays; only the last few tracks are kept (the current world). */
 async function music(req) {
   const cache = await caches.open(MUSIC);
-  const hit = await cache.match(req.url);
+  const hit = await cache.match(req.url, { ignoreVary: true });
   if (hit) return hit;
   // Range requests from the audio element are answered from a full download.
   const res = await fetch(req.url);
