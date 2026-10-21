@@ -1,0 +1,42 @@
+import { expect, test } from '@playwright/test';
+import { createProfile, playLevel } from './helpers';
+
+test('own words and a surprise from the parent reach the child\'s next level', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await createProfile(page, 'Ema');
+  await page.locator('.top-actions .icon-btn').first().click();
+  await page.locator('.confirm .btn.danger, .confirm .btn:not(.primary)').last().click();
+  await page.locator('.tab[data-tab=own]').click();
+
+  await page.locator('.own-words textarea').fill('lopta, ruka');
+  await page.locator('.own-words textarea').blur();
+  await expect(page.locator('.own-words .hint')).toContainText('2');
+  await page.locator('.own-text select').selectOption('most');
+  await expect(page.locator('.own-preview li')).toHaveCount(5);
+
+  await page.locator('.own-surprises textarea').first().fill('Where is the treat?');
+  await page.locator('.own-surprises textarea').nth(1).fill('Behind the fridge.');
+  await page.locator('.own-surprises select').nth(1).selectOption('1');
+  await page.locator('.own-surprises .btn.primary').click();
+  await expect(page.locator('.own-surprises .own-list li')).toHaveCount(1);
+
+  await page.locator('.bar .btn').first().click();
+  await page.locator('.map-side .btn.primary').click();
+  await page.locator('.story-screen').waitFor();
+  await page.keyboard.press('Escape');
+  // The first keys are introduced before the get-ready card.
+  while (!(await page.locator('.posture-card').count())) {
+    const sample = await page.locator('.newkey-card').getAttribute('data-sample', { timeout: 5000 }).catch(() => null);
+    if (sample) await page.keyboard.type(sample.repeat(3), { delay: 60 });
+    await page.waitForTimeout(400);
+  }
+  await expect(page.locator('.posture-card .surprise')).toContainText('Where is the treat?');
+  const typed: string[] = [];
+  await playLevel(page, false, typed);
+  expect(typed.join('')).toMatch(/lopta|ruka/);
+  await expect(page.locator('.results-card .surprise.answer')).toHaveText('Behind the fridge.');
+  const revealed = await page.evaluate(() => JSON.parse(localStorage.getItem('pikotyper:v1')!).profiles[0].surprises[0].revealedAt);
+  expect(revealed).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  expect(errors).toEqual([]);
+});

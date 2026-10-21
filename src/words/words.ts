@@ -1,6 +1,7 @@
 import { Rng } from '../engine/rng';
 import { type Layout, canType } from '../keyboard/layouts';
 import { DIACRITICS, SHIFT_L, SHIFT_R, SPACE, isLetterKey, shiftKeyOf } from '../learning/lessons';
+import type { OwnMix } from '../storage/schema';
 
 const VOWELS = new Set([...'aeiouyáéíóúýäô']);
 const DIGITS = new Set([...'0123456789']);
@@ -40,7 +41,58 @@ export interface WordOptions {
   names?: string[];
   /** 0..1 how well each Shift goes; capitals grow from 1 target in 6 to every phrase start. */
   shiftMastery?: Record<string, number>;
+  /** The parent's own words and text, and the share of targets taken from them (0..1). */
+  own?: { words: string[]; text: string; share: number };
   seed?: number;
+}
+
+/** Share of targets from own words and text for each mix choice. */
+export const OWN_SHARE: Record<OwnMix, number> = { off: 0, some: 0.25, half: 0.5, most: 0.8 };
+export const OWN_WORDS_MAX = 300;
+export const OWN_WORD_LEN = 30;
+export const OWN_TEXT_MAX = 4000;
+
+/** Own words from the editor: one per line or separated by commas and spaces, each once, as typed. */
+export function parseOwnWords(text: string): string[] {
+  const words = text.normalize('NFC').split(/[\s,;]+/).map((w) => w.trim()).filter((w) => w && w.length <= OWN_WORD_LEN);
+  return [...new Set(words)].slice(0, OWN_WORDS_MAX);
+}
+
+/** Own words with a character the layout cannot type at all; they are skipped. */
+export function untypableWords(words: string[], layout: Layout): string[] {
+  return words.filter((w) => [...w].some((c) => !canType(layout, c)));
+}
+
+/** Own text with whitespace made single spaces and characters the layout cannot type left out. */
+export function typableText(text: string, layout: Layout): { text: string; dropped: string[] } {
+  const dropped = new Set<string>();
+  const kept = [...text.normalize('NFC').replace(/\s+/g, ' ')].filter((c) => {
+    const ok = c === ' ' || canType(layout, c);
+    if (!ok) dropped.add(c);
+    return ok;
+  });
+  return { text: kept.join('').replace(/ {2,}/g, ' ').trim(), dropped: [...dropped] };
+}
+
+/**
+ * Own text as targets in reading order: sentences and their comma parts, each cut into
+ * pieces of at most `maxWords` words and, where a piece has more words, `maxChars` characters.
+ */
+export function textPhrases(text: string, maxWords: number, maxChars = Infinity): string[] {
+  const parts = text.match(/[^.!?,;:]+[.!?,;:]*/g) ?? [];
+  const out: string[] = [];
+  for (const part of parts) {
+    let piece: string[] = [];
+    for (const w of part.trim().split(' ').filter(Boolean)) {
+      if (piece.length && (piece.length >= maxWords || [...piece, w].join(' ').length > maxChars)) {
+        out.push(piece.join(' '));
+        piece = [];
+      }
+      piece.push(w);
+    }
+    if (piece.length) out.push(piece.join(' '));
+  }
+  return out;
 }
 
 export function letterKeys(keys: string[], noDiacritics: boolean): string[] {
@@ -73,6 +125,10 @@ export class WordSource {
   private keys: Set<string>;
   private focus: Set<string>;
   private recent: string[] = [];
+  private ownWords: string[];
+  private ownText: string;
+  /** Own text cut for each target size, with the place reached in it. */
+  private ownPhrases = new Map<string, { list: string[]; at: number }>();
 
   constructor(words: string[], private opts: WordOptions) {
     this.rng = new Rng(opts.seed);
@@ -87,21 +143,59 @@ export class WordSource {
     this.pool = filterWords(words, set, len);
     this.digits = opts.keys.filter((k) => DIGITS.has(k));
     this.space = this.keys.has(SPACE);
+    const lay = opts.layout;
+    const own = opts.own;
+    this.ownWords = own && lay ? own.words.filter((w) => !untypableWords([w], lay).length) : own?.words ?? [];
+    this.ownText = own && lay ? typableText(own.text, lay).text : own?.text ?? '';
   }
 
   /**
    * Next target of at most `words` words (more than one only once space is known), each at
    * most `maxLen` letters; tries to start with a letter not in `avoidFirst` (targets already on screen).
    */
-  next(avoidFirst: Set<string> = new Set(), maxLen = this.opts.len[1], words = 1): string {
+  next(avoidFirst: Set<string> = new Set(), maxLen?: number, words = 1): string {
+    const own = this.opts.own && this.rng.chance(this.opts.own.share) ? this.ownTarget(avoidFirst, maxLen, words) : null;
+    if (own) return this.remember(own);
+    maxLen ??= this.opts.len[1];
     let target = '';
     for (let attempt = 0; attempt < 12; attempt++) {
       target = this.candidate(maxLen, words);
       if (!avoidFirst.has(target[0].toLowerCase()) && !this.recent.includes(target)) break;
     }
+    return this.remember(target);
+  }
+
+  private remember(target: string): string {
     this.recent.push(target);
     if (this.recent.length > 12) this.recent.shift();
     return target;
+  }
+
+  /**
+   * An own word, or the next piece of own text in order; null when nothing fits. The
+   * word length setting does not apply to own words, only a small object's `limit` does.
+   */
+  private ownTarget(avoidFirst: Set<string>, limit: number | undefined, words: number): string | null {
+    const r = this.rng;
+    const fits = (w: string) => limit === undefined || w.length <= limit;
+    const list = this.ownWords.filter(fits);
+    if (this.ownText && (!list.length || r.chance(0.5))) {
+      const key = `${words}:${limit}`;
+      if (!this.ownPhrases.has(key)) {
+        // Moving targets stay short, as random phrases do.
+        this.ownPhrases.set(key, { list: textPhrases(this.ownText, Math.max(1, words), words <= 2 ? SHORT_TOTAL : Infinity), at: 0 });
+      }
+      const text = this.ownPhrases.get(key)!;
+      const piece = text.list[text.at % text.list.length];
+      // A piece too long for this object waits for a bigger one.
+      if (piece && fits(piece)) {
+        text.at++;
+        return piece;
+      }
+    }
+    if (!list.length) return null;
+    const fresh = list.filter((w) => !this.recent.includes(w) && !avoidFirst.has(w[0].toLowerCase()));
+    return r.pick(fresh.length ? fresh : list);
   }
 
   private candidate(maxLen: number, words: number): string {

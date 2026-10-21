@@ -21,6 +21,6 @@ export function createMode(def: LevelDef & { seconds?: number | null }, L: Level
     case 'wave': return new WaveMode(L);
     case 'slope': return new SlopeMode(L);
     case 'mole': return new MoleMode(L);
-    case 'practice': return new PracticeMode(L, def.seconds ?? null);
+    case 'practice': return new PracticeMode(L, def.seconds ?? null, def.phrases ?? null);
   }
 }

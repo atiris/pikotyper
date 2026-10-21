@@ -56,25 +56,51 @@ game (top research proposals); reading aloud helps young and dyslexic readers.
   directly left of the keyboard button in the level HUD; it toggles `readAloud`.
 
 ## Steps
-- [ ] Schema + migration + tests.
-- [ ] Own content tab: encouragements moved from Settings; questions editor (list of
+- [x] Schema + migration + tests.
+- [x] Own content tab: encouragements moved from Settings; questions editor (list of
   question + answer pairs, add/remove, max 30) and the teaser turn-taking in
   `src/screens/level.ts` with a unit test for the order.
-- [ ] Surprises: editor (question, answer, place picker with world/level names, "next
+- [x] Surprises: editor (question, answer, place picker with world/level names, "next
   level" and "free practice", stars 1-3, list with state "čaká" / "odhalené {date}",
   delete); get-ready card and results card hooks; unit tests: revealed once, not
   revealed below `minStars`, oldest first, never shown after `revealedAt`.
-- [ ] In that tab: "Vlastné slová" (textarea, one word per line or separated by
+- [x] In that tab: "Vlastné slová" (textarea, one word per line or separated by
   commas/spaces) and "Vlastný text" (textarea) with the mix choice and a preview
   of five sample targets; validation messages.
-- [ ] Word source: mix own words/phrases into `WordSource.next` by `ownMix`;
+- [x] Word source: mix own words/phrases into `WordSource.next` by `ownMix`;
   practice "Môj text" mode in order.
-- [ ] Speech module with a unit-testable voice picker; HUD button; reads focus
+- [x] Speech module with a unit-testable voice picker; HUD button; reads focus
   target and bubbles; stops on pause/exit.
-- [ ] Specs (`.specify/learning/words.md`, `.specify/profiles/parent-controls.md`,
+- [x] Specs (`.specify/learning/words.md`, `.specify/profiles/parent-controls.md`,
   `.specify/experience/accessibility.md`), i18n sk + en, README: a "Surprises" part
   saying it is intended that a parent hides real rewards (a treat, a trip, a game
   evening) behind a level, and that the answer is shown to the child only once, after
   the level is done well enough.
-- [ ] Build, vitest, e2e: parent adds two own words with mix "most", the child's
+- [x] Build, vitest, e2e: parent adds two own words with mix "most", the child's
   next level shows one of them. Playwright MCP check of the editor and HUD.
+
+## Done - 2026-10-21
+Shipped: schema v7 with migration (profile `ownQuestions`, `surprises`; settings `ownWords`,
+`ownText`, `ownMix`, `readAloud`; progress `teasersAsked`, `ownQuestionNext`,
+`pendingQuestion`); the "Own content" tab (encouragements moved there, surprises, own
+questions, own words, own text with mix and a five-target preview); teaser turn-taking and
+surprises on the get-ready and results cards; own words/text in `WordSource.next`; "My text"
+practice from the map; `src/audio/speech.ts` with the read button; specs, i18n sk + en,
+README; unit tests and the e2e `e2e/own-content.spec.ts`; Playwright MCP check of the editor,
+"My text" practice, the surprise on the get-ready card and reading aloud (sk-SK voice, rate 0.9).
+
+Decisions taken while implementing:
+- The teaser and surprise logic lives in `src/game/own-content.ts` (pure, unit tested), not in
+  `src/screens/level.ts`; questions and surprises are profile fields next to `customMessages`;
+  the turn counter is `progress.teasersAsked`, only levels with a teaser question count.
+- `ownMix` defaults to `some`, so words a parent adds show up without a second choice.
+- Own words are kept exactly as typed (capitals too) and ignore the word length setting;
+  only a small object's length limit (boulder chunks, moles) keeps a long own word out.
+- Characters of the own text the layout cannot type are dropped (and listed), not the whole
+  phrase, so the text keeps its sense; untypable own words are skipped and listed.
+- Own words and text also mix into normal free practice; drills never get them.
+- "My text" is a map button shown only when the text has something typable; it ends after
+  the last piece and counts as free practice for surprises.
+- The voice picker prefers a local (offline) voice of the language, else any of it.
+- Removing an own question clears a pending answer (its index would point elsewhere).
+- Left out: nothing.

@@ -120,6 +120,18 @@ describe('Store', () => {
     const out = migrate({ version: 5, profiles: [p] }).profiles[0];
     expect(out.progress.companionsUnlocked).toEqual(['owl']);
   });
+
+  it('gives v6 profiles empty own content with reading aloud off', () => {
+    const p: any = newProfile('Ema', 'sk');
+    for (const k of ['ownQuestions', 'surprises']) delete p[k];
+    for (const k of ['ownWords', 'ownText', 'ownMix', 'readAloud']) delete p.settings[k];
+    for (const k of ['teasersAsked', 'ownQuestionNext', 'pendingQuestion']) delete p.progress[k];
+    const out = migrate({ version: 6, profiles: [p] }).profiles[0];
+    expect(out.ownQuestions).toEqual([]);
+    expect(out.surprises).toEqual([]);
+    expect(out.settings).toMatchObject({ ownWords: [], ownText: '', ownMix: 'some', readAloud: false });
+    expect(out.progress).toMatchObject({ teasersAsked: 0, ownQuestionNext: 0, pendingQuestion: null });
+  });
 });
 
 describe('export and import', () => {

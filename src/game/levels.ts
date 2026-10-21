@@ -23,6 +23,8 @@ export interface LevelDef {
   /** Creature / object mix. */
   variant: string;
   isSuper: boolean;
+  /** Free practice of the parent's own text: these targets in order, then the end. */
+  phrases?: string[];
 }
 
 const def = (world: number, index: number, kind: LevelKind, count: number, variant = ''): LevelDef =>
@@ -82,6 +84,6 @@ export function rescueLevel(seed: number): LevelDef {
   return { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: 14, variant: r.variant, isSuper: false };
 }
 
-export function practiceLevel(seconds: number | null): LevelDef & { seconds: number | null } {
-  return { id: 'practice', world: 0, index: -1, kind: 'practice', count: 0, variant: '', isSuper: false, seconds };
+export function practiceLevel(seconds: number | null, phrases?: string[]): LevelDef & { seconds: number | null } {
+  return { id: 'practice', world: 0, index: -1, kind: 'practice', count: 0, variant: '', isSuper: false, seconds, phrases };
 }

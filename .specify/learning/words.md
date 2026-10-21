@@ -23,9 +23,21 @@
   the first word. About one target in six at first, growing to every start as that Shift is
   mastered; while a Shift is the newest key, most targets start with a capital it serves.
 - A target with a capital gets 1.5 s more time. On screen, a space shows as a light dot.
+- **Own words and own text** from a parent (for example this week's spelling words, or a
+  short story) are mixed into the targets of story levels and free practice by a share the
+  parent picks: none, a quarter, half or most. Own words come as typed (capitals too) and
+  are used even with keys the child has not unlocked yet; the guide shows those keys. A word
+  with a character the keyboard cannot type at all is left out, and characters of the text
+  that cannot be typed are dropped; the editor lists both.
+- Own text is split by sentences and commas and comes in reading order, cut to the size
+  of the target (short pieces for moving targets). Free practice has a "My text" choice
+  that types the whole text in order, piece by piece, without random words, and then ends.
 
 ## Why
 - Real words are more motivating; the generator guarantees practice with any key set.
 - Phrases with punctuation and capitals are the step from words to real text; keeping
   moving targets short keeps the game calm, and capitals stay rare until the Shift is easy
   ([research](../../.research/learning/space-punctuation-capitals.md)).
+- Parents and teachers most want the child's own school words and texts in the game; the
+  teacher decides, so unknown keys do not block them
+  ([research](../../.research/learning/own-word-lists.md)).

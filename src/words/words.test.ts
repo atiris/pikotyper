@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { LAYOUTS } from '../keyboard/layouts';
-import { WordSource, filterWords, isBlocked } from './words';
+import { WordSource, filterWords, isBlocked, parseOwnWords, textPhrases, typableText, untypableWords } from './words';
 
 const WORDS = ['sad', 'lak', 'las', 'les', 'kde', 'ide', 'šaty', 'ruka', 'noha', 'dom', 'kôň', 'ja', 'aha', 'jeseň', 'slnko'];
 
@@ -137,5 +137,42 @@ describe('block list', () => {
   it('blocks rude fragments', () => {
     expect(isBlocked('kokot')).toBe(true);
     expect(isBlocked('lesik')).toBe(false);
+  });
+});
+
+describe('own words and text', () => {
+  const lay = LAYOUTS['sk-qwertz'];
+
+  it('parses words from lines, commas and spaces, each once, as typed', () => {
+    expect(parseOwnWords('mama, tata\n  Bratislava  mama;pes')).toEqual(['mama', 'tata', 'Bratislava', 'pes']);
+  });
+
+  it('finds words and characters the layout cannot type', () => {
+    expect(untypableWords(['mama', 'naïve'], LAYOUTS['us-qwerty'])).toEqual(['naïve']);
+    expect(typableText('Ahoj  „mami“!\nAko?', lay)).toEqual({ text: 'Ahoj mami! Ako?', dropped: ['„', '“'] });
+  });
+
+  it('cuts text by sentence and comma into pieces of a few words', () => {
+    expect(textPhrases('Ahoj, ako sa dnes máš? Ja dobre.', 2)).toEqual(['Ahoj,', 'ako sa', 'dnes máš?', 'Ja dobre.']);
+    expect(textPhrases('ja mam velmi rad', 4, 8)).toEqual(['ja mam', 'velmi', 'rad']);
+  });
+
+  it('mixes own words in by the share, even with keys not unlocked', () => {
+    const keys = [...'fjdkslaeiruo'];
+    const src = new WordSource(WORDS, { keys, len: [2, 5], noDiacritics: false, layout: lay, own: { words: ['zebra', 'pes'], text: '', share: 0.8 }, seed: 9 });
+    const out = Array.from({ length: 200 }, () => src.next());
+    const own = out.filter((w) => w === 'zebra' || w === 'pes').length;
+    expect(own).toBeGreaterThan(130);
+    expect(own).toBeLessThan(190);
+  });
+
+  it('takes own text in reading order', () => {
+    const src = new WordSource(WORDS, { keys: [...'fjdkslaeiruo '], len: [2, 5], noDiacritics: false, layout: lay, own: { words: [], text: 'Raz dva. Tri styri.', share: 1 }, seed: 3 });
+    expect(Array.from({ length: 5 }, () => src.next(new Set(), undefined, 2))).toEqual(['Raz dva.', 'Tri styri.', 'Raz dva.', 'Tri styri.', 'Raz dva.']);
+  });
+
+  it('keeps own words out of objects too small for them', () => {
+    const src = new WordSource(WORDS, { keys: [...'fjdkslaeiruo'], len: [2, 5], noDiacritics: false, layout: lay, own: { words: ['zebra'], text: '', share: 1 }, seed: 4 });
+    for (let i = 0; i < 50; i++) expect(src.next(new Set(), 3, 1)).not.toBe('zebra');
   });
 });

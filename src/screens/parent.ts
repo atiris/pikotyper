@@ -1,9 +1,11 @@
 import { app, applyProfileLook, go, saveProfile, useLanguage } from '../app/app';
 import { t } from '../i18n/i18n';
 import { LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
-import { LEVELS, WORLDS } from '../game/levels';
+import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
+import { OWN_QUESTIONS_MAX, OWN_QUESTION_LEN, SURPRISES_MAX, SURPRISE_LEN } from '../game/own-content';
+import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder } from '../learning/lessons';
-import { COMPANION_KINDS, GUEST_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type Profile } from '../storage/schema';
+import { COMPANION_KINDS, GUEST_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type OwnMix, type Profile } from '../storage/schema';
 import { applyImport, parseImport, planImport } from '../storage/store';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
@@ -12,6 +14,7 @@ import { soundButton } from '../ui/chrome';
 import { clickableHeatmap } from './stats';
 import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion, masteredCount } from '../game/rewards';
+import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
 /** Settings are for parents: one calm question instead of a lock a child solves anyway. */
 function parentAccess(): Promise<boolean> {
@@ -29,13 +32,13 @@ function parentAccess(): Promise<boolean> {
 export async function parentScreen(root: HTMLElement, params: { granted?: boolean }): Promise<void> {
   if (!params.granted && !(await parentAccess())) return go('map');
   const p = app.profile!;
-  const tabs = ['settings', 'keys', 'dashboard', 'data'] as const;
+  const tabs = ['settings', 'own', 'keys', 'dashboard', 'data'] as const;
   type Tab = (typeof tabs)[number];
   const body = h('div', { class: 'parent-body' });
   const nav = h('nav', { class: 'tabs', role: 'tablist' });
   const show = (tab: Tab) => {
     nav.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
-    body.replaceChildren(tab === 'settings' ? settingsTab(p) : tab === 'keys' ? keysTab(p) : tab === 'dashboard' ? dashboardTab(p) : dataTab(p));
+    body.replaceChildren(tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'keys' ? keysTab(p) : tab === 'dashboard' ? dashboardTab(p) : dataTab(p));
   };
   for (const tab of tabs) {
     const b = button(t(`parent.tab.${tab}`), () => show(tab), 'tab');
@@ -88,15 +91,11 @@ function settingsTab(p: Profile): HTMLElement {
   name.addEventListener('change', () => { p.name = name.value.trim() || p.name; save(); });
   const pikoName = h('input', { type: 'text', value: p.companion.name, maxlength: 20 });
   pikoName.addEventListener('change', () => { p.companion.name = pikoName.value.trim() || 'Piko'; save(); });
-  const messages = h('textarea', { rows: 3, placeholder: t('parent.messagesPlaceholder') });
-  messages.value = p.customMessages.join('\n');
-  messages.addEventListener('change', () => { p.customMessages = messages.value.split('\n').map((m) => m.trim()).filter(Boolean).slice(0, 20); save(); });
   return h('div', { class: 'settings-grid' },
     h('fieldset', {}, h('legend', {}, t('parent.group.child')),
       field(t('parent.childName'), name),
       field(t('parent.companionName'), pikoName),
       field(t('parent.companionKind'), select<CompanionKind>(p.companion.kind, COMPANION_KINDS.map((k) => [k, t(`kinds.${k}`)]), (v) => { p.companion.kind = v; p.avatar = v; if (!hasCompanion(p, v)) p.progress.companionsUnlocked.push(v); save(); })),
-      field(t('parent.messages'), messages, t('parent.messagesHint')),
       field(t('parent.language'), select<Lang>(p.language, [['sk', 'Slovenčina'], ['en', 'English']], async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
       field(t('parent.layout'), select<LayoutId>(p.layout, LAYOUT_IDS.map((id) => [id, t(`layouts.${id}`)]), (v) => {
         p.layout = v;
@@ -126,6 +125,141 @@ function settingsTab(p: Profile): HTMLElement {
       field(t('parent.reduceMotion'), check(s.reduceMotion, (v) => { s.reduceMotion = v; save(); })),
       field(t('parent.highContrast'), check(s.highContrast, (v) => { s.highContrast = v; save(); })),
       field(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint'))));
+}
+
+/** The parent's own content: encouragements, surprises, questions, words and text. */
+function ownTab(p: Profile): HTMLElement {
+  const messages = h('textarea', { rows: 3, placeholder: t('parent.messagesPlaceholder') });
+  messages.value = p.customMessages.join('\n');
+  messages.addEventListener('change', () => { p.customMessages = messages.value.split('\n').map((m) => m.trim()).filter(Boolean).slice(0, 20); saveProfile(); });
+  return h('div', { class: 'settings-grid own-tab' },
+    h('fieldset', {}, h('legend', {}, t('own.group.messages')), field(t('parent.messages'), messages, t('parent.messagesHint'))),
+    surprisesEditor(p),
+    questionsEditor(p),
+    ...ownWordsEditors(p));
+}
+
+const newId = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36);
+
+/** Story level name for the surprise place picker. */
+function levelName(l: LevelDef): string {
+  return `${t(`worlds.${WORLDS[l.world]}`)}: ${l.isSuper ? t('map.super') : l.index + 1}`;
+}
+
+/** Real rewards a parent hides behind a level; the answer is shown once, after the level went well. */
+function surprisesEditor(p: Profile): HTMLElement {
+  const places: [string, string][] = [['next', t('own.placeNext')], ['practice', t('own.placePractice')], ...LEVELS.map((l): [string, string] => [l.id, levelName(l)])];
+  const placeName = (id: string) => places.find(([v]) => v === id)?.[1] ?? id;
+  const q = h('textarea', { rows: 2, maxlength: SURPRISE_LEN, placeholder: t('own.surpriseQPlaceholder') });
+  const a = h('textarea', { rows: 2, maxlength: SURPRISE_LEN, placeholder: t('own.surpriseAPlaceholder') });
+  const place = select('next', places, () => undefined);
+  const stars = select('2', [['1', '★'], ['2', `★★ ${t('own.starsEnough')}`], ['3', '★★★']], () => undefined);
+  const msg = h('p', { class: 'error', role: 'alert' });
+  const list = h('ul', { class: 'own-list' });
+  const paint = () => list.replaceChildren(...p.surprises.map((s) => h('li', { class: s.revealedAt ? 'revealed' : '' },
+    h('div', {}, h('b', {}, s.q), h('span', {}, s.a),
+      h('small', {}, `${placeName(s.place)} · ${'★'.repeat(s.minStars)} · ${s.revealedAt ? t('own.revealed', { date: new Date(s.revealedAt).toLocaleDateString(p.language) }) : t('own.waiting')}`)),
+    button(t('own.remove'), () => { p.surprises = p.surprises.filter((x) => x !== s); saveProfile(); paint(); }, 'btn small ghost', 'trash'))));
+  const add = () => {
+    msg.textContent = '';
+    if (!q.value.trim() || !a.value.trim()) return void (msg.textContent = t('own.needBoth'));
+    if (p.surprises.length >= SURPRISES_MAX) return void (msg.textContent = t('own.tooMany', { n: SURPRISES_MAX }));
+    p.surprises.push({ id: newId(), q: q.value.trim(), a: a.value.trim(), place: place.value, minStars: Number(stars.value) });
+    q.value = a.value = '';
+    saveProfile();
+    paint();
+  };
+  paint();
+  return h('fieldset', { class: 'own-surprises' }, h('legend', {}, t('own.group.surprises')),
+    h('p', { class: 'hint' }, t('own.surprisesHint')),
+    field(t('own.surpriseQ'), q),
+    field(t('own.surpriseA'), a),
+    h('div', { class: 'row' }, field(t('own.place'), place), field(t('own.minStars'), stars)),
+    msg,
+    button(t('own.add'), add, 'btn small primary', 'plus'),
+    list);
+}
+
+/** Questions that take turns with Piko's teasers; the answer comes after the next level. */
+function questionsEditor(p: Profile): HTMLElement {
+  const q = h('input', { type: 'text', maxlength: OWN_QUESTION_LEN, placeholder: t('own.questionPlaceholder') });
+  const a = h('input', { type: 'text', maxlength: OWN_QUESTION_LEN, placeholder: t('own.answerPlaceholder') });
+  const msg = h('p', { class: 'error', role: 'alert' });
+  const list = h('ol', { class: 'own-list' });
+  const paint = () => list.replaceChildren(...p.ownQuestions.map((x, i) => h('li', {},
+    h('div', {}, h('b', {}, x.q), h('span', {}, x.a)),
+    button(t('own.remove'), () => {
+      p.ownQuestions.splice(i, 1);
+      // The pending answer belongs to its question.
+      p.progress.pendingQuestion = null;
+      saveProfile();
+      paint();
+    }, 'btn small ghost', 'trash'))));
+  const add = () => {
+    msg.textContent = '';
+    if (!q.value.trim() || !a.value.trim()) return void (msg.textContent = t('own.needBoth'));
+    if (p.ownQuestions.length >= OWN_QUESTIONS_MAX) return void (msg.textContent = t('own.tooMany', { n: OWN_QUESTIONS_MAX }));
+    p.ownQuestions.push({ q: q.value.trim(), a: a.value.trim() });
+    q.value = a.value = '';
+    saveProfile();
+    paint();
+  };
+  paint();
+  return h('fieldset', { class: 'own-questions' }, h('legend', {}, t('own.group.questions')),
+    h('p', { class: 'hint' }, t('own.questionsHint')),
+    field(t('own.question'), q),
+    field(t('own.answer'), a),
+    msg,
+    button(t('own.add'), add, 'btn small primary', 'plus'),
+    list);
+}
+
+/** Own words and own text, how much of them comes into the levels, and five sample targets. */
+function ownWordsEditors(p: Profile): HTMLElement[] {
+  const s = p.settings;
+  const lay = LAYOUTS[p.layout];
+  const words = h('textarea', { rows: 4, placeholder: t('own.wordsPlaceholder') });
+  words.value = s.ownWords.join('\n');
+  const wordsInfo = h('p', { class: 'hint', 'aria-live': 'polite' });
+  const text = h('textarea', { rows: 6, maxlength: OWN_TEXT_MAX, placeholder: t('own.textPlaceholder') });
+  text.value = s.ownText;
+  const textInfo = h('p', { class: 'hint', 'aria-live': 'polite' });
+  const preview = h('ul', { class: 'own-preview' });
+  const paintPreview = () => {
+    const src = wordSource(p);
+    preview.replaceChildren(...Array.from({ length: 5 }, () => h('li', {}, src.next(new Set(), undefined, 2))));
+  };
+  const paint = () => {
+    const bad = untypableWords(s.ownWords, lay);
+    wordsInfo.replaceChildren(t('own.wordsCount', { n: s.ownWords.length, max: OWN_WORDS_MAX }),
+      bad.length ? h('span', { class: 'error' }, ` ${t('own.untypableWords', { list: bad.join(', ') })}`) : '');
+    const dropped = typableText(s.ownText, lay).dropped;
+    textInfo.replaceChildren(t('own.textCount', { n: s.ownText.length, max: OWN_TEXT_MAX }),
+      dropped.length ? h('span', { class: 'error' }, ` ${t('own.untypableChars', { list: dropped.join(' ') })}`) : '');
+    paintPreview();
+  };
+  words.addEventListener('change', () => {
+    s.ownWords = parseOwnWords(words.value);
+    words.value = s.ownWords.join('\n');
+    saveProfile();
+    paint();
+  });
+  text.addEventListener('change', () => { s.ownText = text.value.slice(0, OWN_TEXT_MAX).trim(); saveProfile(); paint(); });
+  const mix = select<OwnMix>(s.ownMix, (['off', 'some', 'half', 'most'] as const).map((m): [OwnMix, string] => [m, t(`own.mix.${m}`)]), (v) => { s.ownMix = v; saveProfile(); paintPreview(); });
+  paint();
+  return [
+    h('fieldset', { class: 'own-words' }, h('legend', {}, t('own.group.words')),
+      field(t('own.words'), words, t('own.wordsHint')),
+      wordsInfo),
+    h('fieldset', { class: 'own-text' }, h('legend', {}, t('own.group.text')),
+      field(t('own.text'), text, t('own.textHint')),
+      textInfo,
+      field(t('own.mix.label'), mix, t('own.mixHint')),
+      h('div', { class: 'own-preview-box' },
+        h('span', { class: 'field-label' }, t('own.preview')),
+        preview,
+        button(t('own.previewMore'), paintPreview, 'btn small ghost', 'replay'))),
+  ];
 }
 
 function keysTab(p: Profile): HTMLElement {

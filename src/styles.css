@@ -91,6 +91,7 @@ p { line-height: 1.5; }
 }
 .icon-btn:disabled { opacity: 0.4; }
 .icon-btn .icon { width: 24px; height: 24px; }
+.read-btn[aria-pressed='true'] { background: var(--brand); color: #fff; }
 .link-btn { background: none; border: 0; color: var(--ink-soft); cursor: pointer; text-decoration: underline; display: inline-flex; gap: 0.3em; align-items: center; }
 .chip { border: 0; border-radius: 999px; padding: 0.4em 0.9em; cursor: pointer; background: rgba(255, 255, 255, 0.6); font-weight: 600; min-height: 40px; }
 .chip.on { background: var(--brand); color: #fff; }
@@ -348,6 +349,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .teaser.answer { background: #e3f4e8; }
 .teaser.ask { background: #fff1e3; }
 .teaser small { color: var(--ink-soft); }
+.surprise { text-align: left; margin: 0.6rem auto 0; max-width: 34em; padding: 0.6rem 0.9rem; border-radius: 16px; font-size: 1.05rem; background: #f3e8ff; }
+.surprise.answer { background: #fff3c9; box-shadow: 0 0 0 3px #ffb23e inset; font-weight: 700; font-size: 1.2rem; }
+.surprise.almost { background: #eef3f8; }
 .medal { position: relative; display: inline-block; width: 64px; height: 82px; flex: none; animation: star-in 0.7s ease backwards; }
 .medal-ribbon { position: absolute; left: 50%; top: 0; width: 34px; height: 36px; transform: translateX(-50%); background: linear-gradient(90deg, #3f8fd6 0 33%, #fff 33% 66%, #e5534b 66%); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 75%, 0 100%); }
 .medal-disc { position: absolute; left: 0; bottom: 0; width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 1.6rem; font-weight: 700; color: #7a4b00; background: radial-gradient(circle at 35% 30%, #fff3b0, #f5b301 70%); box-shadow: inset 0 0 0 4px #e09a00, 0 4px 8px rgba(0, 0, 0, 0.18); }
@@ -463,6 +467,13 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .range input:disabled + output { color: var(--ink-soft); }
 .auto-field { display: flex; flex-direction: column; gap: 0.2rem; }
 .auto-check { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; cursor: pointer; }
+.own-tab textarea { width: 100%; resize: vertical; }
+.own-list { padding-left: 1.2rem; margin: 0.8rem 0 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.own-list li { display: flex; gap: 0.5rem; align-items: flex-start; justify-content: space-between; }
+.own-list li > div { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
+.own-list small { color: var(--ink-soft); }
+.own-list li.revealed { opacity: 0.65; }
+.own-preview { margin: 0.3rem 0 0.5rem; padding-left: 1.2rem; font-family: var(--font-game); font-size: 1.1rem; }
 .sound-btn[data-level='quiet'] { color: var(--ink-soft); }
 /* The star sits in the top right corner; the controls there move aside for it. */
 body.super-on .top-right { right: 4rem; }

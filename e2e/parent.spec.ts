@@ -7,7 +7,7 @@ test('parent changes settings, exports and imports into a fresh browser', async 
   await page.locator('.confirm .btn.danger, .confirm .btn:not(.primary)').last().click();
   await expect(page.locator('.parent-screen')).toBeVisible();
   await page.getByRole('checkbox', { name: /^(Bez časového tlaku|No time pressure)/ }).check();
-  await page.locator('.tab').nth(3).click();
+  await page.locator('.tab[data-tab=data]').click();
   const download = page.waitForEvent('download');
   await page.locator('.data-tab .btn').first().click();
   const file = await (await download).path();

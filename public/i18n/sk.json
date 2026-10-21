@@ -58,6 +58,7 @@
     "egg": "Cesta vajíčka"
   },
   "map": {
+    "ownText": "Môj text",
     "hello": "Ahoj, {name}!",
     "continue": "Pokračovať",
     "practice": "Voľné cvičenie",
@@ -71,6 +72,8 @@
     "settings": "Nastavenia pre rodičov"
   },
   "level": {
+    "ownText": "Môj text",
+    "read": "Čítať nahlas",
     "title": "Svet {world} · Úroveň {level}",
     "practice": "Voľné cvičenie",
     "rescue": "Záchranná misia",
@@ -126,6 +129,7 @@
     "left": "{s} s"
   },
   "practice": {
+    "parts": "Časti: {n} z {total}",
     "left": "Zostáva {s} sekúnd",
     "words": "Slová: {n}",
     "finish": "Skončiť"
@@ -194,6 +198,10 @@
     "growthDifficulty": "Predmety sa budú hýbať o kúsok rýchlejšie.",
     "growthWordLen": "Slová môžu mať už {n} písmen.",
     "medalAria": "medaila číslo {n}"
+  },
+  "surprise": {
+    "ask": "{piko} má tajomstvo:",
+    "almost": "Skoro! Skús to ešte raz a potom ti to prezradím."
   },
   "teaser": {
     "ask": "{piko} sa pýta:",
@@ -489,6 +497,7 @@
     "checkText": "Tu sa mení náročnosť, klávesy a údaje. Naozaj chceš otvoriť nastavenia?",
     "tab": {
       "settings": "Nastavenia",
+      "own": "Vlastné",
       "keys": "Klávesy",
       "dashboard": "Pokroky",
       "data": "Údaje"
@@ -566,6 +575,56 @@
     "deleteOk": "Áno, vymazať",
     "auto": "Automaticky (rastie s pokrokom dieťaťa)",
     "autoHint": "Automaticky sa náročnosť a dĺžka slov striedavo zvyšujú po niekoľkých minútach presného písania; každý krok dieťa odmení medailou. Začiatok je pomalý: krátke slovo putuje ku kamarátovi asi 10 sekúnd a na obrazovke sú najviac dve. Ak dieťa ani tak nestíha, zapnite Bez časového tlaku."
+  },
+  "own": {
+    "group": {
+      "messages": "Vlastné povzbudenia",
+      "surprises": "Prekvapenia",
+      "questions": "Vlastné otázky a odpovede",
+      "words": "Vlastné slová",
+      "text": "Vlastný text"
+    },
+    "surprisesHint": "Schovajte skutočnú odmenu (sladkosť, výlet, herný večer) za úroveň. Kamarát sa na otázku spýta pred úrovňou a odpoveď prezradí až po nej, len ak sa dieťaťu darilo dosť dobre, a iba raz.",
+    "surpriseQ": "Otázka pred úrovňou",
+    "surpriseA": "Odpoveď po úrovni",
+    "surpriseQPlaceholder": "Vieš, kde ti ocko schoval sladkú odmenu? Ja to viem a prezradím ti to, keď zvládneš toto cvičenie dostatočne správne.",
+    "surpriseAPlaceholder": "Malá čokoláda je pre teba schovaná v skrini za chladničkou.",
+    "place": "Kde",
+    "placeNext": "Najbližšia úroveň",
+    "placePractice": "Voľné cvičenie (aspoň minúta)",
+    "minStars": "Potrebné hviezdy",
+    "starsEnough": "(dostatočne správne)",
+    "add": "Pridať",
+    "remove": "Odstrániť",
+    "needBoth": "Vyplňte otázku aj odpoveď.",
+    "tooMany": "Najviac {n}. Najprv nejakú odstráňte.",
+    "waiting": "čaká",
+    "revealed": "odhalené {date}",
+    "questionsHint": "Každá druhá otázka kamaráta po úrovni bude vaša, po poradí. Odpoveď povie po ďalšej dokončenej úrovni.",
+    "question": "Otázka",
+    "answer": "Odpoveď",
+    "questionPlaceholder": "Vieš, ako sa volá tvoja prababka?",
+    "answerPlaceholder": "Volá sa Anna a upečie ti koláč.",
+    "words": "Slová",
+    "wordsHint": "Napríklad slová na tento týždeň. Jedno na riadok, alebo oddelené čiarkou či medzerou. Použijú sa aj s klávesmi, ktoré dieťa ešte nepozná; sprievodca ich ukáže.",
+    "wordsPlaceholder": "škola\nkamarát\nslnko",
+    "wordsCount": "Slov: {n} z {max}.",
+    "untypableWords": "Nedá sa napísať na tejto klávesnici, vynechajú sa: {list}",
+    "text": "Text",
+    "textHint": "Delí sa po vetách a čiarkach. V príbehu prichádza po kúskoch, vo Voľnom cvičení je na mape tlačidlo Môj text, ktoré ho napíše celý po poradí.",
+    "textPlaceholder": "Bol raz jeden malý drak. Rád lietal nad lúkou.",
+    "textCount": "Znakov: {n} z {max}.",
+    "untypableChars": "Nedá sa napísať na tejto klávesnici, vynechá sa: {list}",
+    "mix": {
+      "label": "Koľko z vlastných slov a textu",
+      "off": "Nič",
+      "some": "Trochu (štvrtina)",
+      "half": "Polovica",
+      "most": "Väčšina"
+    },
+    "mixHint": "Podiel cieľov v úrovniach a vo voľnom cvičení; zvyšok sú bežné slová.",
+    "preview": "Ukážka piatich cieľov",
+    "previewMore": "Iná ukážka"
   },
   "import": {
     "title": "Import profilov",

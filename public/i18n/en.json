@@ -58,6 +58,7 @@
     "egg": "Egg Journey"
   },
   "map": {
+    "ownText": "My text",
     "hello": "Hi, {name}!",
     "continue": "Continue",
     "practice": "Free practice",
@@ -71,6 +72,8 @@
     "settings": "Settings for parents"
   },
   "level": {
+    "ownText": "My text",
+    "read": "Read aloud",
     "title": "World {world} · Level {level}",
     "practice": "Free practice",
     "rescue": "Rescue mission",
@@ -126,6 +129,7 @@
     "left": "{s} s"
   },
   "practice": {
+    "parts": "Parts: {n} of {total}",
     "left": "{s} seconds left",
     "words": "Words: {n}",
     "finish": "Finish"
@@ -194,6 +198,10 @@
     "growthDifficulty": "Things will move a little faster now.",
     "growthWordLen": "Words can now have {n} letters.",
     "medalAria": "medal number {n}"
+  },
+  "surprise": {
+    "ask": "{piko} has a secret:",
+    "almost": "Almost! Try it once more and then I will tell you."
   },
   "teaser": {
     "ask": "{piko} asks:",
@@ -489,6 +497,7 @@
     "checkText": "Difficulty, keys and data are changed here. Do you really want to open the settings?",
     "tab": {
       "settings": "Settings",
+      "own": "Own content",
       "keys": "Keys",
       "dashboard": "Progress",
       "data": "Data"
@@ -566,6 +575,56 @@
     "deleteOk": "Yes, delete",
     "auto": "Automatic (grows with the child)",
     "autoHint": "In automatic mode, difficulty and word length take turns going up after a few minutes of accurate typing; each step earns the child a medal. The start is slow: a short word takes about 10 seconds to reach the companion and at most two are on screen. If the child still cannot keep up, turn on No time pressure."
+  },
+  "own": {
+    "group": {
+      "messages": "Own encouragements",
+      "surprises": "Surprises",
+      "questions": "Own questions and answers",
+      "words": "Own words",
+      "text": "Own text"
+    },
+    "surprisesHint": "Hide a real reward (a treat, a trip, a game evening) behind a level. The companion asks the question before the level and tells the answer after it, only when the child did well enough, and only once.",
+    "surpriseQ": "Question before the level",
+    "surpriseA": "Answer after the level",
+    "surpriseQPlaceholder": "Do you know where Dad hid a sweet reward? I know, and I will tell you when you do this level well enough.",
+    "surpriseAPlaceholder": "A little chocolate is hidden in the cupboard behind the fridge.",
+    "place": "Where",
+    "placeNext": "The next level",
+    "placePractice": "Free practice (a minute at least)",
+    "minStars": "Stars needed",
+    "starsEnough": "(well enough)",
+    "add": "Add",
+    "remove": "Remove",
+    "needBoth": "Fill in both the question and the answer.",
+    "tooMany": "{n} at most. Remove one first.",
+    "waiting": "waiting",
+    "revealed": "revealed {date}",
+    "questionsHint": "Every second question the companion asks after a level is yours, in order. The answer comes after the next finished level.",
+    "question": "Question",
+    "answer": "Answer",
+    "questionPlaceholder": "Do you know your great-grandma's name?",
+    "answerPlaceholder": "Her name is Anna and she will bake you a cake.",
+    "words": "Words",
+    "wordsHint": "For example this week's spelling words. One per line, or separated by commas or spaces. They are used even with keys the child does not know yet; the guide shows them.",
+    "wordsPlaceholder": "school\nfriend\nsunny",
+    "wordsCount": "Words: {n} of {max}.",
+    "untypableWords": "Cannot be typed on this keyboard, left out: {list}",
+    "text": "Text",
+    "textHint": "It is split by sentences and commas. In the story it comes piece by piece; on the map, the My text button types all of it in order as free practice.",
+    "textPlaceholder": "Once there was a little dragon. He liked to fly over the meadow.",
+    "textCount": "Characters: {n} of {max}.",
+    "untypableChars": "Cannot be typed on this keyboard, left out: {list}",
+    "mix": {
+      "label": "How much of own words and text",
+      "off": "None",
+      "some": "A little (a quarter)",
+      "half": "Half",
+      "most": "Most"
+    },
+    "mixHint": "The share of targets in levels and free practice; the rest are the usual words.",
+    "preview": "Five sample targets",
+    "previewMore": "Another sample"
   },
   "import": {
     "title": "Import profiles",

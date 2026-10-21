@@ -6,6 +6,7 @@ import { t } from '../i18n/i18n';
 import { LEVELS, WORLDS, isLevelUnlocked, isWorldUnlocked, nextLevel, rescueUnlocked, worldLevels } from '../game/levels';
 import { button, h, icon } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
+import { ownTextPhrases } from '../game/modes/practice';
 import { openStats } from './stats';
 
 /** Starts a level, showing the world's intro scene the first time. */
@@ -74,6 +75,7 @@ export function mapScreen(root: HTMLElement): void {
         piko,
         play,
         button(t('map.practice'), () => go('level', { id: 'practice' }), 'btn', 'practice'),
+        ownTextPhrases(p).length ? button(t('map.ownText'), () => go('level', { id: 'practice', text: true }), 'btn', 'read') : null,
         button(t('map.wardrobe'), () => go('wardrobe'), 'btn', 'shirt'),
         button(t('stats.title'), () => openStats(), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,

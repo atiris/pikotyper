@@ -94,16 +94,18 @@ export function adventurePassword(p: Profile, rnd = Math.random): string {
 }
 
 /**
- * Get-ready card before every adventure, with the session's preparation tip when one is due;
- * it opens the adventure only with its password typed. Escape cancels the adventure.
+ * Get-ready card before every adventure, with the session's preparation tip when one is due
+ * and the question of a parent's surprise waiting here; it opens the adventure only with its
+ * password typed. Escape cancels the adventure.
  */
-export function showPosture(host: HTMLElement, p: Profile, tip?: string): Promise<'start' | 'cancel'> {
+export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: string): Promise<'start' | 'cancel'> {
   return new Promise((resolve) => {
     const password = adventurePassword(p);
     const slots = [...password].map((c) => h('span', { class: 'pass-key' }, c));
     const pass = h('div', { class: 'pass' }, ...slots);
     const card = h('div', { class: 'card posture-card', 'data-password': password },
       postureContent(tip),
+      surprise ? surpriseAsk(p, surprise) : null,
       h('p', { class: 'pass-label' }, t('posture.password')),
       pass,
       h('p', { class: 'hint' }, t('posture.escHint')));
@@ -140,6 +142,11 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string): Promis
     const stop = captureKeys(overlay, onKey);
     host.append(overlay);
   });
+}
+
+/** Piko asks the question of a parent's surprise. */
+export function surpriseAsk(p: Profile, question: string): HTMLElement {
+  return h('p', { class: 'surprise ask' }, h('b', {}, t('surprise.ask', { piko: p.companion.name })), ' ', question);
 }
 
 /** Big symbol of a lesson key on its card. */

@@ -1,5 +1,6 @@
 import { app, layout, pickLine, reduceMotion, saveProfile } from '../app/app';
 import { audio, type Sfx } from '../audio/audio';
+import { speech } from '../audio/speech';
 import { Loop, Stage, VH } from '../engine/loop';
 import { Particles } from '../engine/particles';
 import { Rng } from '../engine/rng';
@@ -16,7 +17,8 @@ import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, h } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
 import { pawRingSvg, rhythmGauge } from '../ui/hud';
-import { WordSource } from '../words/words';
+import { OWN_SHARE, WordSource } from '../words/words';
+import type { Profile, Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
 import { WORLDS } from './levels';
 import type { Mode } from './mode';
@@ -25,6 +27,7 @@ import { createMode } from './modes';
 import { type LevelResult, completeLevel } from './progress';
 import { type Target, TypingCore } from './typing';
 import { pickTip, showCard, showDrill, showNewKey, showPosture } from './cards';
+import { surpriseFor } from './own-content';
 
 /** A word label a mode asked for in this frame, at its object's anchor. */
 interface PendingLabel {
@@ -41,6 +44,27 @@ const LABEL_LINE_FROM = 30;
 const LABEL_MIN_SIZE = 28;
 /** Extra seconds a target with a capital letter gets (the Shift chord is hard). */
 const CAPITAL_EXTRA = 1.5;
+
+/**
+ * The targets of a profile: its active keys (or a drill's), weak keys more often, the newest
+ * group in focus, and the parent's own words and text mixed in (not in drills).
+ */
+export function wordSource(p: Profile, drill?: string[]): WordSource {
+  // Practice of space, punctuation or a Shift needs letters around it: the known ones.
+  const keys = !drill ? activeKeys(p) : drill.every(isLetterKey) ? drill : [...new Set([...activeKeys(p), ...drill])];
+  const s = p.settings;
+  return new WordSource(app.words, {
+    keys,
+    len: s.wordLen,
+    noDiacritics: s.noDiacritics,
+    weights: keyWeights(p, keys),
+    focus: drill ?? newestGroup(p),
+    layout: LAYOUTS[p.layout],
+    names: tList('names'),
+    shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k], s.difficulty)])),
+    own: drill ? undefined : { words: s.ownWords, text: s.ownText, share: OWN_SHARE[s.ownMix] },
+  });
+}
 
 export interface RuntimeOptions {
   /** Practice: only these keys (drills), else the profile's active keys. */
@@ -60,6 +84,8 @@ export class LevelRuntime {
   readonly stage: Stage;
   readonly mode: Mode;
   readonly words: WordSource;
+  /** The parent's surprise asked before this level and told after it, when one waits here. */
+  readonly surprise: Surprise | null;
   /** The profile's difficulty; "Slower" in the pause lowers it during the level. */
   difficulty: number;
   readonly noPressure: boolean;
@@ -124,28 +150,23 @@ export class LevelRuntime {
     this.ema = lastCpm ? lastCpm / 60 : 1;
     this.mismatch = new LayoutMismatchDetector(p.layout);
 
-    // Practice of space, punctuation or a Shift needs letters around it: the known ones.
-    const keys = !opts.keys ? activeKeys(p) : opts.keys.every(isLetterKey) ? opts.keys : [...new Set([...activeKeys(p), ...opts.keys])];
     const lay = LAYOUTS[p.layout];
-    this.words = new WordSource(app.words, {
-      keys,
-      len: p.settings.wordLen,
-      noDiacritics: p.settings.noDiacritics,
-      weights: keyWeights(p, keys),
-      focus: opts.keys ?? newestGroup(p),
-      layout: lay,
-      names: tList('names'),
-      shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k], p.settings.difficulty)])),
-    });
+    this.words = wordSource(p, opts.keys);
+    this.surprise = surpriseFor(p, def, !!opts.keys);
 
     // DOM: HUD, stage, Piko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
     this.progressFill = h('div', { class: 'progress-fill' });
-    const title = def.kind === 'practice' ? t('level.practice') : def.id === 'rescue' ? t('level.rescue') : t('level.title', { world: def.world + 1, level: def.index + 1 });
+    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.id === 'rescue' ? t('level.rescue') : t('level.title', { world: def.world + 1, level: def.index + 1 });
     const guideBtn = button('', () => this.toggleGuide(), 'icon-btn', 'keyboard');
     guideBtn.title = t('level.guide');
     guideBtn.setAttribute('aria-label', t('level.guide'));
     if (p.settings.guideLocked) guideBtn.disabled = true;
+    this.readBtn = button('', () => this.toggleRead(), 'icon-btn read-btn', 'read');
+    this.readBtn.title = t('level.read');
+    this.readBtn.setAttribute('aria-label', t('level.read'));
+    this.paintRead();
+    this.offVoices = speech.onVoices(() => this.paintRead());
     const pauseBtn = button('', () => this.pause(), 'icon-btn', 'pause');
     pauseBtn.setAttribute('aria-label', t('level.pause'));
     if (this.pawsAllowed) {
@@ -159,7 +180,7 @@ export class LevelRuntime {
       h('div', { class: 'hud-title' }, title),
       h('div', { class: 'progress', title: t('level.progress') }, this.progressFill),
       this.gauge.el,
-      guideBtn, soundButton(), fullscreenButton());
+      this.readBtn, guideBtn, soundButton(), fullscreenButton());
     const stageWrap = h('div', { class: 'stage-wrap' });
     this.piko = pikoElement(p.companion, 'idle', 150);
     // Piko joins the stage when play starts; the preparation cards show him themselves.
@@ -214,7 +235,7 @@ export class LevelRuntime {
       saveProfile();
     }
     if (this.disposed) return;
-    if (!this.opts.keys && await showPosture(host, p, tip) === 'cancel') return this.exit();
+    if (!this.opts.keys && await showPosture(host, p, tip, this.surprise?.q) === 'cancel') return this.exit();
     if (this.disposed) return;
     this.mode.start();
     this.started = true;
@@ -241,6 +262,8 @@ export class LevelRuntime {
     // Leaving by the browser's back button still keeps the time and keys typed.
     if (this.started && !this.finished) this.flushSession();
     this.disposed = true;
+    speech.stop();
+    this.offVoices();
     this.loop.stop();
     this.input?.dispose();
     this.stage.dispose();
@@ -410,12 +433,54 @@ export class LevelRuntime {
     this.stage.resize();
   }
 
+  // ---- reading aloud -----------------------------------------------------------
+
+  private readBtn: HTMLButtonElement;
+  private offVoices: () => void;
+  /** The target read last, so each one is read once, when it becomes the focus. */
+  private readId = 0;
+
+  private get reading(): boolean {
+    const p = app.profile!;
+    return p.settings.readAloud && speech.available(p.language);
+  }
+
+  /** The button shows only when the browser has a voice of the profile's language. */
+  private paintRead(): void {
+    const p = app.profile!;
+    this.readBtn.hidden = !speech.available(p.language);
+    this.readBtn.setAttribute('aria-pressed', String(p.settings.readAloud));
+  }
+
+  private toggleRead(): void {
+    const p = app.profile!;
+    p.settings.readAloud = !p.settings.readAloud;
+    saveProfile();
+    this.paintRead();
+    this.readId = 0;
+    if (!p.settings.readAloud) speech.stop();
+    else this.readFocus();
+  }
+
+  private read(text: string): void {
+    if (this.reading) speech.say(text, app.profile!.language);
+  }
+
+  private readFocus(): void {
+    const tg = this.core.focus();
+    if (!tg || tg.id === this.readId || this.pawWords || !this.started || this.paused) return;
+    this.readId = tg.id;
+    this.read(tg.word);
+  }
+
   // ---- Piko --------------------------------------------------------------------
 
   say(content: string | HTMLElement, seconds = 3.5): void {
     this.bubble.replaceChildren(typeof content === 'string' ? h('p', {}, content) : content);
     this.bubble.classList.remove('hidden');
     this.bubbleTimer = seconds;
+    // Buttons in the bubble are not read, only its line.
+    this.read(typeof content === 'string' ? content : content.querySelector('p')?.textContent ?? content.textContent ?? '');
   }
 
   hideBubble(): void {
@@ -546,6 +611,7 @@ export class LevelRuntime {
   pause(): void {
     if (this.paused || this.finished || !this.started) return;
     this.paused = true;
+    speech.stop();
     // A small card at the top: the words and the guide's next key stay in sight.
     const slower = button(t('level.slower'), () => this.slowDown(), 'btn');
     slower.disabled = this.difficulty <= 1;
@@ -580,6 +646,7 @@ export class LevelRuntime {
   }
 
   private exit(): void {
+    speech.stop();
     this.flushSession();
     this.opts.onExit();
   }
@@ -610,6 +677,7 @@ export class LevelRuntime {
     this.mode.update(dt);
     if (!hadFocus && this.core.focus()) this.readySince = performance.now();
     if (this.pawsAllowed) this.updatePaws(dt);
+    this.readFocus();
     if (this.bubbleTimer > 0 && (this.bubbleTimer -= dt) <= 0) this.hideBubble();
     if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) renderPikoInto(this.piko, app.profile!.companion, 'idle');
     this.progressFill.style.width = `${Math.round(this.mode.progress() * 100)}%`;

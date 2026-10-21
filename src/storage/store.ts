@@ -15,7 +15,7 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 6;
+export const STORE_VERSION = 7;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -30,7 +30,20 @@ const migrations: Record<number, (data: any) => any> = {
   4: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV4toV5) : data.profiles }),
   // v6: the child earns other companion kinds by stars; the current kind is the starting one.
   5: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV5toV6) : data.profiles }),
+  // v7: the parent's own content (questions, surprises, words, text) and reading aloud.
+  6: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV6toV7) : data.profiles }),
 };
+
+function profileV6toV7(p: any): any {
+  if (!p || typeof p !== 'object') return p;
+  return {
+    ...p,
+    ownQuestions: [],
+    surprises: [],
+    settings: { ...p.settings, ownWords: [], ownText: '', ownMix: 'some', readAloud: false },
+    progress: { ...p.progress, teasersAsked: 0, ownQuestionNext: 0, pendingQuestion: null },
+  };
+}
 
 function profileV5toV6(p: any): any {
   if (!p || typeof p !== 'object') return p;
@@ -146,6 +159,8 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
     avatar: start,
     companion: { name: 'Piko', kind: start, accessories: [] },
     customMessages: [],
+    ownQuestions: [],
+    surprises: [],
     layout: lay,
     language,
     settings: defaultSettings(),
@@ -163,6 +178,9 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
       pawHelp: 0,
       pawAuto: false,
       companionsUnlocked: [start],
+      teasersAsked: 0,
+      ownQuestionNext: 0,
+      pendingQuestion: null,
     },
     stats: { keys: {}, sessions: [] },
     createdAt: Date.now(),

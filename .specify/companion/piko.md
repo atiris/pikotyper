@@ -24,7 +24,8 @@
   over the body while the item itself stays behind.
 - After each story level that has a next one, Piko asks a curious question about the
   world's theme (real facts about animals, space, eggs) and gives the answer only after
-  the next level is finished.
+  the next level is finished. When a parent wrote own questions, every second one is
+  theirs ([parent controls](../profiles/parent-controls.md)).
 - **Paw help**: fifteen words in a row without a mistake charge one paw (three at most,
   kept between levels). In story levels and rescue missions, Enter (or the round paw
   button next to pause: a paw in the companion's color, ringed by three arcs for the

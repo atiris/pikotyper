@@ -1,8 +1,7 @@
 import type { Page } from '@playwright/test';
 
-/** Plays the open level like a child reading the finger guide, until the results card. */
-export async function playLevel(page: Page, mistakes = true): Promise<string> {
-  let typed = 0;
+/** Plays the open level like a child reading the finger guide, until the results card; `typed` collects the characters. */
+export async function playLevel(page: Page, mistakes = true, typed: string[] = []): Promise<string> {
   for (let i = 0; i < 3000; i++) {
     const state = await page.evaluate(() => {
       const res = document.querySelector<HTMLElement>('.results-card');
@@ -17,9 +16,9 @@ export async function playLevel(page: Page, mistakes = true): Promise<string> {
     if (state.kind === 'password') await page.keyboard.type(state.key!);
     else if (state.kind === 'newkey') await typeChar(page, state.key!);
     else if (state.next) {
-      if (mistakes && typed % 13 === 4) await page.keyboard.type('q');
+      if (mistakes && typed.length % 13 === 4) await page.keyboard.type('q');
       await typeChar(page, state.next);
-      typed++;
+      typed.push(state.next);
     }
     await page.waitForTimeout(state.kind === 'play' ? 90 : 200);
   }

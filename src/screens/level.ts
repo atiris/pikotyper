@@ -6,6 +6,10 @@ import { LEVELS, type LevelDef, WORLDS, levelById, practiceLevel, rescueLevel } 
 import type { LevelResult } from '../game/progress';
 import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
+import { surpriseAsk } from '../game/cards';
+import { surpriseReached, teaserLines } from '../game/own-content';
+import { ownTextPhrases } from '../game/modes/practice';
+import type { Profile, Surprise } from '../storage/schema';
 import { localDate } from '../learning/stats';
 import { button, h } from '../ui/dom';
 import { keyLabel } from '../ui/keyboard-guide';
@@ -17,12 +21,14 @@ interface LevelParams {
   /** Drill keys (practice now). */
   keys?: string[];
   seconds?: number;
+  /** Free practice of the parent's own text. */
+  text?: boolean;
 }
 
 export function levelScreen(root: HTMLElement, params: LevelParams): () => void {
   const p = app.profile!;
   let def: LevelDef;
-  if (params.id === 'practice') def = practiceLevel(params.seconds ?? null);
+  if (params.id === 'practice') def = practiceLevel(params.seconds ?? null, params.text ? ownTextPhrases(p) : undefined);
   else if (params.id === 'rescue') def = rescueLevel(p.progress.dragons.length * 7 + Math.floor(Math.random() * 5));
   else def = levelById(params.id) ?? LEVELS[0];
   let rt: LevelRuntime;
@@ -33,7 +39,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
     onExit: exit,
     onFinish: (result) => {
       if (!result) return exit();
-      showResults(root, def, result, params);
+      showResults(root, def, result, params, rt.surprise);
     },
   });
   if (def.kind === 'practice' && !params.seconds) {
@@ -45,7 +51,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
 
 const DRAGON_NAMES_FALLBACK = ['Iskra', 'Mäta', 'Luna', 'Bubu'];
 
-function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams): void {
+function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null): void {
   const p = app.profile!;
   let rescued: { name: string; hue: number } | null = null;
   if (def.id === 'rescue') {
@@ -98,7 +104,8 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     h('div', { class: 'results-body' },
       h('div', { class: 'results-piko' }, pikoElement(p.companion, 'happy', 140), h('p', { class: 'bubble static' }, breakDue ? pickLine('piko.break') : sentence)),
       h('div', { class: 'results-lines' }, ...lines)),
-    ...teaser(def, !!nextDef && r.worldDone === null, p.companion.name),
+    ...(surprise ? surpriseResult(p, def, r, surprise) : []),
+    ...teaser(p, def, !!nextDef && r.worldDone === null),
     actions);
   const overlay = h('div', { class: 'overlay results' }, card);
   root.querySelector('.level-screen')!.append(overlay);
@@ -106,14 +113,33 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
 }
 
 /**
- * Piko's curious question about the next level, answered only after that level is
- * finished, so the child wants to go on. Story levels only.
+ * The surprise asked on the get-ready card, asked again: its answer, highlighted and only
+ * this once, when the level went well enough; else a promise for the next try.
  */
-function teaser(def: LevelDef, hasNext: boolean, piko: string): HTMLElement[] {
+function surpriseResult(p: Profile, def: LevelDef, r: LevelResult, s: Surprise): HTMLElement[] {
+  const reached = surpriseReached(s, def, r);
+  if (reached) {
+    s.revealedAt = localDate();
+    saveProfile();
+  }
+  return [h('div', { class: 'surprise-result' },
+    surpriseAsk(p, s.q),
+    reached ? h('p', { class: 'surprise answer' }, s.a) : h('p', { class: 'surprise almost' }, t('surprise.almost')))];
+}
+
+/**
+ * Piko's curious question about the next level, answered only after that level is
+ * finished, so the child wants to go on; every second one is the parent's own. Story levels only.
+ */
+function teaser(p: Profile, def: LevelDef, hasNext: boolean): HTMLElement[] {
   if (def.index < 0) return [];
   const world = WORLDS[def.world];
-  const answer = def.index > 0 ? tList(`teaser.${world}.a`)[def.index - 1] : undefined;
-  const question = hasNext ? tList(`teaser.${world}.q`)[def.index] : undefined;
+  const { answer, question } = teaserLines(p, {
+    a: def.index > 0 ? tList(`teaser.${world}.a`)[def.index - 1] : undefined,
+    q: hasNext ? tList(`teaser.${world}.q`)[def.index] : undefined,
+  });
+  saveProfile();
+  const piko = p.companion.name;
   const out: HTMLElement[] = [];
   if (answer) out.push(h('p', { class: 'teaser answer' }, h('b', {}, t('teaser.answer')), ' ', answer));
   if (question) out.push(h('p', { class: 'teaser ask' }, h('b', {}, t('teaser.ask', { piko })), ' ', question, h('br'), h('small', {}, t('teaser.later'))));

@@ -1,4 +1,4 @@
-// Storage schema v6. These types are the data contract of `localStorage['pikotyper:v1']`
+// Storage schema v7. These types are the data contract of `localStorage['pikotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -42,6 +42,9 @@ export interface SessionRecord {
   cpm: number;
 }
 
+/** Share of targets taken from the parent's own words and text. */
+export type OwnMix = 'off' | 'some' | 'half' | 'most';
+
 export interface Settings {
   activeKeysMode: 'auto' | 'manual';
   manualKeys: string[];
@@ -64,6 +67,12 @@ export interface Settings {
   highContrast: boolean;
   /** Ask for fullscreen on the first key press or click after the app starts. */
   autoFullscreen: boolean;
+  /** The parent's own words and text, mixed into the targets by `ownMix`. */
+  ownWords: string[];
+  ownText: string;
+  ownMix: OwnMix;
+  /** Read the target to type and Piko's lines aloud. */
+  readAloud: boolean;
 }
 
 export interface RescuedDragon {
@@ -96,6 +105,33 @@ export interface Progress {
   pawAuto: boolean;
   /** Companion kinds the child may pick: the starting kind first, then the ones earned by stars. */
   companionsUnlocked: CompanionKind[];
+  /** Teaser questions asked so far; every second one is the parent's own question. */
+  teasersAsked: number;
+  /** Index of the next own question to ask. */
+  ownQuestionNext: number;
+  /** Own question asked whose answer comes after the next story level. */
+  pendingQuestion: number | null;
+}
+
+/** A parent's own question for the teaser, with its answer. */
+export interface OwnQuestion {
+  q: string;
+  a: string;
+}
+
+/**
+ * A real reward a parent hid: Piko asks `q` before the level at `place` and tells `a`
+ * after it, once the child reached `minStars`.
+ */
+export interface Surprise {
+  id: string;
+  q: string;
+  a: string;
+  /** A story level id, `next` (next story level or rescue mission) or `practice` (free practice of a minute). */
+  place: string;
+  minStars: number;
+  /** Local date the answer was shown; never asked again after it. */
+  revealedAt?: string;
 }
 
 export interface Companion {
@@ -111,6 +147,8 @@ export interface Profile {
   avatar: CompanionKind;
   companion: Companion;
   customMessages: string[];
+  ownQuestions: OwnQuestion[];
+  surprises: Surprise[];
   layout: LayoutId;
   language: Lang;
   settings: Settings;
@@ -120,7 +158,7 @@ export interface Profile {
 }
 
 export interface StoreData {
-  version: 6;
+  version: 7;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;
@@ -150,6 +188,10 @@ export function defaultSettings(): Settings {
     reduceMotion: false,
     highContrast: false,
     autoFullscreen: false,
+    ownWords: [],
+    ownText: '',
+    ownMix: 'some',
+    readAloud: false,
   };
 }
 
