@@ -19,7 +19,8 @@ const D_ENCLOSED = 38; // enclosed gaps (between arm and body)
 const D_SOFT = 120; // edge feather: fully opaque above this distance
 // Glass lenses on outfits: how much the key channel dominates the others.
 const K_LENS = 150;
-const K_GLASS = 70; // light key-tinted reflections inside a lens become white glass
+const K_GLASS = 70; // light key-tinted reflections at a lens edge become white glass
+const K_SHINE = 20; // inside a lens even a pale key tint is a painted highlight
 
 // Outfit sets: item ids, slots and a pixel classifier (normalized x, y in 0..1).
 // The first rule that matches wins; the last rule is the fallback.
@@ -102,6 +103,7 @@ function keyOut(data, w, h, { glass = false, layer = false, tint = null } = {}) 
   // 3. Pixels up to 2 px from removed ones form the edge feather band.
   const band = new Uint8Array(n);
   const nearEnclosed = new Uint8Array(n);
+  const shine = new Uint8Array(n);
   for (let p = 0; p < n; p++) {
     if (removed[p]) continue;
     const x = p % w, y = (p / w) | 0;
@@ -121,9 +123,12 @@ function keyOut(data, w, h, { glass = false, layer = false, tint = null } = {}) 
       else data[i + 3] = 0;
       continue;
     }
-    if (glass && k[p] > K_GLASS && (nearEnclosed[p] || isInsideEnclosed(p, enclosed, w))) {
+    // A painted highlight is light; a darker green item (vest, boots) never is.
+    const light = Math.min(data[i], data[i + 1], data[i + 2]) > 140;
+    if (glass && (k[p] > K_GLASS || light && k[p] > K_SHINE) && (nearEnclosed[p] && k[p] > K_GLASS || isInsideEnclosed(p, enclosed, w))) {
       // Light reflection on a glass lens: semi-transparent white.
       data[i] = 255; data[i + 1] = 255; data[i + 2] = 255; data[i + 3] = 110;
+      shine[p] = 1;
       continue;
     }
     if (!band[p]) continue;
@@ -147,7 +152,28 @@ function keyOut(data, w, h, { glass = false, layer = false, tint = null } = {}) 
     }
     data[i + 3] = Math.round(data[i + 3] * a * fade);
   }
+  if (glass) growShine(data, w, h, k, shine);
   bleedColor(data, w, h);
+}
+
+/**
+ * The ends of a reflection stripe touch the lens frame, so they are not found
+ * inside the lens; key-tinted pixels touching a reflection join it.
+ */
+function growShine(data, w, h, k, shine) {
+  const queue = [];
+  for (let p = 0; p < w * h; p++) if (shine[p]) queue.push(p);
+  while (queue.length) {
+    const p = queue.pop();
+    const x = p % w;
+    for (const q of [x > 0 ? p - 1 : -1, x < w - 1 ? p + 1 : -1, p - w, p + w]) {
+      if (q < 0 || q >= w * h || shine[q] || data[q * 4 + 3] === 0 || k[q] <= K_SHINE) continue;
+      shine[q] = 1;
+      data.fill(255, q * 4, q * 4 + 3);
+      data[q * 4 + 3] = 110;
+      queue.push(q);
+    }
+  }
 }
 
 // Lossy WebP mixes the color of transparent pixels into their visible neighbors,

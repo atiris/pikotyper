@@ -383,7 +383,7 @@
   "wardrobe": {
     "title": "Šatník: {piko}",
     "count": "{n} z {total} vecí",
-    "clear": "Všetko vyzliecť",
+    "clear": "Odstrániť doplnky",
     "byLevel": "Dokonči {level}",
     "byWorld": "Dokonči svet {world}",
     "byMastery": "Zvládni {n} klávesov"

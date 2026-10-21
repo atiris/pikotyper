@@ -1,5 +1,29 @@
 {
  "images": {
+  "acc-dragon-wings": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-dragon-wings-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-round-glasses": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-round-glasses-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-star-glasses": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-star-glasses-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "base-template": {
    "w": 512,
    "h": 512
@@ -200,14 +224,6 @@
    "w": 160,
    "h": 160
   },
-  "acc-round-glasses": {
-   "w": 512,
-   "h": 512
-  },
-  "acc-round-glasses-thumb": {
-   "w": 160,
-   "h": 160
-  },
   "acc-scarf": {
    "w": 512,
    "h": 512
@@ -229,14 +245,6 @@
    "h": 512
   },
   "acc-crown-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-star-glasses": {
-   "w": 512,
-   "h": 512
-  },
-  "acc-star-glasses-thumb": {
    "w": 160,
    "h": 160
   },
@@ -341,14 +349,6 @@
    "h": 512
   },
   "acc-neckerchief-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-dragon-wings": {
-   "w": 512,
-   "h": 512
-  },
-  "acc-dragon-wings-thumb": {
    "w": 160,
    "h": 160
   },
@@ -524,6 +524,10 @@
    "w": 512,
    "h": 512
   },
+  "round-glasses": {
+   "w": 512,
+   "h": 203
+  },
   "ui-logo": {
    "w": 428,
    "h": 512
@@ -563,13 +567,23 @@
  },
  "accessories": [
   {
-   "id": "cap",
-   "slot": "head",
-   "set": "a"
+   "id": "dragon-wings",
+   "slot": "back",
+   "set": "e"
   },
   {
    "id": "round-glasses",
    "slot": "eyes",
+   "set": "a"
+  },
+  {
+   "id": "star-glasses",
+   "slot": "eyes",
+   "set": "b"
+  },
+  {
+   "id": "cap",
+   "slot": "head",
    "set": "a"
   },
   {
@@ -585,11 +599,6 @@
   {
    "id": "crown",
    "slot": "head",
-   "set": "b"
-  },
-  {
-   "id": "star-glasses",
-   "slot": "eyes",
    "set": "b"
   },
   {
@@ -655,11 +664,6 @@
   {
    "id": "neckerchief",
    "slot": "neck",
-   "set": "e"
-  },
-  {
-   "id": "dragon-wings",
-   "slot": "back",
    "set": "e"
   },
   {

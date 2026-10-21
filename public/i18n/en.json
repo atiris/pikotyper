@@ -383,7 +383,7 @@
   "wardrobe": {
     "title": "{piko}'s wardrobe",
     "count": "{n} of {total} things",
-    "clear": "Take everything off",
+    "clear": "Remove accessories",
     "byLevel": "Finish {level}",
     "byWorld": "Finish world {world}",
     "byMastery": "Master {n} keys"
