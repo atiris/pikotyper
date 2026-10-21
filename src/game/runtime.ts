@@ -727,7 +727,8 @@ export class LevelRuntime {
     saveProfile();
     this.sfx('reward');
     this.runOff();
-    setTimeout(() => this.opts.onFinish(result), this.reduceMotion ? 300 : 900);
+    // Leaving during the run-off (back button, map) must not open the results.
+    setTimeout(() => { if (!this.disposed) this.opts.onFinish(result); }, this.reduceMotion ? 300 : 900);
   }
 
   private runOffStart = 0;

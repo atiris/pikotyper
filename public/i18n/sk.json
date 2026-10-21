@@ -120,7 +120,7 @@
     "typeIt": "Napíš {key} trikrát.",
     "shiftL": "Ľavý Shift drž ľavým malíčkom a pravou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
     "shiftR": "Pravý Shift drž pravým malíčkom a ľavou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",
-    "space": "Medzerník stláčaj palcom, ostatné prsty ostanú doma. Stlač ho trikrát."
+    "space": "Ostatné prsty ostanú doma. Stlač ho trikrát."
   },
   "drill": {
     "title": "Malé cvičenie: {keys}",

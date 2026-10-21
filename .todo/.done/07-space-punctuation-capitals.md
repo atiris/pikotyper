@@ -70,7 +70,7 @@ beginners and should not be a block at the very end.
 - [x] Super profile (`src/app/super.ts`) gets the new keys.
 - [x] Specs: `.specify/learning/lesson-progression.md`, `words.md`,
   `finger-guide.md`, `keyboard-layouts.md`. README "The game" lines.
-- [ ] Build, vitest, e2e (`e2e/helpers.ts` must type spaces and capitals: use
+- [x] Build, vitest, e2e (`e2e/helpers.ts` must type spaces and capitals: use
   `page.keyboard.type` with the char; for capitals it presses Shift), Playwright
   MCP: new profile plays to the space intro and types phrases.
 
@@ -93,3 +93,16 @@ beginners and should not be a block at the very end.
 - Practice of a non-letter key (stats "Practice") mixes in the known letters.
 - Shift on the same hand: the letter still counts; Piko's tip shows once per level, and the
   Shift key card says it in place of its hint.
+
+## Done - 2026-10-21
+Shipped: space with `f j`, period, comma, `?` `-` `!` `:` (US `'` `?` `:` `!` `-`) and left/right
+Shift as lesson keys; v5 store migration (old `Shift` -> both Shifts, passed new keys unlocked
+but not introduced); phrase builder with names, punctuation and capital rates; space typed in
+targets with a visible dot, labels shrink to fit; +1.5 s for capitals; wrong-Shift tip once per
+level; key cards for space and each Shift; heatmap and key details for space and Shifts; specs
+and README. Verified with vitest, the e2e suite and a Playwright MCP run (space card, chunk
+pairs, phrases with punctuation, a capital, the wrong-Shift tip, space key detail).
+Also fixed: the results callback no longer fires after the level was left during the run-off.
+Left out: the parent's manual key picker cannot pick shifted punctuation (`? ! :` on Slovak
+keyboards) - in BACKLOG.md. Playwright cannot send key events for Slovak `ý`-type characters,
+so the MCP run of a Slovak super level stalls there (tooling, not the game).
