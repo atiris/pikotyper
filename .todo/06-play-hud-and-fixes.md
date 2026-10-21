@@ -60,22 +60,40 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   the key-swallowing card bug fixed in e3d90ab. Verify with Playwright: play
   `w3-1` to the end typing the guide's next char (see `e2e/helpers.ts`); if it
   still fails, find the cause in `src/game/modes/planet.ts` and fix it.
-- [ ] **Accessory art.** Defects in `acc-round-glasses` (green spill at the lenses),
-  `acc-knit-vest` (white/brown strips at both sides), `acc-lantern` (stray vertical
-  line), `acc-dragon-wings` (cut line in the right wing), `acc-pink-sneakers` (check
-  edges on Piko). In `scripts/assets.mjs`: remove green key spill for green-keyed
-  sources like the magenta one, and drop small disconnected components (area < 1.5 %
-  of the item's largest component and farther than 12 px from it). Re-run
-  `npm run assets`, then render a contact sheet of every accessory on a dark and a
-  light background and on each companion kind; fix what remains or list it under
-  `## State` as "needs new art" with the item names.
-- [ ] **Accessories overlap.** Glasses partly under hats and similar. Render a
-  contact sheet of every head item with every eyes item (and body x neck, back x
-  body) on the fox. Fix by a per-accessory placement table in `src/gfx/piko.ts`
-  (`{ dy, scale }` per accessory id, applied when drawing) so hats sit above the
-  eyebrows and glasses stay fully visible; layer order stays `SLOT_ORDER`. Items
-  that cannot be fixed by placement go to `## State` as "needs new art", each with
-  the reason.
+- [ ] **Accessory cleanup in code.** Items cut by other items in their outfit need
+  new pictures; the owner makes them from the list "Needs new art" in
+  `assets-src/PROMPTS.md` (`acc-<id>.jpg` replaces the cut item; the pipeline
+  already supports it). Here only the code part: in `scripts/assets.mjs` remove
+  green key spill inside lenses (`heart-glasses`) like the magenta one, and drop
+  small disconnected components of an item (area < 1.5 % of its largest component
+  and farther than 12 px from it; fixes the stray line next to `lantern`). Re-run
+  `npm run assets` and check a contact sheet of every accessory.
+- [ ] **One card before a level.** Today a session can open with a tip card and then
+  the get-ready card. Merge them: the get-ready card (`showPosture`) shows the
+  posture picture, one line (the session's preparation tip from `pickTip` when one
+  is due, which includes the "stand up and drink water" reminder, otherwise one
+  posture reminder) and the password. Remove the separate tip card from
+  `LevelRuntime.prepare`; `app.tipShown` logic stays. New key cards stay separate
+  (they need typing).
+- [ ] **Calm pause.** Esc pause must not hide the game: the pause card is small and
+  sits at the top of the stage; no blur and no dark layer over the stage words or
+  the keyboard guide; the guide keeps showing the next key and the current word
+  stays visible (frozen). Buttons: Continue, "Pomalšie" (lowers `difficulty` by 1,
+  minimum 1, and resets `growthSeconds`; automatic growth may raise it again later
+  after accurate play; Piko says "Dobre, pôjdeme pomalšie."), Map. Keep the check
+  that the start is slow: today a 3-letter word at difficulty 3 needs about 10 s to
+  reach Piko and only 2 words are on screen (`travelTime`, `maxActive` in
+  `runtime.ts`); keep it so, and mention "Bez časového tlaku" in the parent help.
+- [ ] **Nicer hands.** Redraw `handsSvg()` in `src/ui/keyboard-guide.ts`: real hand
+  shapes seen from above (palm with soft outline, five rounded fingers of natural
+  length, thumb at the side, small nails), skin tone `#f3d2b3` with brown outline;
+  each finger keeps `data-f` and gets its finger color as a fingertip band (so the
+  active finger is still clear); active finger lifts slightly and is fully opaque,
+  others at 0.45. Same size and place as today; check on 1366x768.
+- [ ] **Piko runs off at the end.** When a level is finished, before the results
+  card, Piko (the stage Piko element, or the canvas Piko in planet modes) turns and
+  runs off to the right edge with a small hop (about 0.9 s, ease-in), with a short
+  happy sound; the results card then opens. With reduced motion: a quick fade.
 - [ ] Specs: `.specify/game/mechanics.md` (labels never overlap), `.specify/companion/piko.md`
   (paw button), `.specify/experience/visuals.md` (round HUD, fullscreen),
   `.specify/profiles/profiles.md` (super badge). i18n sk + en for every new text.

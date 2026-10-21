@@ -199,6 +199,7 @@ async function processImage(name, file, manifest) {
   }
   const { data, w, h } = await loadRgba(file);
   if (name.startsWith('outfit-')) return processOutfit(name.slice(7), data, w, h, manifest);
+  if (name.startsWith('acc-')) return processAccessory(name.slice(4), data, w, h, manifest);
   keyOut(data, w, h, { layer: name.startsWith('bg-') });
   if (name === 'base-template' || name.startsWith('piko-')) return writeSquare(name, data, w, h, manifest);
   if (name.startsWith('bg-')) {
@@ -209,6 +210,27 @@ async function processImage(name, file, manifest) {
   const box = bbox(data, w, h);
   const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(SPRITE_MAX, SPRITE_MAX, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
+}
+
+/** Ids that have their own `acc-<id>` source, which replaces the item cut from its outfit. */
+const singleAccessories = new Set();
+
+/** One accessory drawn alone on the template position (no other item can cut it). */
+async function processAccessory(id, data, w, h, manifest) {
+  const entry = Object.entries(OUTFITS).flatMap(([set, rules]) => rules.map(([rid, slot]) => ({ rid, slot, set }))).find((r) => r.rid === id);
+  if (!entry) { console.warn(`acc-${id}: not in any outfit table, skipped`); return; }
+  keyOut(data, w, h, { glass: true });
+  singleAccessories.add(id);
+  await writeAccessory(id, entry.slot, entry.set, data, w, h, manifest);
+}
+
+async function writeAccessory(id, slot, set, data, w, h, manifest) {
+  await writeSquare(`acc-${id}`, data, w, h, manifest);
+  // Trimmed thumbnail for the wardrobe.
+  const box = bbox(data, w, h);
+  await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(160, 160, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })).toFile(join(OUT, `acc-${id}-thumb.webp`));
+  manifest.images[`acc-${id}-thumb`] = { w: 160, h: 160 };
+  manifest.accessories.push({ id, slot, set });
 }
 
 async function processOutfit(set, data, w, h, manifest) {
@@ -223,12 +245,7 @@ async function processOutfit(set, data, w, h, manifest) {
     data.copy(layers[idx], i, i, i + 4);
   }
   for (const [j, [id, slot]] of rules.entries()) {
-    await writeSquare(`acc-${id}`, layers[j], w, h, manifest);
-    // Trimmed thumbnail for the wardrobe.
-    const box = bbox(layers[j], w, h);
-    await webp(sharp(layers[j], { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(160, 160, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })).toFile(join(OUT, `acc-${id}-thumb.webp`));
-    manifest.images[`acc-${id}-thumb`] = { w: 160, h: 160 };
-    manifest.accessories.push({ id, slot, set });
+    if (!singleAccessories.has(id)) await writeAccessory(id, slot, set, layers[j], w, h, manifest);
   }
 }
 

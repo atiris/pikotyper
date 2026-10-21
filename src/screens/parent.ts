@@ -264,7 +264,7 @@ function printCard(p: Profile): void {
     h('p', {}, t('print.keys', { n: p.progress.unlockedKeys.length, keys: p.progress.unlockedKeys.join(' ') })),
     h('p', {}, t('print.mastered', { n: masteredCount(p) })),
     h('p', {}, t('print.stars', { n: stars, total: LEVELS.length * 3 })),
-    h('p', {}, t('print.worlds', { n: p.progress.worldsDone.length })),
+    h('p', {}, t('print.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
     last ? h('p', {}, t('print.rhythm', { n: last.cpm })) : null,
     h('p', { class: 'print-date' }, new Date().toLocaleDateString(p.language)),
     h('p', { class: 'print-sign' }, `${p.companion.name} & PikoTyper`));

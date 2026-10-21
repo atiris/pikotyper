@@ -114,6 +114,36 @@ Remove the character completely and keep only the clothes and accessories, each 
 | `outfit-f` | a big pink polka-dot hair bow on the top of the head; heart-shaped red glasses; a light purple t-shirt with a white star on the body; white sneakers with pink laces on the feet |
 | `outfit-g` | a green explorer hat on the top of the head; a light brown explorer vest with pockets on the body; a small lantern in the right hand; green boots on the feet |
 
+### Needs new art: single items
+
+In an outfit set, items that touch cut each other: the glasses lose their top edge
+under the cap, a balloon string or wand crosses a wing, backpack straps stay on the
+vest. These items need a picture of their own. A file `acc-<id>.jpg` replaces the
+item cut from its outfit (same id, same slot); the outfit's other items stay.
+
+Two steps per item, in the same chat, as for the sets:
+1. Attach `base-template.jpg` and use the dress prompt below with ITEM.
+2. Use the remove prompt from the sets above on that result. Save it as `acc-<id>.jpg`.
+Then run `npm run assets`.
+
+```
+Dress the attached character template in this one item, and nothing else: ITEM. Keep exactly the same front view, symmetry, pose, size, position, colors and outline of the character. The item must fit the figure closely, be symmetrical where possible, be complete (no part cut off) and must not hide the eyes. Same style: cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, soft dark-brown outlines. No text. Background: one perfectly flat solid pure magenta color (#FF00FF), no shadow. Same square size.
+```
+
+| File | ITEM | What is wrong now |
+|---|---|---|
+| `acc-round-glasses.jpg` | round orange glasses with clear lenses | top edge cut off by the cap, green spots in the lenses |
+| `acc-star-glasses.jpg` | yellow star-shaped glasses with clear lenses | lower points cut off, small stray bits |
+| `acc-dragon-wings.jpg` | small soft orange baby-dragon wings on the back, visible on both sides | the right wing is crossed by the balloon string |
+| `acc-star-cape.jpg` | a dark blue cape with stars hanging from the shoulders behind the body, visible on both sides | broken into pieces, crossed by the wand |
+| `acc-knit-vest.jpg` | a cozy green knitted vest on the body | backpack straps left at both sides |
+| `acc-backpack.jpg` | a small orange backpack on the back, its straps visible over the shoulders | only broken pieces of the straps |
+| `acc-lantern.jpg` | a small lantern in the right hand | a stray vertical line next to it |
+
+Fixed in code, no new picture needed: green spots in `heart-glasses` lenses. If the pink
+sneakers still look wrong on Piko after that, add `acc-pink-sneakers.jpg` with "white
+sneakers with pink laces on the feet".
+
 ## 3. World backgrounds
 
 Each world needs 3 layers for a gentle parallax effect: `far` (full picture), `mid` and

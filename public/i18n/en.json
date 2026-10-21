@@ -563,12 +563,13 @@
     "keys": "Keys learned: {n} ({keys})",
     "mastered": "Keys mastered: {n}",
     "stars": "Stars: {n} of {total}",
-    "worlds": "Worlds finished: {n} of 5",
+    "worlds": "Worlds finished: {n} of {total}",
     "rhythm": "Rhythm: {n} letters per minute"
   },
   "about": {
     "title": "About PikoTyper",
-    "intro": "PikoTyper is a free, peaceful game that teaches children to type with all ten fingers. Together with a companion they travel through five worlds. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
+    "code": "PikoTyper code on GitHub",
+    "intro": "PikoTyper is a free, peaceful game that teaches children to type with all ten fingers. Together with a companion they travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
     "privacyTitle": "Our promise to parents",
     "privacy": [
       "No ads and no purchases.",
