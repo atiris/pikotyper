@@ -17,6 +17,9 @@
 - If typed characters suggest a different layout than the profile setting (for example
   `y`/`z` swapped, or digits instead of `ľščť`), the parent gets a friendly hint to switch.
 - Parent toggle "words without diacritics" for beginners.
+- Shift is taught as two keys: left Shift for capitals of right-hand letters, right Shift for
+  left-hand letters (the pinky of the other hand). Slovak `? ! :` need the left Shift
+  (`,` `§` `.` keys), US `? :` the left Shift and `!` the right one.
 
 ## Why
 - Slovak diacritics live on the number row and behind dead keys; that is the main pain

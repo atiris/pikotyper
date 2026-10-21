@@ -68,7 +68,7 @@ beginners and should not be a block at the very end.
   (works with plan 08's "My keys" if that is already done; otherwise only the
   key-detail texts).
 - [x] Super profile (`src/app/super.ts`) gets the new keys.
-- [ ] Specs: `.specify/learning/lesson-progression.md`, `words.md`,
+- [x] Specs: `.specify/learning/lesson-progression.md`, `words.md`,
   `finger-guide.md`, `keyboard-layouts.md`. README "The game" lines.
 - [ ] Build, vitest, e2e (`e2e/helpers.ts` must type spaces and capitals: use
   `page.keyboard.type` with the char; for capitals it presses Shift), Playwright

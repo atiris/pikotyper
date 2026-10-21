@@ -17,6 +17,9 @@ hatch a new friend. No explosions, no punishment, no ads, no accounts.
   each new key is introduced alone (where it is, which finger), then mixed with known keys.
   The next key unlocks when the last one is mastered (40 recent presses, 92 % accuracy,
   steady reaction time).
+- **Real sentences early.** Space comes with the first keys, period and comma with the
+  letters, and capitals in the middle of the path, one Shift at a time; targets grow from
+  `fj jf` to short phrases like `Ema ide.`
 - **Every key has its finger.** The on-screen keyboard shows finger colors and numbers,
   lights up the next key (and both steps of Slovak accent keys), and two hands show which
   finger to use. The guide fades for keys the child already masters.
