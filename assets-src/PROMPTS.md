@@ -181,7 +181,7 @@ In the attached image keep only FRONT, exactly where it is, with the same size, 
 | `acc-backpack.jpg` | a small orange backpack on the back, its straps visible over the shoulders | done 2026-10-21 (with `acc-backpack-front.jpg`: straps over the body) |
 | `acc-lantern.jpg` | a small lantern in the right hand | done 2026-10-21 (the wire handle has a small gap at the top) |
 | `acc-wand.jpg` | hand: ITEM = a small magic wand with a golden star on top, held in the right hand | done 2026-10-21 (fixed by hand in GIMP: the generator kept moving the paw) |
-| `acc-balloon.jpg` | hand: ITEM = a red balloon on a thin string, the string held in the left hand | a small blue stray piece next to the balloon, an orange bit on the string |
+| `acc-balloon.jpg` | hand: ITEM = a red balloon on a thin string, the string held in the left hand | done 2026-10-21 (fixed by hand in GIMP) |
 | `acc-boots.jpg` | feet: ITEM = brown boots on the feet | thin dark lines left above the boots |
 
 Fixed in code, no new picture needed: green spots in `heart-glasses` lenses (done 2026-10-21). Pink sneakers: their back side showed; fixed by hand in GIMP in `outfit-f.jpg` (done 2026-10-21).

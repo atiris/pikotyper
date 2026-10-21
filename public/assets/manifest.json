@@ -12,6 +12,14 @@
    "w": 160,
    "h": 160
   },
+  "acc-balloon": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-balloon-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-dragon-wings": {
    "w": 512,
    "h": 512
@@ -352,14 +360,6 @@
    "w": 160,
    "h": 160
   },
-  "acc-balloon": {
-   "w": 512,
-   "h": 512
-  },
-  "acc-balloon-thumb": {
-   "w": 160,
-   "h": 160
-  },
   "acc-beanie": {
    "w": 512,
    "h": 512
@@ -588,6 +588,11 @@
    "set": "d"
   },
   {
+   "id": "balloon",
+   "slot": "hand",
+   "set": "e"
+  },
+  {
    "id": "dragon-wings",
    "slot": "back",
    "set": "e"
@@ -676,11 +681,6 @@
    "id": "rain-boots",
    "slot": "feet",
    "set": "d"
-  },
-  {
-   "id": "balloon",
-   "slot": "hand",
-   "set": "e"
   },
   {
    "id": "beanie",
