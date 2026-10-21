@@ -290,16 +290,20 @@
   "story": {
     "next": "Next",
     "meadowStart": [
-      "Help the bees fly around the web!",
-      "We blow the dandelion and the creatures fly over the web."
+      "The animals want to play! You are the goalkeeper.",
+      "Catch the leaves with the fan!"
     ],
-    "webHole": [
-      "Oops, a little hole! Never mind, it flies on.",
-      "The web has a window now. Nothing happened!"
+    "goal": [
+      "Goal! That was a nice one!",
+      "Goal! The animals are happy.",
+      "Never mind, we catch the next one!"
     ],
-    "webCleared": [
-      "The web is gone! Now help the ladybugs home.",
-      "Great, the way is free!"
+    "goalShout": "GOAL!",
+    "hedgehogStart": [
+      "The hedgehog has a pile of leaves on its back. Watch out, here they come!"
+    ],
+    "hedgehogDone": [
+      "All the leaves are back on the hedgehog. Well done!"
     ],
     "signView": [
       "What a lovely view this way!",
@@ -323,8 +327,8 @@
       ],
       "world1": [
         "The meadow is full of curious little visitors.",
-        "Type the word a creature carries and Piko blows a dandelion, so it flies over the web.",
-        "Nobody gets hurt: they just fly home happily."
+        "Type the word on a leaf and Piko fans it back with his fan.",
+        "When a leaf gets past, it is a goal and everybody cheers."
       ],
       "invitation": [
         "Look what {piko} found in the grass!",

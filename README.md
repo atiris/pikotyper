@@ -1,8 +1,8 @@
 # PikoTyper
 
 A peaceful, story-driven touch-typing adventure for children (about 10-15 years).
-Kids learn to type with **all ten fingers** together with their friend **Piko**: they help
-animals on a meadow, fly a rocket through space, explore a new planet, protect dragons and
+Kids learn to type with **all ten fingers** together with their friend **Piko**: they play catch
+with animals on a meadow, fly a rocket through space, explore a new planet, protect dragons and
 hatch a new friend. No explosions, no punishment, no ads, no accounts.
 
 *Pokojná príbehová hra pre deti na nácvik písania všetkými desiatimi. Po slovensky aj po anglicky.*
@@ -48,7 +48,7 @@ hatch a new friend. No explosions, no punishment, no ads, no accounts.
 
 | World | What happens | Big challenge | Reward |
 |---|---|---|---|
-| 1. Training Meadow | a dandelion puff lifts bees, ladybugs and mice over a web | big spider web | invitation to space, meet Piko |
+| 1. Training Meadow | goalkeeper Piko fans back the leaves bees, ladybugs and mice send him; a miss is a cheered goal | hedgehog throwing leaf volleys | invitation to space, meet Piko |
 | 2. Rocket Flight | typing rhythm drives the speedometer, a beam pushes rocks away | splitting asteroid | landing clearance |
 | 3. New Planet | stepping stones across a swamp, road signs | cracking boulder | the Force |
 | 4. Dragon Valley | shield bubbles protect baby dragons | rhythm wave | a dragon egg |

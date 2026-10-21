@@ -290,16 +290,20 @@
   "story": {
     "next": "Ďalej",
     "meadowStart": [
-      "Pomôž včielkam obletieť pavučinu!",
-      "Fúkneme púpavu a zvieratká preletia ponad pavučinu."
+      "Zvieratká chcú hrať! Ty si brankár.",
+      "Chyť listy vejárom!"
     ],
-    "webHole": [
-      "Ups, dierka! Nevadí, letí ďalej.",
-      "Pavučina má okienko. Nič sa nestalo!"
+    "goal": [
+      "Góól! Ten bol pekný!",
+      "Gól! Zvieratká sa tešia.",
+      "Nevadí, ďalší chytíme!"
     ],
-    "webCleared": [
-      "Pavučina je preč! Teraz pomôž lienkam domov.",
-      "Výborne, cesta je voľná!"
+    "goalShout": "GÓÓL!",
+    "hedgehogStart": [
+      "Ježko má na chrbte kopu listov. Pozor, letia!"
+    ],
+    "hedgehogDone": [
+      "Všetky listy sú späť u ježka. Výborne!"
     ],
     "signView": [
       "Tadiaľto je krásny výhľad!",
@@ -323,8 +327,8 @@
       ],
       "world1": [
         "Na lúke je plno zvedavých malých návštevníkov.",
-        "Napíš slovo, ktoré nesie zvieratko, a Piko fúkne púpavu, aby preletelo ponad pavučinu.",
-        "Nikomu sa nič nestane: len veselo odletia domov."
+        "Napíš slovo na liste a Piko ho odfúkne vejárom späť.",
+        "Keď list preletí, je to gól a všetci sa tešia."
       ],
       "invitation": [
         "Pozri, čo sa našlo v tráve!",

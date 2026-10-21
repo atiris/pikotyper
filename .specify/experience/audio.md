@@ -2,7 +2,7 @@
 
 ## What
 - Calm, simple looping background music per world and soft retro sound effects (key ok,
-  gentle wrong, word done, reward), all synthesized with the Web Audio API.
+  gentle wrong, word done, reward, a soft cheer for a goal), all synthesized with the Web Audio API.
 - Separate volume for music and effects (parent area); a quick sound button on every
   screen switches normal / quiet (20 % of normal) / off; audio starts only after the
   first user interaction.

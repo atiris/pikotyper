@@ -21,10 +21,9 @@ No schema or storage change (level kinds are not stored; `'web'` is only used in
   with code-drawn fallbacks until the art is there.
 
 ## Decisions
-- **Piko is the goalkeeper.** A small goal stands behind Piko (drawn in code on the
-  canvas: two posts and a crossbar of light birch wood, a soft white net with a slight
-  sway), centred on Piko's stage position so Piko (the DOM `.level-piko`) stands in front
-  of it. Leaves fly toward Piko at heights inside the goal mouth.
+- **Piko is the goalkeeper, but there is no goal.** Owner's change (after the plan was
+  written): **no goal frame, no posts, no net** anywhere. Leaves fly toward Piko (the DOM
+  `.level-piko`) at heights around his body.
 - **Piko holds a fan** instead of the dandelion: sprite `obj-fan` (owner's art, a
   hand fan; prompt row in `PROMPTS.md`), fallback drawn in code (a half-circle folded
   paper fan, pastel green ribs, wooden handle). Same spot as the dandelion today (game
@@ -37,10 +36,13 @@ No schema or storage change (level kinds are not stored; `'web'` is only used in
   leaf from the right edge to a throw point at about `x = vw * 0.62`, then sends it on in
   its own way: the bee drops it with a little toss, the butterfly flaps it off with a
   puff, the ladybug and the fly kick it like a ball, the mouse rolls it along the grass
-  (mouse leaves stay low, inside the goal mouth). The creature then hovers or sits at
+  (mouse leaves stay low). The creature then hovers or sits at
   the throw point, bobbing and watching. The leaf flutters on toward Piko (slight spin
   and up-down sway) at the speed `speedFor` gives today; `noPressure` makes the leaf
   hover `waitGap` before Piko as today.
+- **Owner's art is delivered** in `assets-src/` (`obj-leaf-*` x5, `obj-fan`,
+  `obj-hedgehog`): run `npm run assets` and commit the processed files in
+  `public/assets/`. Keep the code fallbacks anyway.
 - **Leaves (owner's art):** `obj-leaf-birch`, `obj-leaf-ginkgo` (small),
   `obj-leaf-oak` (medium), `obj-leaf-maple`, `obj-leaf-chestnut` (big). Word length
   picks the size: up to 3 letters small, 4-5 medium, 6+ big; the kind within a size is
@@ -55,13 +57,14 @@ No schema or storage change (level kinds are not stored; `'web'` is only used in
   both leave to the right and fade out (reuse the `arc` idea of today's `moveGone`).
   Sound `whoosh`.
 - **Not typed in time (goal):** the leaf passes Piko (`onPass`, the existing
-  `come -> pass` switch at `playerX`, which becomes Piko's x) and flies into the net; the
-  net bulges for 0.4 s, a short burst of small leaf-coloured confetti, a big
-  **"GÓÓL!"** pop text over the goal for about 1 s (canvas text, the game font, bouncy
+  `come -> pass` switch at `playerX`, which becomes Piko's x), flutters on past him to the
+  left edge and fades out; a short burst of small leaf-coloured confetti where it passed
+  Piko, a big **"GÓÓL!"** pop text near Piko (above or just right of him, free placement,
+  not covering the next leaf's word) for about 1 s (canvas text, the game font, bouncy
   scale-in), its creature jumps with joy and then flies or runs home to the right. Piko
   says a goal line now and then (first goal always, then 1 in 4) so it does not nag. New
   synthesized sfx `cheer` in `src/audio/audio.ts` (a short rising happy arpeggio, softer
-  than `reward`). The leaf then lies in the net and fades out. Stats count it exactly as a
+  than `reward`). Stats count it exactly as a
   pass today (no new rule).
 - **Super level 5: the hedgehog** (`HedgehogMode`, level kind `'web'` renamed
   `'hedgehog'`). A hedgehog with a pile of leaves on its back (`obj-hedgehog`, owner's
@@ -69,7 +72,7 @@ No schema or storage change (level kinds are not stored; `'web'` is only used in
   leaves stuck on the spikes) stands at about `x = vw * 0.68` on the ground. It shakes
   and throws **volleys** of 2-3 leaves at once (alternating 2 and 3 so the level count
   of 6 is two volleys of 3 or three of 2 — choose so every volley is 2 or 3 and the sum
-  is `def.count`), each leaf with its own word, in different arcs toward the goal, a bit
+  is `def.count`), each leaf with its own word, in different arcs toward Piko, a bit
   slower than in normal levels (factor 0.75). The next volley comes when every leaf of the
   current one is saved or scored. Saved leaves fly back onto the hedgehog's back; goals
   work as in normal levels. After the last volley the hedgehog curls into a ball, rolls
@@ -92,25 +95,43 @@ No schema or storage change (level kinds are not stored; `'web'` is only used in
   hole wording.
 
 ## Steps
-- [ ] **Leaf and fan drawing** in `meadow.ts`: leaf kinds with size by word length,
+- [x] **Leaf and fan drawing** in `meadow.ts`: leaf kinds with size by word length,
   code fallbacks per kind, `Fan` class (replaces `Dandelion`: draw, bob, `swing(tx, ty,
-  done)` with the gust); goal drawing with net bulge.
-- [ ] **MeadowMode as goalkeeper**: `playerX` at Piko, mover with creature + leaf, carry
+  done)` with the gust); no goal drawing.
+- [x] **MeadowMode as goalkeeper**: `playerX` at Piko, mover with creature + leaf, carry
   -> throw point -> leaf flies on; save (`onLeave`): fan swing, arc back, catch, leave
-  right; goal (`onPass`): into the net, confetti, "GÓÓL!" pop, `cheer`, creature
+  right; goal (`onPass`): leaf flutters past Piko, confetti, "GÓÓL!" pop, `cheer`, creature
   jumps and leaves; lines as in Decisions. Remove web, flowers and dandelion code.
-- [ ] **HedgehogMode** with volleys as in Decisions; rename the level kind in
+- [x] **HedgehogMode** with volleys as in Decisions; rename the level kind in
   `levels.ts` and `modes.ts`; rescue `meadow` uses `MeadowMode` (`mix`).
-- [ ] **Audio**: add `cheer`, remove `twang` if unused.
-- [ ] **Story intro** fan SVG instead of the dandelion; remove `src/gfx/web.ts` and its test.
+- [x] **Audio**: add `cheer`, remove `twang` if unused.
+- [x] **Story intro** fan SVG instead of the dandelion; remove `src/gfx/web.ts` and its test.
 - [x] **Art slots**: prompt rows for the 5 leaves, `obj-fan`, `obj-hedgehog` in
   `assets-src/PROMPTS.md`; `npm run assets` still passes without the files.
-- [ ] **Texts** sk + en as in Decisions.
-- [ ] **Specs and README**: `story.md` world 1 (goalkeeper, creatures play catch, goal
+- [x] **Texts** sk + en as in Decisions.
+- [x] **Specs and README**: `story.md` world 1 (goalkeeper, creatures play catch, goal
   = cheer; why: animals are never a target), `super-obstacles.md` (hedgehog volleys
   instead of the web), `game/index.md` line, `finger-guide.md` (fan instead of
   dandelion), README world table.
-- [ ] Build, vitest, e2e; Playwright MCP: play meadow level 1 (save one leaf, let one
+- [x] Build, vitest, e2e; Playwright MCP: play meadow level 1 (save one leaf, let one
   through for a goal), level 3 (mouse rolls a low leaf), level 5 (hedgehog volleys,
   finish); check no web/dandelion anywhere, fallbacks look tidy, no console errors;
   screenshots at 1366x768.
+
+## Done - 2026-10-21
+- Shipped: `MeadowMode` as goalkeeper (creature carries a leaf to a throw point, tosses,
+  flaps, kicks or rolls it; save = fan swing, gust, leaf arcs back to its creature, both go
+  home; goal = leaf flutters past Piko to the left edge, leaf confetti, bouncy "GÓÓL!" pop
+  above Piko, `cheer` sfx, creature jumps, goal line first time then 1 in 4),
+  `HedgehogMode` (volleys of 2-3 at 0.75 speed, saved leaves back on its back, curl, roll,
+  wave), `Fan` with code fallback, five leaf fallbacks, hedgehog fallback, the owner's art
+  processed into `public/assets/`, texts sk + en, specs, README. Removed `Web`, its test,
+  flowers, `Dandelion`, `WebMode`, `twang`.
+- Decisions taken while working: Piko's x on the stage comes from the CSS size of
+  `.level-piko` (85 px centre / stage scale), so no runtime hook was needed; leaves fly
+  from just above Piko's head down to his feet; the story intro shows the owner's
+  `obj-fan` image when it is there, else the code-drawn SVG; the hedgehog's leaf pile is
+  drawn in code over its sprite so the child sees leaves leave and come back; world 1
+  scene line 3 now says a missed leaf is a cheered goal; volleys split `count` evenly
+  (6 = 3 + 3).
+- Left out: nothing.

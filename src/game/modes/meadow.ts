@@ -1,51 +1,245 @@
 import { pickLine } from '../../app/app';
 import { VH } from '../../engine/loop';
 import { ease } from '../../engine/tween';
-import { blob, drawSprite, type G } from '../../gfx/draw';
-import { Web } from '../../gfx/web';
-import { Mode } from '../mode';
+import { blob, drawFace, drawSprite, fontFamily, type G, lighten } from '../../gfx/draw';
+import { t } from '../../i18n/i18n';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
-import { ApproachMode, type Mover, groundY } from './approach';
+import { ApproachMode, type Mover } from './approach';
 
 const FLYERS = ['obj-bee', 'obj-butterfly'];
 const BUGS = ['obj-ladybug', 'obj-fly'];
 const COLORS: Record<string, string> = {
-  'obj-bee': '#f5c542', 'obj-butterfly': '#8fc5ef', 'obj-ladybug': '#e5534b', 'obj-fly': '#9aa7b4', 'obj-mouse': '#b8b8c4', 'obj-spider': '#b49be0',
+  'obj-bee': '#f5c542', 'obj-butterfly': '#8fc5ef', 'obj-ladybug': '#e5534b', 'obj-fly': '#9aa7b4', 'obj-mouse': '#b8b8c4',
 };
-const STEM = 110;
+/** How each creature sends its leaf on at the throw point. */
+const THROW: Record<string, 'toss' | 'flap' | 'kick' | 'roll'> = {
+  'obj-bee': 'toss', 'obj-butterfly': 'flap', 'obj-ladybug': 'kick', 'obj-fly': 'kick', 'obj-mouse': 'roll',
+};
 
-const fallback = (sprite: string) => blob(COLORS[sprite] ?? '#9ccf7a');
+type LeafKind = 'birch' | 'ginkgo' | 'oak' | 'maple' | 'chestnut';
+const LEAF_COLORS: Record<LeafKind, string> = { birch: '#e8c547', ginkgo: '#f2b632', oak: '#c8793a', maple: '#d9482b', chestnut: '#8f9a3a' };
 
-/** Piko's dandelion; on a finished word it tilts toward the creature and blows seeds at it. */
-class Dandelion {
+/** Word length picks the leaf size, so a long word shows at a glance. */
+function leafFor(word: string, pick: <T>(l: readonly T[]) => T): { kind: LeafKind; size: number } {
+  const n = word.length;
+  if (n <= 3) return { kind: pick(['birch', 'ginkgo'] as const), size: 70 };
+  if (n <= 5) return { kind: 'oak', size: 90 };
+  return { kind: pick(['maple', 'chestnut'] as const), size: 115 };
+}
+
+/** Code-drawn leaf in a w x h box, stem down, until the owner's art is there. */
+function leafFallback(kind: LeafKind) {
+  const color = LEAF_COLORS[kind];
+  return (g: G, w: number, h: number) => {
+    g.save();
+    g.lineJoin = 'round';
+    g.lineCap = 'round';
+    const outline = () => {
+      g.fillStyle = color;
+      g.fill();
+      g.strokeStyle = 'rgba(80,45,20,0.6)';
+      g.lineWidth = 2.5;
+      g.stroke();
+    };
+    // The stem.
+    g.strokeStyle = '#7a4a28';
+    g.lineWidth = 4;
+    g.beginPath();
+    g.moveTo(0, h * 0.18);
+    g.lineTo(-w * 0.04, h * 0.47);
+    g.stroke();
+    if (kind === 'chestnut') {
+      // Five fingers spreading from the stem.
+      for (const a of [-1.75, -0.9, 0, 0.9, 1.75]) {
+        g.save();
+        g.translate(0, h * 0.2);
+        g.rotate(a);
+        g.beginPath();
+        g.ellipse(0, -h * 0.26 * (a === 0 ? 1.1 : 0.9), w * 0.11, h * 0.26 * (a === 0 ? 1.1 : 0.9), 0, 0, Math.PI * 2);
+        outline();
+        g.strokeStyle = 'rgba(80,45,20,0.4)';
+        g.lineWidth = 1.5;
+        g.beginPath();
+        g.moveTo(0, 0);
+        g.lineTo(0, -h * 0.45);
+        g.stroke();
+        g.restore();
+      }
+      g.restore();
+      return;
+    }
+    g.beginPath();
+    if (kind === 'ginkgo') {
+      // A fan with a notch in the middle.
+      g.moveTo(0, h * 0.2);
+      g.lineTo(-w * 0.42, -h * 0.12);
+      g.quadraticCurveTo(-w * 0.3, -h * 0.45, -w * 0.04, -h * 0.38);
+      g.lineTo(0, -h * 0.26);
+      g.lineTo(w * 0.04, -h * 0.38);
+      g.quadraticCurveTo(w * 0.3, -h * 0.45, w * 0.42, -h * 0.12);
+      g.closePath();
+      outline();
+      g.strokeStyle = 'rgba(80,45,20,0.3)';
+      g.lineWidth = 1.2;
+      g.beginPath();
+      for (let i = -3; i <= 3; i++) {
+        g.moveTo(0, h * 0.2);
+        g.lineTo(i * w * 0.11, -h * 0.34 + Math.abs(i) * h * 0.04);
+      }
+      g.stroke();
+      g.restore();
+      return;
+    }
+    // Polar outline around the leaf centre: an oval (birch), soft lobes (oak) or five points (maple).
+    const cy = -h * 0.06;
+    const rx = kind === 'maple' ? w * 0.46 : w * (kind === 'oak' ? 0.34 : 0.3);
+    const ry = kind === 'maple' ? h * 0.42 : h * 0.4;
+    const steps = 90;
+    for (let i = 0; i <= steps; i++) {
+      const a = (i / steps) * Math.PI * 2;
+      const f = kind === 'maple' ? 0.5 + 0.5 * Math.abs(Math.cos(a * 2.5)) ** 3
+        : kind === 'oak' ? 0.82 + 0.18 * Math.abs(Math.sin(a * 3.5))
+          : 1 + 0.03 * Math.sin(a * 26);
+      const x = Math.sin(a) * rx * f, y = cy - Math.cos(a) * ry * f;
+      if (i === 0) g.moveTo(x, y);
+      else g.lineTo(x, y);
+    }
+    g.closePath();
+    outline();
+    g.strokeStyle = 'rgba(80,45,20,0.45)';
+    g.lineWidth = 1.8;
+    g.beginPath();
+    g.moveTo(0, h * 0.2);
+    g.lineTo(0, cy - ry * 0.85);
+    for (const s of [-1, 1]) {
+      g.moveTo(0, cy + ry * 0.1);
+      g.lineTo(s * rx * 0.55, cy - ry * 0.3);
+      g.moveTo(0, cy + ry * 0.45);
+      g.lineTo(s * rx * 0.5, cy + ry * 0.05);
+    }
+    g.stroke();
+    g.restore();
+  };
+}
+
+/** Code-drawn hand fan: a folded half circle of pastel green paper on a wooden handle. */
+function fanFallback(g: G, w: number, h: number): void {
+  const cx = 0, cy = h * 0.08, r = w * 0.48;
+  const folds = 10;
+  g.save();
+  g.lineJoin = 'round';
+  for (let i = 0; i < folds; i++) {
+    const a0 = Math.PI + (i / folds) * Math.PI, a1 = Math.PI + ((i + 1) / folds) * Math.PI;
+    g.fillStyle = i % 2 ? '#b9e4c0' : '#a2d6ab';
+    g.beginPath();
+    g.moveTo(cx, cy);
+    g.arc(cx, cy, r, a0, a1);
+    g.closePath();
+    g.fill();
+  }
+  g.strokeStyle = '#6d5040';
+  g.lineWidth = 2.5;
+  g.beginPath();
+  g.moveTo(cx - r, cy);
+  g.arc(cx, cy, r, Math.PI, Math.PI * 2);
+  g.closePath();
+  g.stroke();
+  g.strokeStyle = 'rgba(80,130,90,0.55)';
+  g.lineWidth = 1.2;
+  g.beginPath();
+  for (let i = 1; i < folds; i++) {
+    const a = Math.PI + (i / folds) * Math.PI;
+    g.moveTo(cx, cy);
+    g.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r);
+  }
+  g.stroke();
+  g.fillStyle = '#d29a62';
+  g.strokeStyle = '#6d5040';
+  g.lineWidth = 2;
+  g.beginPath();
+  g.roundRect(-w * 0.05, cy - h * 0.12, w * 0.1, h * 0.52, w * 0.05);
+  g.fill();
+  g.stroke();
+  g.restore();
+}
+
+/** Code-drawn hedgehog, facing left like the owner's art: brown spiky back, face, a few leaves. */
+function hedgehogFallback(g: G, w: number, h: number): void {
+  g.save();
+  g.lineJoin = 'round';
+  g.fillStyle = 'rgba(0,0,0,0.12)';
+  g.beginPath();
+  g.ellipse(0, h * 0.42, w * 0.4, h * 0.06, 0, 0, Math.PI * 2);
+  g.fill();
+  // Spikes on the back half oval.
+  g.fillStyle = '#7a5a44';
+  g.strokeStyle = '#4a3326';
+  g.lineWidth = 2.5;
+  g.beginPath();
+  const spikes = 13;
+  for (let i = 0; i <= spikes; i++) {
+    const a = Math.PI * 1.05 + (i / spikes) * Math.PI * 0.95;
+    const r = i % 2 ? 1 : 1.18;
+    g.lineTo(w * 0.08 + Math.cos(a) * w * 0.4 * r, h * 0.2 + Math.sin(a) * h * 0.48 * r);
+  }
+  g.lineTo(w * 0.48, h * 0.32);
+  g.lineTo(-w * 0.1, h * 0.36);
+  g.closePath();
+  g.fill();
+  g.stroke();
+  // Face and belly in front (left).
+  g.fillStyle = '#c9a283';
+  g.beginPath();
+  g.ellipse(-w * 0.22, h * 0.18, w * 0.24, h * 0.22, -0.2, 0, Math.PI * 2);
+  g.fill();
+  g.stroke();
+  g.fillStyle = '#f08aa0';
+  g.beginPath();
+  g.arc(-w * 0.45, h * 0.2, w * 0.04, 0, Math.PI * 2);
+  g.fill();
+  g.stroke();
+  drawFace(g, -w * 0.25, h * 0.14, w * 0.09);
+  g.fillStyle = '#c9a283';
+  for (const fx of [-0.25, -0.05, 0.2, 0.35]) {
+    g.beginPath();
+    g.ellipse(w * fx, h * 0.4, w * 0.05, h * 0.05, 0, 0, Math.PI * 2);
+    g.fill();
+    g.stroke();
+  }
+  g.restore();
+}
+
+/** Piko's fan; on a finished word it swings toward the leaf and sends a gust at it. */
+class Fan {
   private tilt = 0;
   private bob = 0;
+  private static readonly H = 110;
   constructor(private L: LevelRuntime, private x: number, private y: number) {}
 
-  /** The puffball, where the seeds start. */
-  private head(): [number, number] {
-    return [this.x + Math.sin(this.tilt) * STEM, this.y + this.bob - Math.cos(this.tilt) * STEM];
+  /** The middle of the fan, where the gust starts. */
+  private middle(): [number, number] {
+    const r = Fan.H * 0.62;
+    return [this.x + Math.sin(this.tilt) * r, this.y + this.bob - Math.cos(this.tilt) * r];
   }
 
-  blow(tx: number, ty: number, done: () => void): void {
+  swing(tx: number, ty: number, done: () => void): void {
     const L = this.L;
-    const [hx, hy] = this.head();
-    const to = Math.max(-0.4, Math.min(0.7, (Math.atan2(ty - hy, tx - hx) + Math.PI / 2) * 0.5));
+    const [mx, my] = this.middle();
+    const to = Math.max(-0.4, Math.min(0.8, (Math.atan2(ty - my, tx - mx) + Math.PI / 2) * 0.6 + 0.25));
     const from = this.tilt;
     L.tweens.add(0.15, (k) => (this.tilt = from + (to - from) * k), ease.outQuad, () => {
-      const [sx, sy] = this.head();
+      const [sx, sy] = this.middle();
       let next = 0;
-      L.tweens.add(0.3, (k) => {
-        // A stream of seed puffs from the puffball to the creature.
+      L.tweens.add(0.25, (k) => {
+        // A gust of puffs from the fan to the leaf.
         for (; next <= k; next += 0.1) {
           const x = sx + (tx - sx) * next, y = sy + (ty - sy) * next;
-          L.particles.emit(x, y, 2, 'puff', ['#ffffff', '#f4f8ff'], 40, 9, 0.6);
-          L.particles.emit(x, y, 1, 'dot', ['#ffffff', '#efe8d8'], 60, 4, 0.8);
+          L.particles.emit(x, y, 2, 'puff', ['#ffffff', '#eef8ee'], 50, 10, 0.5);
         }
       }, ease.linear, () => {
         done();
-        L.tweens.add(0.4, (k) => (this.tilt = to * (1 - k)), ease.inOutQuad);
+        L.tweens.add(0.3, (k) => (this.tilt = to * (1 - k)), ease.inOutQuad);
       });
     });
   }
@@ -54,101 +248,67 @@ class Dandelion {
     // It joins Piko when the game starts, not during the preparation cards.
     if (!this.L.started) return;
     this.bob = Math.sin(t * 2) * 4;
-    const [hx, hy] = this.head();
-    const seeds = 22;
-    const angle = (i: number) => (i / seeds) * Math.PI * 2 + Math.sin(t * 1.5 + i) * 0.05;
-    g.save();
-    g.lineCap = 'round';
-    g.strokeStyle = '#5f9e3f';
-    g.lineWidth = 5;
-    g.beginPath();
-    g.moveTo(this.x, this.y + this.bob);
-    g.quadraticCurveTo(this.x - 8 + Math.sin(this.tilt) * STEM * 0.4, this.y + this.bob - STEM * 0.5, hx, hy);
-    g.stroke();
-    g.fillStyle = 'rgba(255, 255, 255, 0.45)';
-    g.beginPath();
-    g.arc(hx, hy, 28, 0, Math.PI * 2);
-    g.fill();
-    g.strokeStyle = 'rgba(255, 255, 255, 0.95)';
-    g.fillStyle = '#ffffff';
-    g.lineWidth = 1.5;
-    g.shadowColor = 'rgba(60, 80, 60, 0.4)';
-    g.shadowBlur = 2;
-    g.beginPath();
-    for (let i = 0; i < seeds; i++) {
-      g.moveTo(hx + Math.cos(angle(i)) * 6, hy + Math.sin(angle(i)) * 6);
-      g.lineTo(hx + Math.cos(angle(i)) * 25, hy + Math.sin(angle(i)) * 25);
-    }
-    g.stroke();
-    for (let i = 0; i < seeds; i++) {
-      g.beginPath();
-      g.arc(hx + Math.cos(angle(i)) * 26, hy + Math.sin(angle(i)) * 26, 2.5, 0, Math.PI * 2);
-      g.fill();
-    }
-    g.fillStyle = '#c9b98a';
-    g.beginPath();
-    g.arc(hx, hy, 6, 0, Math.PI * 2);
-    g.fill();
-    g.restore();
+    drawSprite(g, 'obj-fan', this.x, this.y + this.bob, Fan.H, { rot: this.tilt, ay: 1 }, fanFallback);
   }
 }
 
-/** Two tall flowers that hold the web between their stems. */
-function drawFlowers(g: G, cx: number, cy: number, size: number, t: number): void {
-  const top = cy - size / 2 - 30;
-  const ground = groundY();
-  for (const [side, petal] of [[-1, '#ff9fc0'], [1, '#ffd25a']] as const) {
-    const x = cx + side * size * 0.62;
-    const sway = Math.sin(t * 0.9 + side) * 4;
-    g.save();
-    g.lineCap = 'round';
-    g.strokeStyle = '#5f9e3f';
-    g.lineWidth = 7;
-    g.beginPath();
-    g.moveTo(x, ground + 20);
-    g.quadraticCurveTo(x - side * 10, (top + ground) / 2, x + sway, top);
-    g.stroke();
-    g.fillStyle = '#7cbf55';
-    g.beginPath();
-    g.ellipse(x - side * 18, ground - 50, 20, 8, side * 0.6, 0, Math.PI * 2);
-    g.fill();
-    g.fillStyle = petal;
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 6) * Math.PI * 2;
-      g.beginPath();
-      g.arc(x + sway + Math.cos(a) * 16, top + Math.sin(a) * 16, 13, 0, Math.PI * 2);
-      g.fill();
-    }
-    g.fillStyle = '#f5a623';
-    g.beginPath();
-    g.arc(x + sway, top, 11, 0, Math.PI * 2);
-    g.fill();
-    g.restore();
-  }
+/** A creature that brings a leaf, watches it fly and takes it home. */
+interface Critter {
+  sprite: string;
+  x: number;
+  y: number;
+  size: number;
+  ground: boolean;
+  phase: number;
+  /** carry: holds the leaf; watch: at the throw point; joy: jumps after a goal; home: back to the right. */
+  state: 'carry' | 'watch' | 'joy' | 'home';
+  /** Seconds in the current state. */
+  st: number;
+  /** Height of the current hop. */
+  hop: number;
+  gone: number;
 }
 
-/** Web size per level: bigger in level 2, across the meadow in level 4. */
-const webSize = (index: number) => (index === 1 ? 300 : index === 3 ? 360 : 230);
+/** The pop text after a goal. */
+interface Pop {
+  x: number;
+  y: number;
+  age: number;
+}
 
-/** World 1: creatures come toward a web; a typed word lets Piko's dandelion blow them over it. */
+const POP_TIME = 1.1;
+/** Centre of `.level-piko` in CSS pixels (left 0.6rem + half of its 150 px). */
+const PIKO_CSS_X = 85;
+const PIKO_CSS_H = 150;
+
+/**
+ * World 1: Piko is the goalkeeper. Meadow creatures bring leaves and send them toward him;
+ * a typed word lets his fan blow the leaf back to its creature, a missed one is a goal everybody cheers.
+ */
 export class MeadowMode extends ApproachMode {
   readonly world = 'meadow';
-  private dandelion: Dandelion;
-  private web: Web;
-  private webY: number;
-  private holes = 0;
+  protected fan: Fan;
+  private pops: Pop[] = [];
+  private goals = 0;
 
   constructor(L: LevelRuntime) {
     super(L);
-    // The web hangs where the creatures used to reach Piko.
-    this.playerX = 410;
-    this.web = new Web(webSize(L.def.index), L.rng.int(1, 1e6));
-    this.webY = Math.min(VH * 0.55, groundY() - this.web.size / 2 + 20);
-    this.dandelion = new Dandelion(L, 185, VH - 75);
+    this.fan = new Fan(L, 185, VH - 75);
+    this.playerX = this.pikoX();
   }
 
   start(): void {
     this.L.say(pickLine('story.meadowStart'), 3);
+  }
+
+  /** Piko's x on the stage in game units; the DOM Piko keeps his CSS size while the stage scales. */
+  protected pikoX(): number {
+    return PIKO_CSS_X / this.L.stage.scale;
+  }
+
+  /** Top of Piko in game units. */
+  protected pikoTop(): number {
+    return VH - PIKO_CSS_H / this.L.stage.scale;
   }
 
   private pickSprite(): string {
@@ -160,182 +320,362 @@ export class MeadowMode extends ApproachMode {
     return r.pick([...FLYERS, ...BUGS, 'obj-mouse']);
   }
 
+  /** A leaf flying toward Piko from `x`, at height `y`. */
+  protected makeLeaf(word: string, x: number, y: number, speed = 1): Mover {
+    const { kind, size } = leafFor(word, (l) => this.L.rng.pick(l));
+    return {
+      x, y, vx: this.speedFor(word, x) * speed, vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0,
+      sprite: `obj-leaf-${kind}`, size, kind, by: y, phase: this.L.rng.range(0, 6), lf: 0,
+      critter: null, style: 'toss', thrown: -1, throwX: 0, arc: null, caught: false, scored: false,
+    };
+  }
+
   makeMover(word: string): Mover {
     const sprite = this.pickSprite();
     const ground = sprite === 'obj-mouse';
-    const x = this.L.vw + 90;
-    // Flyers come at the web's height, so they would reach it.
-    const R = this.web.size / 2;
-    const y = ground ? groundY() - 10 : this.L.rng.range(Math.max(150, this.webY - R * 0.8), Math.min(VH * 0.62, this.webY + R * 0.55));
-    return { x, y, vx: this.speedFor(word, x), vy: 0, rot: 0, vr: 0, age: 0, state: 'come', fade: 0, sprite, size: ground ? 100 : 110, ground, phase: this.L.rng.range(0, 6) };
+    const L = this.L;
+    const x = L.vw + 110;
+    const m = this.makeLeaf(word, x, 0);
+    // Mouse leaves roll in the grass; the others fly at the height of Piko's body.
+    m.by = ground ? VH - m.size / 2 - 6 : L.rng.range(Math.max(170, this.pikoTop() - 30), VH - 80);
+    m.y = m.by;
+    m.style = THROW[sprite];
+    m.throwX = Math.max(L.vw * L.rng.range(0.58, 0.66), this.playerX + this.waitGap + 80);
+    const critter: Critter = { sprite, x, y: m.y, size: ground ? 90 : 95, ground, phase: m.phase, state: 'carry', st: 0, hop: 0, gone: 0 };
+    m.critter = critter;
+    this.carry(m, critter);
+    return m;
+  }
+
+  /** The creature holds its leaf from behind (the right): flyers above it, the mouse pushes it. */
+  private carry(m: Mover, c: Critter): void {
+    c.x = m.x + m.size * 0.4 + c.size * 0.3;
+    c.y = c.ground ? VH - c.size / 2 - 4 : m.y - m.size * 0.3;
+  }
+
+  update(dt: number): void {
+    this.playerX = this.pikoX();
+    super.update(dt);
+    for (const p of this.pops) p.age += dt;
+    this.pops = this.pops.filter((p) => p.age < POP_TIME);
   }
 
   protected moveComing(m: Mover, dt: number, tg: Target): void {
     super.moveComing(m, dt, tg);
-    if (!m.ground) m.y += Math.sin(m.age * 2.2 + m.phase) * 22 * dt;
+    const c = m.critter as Critter | null;
+    if (c && m.thrown < 0 && m.x <= m.throwX) this.throwLeaf(m, c);
+    if (m.thrown >= 0) m.thrown += dt;
+    this.flutter(m);
+    if (c) this.moveCritter(m, c, dt);
   }
 
-  drawMover(g: G, m: Mover): void {
-    const flap = m.ground ? Math.abs(Math.sin(m.age * 10)) * 0.05 : Math.sin(m.age * 14) * 0.04;
-    const hop = m.ground && m.state === 'come' ? -Math.abs(Math.sin(m.age * 8)) * 6 : 0;
-    drawSprite(g, m.sprite, m.x, m.y + hop, m.size, { flip: true, rot: m.rot, sy: 1 + flap, sx: 1 - flap }, fallback(m.sprite));
+  private throwLeaf(m: Mover, c: Critter): void {
+    m.thrown = 0;
+    c.state = 'watch';
+    c.st = 0;
+    if (m.style === 'flap') this.L.particles.emit(m.x + 20, m.y - 10, 4, 'puff', ['#ffffff', '#f4f8ff'], 60, 9, 0.6);
+  }
+
+  /** Height and spin of a coming leaf: carried, then tossed, kicked or rolled, then fluttering on. */
+  private flutter(m: Mover): void {
+    const sway = Math.sin(m.age * 3 + m.phase);
+    if (m.style === 'roll') {
+      m.y = m.by;
+      m.rot = m.thrown >= 0 ? m.x / (m.size * 0.45) : sway * 0.1;
+      return;
+    }
+    const k = m.thrown >= 0 ? Math.min(1, m.thrown / 0.5) : 0;
+    const lift = m.style === 'kick' ? 55 : m.style === 'toss' ? 35 : 20;
+    const toss = k > 0 && k < 1 ? -Math.sin(k * Math.PI) * lift : 0;
+    m.y = m.by + toss + sway * (m.thrown >= 0 ? 10 : 4);
+    m.rot = (m.style === 'kick' && k < 1 ? -k * Math.PI * 2 : 0) + Math.sin(m.age * 2.5 + m.phase) * 0.3;
+  }
+
+  private moveCritter(m: Mover, c: Critter, dt: number): void {
+    c.st += dt;
+    if (c.state === 'carry') {
+      this.carry(m, c);
+      c.hop = c.ground ? -Math.abs(Math.sin(m.age * 8)) * 6 : Math.sin(m.age * 2.2 + c.phase) * 6;
+    } else if (c.state === 'watch') {
+      // The kick and the toss end with a little bounce, then the creature bobs and watches.
+      c.hop = c.ground ? -Math.abs(Math.sin(c.st * 3)) * 3 : Math.sin(c.st * 2 + c.phase) * 8;
+    } else if (c.state === 'joy') {
+      c.hop = -Math.abs(Math.sin(c.st * 9)) * 30;
+      if (c.st > 0.8) {
+        c.state = 'home';
+        c.st = 0;
+      }
+    } else {
+      c.x += 240 * dt;
+      if (!c.ground) c.y -= 70 * dt;
+      c.hop = c.ground ? -Math.abs(Math.sin(c.st * 10)) * 6 : Math.sin(c.st * 6) * 5;
+      c.gone = Math.min(1, c.gone + dt * 1.1);
+    }
   }
 
   protected onLeave(m: Mover): void {
     const L = this.L;
     m.vx = 0;
-    m.vy = 0;
-    this.dandelion.blow(m.x - 30, m.y, () => {
-      L.particles.emit(m.x, m.y - 20, 4, 'heart', ['#ff8fab', '#ffb3c6'], 90, 9, 1.2);
+    const c = m.critter as Critter | null;
+    if (c && c.state === 'carry') {
+      c.state = 'watch';
+      c.st = 0;
+    }
+    this.fan.swing(m.x - m.size * 0.4, m.y, () => {
       L.sfx('whoosh');
-      const x1 = this.playerX - 150;
-      m.arc = { x0: m.x, y0: m.y, x1, k: 0, dur: Math.max(0.9, Math.min(2.2, (m.x - x1) / 380)) };
+      L.particles.emit(m.x, m.y, 5, 'puff', ['#ffffff', '#eef8ee'], 80, 10, 0.6);
+      const [x1, y1] = this.catchPoint(m);
+      m.arc = { x0: m.x, y0: m.y, x1, y1, k: 0, dur: Math.max(0.8, Math.min(1.8, (x1 - m.x) / 520)) };
     });
   }
 
-  /** Lifted by the wind: flyers arc over the web, mice hop under it; then on to the left. */
-  protected moveGone(m: Mover, dt: number): void {
-    if (m.state !== 'leave') return super.moveGone(m, dt);
-    const a = m.arc;
-    // Still waiting for the seeds.
-    if (!a) return;
-    if (a.k >= 1) {
-      m.x -= 200 * dt;
-      m.fade = Math.min(1, m.fade + dt * 1.4);
-      return;
-    }
-    a.k = Math.min(1, a.k + dt / a.dur);
-    m.x = a.x0 + (a.x1 - a.x0) * a.k;
-    if (m.ground) {
-      m.y = a.y0 - Math.abs(Math.sin(a.k * Math.PI * 4)) * 18;
-      return;
-    }
-    const top = this.webY - this.web.size / 2 - 50;
-    const peak = (a.x0 - this.playerX) / (a.x0 - a.x1);
-    m.y = a.k < peak
-      ? a.y0 + (top - a.y0) * Math.sin((Math.PI / 2) * (a.k / peak))
-      : top + 60 * (1 - Math.cos((Math.PI / 2) * ((a.k - peak) / (1 - peak))));
+  /** Where a saved leaf flies back to: its creature. */
+  protected catchPoint(m: Mover): [number, number] {
+    const c = m.critter as Critter;
+    return [c.x - c.size * 0.35, c.ground ? VH - m.size / 2 - 6 : c.y + c.size * 0.25];
   }
 
-  /** Not typed in time: it tears a hole in the web and goes on through it. */
+  /** The saved leaf is home: the creature hops, catches it and both leave to the right. */
+  protected onCaught(m: Mover): void {
+    const c = m.critter as Critter;
+    this.L.particles.emit(c.x, c.y - 30, 5, 'heart', ['#ff8fab', '#ffb3c6'], 90, 9, 1.2);
+    c.state = 'joy';
+    c.st = 0.45;
+  }
+
+  /** A saved leaf arcs high back to its creature; a goal flutters on to the left edge. */
+  protected moveGone(m: Mover, dt: number): void {
+    const c = m.critter as Critter | null;
+    if (c) this.moveCritter(m, c, dt);
+    if (m.state === 'pass') {
+      m.x += m.vx * dt;
+      this.flutter(m);
+      m.lf = Math.min(1, m.lf + dt * Math.max(0.6, -m.vx / Math.max(60, m.x + 60)));
+    } else {
+      const a = m.arc;
+      // Still waiting for the gust.
+      if (!a) return;
+      if (a.k < 1) {
+        a.k = Math.min(1, a.k + dt / a.dur);
+        const [x1, y1] = this.catchPoint(m);
+        m.x = a.x0 + (x1 - a.x0) * ease.inOutQuad(a.k);
+        m.y = a.y0 + (y1 - a.y0) * a.k - Math.sin(a.k * Math.PI) * 160;
+        m.rot += dt * 6;
+        if (a.k >= 1) this.onCaught(m);
+      } else if (c) {
+        // The creature takes its leaf home.
+        m.x = c.x - c.size * 0.35;
+        m.y = c.ground ? VH - m.size / 2 - 6 : c.y + c.hop + c.size * 0.25;
+        m.lf = c.gone;
+      }
+    }
+    m.fade = Math.min(m.lf, c ? c.gone : 1);
+  }
+
+  /** Not typed in time: a goal! Confetti, the pop text and a cheer; nothing bad happens. */
   protected onPass(m: Mover): void {
     const L = this.L;
-    const R = this.web.size / 2;
-    const hy = Math.max(-R * 0.8, Math.min(R * 0.8, m.y - this.webY));
-    this.web.hole(L.rng.range(-0.25, 0.25) * R, hy);
-    L.particles.emit(m.x, this.webY + hy, 6, 'sparkle', ['#ffffff', '#dfe9f5'], 90, 6);
-    L.sfx('twang');
-    if (this.holes++ === 0 || L.rng.chance(0.25)) L.say(pickLine('story.webHole'), 2.5);
+    m.vx *= 0.8;
+    const color = LEAF_COLORS[m.kind as LeafKind];
+    L.particles.emit(m.x, m.y, 14, 'leaf', [color, lighten(color, 0.4), '#ffd25a', '#9ccf7a'], 200, 7, 1.1);
+    L.sfx('cheer');
+    this.pops.push({ x: this.playerX + 60, y: Math.max(70, this.pikoTop() - 110), age: 0 });
+    this.cheerGoal(m);
+    if (this.goals++ === 0 || L.rng.chance(0.25)) L.say(pickLine('story.goal'), 2.5);
   }
 
-  update(dt: number): void {
-    super.update(dt);
-    this.web.update(dt);
+  /** The creature that sent the leaf jumps with joy, then goes home. */
+  protected cheerGoal(m: Mover): void {
+    const c = m.critter as Critter | null;
+    if (!c) return;
+    c.state = 'joy';
+    c.st = 0;
+  }
+
+  drawMover(g: G, m: Mover): void {
+    const c = m.critter as Critter | null;
+    if (c && c.gone < 1) {
+      g.save();
+      g.globalAlpha = 1 - c.gone;
+      const flap = c.ground ? 0 : Math.sin(m.age * 14) * 0.04;
+      drawSprite(g, c.sprite, c.x, c.y + c.hop, c.size, { flip: c.state !== 'home', sy: 1 + flap, sx: 1 - flap }, blob(COLORS[c.sprite] ?? '#9ccf7a'));
+      g.restore();
+    }
+    if (m.lf < 1) {
+      g.save();
+      g.globalAlpha = 1 - m.lf;
+      drawSprite(g, m.sprite, m.x, m.y, m.size, { rot: m.rot }, leafFallback(m.kind));
+      g.restore();
+    }
   }
 
   render(g: G): void {
-    drawFlowers(g, this.playerX, this.webY, this.web.size, this.t);
-    this.web.draw(g, this.playerX, this.webY);
-    super.render(g);
-    this.dandelion.draw(g, this.t);
+    const list = [...this.L.core.targets].sort((a, b) => (a.data as Mover).y - (b.data as Mover).y);
+    for (const tg of list) this.drawMover(g, tg.data as Mover);
+    for (const tg of list) {
+      const m = tg.data as Mover;
+      if (m.state === 'come') this.L.label(g, tg, m.x, Math.max(40, m.y - m.size * 0.55 - 26));
+    }
+    this.drawExtras(g);
+    this.fan.draw(g, this.t);
+    for (const p of this.pops) this.drawPop(g, p);
+  }
+
+  /** Hook for the hedgehog, drawn behind the fan. */
+  protected drawExtras(_g: G): void {}
+
+  private drawPop(g: G, p: Pop): void {
+    const s = ease.outBack(Math.min(1, p.age / 0.35));
+    const a = Math.min(1, (POP_TIME - p.age) / 0.3);
+    g.save();
+    g.globalAlpha = Math.max(0, a);
+    g.translate(p.x, p.y - p.age * 12);
+    g.scale(s, s);
+    g.rotate(-0.06);
+    g.font = `800 58px ${fontFamily()}`;
+    g.textAlign = 'left';
+    g.textBaseline = 'middle';
+    g.lineJoin = 'round';
+    g.lineWidth = 8;
+    g.strokeStyle = '#5a3d2b';
+    const text = t('story.goalShout');
+    g.strokeText(text, 0, 0);
+    g.fillStyle = '#ffd25a';
+    g.fillText(text, 0, 0);
+    g.restore();
   }
 }
 
-/** World 1 super-obstacle: open the web strand by strand, then help the ladybugs behind it fly home. */
-export class WebMode extends Mode {
-  readonly world = 'meadow';
-  private strands: Target[] = [];
-  private friends: Target[] = [];
-  private cleared = 0;
-  private freed = 0;
-  private cx = 0;
-  private cy = VH * 0.46;
-  private web = new Web(400);
-  private dandelion: Dandelion;
-  private doneTimer = 0;
+/** Splits `count` leaves into volleys of 2 or 3. */
+export function volleys(count: number): number[] {
+  const n = Math.max(1, Math.ceil(count / 3));
+  return Array.from({ length: n }, (_, i) => Math.floor(count / n) + (i < count % n ? 1 : 0));
+}
+
+/** World 1 super-obstacle: a hedgehog shakes volleys of leaves off its back toward Piko. */
+export class HedgehogMode extends MeadowMode {
+  protected autoSpawn = false;
+  private sizes: number[];
+  private volley = 0;
+  private hy = VH - 82;
+  /** Leaves on the hedgehog's back. */
+  private pile: number;
+  private shake = 0;
+  private hop = 0;
+  /** Seconds of the happy end (curl, roll a circle, wave); -1 before it. */
+  private endT = -1;
 
   constructor(L: LevelRuntime) {
     super(L);
-    this.dandelion = new Dandelion(L, 185, VH - 75);
+    this.sizes = volleys(L.def.count);
+    this.pile = L.def.count;
+    this.spawnTimer = 1;
+  }
+
+  private get hx(): number {
+    return this.L.vw * 0.68;
   }
 
   start(): void {
-    const L = this.L;
-    const size = this.web.size;
-    this.cx = L.vw * 0.6;
-    const half = Math.ceil(L.def.count / 2);
-    const spots = [[-0.28, -0.3], [0.3, -0.12], [-0.12, 0.3]];
-    for (let i = 0; i < half; i++) {
-      const [dx, dy] = spots[i % spots.length];
-      this.strands.push(L.core.add(L.word(), { dx: dx * size, dy: dy * size, strand: true }));
-    }
-    for (let i = 0; i < L.def.count - half; i++) {
-      const word = L.word();
-      const tg = L.core.add(word, { x: this.cx + (i - (L.def.count - half - 1) / 2) * 150, y: this.cy + (i % 2 ? 40 : -50), vx: 0, vy: 0, gone: 0, phase: i }, false);
-      this.friends.push(tg);
-    }
+    this.L.say(pickLine('story.hedgehogStart'), 3);
   }
 
   update(dt: number): void {
-    this.web.update(dt);
-    for (const f of this.friends) {
-      if (f.done) {
-        f.data.x += f.data.vx * dt;
-        f.data.y += f.data.vy * dt;
-        f.data.gone = Math.min(1, f.data.gone + dt * 0.7);
-      }
-    }
-    this.scroll += dt * 8;
-    if (this.freed >= this.friends.length) this.doneTimer += dt;
-  }
-
-  onDone(tg: Target): void {
     const L = this.L;
-    if (this.strands.includes(tg)) {
-      this.cleared++;
-      this.web.hole(tg.data.dx, tg.data.dy);
-      L.particles.emit(this.cx + tg.data.dx, this.cy + tg.data.dy, 16, 'sparkle', ['#ffffff', '#dfe9f5'], 160, 8);
-      L.sfx('twang');
-      if (this.cleared >= this.strands.length) {
-        this.web.loosen();
-        for (const f of this.friends) f.selectable = true;
-        L.sfx('whoosh');
-        L.say(pickLine('story.webCleared'), 3);
-      }
-      return;
+    const flying = L.core.targets.some((tg) => (tg.data as Mover).state === 'come');
+    if (this.volley < this.sizes.length && !flying) {
+      this.spawnTimer -= dt;
+      if (this.spawnTimer <= 0) this.throwVolley();
     }
-    this.freed++;
-    this.dandelion.blow(tg.data.x - 40, tg.data.y, () => {
-      L.particles.emit(tg.data.x, tg.data.y, 6, 'heart', ['#ff8fab', '#ffb3c6'], 100, 9, 1.2);
-      tg.data.vx = 180;
-      tg.data.vy = -220;
-    });
+    this.shake = Math.max(0, this.shake - dt);
+    this.hop = Math.max(0, this.hop - dt);
+    super.update(dt);
+    if (this.endT < 0 && this.spawned >= this.total && L.core.targets.length === 0) {
+      this.endT = 0;
+      L.sfx('reward');
+      L.say(pickLine('story.hedgehogDone'), 3);
+    } else if (this.endT >= 0) this.endT += dt;
   }
 
-  render(g: G): void {
-    const size = this.web.size;
-    drawFlowers(g, this.cx, this.cy, size, this.t);
-    for (const f of this.friends) {
-      g.save();
-      g.globalAlpha = 1 - f.data.gone;
-      const bob = Math.sin(this.t * 2 + f.data.phase) * 6;
-      drawSprite(g, 'obj-ladybug', f.data.x, f.data.y + bob, 105, { flip: !f.done }, fallback('obj-ladybug'));
-      g.restore();
+  private throwVolley(): void {
+    const L = this.L;
+    const n = this.sizes[this.volley++];
+    this.shake = 0.6;
+    this.pile -= n;
+    L.sfx('whoosh');
+    const top = Math.max(170, VH * 0.5), bottom = VH - 70;
+    const lanes = L.rng.chance(0.5) ? [0, 1, 2] : [2, 1, 0];
+    for (let i = 0; i < n; i++) {
+      const word = L.word();
+      const y = top + ((lanes[i] + L.rng.range(-0.2, 0.2)) / 2) * (bottom - top);
+      const m = this.makeLeaf(word, this.hx - 30, y, 0.75);
+      m.launch = { y0: this.hy - 60, k: 0, peak: L.rng.range(60, 140) };
+      // Already past the toss: it only flutters.
+      m.thrown = 1;
+      m.y = this.hy - 60;
+      L.core.add(word, m);
+      this.spawned++;
     }
-    this.web.draw(g, this.cx, this.cy);
-    // The little spider just sits at the corner and waves when the web is gone.
-    const wave = this.web.gone ? Math.sin(this.t * 6) * 0.25 : 0;
-    drawSprite(g, 'obj-spider', this.cx + size * 0.5, this.cy - size * 0.45 + Math.sin(this.t) * 3, 80, { rot: wave }, fallback('obj-spider'));
-    for (const s of this.strands) if (!s.done) this.L.label(g, s, this.cx + s.data.dx, this.cy + s.data.dy, 38);
-    for (const f of this.friends) if (!f.done) this.L.label(g, f, f.data.x, f.data.y - 80, 36);
-    this.dandelion.draw(g, this.t);
+    this.spawnTimer = 1.2;
   }
 
-  progress(): number {
-    return (this.cleared + this.freed) / (this.strands.length + this.friends.length);
+  protected moveComing(m: Mover, dt: number, tg: Target): void {
+    super.moveComing(m, dt, tg);
+    const l = m.launch;
+    if (!l || l.k >= 1) return;
+    // Off the back in an arc, then on at its own height.
+    l.k = Math.min(1, l.k + dt / 0.9);
+    m.y = l.y0 + (m.y - l.y0) * ease.outQuad(l.k) - Math.sin(l.k * Math.PI) * l.peak;
+  }
+
+  /** Saved leaves fly back onto the hedgehog's back. */
+  protected catchPoint(): [number, number] {
+    return [this.hx + 10, this.hy - 70];
+  }
+
+  protected onCaught(m: Mover): void {
+    m.lf = 1;
+    this.pile++;
+    this.hop = 0.4;
+    this.L.particles.emit(this.hx, this.hy - 70, 6, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 7);
+  }
+
+  protected cheerGoal(): void {
+    this.hop = 0.6;
+  }
+
+  protected drawExtras(g: G): void {
+    const e = this.endT;
+    let x = this.hx, y = this.hy, rot = 0, curl = 0;
+    if (e >= 0) {
+      // Curl into a ball, roll a happy circle, then stand up and wave.
+      curl = e < 0.3 ? e / 0.3 : e < 1.9 ? 1 : Math.max(0, 1 - (e - 1.9) / 0.3);
+      const k = Math.min(1, Math.max(0, (e - 0.3) / 1.6));
+      x += Math.sin(k * Math.PI * 2) * 90;
+      y -= (1 - Math.cos(k * Math.PI * 2)) * 30;
+      rot = -k * Math.PI * 4;
+      if (e > 2.2) rot = Math.sin((e - 2.2) * 8) * 0.15;
+    }
+    const shake = this.shake > 0 ? Math.sin(this.shake * 50) * 0.08 : 0;
+    const hop = this.hop > 0 ? -Math.abs(Math.sin(this.hop * 10)) * 18 : 0;
+    const size = 150;
+    g.save();
+    g.translate(x, y + hop);
+    g.rotate(rot + shake);
+    g.scale(1 - curl * 0.25, 1 - curl * 0.25);
+    if (curl > 0.5) {
+      // Curled up: a round spiky ball.
+      drawSprite(g, 'obj-hedgehog', 0, 0, size * 0.8, { sx: 0.8 }, hedgehogFallback);
+    } else drawSprite(g, 'obj-hedgehog', 0, 0, size, {}, hedgehogFallback);
+    // The pile of leaves on its back.
+    const kinds: LeafKind[] = ['maple', 'birch', 'oak', 'ginkgo', 'chestnut', 'maple'];
+    for (let i = 0; i < Math.min(6, Math.max(0, this.pile)); i++) {
+      drawSprite(g, `obj-leaf-${kinds[i]}`, -5 + (i % 3) * 26, -size * 0.32 + Math.floor(i / 3) * 18, 30, { rot: i * 1.1 }, leafFallback(kinds[i]));
+    }
+    g.restore();
   }
 
   get finished(): boolean {
-    return this.freed >= this.friends.length && this.doneTimer > 1.2;
+    return this.endT > 3;
   }
 }

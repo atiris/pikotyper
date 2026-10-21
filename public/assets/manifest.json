@@ -212,13 +212,41 @@
    "w": 401,
    "h": 512
   },
+  "obj-fan": {
+   "w": 512,
+   "h": 462
+  },
   "obj-fly": {
    "w": 512,
    "h": 443
   },
+  "obj-hedgehog": {
+   "w": 512,
+   "h": 445
+  },
   "obj-ladybug": {
    "w": 512,
    "h": 455
+  },
+  "obj-leaf-birch": {
+   "w": 443,
+   "h": 512
+  },
+  "obj-leaf-chestnut": {
+   "w": 506,
+   "h": 512
+  },
+  "obj-leaf-ginkgo": {
+   "w": 420,
+   "h": 430
+  },
+  "obj-leaf-maple": {
+   "w": 512,
+   "h": 460
+  },
+  "obj-leaf-oak": {
+   "w": 450,
+   "h": 512
   },
   "obj-mole": {
    "w": 512,

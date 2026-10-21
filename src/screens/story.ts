@@ -11,18 +11,25 @@ interface SceneDef {
   piko?: boolean;
   envelope?: boolean;
   sparkles?: boolean;
-  dandelion?: boolean;
+  fan?: boolean;
 }
 
-/** Piko's dandelion, the same look as in the meadow levels. */
-const DANDELION = `<svg viewBox="0 0 80 160" aria-hidden="true"><path d="M40 158 Q30 100 40 44" fill="none" stroke="#5f9e3f" stroke-width="5" stroke-linecap="round"/><circle cx="40" cy="40" r="30" fill="rgba(255,255,255,0.5)"/>${
-  Array.from({ length: 22 }, (_, i) => {
-    const a = (i / 22) * Math.PI * 2, c = Math.cos(a), s = Math.sin(a);
-    return `<line x1="${40 + c * 6}" y1="${40 + s * 6}" x2="${40 + c * 26}" y2="${40 + s * 26}" stroke="#fff" stroke-width="1.5"/><circle cx="${40 + c * 27}" cy="${40 + s * 27}" r="2.6" fill="#fff"/>`;
-  }).join('')}<circle cx="40" cy="40" r="6" fill="#c9b98a"/></svg>`;
+/** Piko's fan, the same look as the code-drawn one in the meadow levels. */
+const FAN = `<svg viewBox="0 0 110 120" aria-hidden="true">${
+  Array.from({ length: 10 }, (_, i) => {
+    const a0 = Math.PI + (i / 10) * Math.PI, a1 = Math.PI + ((i + 1) / 10) * Math.PI;
+    const p = (a: number) => `${(55 + Math.cos(a) * 52).toFixed(1)} ${(62 + Math.sin(a) * 52).toFixed(1)}`;
+    return `<path d="M55 62 L${p(a0)} A52 52 0 0 1 ${p(a1)} Z" fill="${i % 2 ? '#b9e4c0' : '#a2d6ab'}" stroke="rgba(80,130,90,0.55)" stroke-width="1.2"/>`;
+  }).join('')}<path d="M3 62 A52 52 0 0 1 107 62 Z" fill="none" stroke="#6d5040" stroke-width="2.5" stroke-linejoin="round"/><rect x="50" y="50" width="10" height="66" rx="5" fill="#d29a62" stroke="#6d5040" stroke-width="2"/></svg>`;
+
+/** The owner's fan art when it is there, else the code-drawn one. */
+function fan(): HTMLElement {
+  const src = imageUrl('obj-fan');
+  return src ? h('div', { class: 'story-fan' }, h('img', { src, alt: '' })) : h('div', { class: 'story-fan', html: FAN });
+}
 
 const SCENES: Record<string, SceneDef> = {
-  intro: { world: 'meadow', sprites: [], piko: true, dandelion: true },
+  intro: { world: 'meadow', sprites: [], piko: true, fan: true },
   world1: { world: 'meadow', sprites: ['obj-bee', 'obj-butterfly', 'obj-ladybug'] },
   invitation: { world: 'meadow', sprites: ['obj-rocket'], piko: true, envelope: true },
   world2: { world: 'space', sprites: ['obj-rocket', 'obj-planet-2'] },
@@ -58,7 +65,7 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
     }),
     def.envelope ? h('div', { class: 'envelope', 'aria-hidden': 'true' }, h('span', {}, '★')) : null,
     def.piko ? h('div', { class: 'story-piko' }, pikoElement(p.companion, 'happy', 220)) : null,
-    def.dandelion ? h('div', { class: 'story-dandelion', html: DANDELION }) : null,
+    def.fan ? fan() : null,
     def.sparkles ? h('div', { class: 'sparkles', 'aria-hidden': 'true' }, ...Array.from({ length: 14 }, (_, k) => h('i', { style: `--k:${k}` }))) : null);
   const finish = () => {
     if (!p.progress.scenesSeen.includes(params.scene)) {

@@ -15,7 +15,7 @@
   when the child types the adventure's password: two random letters the child already
   knows. Esc goes back to the map. It is the only card before a level, apart from new keys.
 - A new key is introduced by Piko on its own card, with the finger's name highlighted in
-  that finger's color; game objects (Piko's dandelion) appear only when play starts. The space
+  that finger's color; game objects (Piko's fan) appear only when play starts. The space
   bar is pressed by a thumb; a Shift card names its hand and asks for three capitals of the
   other hand. For a capital the guide lights the Shift of the other hand.
 - If the child holds the Shift on the same hand as the letter, the letter still counts and

@@ -5,12 +5,14 @@ The child travels through five worlds. Each world has several short levels and e
 with a super-obstacle and a reward that opens the next world. Short, skippable intro
 scenes (a few lines of text and a simple animation) tell the story.
 
-1. **Training Meadow** - insects and mice come toward a spider web hung between two
-   flowers; a typed word lets Piko blow his dandelion, and the wind lifts the creature over
-   the web (mice hop under it). A creature not typed in time tears a hole into the web and
-   goes on happily: nobody is ever caught, and no spider comes. Hitting animals, even
-   softly, is the wrong message for small children; helping them is better.
-   Super-obstacle: a big spider web.
+1. **Training Meadow** - the meadow creatures play catch with Piko, the goalkeeper. A bee,
+   butterfly, ladybug, fly or mouse brings a leaf with a word and sends it toward Piko; a
+   typed word lets his fan blow the leaf back to its creature, which catches it and goes
+   home. A leaf not typed in time flies past him: a goal, everybody cheers, so a miss is a
+   laugh, not a failure. The leaf size shows the word length at a glance. Animals are
+   never the target of anything (no webs, nets or swatters): even soft hitting or catching
+   is the wrong message for small children; playing with them is better.
+   Super-obstacle: a hedgehog throws volleys of leaves from its back.
    Reward: a secret invitation to space; the child meets **Piko**.
 2. **Space Rocket Flight** - typing rhythm drives the rocket speedometer; a soft energy
    beam pushes asteroids and planets out of the path. Super-obstacle: fractured asteroid.
