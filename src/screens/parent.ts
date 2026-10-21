@@ -2,10 +2,10 @@ import { app, applyProfileLook, go, saveProfile, useLanguage } from '../app/app'
 import { t } from '../i18n/i18n';
 import { LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
-import { OWN_QUESTIONS_MAX, OWN_QUESTION_LEN, SURPRISES_MAX, SURPRISE_LEN } from '../game/own-content';
+import { SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder } from '../learning/lessons';
-import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type OwnMix, type ParentLock, type Profile, type TaskKind } from '../storage/schema';
+import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
 import { checkLock, makeLock } from '../storage/lock';
 import { linkOf } from '../share/codec';
 import { TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, taskCode } from '../share/task';
@@ -100,13 +100,13 @@ function passwordDialog(lock: ParentLock): Promise<boolean> {
 export async function parentScreen(root: HTMLElement, params: { granted?: boolean }): Promise<void> {
   if (!params.granted && !(await parentAccess())) return go('map');
   const p = app.profile!;
-  const tabs = ['settings', 'own', 'task', 'keys', 'dashboard', 'data'] as const;
+  const tabs = ['settings', 'own', 'surprises', 'task', 'keys', 'dashboard', 'data'] as const;
   type Tab = (typeof tabs)[number];
   const body = h('div', { class: 'parent-body' });
   const nav = h('nav', { class: 'tabs', role: 'tablist' });
   const show = (tab: Tab) => {
     nav.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
-    body.replaceChildren(tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'task' ? taskTab(p) : tab === 'keys' ? keysTab(p) : tab === 'dashboard' ? dashboardTab(p) : dataTab(p));
+    body.replaceChildren(tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : tab === 'task' ? taskTab(p) : tab === 'keys' ? keysTab(p) : tab === 'dashboard' ? dashboardTab(p) : dataTab(p));
   };
   for (const tab of tabs) {
     const b = button(t(`parent.tab.${tab}`), () => show(tab), 'tab');
@@ -238,91 +238,156 @@ function lockGroup(): HTMLElement {
   return box;
 }
 
-/** The parent's own content: encouragements, surprises, questions, words and text. */
+/** The parent's own content: encouragements, words and text. */
 function ownTab(p: Profile): HTMLElement {
   const messages = h('textarea', { rows: 3, placeholder: t('parent.messagesPlaceholder') });
   messages.value = p.customMessages.join('\n');
   messages.addEventListener('change', () => { p.customMessages = messages.value.split('\n').map((m) => m.trim()).filter(Boolean).slice(0, 20); saveProfile(); });
   return h('div', { class: 'settings-grid own-tab' },
     h('fieldset', {}, h('legend', {}, t('own.group.messages')), field(t('parent.messages'), messages, t('parent.messagesHint'))),
-    surprisesEditor(p),
-    questionsEditor(p),
     ...ownWordsEditors(p));
 }
 
 const newId = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36);
 
-/** Story level name for the surprise place picker. */
+/** Story level name for the level picker and the table. */
 function levelName(l: LevelDef): string {
   return `${t(`worlds.${WORLDS[l.world]}`)}: ${l.isSuper ? t('map.super') : l.index + 1}`;
 }
 
-/** Real rewards a parent hides behind a level; the answer is shown once, after the level went well. */
-function surprisesEditor(p: Profile): HTMLElement {
-  const places: [string, string][] = [['next', t('own.placeNext')], ['practice', t('own.placePractice')], ...LEVELS.map((l): [string, string] => [l.id, levelName(l)])];
-  const placeName = (id: string) => places.find(([v]) => v === id)?.[1] ?? id;
-  const q = h('textarea', { rows: 2, maxlength: SURPRISE_LEN, placeholder: t('own.surpriseQPlaceholder') });
-  const a = h('textarea', { rows: 2, maxlength: SURPRISE_LEN, placeholder: t('own.surpriseAPlaceholder') });
-  const place = select('next', places, () => undefined);
-  const stars = select('2', [['1', '★'], ['2', `★★ ${t('own.starsEnough')}`], ['3', '★★★']], () => undefined);
-  const msg = h('p', { class: 'error', role: 'alert' });
-  const list = h('ul', { class: 'own-list' });
-  const paint = () => list.replaceChildren(...p.surprises.map((s) => h('li', { class: s.revealedAt ? 'revealed' : '' },
-    h('div', {}, h('b', {}, s.q), h('span', {}, s.a),
-      h('small', {}, `${placeName(s.place)} · ${'★'.repeat(s.minStars)} · ${s.revealedAt ? t('own.revealed', { date: new Date(s.revealedAt).toLocaleDateString(p.language) }) : t('own.waiting')}`)),
-    button(t('own.remove'), () => { p.surprises = p.surprises.filter((x) => x !== s); saveProfile(); paint(); }, 'btn small ghost', 'trash'))));
-  const add = () => {
-    msg.textContent = '';
-    if (!q.value.trim() || !a.value.trim()) return void (msg.textContent = t('own.needBoth'));
-    if (p.surprises.length >= SURPRISES_MAX) return void (msg.textContent = t('own.tooMany', { n: SURPRISES_MAX }));
-    p.surprises.push({ id: newId(), q: q.value.trim(), a: a.value.trim(), place: place.value, minStars: Number(stars.value) });
-    q.value = a.value = '';
-    saveProfile();
-    paint();
-  };
-  paint();
-  return h('fieldset', { class: 'own-surprises' }, h('legend', {}, t('own.group.surprises')),
-    h('p', { class: 'hint' }, t('own.surprisesHint')),
-    field(t('own.surpriseQ'), q),
-    field(t('own.surpriseA'), a),
-    h('div', { class: 'row' }, field(t('own.place'), place), field(t('own.minStars'), stars)),
-    msg,
-    button(t('own.add'), add, 'btn small primary', 'plus'),
-    list);
+/** When a rule tells its answer, in words. */
+function whenText(s: Surprise): string {
+  if (s.trigger === 'level') {
+    const l = LEVELS.find((x) => x.id === s.level);
+    return l ? levelName(l) : '?';
+  }
+  if (s.trigger === 'random') return t('surprises.when.random');
+  const n = s.n ?? 1;
+  return t(`surprises.when.${s.trigger}${s.trigger === 'minutes' ? '' : n === 1 ? 'One' : 'Many'}`, { n });
 }
 
-/** Questions that take turns with Piko's teasers; the answer comes after the next level. */
-function questionsEditor(p: Profile): HTMLElement {
-  const q = h('input', { type: 'text', maxlength: OWN_QUESTION_LEN, placeholder: t('own.questionPlaceholder') });
-  const a = h('input', { type: 'text', maxlength: OWN_QUESTION_LEN, placeholder: t('own.answerPlaceholder') });
+/** Where a rule stands: done, its count, or waiting; with the last reveal of a repeating one. */
+function stateText(p: Profile, s: Surprise): string {
+  const date = (d: string) => new Date(d).toLocaleDateString(p.language, { day: 'numeric', month: 'numeric' });
+  if (s.doneAt) return t('surprises.state.done', { date: date(s.doneAt) });
+  const { have, need } = surpriseCount(p, s);
+  const now = s.trigger === 'minutes' ? t('surprises.state.minutes', { have, need })
+    : s.trigger === 'levels' || s.trigger === 'stars' ? `${have} / ${need}` : t('surprises.state.waiting');
+  return s.lastShownAt ? `${now} · ${t('surprises.state.last', { date: date(s.lastShownAt) })}` : now;
+}
+
+/**
+ * Real rewards a parent hides behind rules: after a level, after minutes of training, after
+ * more levels or stars, or now and then from a pool. One table, and a form to add or edit.
+ */
+function surprisesTab(p: Profile): HTMLElement {
+  let editing: Surprise | null = null;
+  const q = h('textarea', { rows: 2, maxlength: SURPRISE_LEN, placeholder: t('surprises.qPlaceholder') });
+  const a = h('textarea', { rows: 2, maxlength: SURPRISE_LEN, placeholder: t('surprises.aPlaceholder') });
+  const trigger = select<SurpriseTrigger>('level', TRIGGERS.map((x): [SurpriseTrigger, string] => [x, t(`surprises.trigger.${x}`)]), () => sync());
+  const level = h('select', {}, ...WORLDS.map((w, i) => h('optgroup', { label: t(`worlds.${w}`) },
+    ...LEVELS.filter((l) => l.world === i).map((l) => h('option', { value: l.id }, levelName(l))))));
+  const n = h('input', { type: 'number', min: 1, max: SURPRISE_N_MAX, step: 1, value: 10, inputmode: 'numeric' });
+  const repeat = check(false, () => undefined);
+  const levelField = field(t('surprises.level'), level);
+  const nLabel = h('span', { class: 'field-label' });
+  const nField = h('label', { class: 'field' }, nLabel, n);
+  const sync = () => {
+    const tr = trigger.value as SurpriseTrigger;
+    levelField.hidden = tr !== 'level';
+    nField.hidden = tr === 'level' || tr === 'random';
+    if (!nField.hidden) nLabel.textContent = t(`surprises.n.${tr}`);
+  };
   const msg = h('p', { class: 'error', role: 'alert' });
-  const list = h('ol', { class: 'own-list' });
-  const paint = () => list.replaceChildren(...p.ownQuestions.map((x, i) => h('li', {},
-    h('div', {}, h('b', {}, x.q), h('span', {}, x.a)),
-    button(t('own.remove'), () => {
-      p.ownQuestions.splice(i, 1);
-      // The pending answer belongs to its question.
-      p.progress.pendingQuestion = null;
-      saveProfile();
-      paint();
-    }, 'btn small ghost', 'trash'))));
-  const add = () => {
-    msg.textContent = '';
-    if (!q.value.trim() || !a.value.trim()) return void (msg.textContent = t('own.needBoth'));
-    if (p.ownQuestions.length >= OWN_QUESTIONS_MAX) return void (msg.textContent = t('own.tooMany', { n: OWN_QUESTIONS_MAX }));
-    p.ownQuestions.push({ q: q.value.trim(), a: a.value.trim() });
+  const saveLabel = h('span', {}, t('surprises.add'));
+  const save = button(saveLabel, () => submit(), 'btn small primary', 'plus');
+  const cancel = button(t('surprises.cancel'), () => reset(), 'btn small ghost');
+  const body = h('tbody');
+  const table = h('table', {},
+    h('thead', {}, h('tr', {}, ...['q', 'a', 'when', 'repeat', 'state', 'actions'].map((c) => h('th', {}, t(`surprises.col.${c}`))))),
+    body);
+  const empty = h('p', { class: 'hint' }, t('surprises.empty'));
+  const reset = () => {
+    editing = null;
     q.value = a.value = '';
+    trigger.value = 'level';
+    n.value = '10';
+    repeat.checked = false;
+    saveLabel.textContent = t('surprises.add');
+    cancel.hidden = true;
+    msg.textContent = '';
+    sync();
+  };
+  const edit = (s: Surprise) => {
+    editing = s;
+    q.value = s.q;
+    a.value = s.a;
+    trigger.value = s.trigger;
+    if (s.level) level.value = s.level;
+    n.value = String(s.n ?? 10);
+    repeat.checked = s.repeat;
+    saveLabel.textContent = t('surprises.save');
+    cancel.hidden = false;
+    msg.textContent = '';
+    sync();
+    q.focus();
+  };
+  const submit = () => {
+    msg.textContent = '';
+    const tr = trigger.value as SurpriseTrigger;
+    const counts = tr === 'minutes' || tr === 'levels' || tr === 'stars';
+    const count = Number(n.value);
+    if (!q.value.trim() || !a.value.trim()) return void (msg.textContent = t('surprises.needBoth'));
+    if (counts && !(Number.isInteger(count) && count >= 1 && count <= SURPRISE_N_MAX)) return void (msg.textContent = t('surprises.badN', { max: SURPRISE_N_MAX }));
+    if (!editing && p.surprises.length >= SURPRISES_MAX) return void (msg.textContent = t('surprises.tooMany', { n: SURPRISES_MAX }));
+    const rule = {
+      q: q.value.trim(), a: a.value.trim(), trigger: tr, repeat: repeat.checked,
+      n: counts ? count : undefined,
+      level: tr === 'level' ? level.value : undefined,
+    };
+    if (editing) {
+      const s = editing;
+      // A changed condition waits again from now; new wording keeps the state.
+      const changed = s.trigger !== rule.trigger || s.n !== rule.n || s.level !== rule.level || s.repeat !== rule.repeat;
+      Object.assign(s, rule);
+      if (changed) restartSurprise(p, s);
+    } else p.surprises.push(newSurprise(p, rule));
     saveProfile();
+    reset();
     paint();
   };
+  const cell = (col: string, text: string) => h('td', { 'data-label': t(`surprises.col.${col}`) }, text);
+  const paint = () => {
+    body.replaceChildren(...p.surprises.map((s) => h('tr', { class: s.doneAt ? 'done' : '' },
+      cell('q', s.q),
+      cell('a', s.a),
+      cell('when', whenText(s)),
+      cell('repeat', t(s.repeat ? 'surprises.yes' : 'surprises.no')),
+      cell('state', stateText(p, s)),
+      h('td', { class: 'actions' },
+        button(t('surprises.edit'), () => edit(s), 'btn small ghost', 'edit'),
+        button(t('surprises.remove'), () => {
+          p.surprises = p.surprises.filter((x) => x !== s);
+          if (editing === s) reset();
+          saveProfile();
+          paint();
+        }, 'btn small ghost', 'trash')))));
+    table.hidden = !p.surprises.length;
+    empty.hidden = !!p.surprises.length;
+  };
+  reset();
   paint();
-  return h('fieldset', { class: 'own-questions' }, h('legend', {}, t('own.group.questions')),
-    h('p', { class: 'hint' }, t('own.questionsHint')),
-    field(t('own.question'), q),
-    field(t('own.answer'), a),
-    msg,
-    button(t('own.add'), add, 'btn small primary', 'plus'),
-    list);
+  return h('div', { class: 'surprises-tab' },
+    h('p', { class: 'hint' }, t('surprises.hint')),
+    h('div', { class: 'surprise-table' }, table),
+    empty,
+    h('fieldset', { class: 'surprise-form' }, h('legend', {}, t('surprises.formTitle')),
+      field(t('surprises.q'), q),
+      field(t('surprises.a'), a),
+      h('div', { class: 'row' }, field(t('surprises.whenLabel'), trigger), levelField, nField,
+        h('label', { class: 'auto-check' }, repeat, t('surprises.repeat'))),
+      msg,
+      h('div', { class: 'row' }, save, cancel)));
 }
 
 /** Own words and own text, how much of them comes into the levels, and five sample targets. */

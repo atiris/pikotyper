@@ -123,14 +123,11 @@ describe('Store', () => {
 
   it('gives v6 profiles empty own content with reading aloud off', () => {
     const p: any = newProfile('Ema', 'sk');
-    for (const k of ['ownQuestions', 'surprises']) delete p[k];
+    delete p.surprises;
     for (const k of ['ownWords', 'ownText', 'ownMix', 'readAloud']) delete p.settings[k];
-    for (const k of ['teasersAsked', 'ownQuestionNext', 'pendingQuestion']) delete p.progress[k];
     const out = migrate({ version: 6, profiles: [p] }).profiles[0];
-    expect(out.ownQuestions).toEqual([]);
     expect(out.surprises).toEqual([]);
     expect(out.settings).toMatchObject({ ownWords: [], ownText: '', ownMix: 'some', readAloud: false });
-    expect(out.progress).toMatchObject({ teasersAsked: 0, ownQuestionNext: 0, pendingQuestion: null });
   });
 
   it('v7 -> v8 adds an empty task list', () => {
@@ -150,15 +147,29 @@ describe('Store', () => {
 
   it('v9 -> v10 keeps the data and has no parent lock', () => {
     const out = migrate({ version: 9, profiles: [newProfile('Ema', 'sk')], lastProfileId: null, language: 'sk' });
-    expect(out.version).toBe(10);
+    expect(out.version).toBe(11);
     expect(out.profiles).toHaveLength(1);
     expect('parentLock' in out).toBe(false);
   });
 
+  it('v10 -> v11 resets surprises, drops own questions and counts the trained time', () => {
+    const p: any = newProfile('Ema', 'sk');
+    p.ownQuestions = [{ q: 'Q', a: 'A' }];
+    p.surprises = [{ id: '1', q: 'q', a: 'a', place: 'next', minStars: 2 }];
+    for (const k of ['trainedSeconds', 'levelsFinished', 'starsEarned']) delete p.progress[k];
+    Object.assign(p.progress, { teasersAsked: 3, ownQuestionNext: 1, pendingQuestion: 0 });
+    p.stats.sessions = [{ date: '2026-10-20', seconds: 300, chars: 0, errors: 0, cpm: 0 }, { date: '2026-10-21', seconds: 120, chars: 0, errors: 0, cpm: 0 }];
+    const out: any = migrate({ version: 10, profiles: [p] }).profiles[0];
+    expect(out.surprises).toEqual([]);
+    expect('ownQuestions' in out).toBe(false);
+    for (const k of ['teasersAsked', 'ownQuestionNext', 'pendingQuestion']) expect(k in out.progress).toBe(false);
+    expect(out.progress).toMatchObject({ trainedSeconds: 420, levelsFinished: 0, starsEarned: 0 });
+  });
+
   it('keeps a parent lock and drops a broken one', () => {
     const lock = { salt: 'ab', hash: 'cd' };
-    expect(migrate({ version: 10, profiles: [], parentLock: lock }).parentLock).toEqual(lock);
-    expect('parentLock' in migrate({ version: 10, profiles: [], parentLock: { salt: 1 } })).toBe(false);
+    expect(migrate({ version: 11, profiles: [], parentLock: lock }).parentLock).toEqual(lock);
+    expect('parentLock' in migrate({ version: 11, profiles: [], parentLock: { salt: 1 } })).toBe(false);
   });
 });
 

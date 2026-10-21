@@ -217,7 +217,15 @@
   },
   "surprise": {
     "ask": "{piko} has a secret:",
-    "almost": "Almost! Try it once more and then I will tell you."
+    "left": {
+      "minutes": "{n} more min of training and I will tell you.",
+      "levelsOne": "{n} more level and I will tell you.",
+      "levelsFew": "{n} more levels and I will tell you.",
+      "levelsMany": "{n} more levels and I will tell you.",
+      "starsOne": "{n} more star and I will tell you.",
+      "starsFew": "{n} more stars and I will tell you.",
+      "starsMany": "{n} more stars and I will tell you."
+    }
   },
   "teaser": {
     "ask": "{piko} asks:",
@@ -362,7 +370,8 @@
         "Some can! Sensitive sensors in their fingers let them gently hold even an egg.",
         "The Czech writer Karel Čapek, about a hundred years ago."
       ]
-    }
+    },
+    "asked": "Remember the question?"
   },
   "paw": {
     "title": "Paw help: {n} words without a mistake charge a paw (3 at most). Enter: {piko} types {words} words for you. Backspace: help by itself when it gets hard.",
@@ -679,6 +688,7 @@
     "tab": {
       "settings": "Settings",
       "own": "Own content",
+      "surprises": "Surprises",
       "task": "Task",
       "keys": "Keys",
       "dashboard": "Progress",
@@ -781,32 +791,10 @@
   "own": {
     "group": {
       "messages": "Own encouragements",
-      "surprises": "Surprises",
-      "questions": "Own questions and answers",
       "words": "Own words",
       "text": "Own text"
     },
-    "surprisesHint": "Hide a real reward (a treat, a trip, a game evening) behind a level. The companion asks the question before the level and tells the answer after it, only when the child did well enough, and only once.",
-    "surpriseQ": "Question before the level",
-    "surpriseA": "Answer after the level",
-    "surpriseQPlaceholder": "Do you know where Dad hid a sweet reward? I know, and I will tell you when you do this level well enough.",
-    "surpriseAPlaceholder": "A little chocolate is hidden in the cupboard behind the fridge.",
-    "place": "Where",
-    "placeNext": "The next level",
-    "placePractice": "Free practice (a minute at least)",
-    "minStars": "Stars needed",
-    "starsEnough": "(well enough)",
-    "add": "Add",
     "remove": "Remove",
-    "needBoth": "Fill in both the question and the answer.",
-    "tooMany": "{n} at most. Remove one first.",
-    "waiting": "waiting",
-    "revealed": "revealed {date}",
-    "questionsHint": "Every second question the companion asks after a level is yours, in order. The answer comes after the next finished level.",
-    "question": "Question",
-    "answer": "Answer",
-    "questionPlaceholder": "Do you know your great-grandma's name?",
-    "answerPlaceholder": "Her name is Anna and she will bake you a cake.",
     "words": "Words",
     "wordsHint": "For example this week's spelling words. One per line, or separated by commas or spaces. They are used even with keys the child does not know yet; the guide shows them.",
     "wordsPlaceholder": "school\nfriend\nsunny",
@@ -827,6 +815,62 @@
     "mixHint": "The share of targets in levels and free practice; the rest are the usual words.",
     "preview": "Five sample targets",
     "previewMore": "Another sample"
+  },
+  "surprises": {
+    "hint": "Hide a real reward (a treat, a trip, a game night) behind a rule. The companion asks the question before a level and tells the answer together with the question once the rule is met. One level has one surprise at most.",
+    "empty": "No surprise yet.",
+    "formTitle": "New surprise",
+    "q": "Question",
+    "a": "Answer",
+    "qPlaceholder": "Do you know where Dad hid a sweet reward? I know, and I will tell you after you train for a while.",
+    "aPlaceholder": "A little chocolate is hidden for you in the cupboard behind the fridge.",
+    "whenLabel": "When",
+    "level": "Level",
+    "n": {
+      "minutes": "Minutes of training",
+      "levels": "More levels",
+      "stars": "More stars"
+    },
+    "trigger": {
+      "level": "After a level",
+      "minutes": "After minutes of training",
+      "levels": "After more levels",
+      "stars": "After more stars",
+      "random": "At random, now and then"
+    },
+    "repeat": "Repeat",
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "remove": "Remove",
+    "needBoth": "Fill in both the question and the answer.",
+    "badN": "Enter a whole number from 1 to {max}.",
+    "tooMany": "At most {n} surprises. Remove some first.",
+    "yes": "yes",
+    "no": "no",
+    "col": {
+      "q": "Question",
+      "a": "Answer",
+      "when": "When",
+      "repeat": "Repeat",
+      "state": "State",
+      "actions": "Actions"
+    },
+    "when": {
+      "random": "at random",
+      "minutes": "after {n} min of training",
+      "levelsOne": "after {n} more level",
+      "levelsMany": "after {n} more levels",
+      "starsOne": "after {n} more star",
+      "starsMany": "after {n} more stars"
+    },
+    "state": {
+      "done": "done {date}",
+      "minutes": "{have} / {need} min",
+      "waiting": "waiting",
+      "last": "last {date}"
+    }
   },
   "import": {
     "title": "Import profiles",

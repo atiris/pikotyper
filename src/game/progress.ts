@@ -80,6 +80,10 @@ export function completeLevel(p: Profile, def: LevelDef, r: Omit<LevelResult, 's
   const byPiko = def.kind !== 'practice' && r.chars + r.errors < MIN_OWN_KEYS;
   const stars = byPiko ? 1 : starsFor(r.accuracy);
   let worldDone: number | null = null;
+  if (def.kind !== 'practice') {
+    p.progress.levelsFinished++;
+    p.progress.starsEarned += stars;
+  }
   if (def.index >= 0 && def.kind !== 'practice') {
     p.progress.levels[def.id] = Math.max(p.progress.levels[def.id] ?? 0, stars);
     if (def.isSuper && !p.progress.worldsDone.includes(def.world)) {

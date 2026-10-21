@@ -217,7 +217,15 @@
   },
   "surprise": {
     "ask": "{piko} má tajomstvo:",
-    "almost": "Skoro! Skús to ešte raz a potom ti to prezradím."
+    "left": {
+      "minutes": "Ešte {n} min tréningu a prezradím ti to.",
+      "levelsOne": "Ešte {n} úroveň a prezradím ti to.",
+      "levelsFew": "Ešte {n} úrovne a prezradím ti to.",
+      "levelsMany": "Ešte {n} úrovní a prezradím ti to.",
+      "starsOne": "Ešte {n} hviezdičku a prezradím ti to.",
+      "starsFew": "Ešte {n} hviezdičky a prezradím ti to.",
+      "starsMany": "Ešte {n} hviezdičiek a prezradím ti to."
+    }
   },
   "teaser": {
     "ask": "{piko} sa pýta:",
@@ -362,7 +370,8 @@
         "Niektoré áno! Majú citlivé senzory v prstoch a vedia jemne chytiť aj vajíčko.",
         "Slovo robot vymyslel pred sto rokmi český spisovateľ Karel Čapek."
       ]
-    }
+    },
+    "asked": "Pamätáš si otázku?"
   },
   "paw": {
     "title": "Labková pomoc: {n} slov bez chyby nabije labku (najviac 3). Enter: {piko} napíše za teba {words} slová. Backspace: pomôže sám, keď bude ťažko.",
@@ -679,6 +688,7 @@
     "tab": {
       "settings": "Nastavenia",
       "own": "Vlastné",
+      "surprises": "Prekvapenia",
       "task": "Úloha",
       "keys": "Klávesy",
       "dashboard": "Pokroky",
@@ -781,32 +791,10 @@
   "own": {
     "group": {
       "messages": "Vlastné povzbudenia",
-      "surprises": "Prekvapenia",
-      "questions": "Vlastné otázky a odpovede",
       "words": "Vlastné slová",
       "text": "Vlastný text"
     },
-    "surprisesHint": "Schovajte skutočnú odmenu (sladkosť, výlet, herný večer) za úroveň. Kamarát sa na otázku spýta pred úrovňou a odpoveď prezradí až po nej, len ak sa dieťaťu darilo dosť dobre, a iba raz.",
-    "surpriseQ": "Otázka pred úrovňou",
-    "surpriseA": "Odpoveď po úrovni",
-    "surpriseQPlaceholder": "Vieš, kde ti ocko schoval sladkú odmenu? Ja to viem a prezradím ti to, keď zvládneš toto cvičenie dostatočne správne.",
-    "surpriseAPlaceholder": "Malá čokoláda je pre teba schovaná v skrini za chladničkou.",
-    "place": "Kde",
-    "placeNext": "Najbližšia úroveň",
-    "placePractice": "Voľné cvičenie (aspoň minúta)",
-    "minStars": "Potrebné hviezdy",
-    "starsEnough": "(dostatočne správne)",
-    "add": "Pridať",
     "remove": "Odstrániť",
-    "needBoth": "Vyplňte otázku aj odpoveď.",
-    "tooMany": "Najviac {n}. Najprv nejakú odstráňte.",
-    "waiting": "čaká",
-    "revealed": "odhalené {date}",
-    "questionsHint": "Každá druhá otázka kamaráta po úrovni bude vaša, po poradí. Odpoveď povie po ďalšej dokončenej úrovni.",
-    "question": "Otázka",
-    "answer": "Odpoveď",
-    "questionPlaceholder": "Vieš, ako sa volá tvoja prababka?",
-    "answerPlaceholder": "Volá sa Anna a upečie ti koláč.",
     "words": "Slová",
     "wordsHint": "Napríklad slová na tento týždeň. Jedno na riadok, alebo oddelené čiarkou či medzerou. Použijú sa aj s klávesmi, ktoré dieťa ešte nepozná; sprievodca ich ukáže.",
     "wordsPlaceholder": "škola\nkamarát\nslnko",
@@ -827,6 +815,62 @@
     "mixHint": "Podiel cieľov v úrovniach a vo voľnom cvičení; zvyšok sú bežné slová.",
     "preview": "Ukážka piatich cieľov",
     "previewMore": "Iná ukážka"
+  },
+  "surprises": {
+    "hint": "Schovajte skutočnú odmenu (sladkosť, výlet, herný večer) za pravidlo. Kamarát sa na otázku spýta pred úrovňou a odpoveď prezradí spolu s otázkou, keď sa pravidlo splní. V jednej úrovni je najviac jedno prekvapenie.",
+    "empty": "Zatiaľ žiadne prekvapenie.",
+    "formTitle": "Nové prekvapenie",
+    "q": "Otázka",
+    "a": "Odpoveď",
+    "qPlaceholder": "Vieš, kde ti ocko schoval sladkú odmenu? Ja to viem a prezradím ti to, keď budeš chvíľu trénovať.",
+    "aPlaceholder": "Malá čokoláda je pre teba schovaná v skrini za chladničkou.",
+    "whenLabel": "Kedy",
+    "level": "Úroveň",
+    "n": {
+      "minutes": "Minúty tréningu",
+      "levels": "Ďalšie úrovne",
+      "stars": "Ďalšie hviezdičky"
+    },
+    "trigger": {
+      "level": "Po úrovni",
+      "minutes": "Po minútach tréningu",
+      "levels": "Po ďalších úrovniach",
+      "stars": "Po ďalších hviezdičkách",
+      "random": "Náhodne, raz za čas"
+    },
+    "repeat": "Opakovať",
+    "add": "Pridať",
+    "save": "Uložiť",
+    "cancel": "Zrušiť",
+    "edit": "Upraviť",
+    "remove": "Odstrániť",
+    "needBoth": "Vyplňte otázku aj odpoveď.",
+    "badN": "Zadajte celé číslo od 1 do {max}.",
+    "tooMany": "Najviac {n} prekvapení. Najprv nejaké odstráňte.",
+    "yes": "áno",
+    "no": "nie",
+    "col": {
+      "q": "Otázka",
+      "a": "Odpoveď",
+      "when": "Kedy",
+      "repeat": "Opakovať",
+      "state": "Stav",
+      "actions": "Akcie"
+    },
+    "when": {
+      "random": "náhodne",
+      "minutes": "po {n} min tréningu",
+      "levelsOne": "po {n} ďalšej úrovni",
+      "levelsMany": "po {n} ďalších úrovniach",
+      "starsOne": "po {n} ďalšej hviezdičke",
+      "starsMany": "po {n} ďalších hviezdičkách"
+    },
+    "state": {
+      "done": "hotové {date}",
+      "minutes": "{have} / {need} min",
+      "waiting": "čaká",
+      "last": "naposledy {date}"
+    }
   },
   "import": {
     "title": "Import profilov",

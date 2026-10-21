@@ -1,7 +1,8 @@
 import { audio } from '../audio/audio';
 import { t, tMap } from '../i18n/i18n';
 import type { Layout } from '../keyboard/layouts';
-import type { Profile } from '../storage/schema';
+import type { Profile, Surprise } from '../storage/schema';
+import { surpriseCount } from './own-content';
 import { type KeyboardGuide, fingerChip } from '../ui/keyboard-guide';
 import { button, h } from '../ui/dom';
 import { pikoElement } from '../gfx/piko';
@@ -83,10 +84,10 @@ export function postureContent(line?: string): HTMLElement {
 
 /**
  * Get-ready card before every adventure, with the session's preparation tip when one is due
- * and the question of a parent's surprise waiting here; the space bar (or a tap on its
- * drawing) opens the adventure, Escape cancels it.
+ * and the question of a parent's surprise asked in this run (with what is still left when it
+ * counts); the space bar (or a tap on its drawing) opens the adventure, Escape cancels it.
  */
-export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: string): Promise<'start' | 'cancel'> {
+export function showPosture(host: HTMLElement, p: Profile, tip?: string, surprise?: Surprise | null): Promise<'start' | 'cancel'> {
   return new Promise((resolve) => {
     const close = (how: 'start' | 'cancel') => {
       stop();
@@ -96,7 +97,8 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
     const space = h('button', { class: 'space-key', type: 'button', 'aria-label': t('posture.space'), onClick: () => close('start') }, t('posture.spaceKey'));
     const card = h('div', { class: 'card posture-card' },
       postureContent(tip),
-      surprise ? surpriseAsk(p, surprise) : null,
+      surprise ? surpriseAsk(p, surprise.q) : null,
+      surprise ? surpriseLeft(p, surprise) : null,
       h('p', { class: 'space-label' }, t('posture.space')),
       space,
       h('p', { class: 'hint' }, t('posture.escHint')));
@@ -117,6 +119,16 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string, surpris
 /** Piko asks the question of a parent's surprise. */
 export function surpriseAsk(p: Profile, question: string): HTMLElement {
   return h('p', { class: 'surprise ask' }, h('b', {}, t('surprise.ask', { piko: p.companion.name })), ' ', question);
+}
+
+/** What a counting surprise still needs ("2 more levels"), or null when it is reached or does not count. */
+export function surpriseLeft(p: Profile, s: Surprise): HTMLElement | null {
+  if (s.trigger !== 'minutes' && s.trigger !== 'levels' && s.trigger !== 'stars') return null;
+  const { have, need } = surpriseCount(p, s);
+  const n = need - have;
+  if (n <= 0) return null;
+  const form = s.trigger === 'minutes' ? '' : n === 1 ? 'One' : n < 5 ? 'Few' : 'Many';
+  return h('p', { class: 'surprise left' }, t(`surprise.left.${s.trigger}${form}`, { n }));
 }
 
 /** Big symbol of a lesson key on its card. */

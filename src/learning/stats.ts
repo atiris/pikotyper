@@ -45,7 +45,7 @@ export function recordPress(profile: Profile, expected: string, typed: string, r
   }
 }
 
-/** Adds play time and characters to today's session record. */
+/** Adds play time and characters to today's session record, and the time to all the training. */
 export function recordSession(profile: Profile, seconds: number, chars: number, errors: number, cpm: number): void {
   const date = localDate();
   const sessions = profile.stats.sessions;
@@ -56,6 +56,7 @@ export function recordSession(profile: Profile, seconds: number, chars: number, 
   }
   const prevChars = s.chars;
   s.seconds += Math.round(seconds);
+  profile.progress.trainedSeconds += Math.round(seconds);
   s.chars += chars;
   s.errors += errors;
   if (cpm > 0) s.cpm = Math.round((s.cpm * prevChars + cpm * chars) / Math.max(1, prevChars + chars));

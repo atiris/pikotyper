@@ -388,7 +388,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .results-notes { margin-top: 0.6rem; padding: 0.5rem 0.7rem; border-radius: 16px; box-shadow: inset 0 0 0 2px var(--line); text-align: left; font-size: 0.95rem; display: grid; gap: 0.35rem; }
 .results-notes p, .results-notes .surprise, .results-notes .teaser { margin: 0; padding: 0.3rem 0.6rem; max-width: none; font-size: inherit; }
 .results-notes .surprise.answer { font-size: 1.02rem; }
-.results-notes .surprise-result { display: grid; gap: 0.35rem; }
+.results-notes .surprise-result, .results-notes .teaser-result { display: grid; gap: 0.35rem; }
 .fact .medal { zoom: 0.7; }
 .results-card .row { margin-top: 0.7rem; }
 @media (max-height: 700px) {
@@ -403,11 +403,11 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 }
 .teaser { text-align: left; margin: 0.8rem auto 0; max-width: 34em; padding: 0.6rem 0.9rem; border-radius: 16px; font-size: 1.05rem; }
 .teaser.answer { background: #e3f4e8; }
-.teaser.ask { background: #fff1e3; }
+.teaser.ask, .teaser.asked { background: #fff1e3; }
 .teaser small { color: var(--ink-soft); }
 .surprise { text-align: left; margin: 0.6rem auto 0; max-width: 34em; padding: 0.6rem 0.9rem; border-radius: 16px; font-size: 1.05rem; background: #f3e8ff; }
 .surprise.answer { background: #fff3c9; box-shadow: 0 0 0 3px #ffb23e inset; font-weight: 700; font-size: 1.2rem; }
-.surprise.almost { background: #eef3f8; }
+.surprise.left { background: #eef3f8; }
 .medal { position: relative; display: inline-block; width: 64px; height: 82px; flex: none; animation: star-in 0.7s ease backwards; }
 .medal-ribbon { position: absolute; left: 50%; top: 0; width: 34px; height: 36px; transform: translateX(-50%); background: linear-gradient(90deg, #3f8fd6 0 33%, #fff 33% 66%, #e5534b 66%); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 75%, 0 100%); }
 .medal-disc { position: absolute; left: 0; bottom: 0; width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; font-size: 1.6rem; font-weight: 700; color: #7a4b00; background: radial-gradient(circle at 35% 30%, #fff3b0, #f5b301 70%); box-shadow: inset 0 0 0 4px #e09a00, 0 4px 8px rgba(0, 0, 0, 0.18); }
@@ -552,6 +552,24 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .own-list li > div { display: flex; flex-direction: column; min-width: 0; overflow-wrap: anywhere; }
 .own-list small { color: var(--ink-soft); }
 .own-list li.revealed { opacity: 0.65; }
+.surprises-tab textarea { width: 100%; resize: vertical; }
+.surprises-tab .row { align-items: flex-end; flex-wrap: wrap; gap: 0.6rem 1rem; }
+.surprises-tab .auto-check { min-height: 44px; margin-bottom: 0.6rem; }
+.surprises-tab input[type='number'] { width: 7em; }
+.surprise-table { overflow-x: auto; margin: 0.6rem 0 1rem; }
+.surprise-table table { width: 100%; border-collapse: collapse; }
+.surprise-table th, .surprise-table td { text-align: left; vertical-align: top; padding: 0.45rem 0.5rem; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.surprise-table th { font-size: 0.9rem; color: var(--ink-soft); }
+.surprise-table tr.done td:not(.actions) { opacity: 0.6; }
+.surprise-table td.actions { white-space: nowrap; }
+@media (max-width: 760px) {
+  .surprise-table thead { display: none; }
+  .surprise-table table, .surprise-table tbody, .surprise-table tr, .surprise-table td { display: block; }
+  .surprise-table tr { border: 2px solid var(--line); border-radius: 16px; padding: 0.4rem 0.7rem; margin-bottom: 0.6rem; }
+  .surprise-table td { border: 0; padding: 0.2rem 0; }
+  .surprise-table td[data-label]::before { content: attr(data-label); display: block; font-size: 0.8rem; font-weight: 700; color: var(--ink-soft); }
+  .surprise-table td.actions { white-space: normal; }
+}
 .own-preview { margin: 0.3rem 0 0.5rem; padding-left: 1.2rem; font-family: var(--font-game); font-size: 1.1rem; }
 .sound-btn[data-level='quiet'] { color: var(--ink-soft); }
 /* The star sits in the top right corner; the controls there move aside for it. */

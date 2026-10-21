@@ -16,7 +16,7 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 10;
+export const STORE_VERSION = 11;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -31,7 +31,7 @@ const migrations: Record<number, (data: any) => any> = {
   4: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV4toV5) : data.profiles }),
   // v6: the child earns other companion kinds by stars; the current kind is the starting one.
   5: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV5toV6) : data.profiles }),
-  // v7: the parent's own content (questions, surprises, words, text) and reading aloud.
+  // v7: the parent's own content (surprises, words, text) and reading aloud.
   6: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV6toV7) : data.profiles }),
   // v8: tasks from a teacher's or parent's link.
   7: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => (p && typeof p === 'object' ? { ...p, tasks: [] } : p)) : data.profiles }),
@@ -39,7 +39,18 @@ const migrations: Record<number, (data: any) => any> = {
   8: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV8toV9) : data.profiles }),
   // v10: an optional password on the parent screen; nothing to change.
   9: (data) => data,
+  // v11: surprises become rules with a trigger; own questions are gone. Old surprises are not kept.
+  10: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV10toV11) : data.profiles }),
 };
+
+function profileV10toV11(p: any): any {
+  if (!p || typeof p !== 'object') return p;
+  const { ownQuestions: _q, ...rest } = p;
+  const { teasersAsked: _t, ownQuestionNext: _n, pendingQuestion: _p, ...progress } = p.progress ?? {};
+  const sessions: any[] = Array.isArray(p.stats?.sessions) ? p.stats.sessions : [];
+  const trainedSeconds = sessions.reduce((sum, s) => sum + (Number(s?.seconds) || 0), 0);
+  return { ...rest, surprises: [], progress: { ...progress, trainedSeconds, levelsFinished: 0, starsEarned: 0 } };
+}
 
 function profileV8toV9(p: any): any {
   if (!p || typeof p !== 'object') return p;
@@ -52,10 +63,8 @@ function profileV6toV7(p: any): any {
   if (!p || typeof p !== 'object') return p;
   return {
     ...p,
-    ownQuestions: [],
     surprises: [],
     settings: { ...p.settings, ownWords: [], ownText: '', ownMix: 'some', readAloud: false },
-    progress: { ...p.progress, teasersAsked: 0, ownQuestionNext: 0, pendingQuestion: null },
   };
 }
 
@@ -178,7 +187,6 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
     avatar: start,
     companion: { name: 'Piko', kind: start, accessories: [] },
     customMessages: [],
-    ownQuestions: [],
     surprises: [],
     tasks: [],
     layout: lay,
@@ -198,9 +206,9 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
       pawHelp: 0,
       pawAuto: false,
       companionsUnlocked: [start],
-      teasersAsked: 0,
-      ownQuestionNext: 0,
-      pendingQuestion: null,
+      trainedSeconds: 0,
+      levelsFinished: 0,
+      starsEarned: 0,
     },
     stats: { keys: {}, sessions: [] },
     createdAt: Date.now(),

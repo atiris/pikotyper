@@ -63,13 +63,32 @@ Do this after plan 16 (compact results card).
   progress fields for own questions. Old surprises are not converted.
 
 ## Steps
-- [ ] Schema + migration (surprises reset, own questions gone) + store tests.
-- [ ] Rule engine in `own-content.ts`: pick the rule for a run, progress text, reveal
+- [x] Schema + migration (surprises reset, own questions gone) + store tests.
+- [x] Rule engine in `own-content.ts`: pick the rule for a run, progress text, reveal
   and repeat. Unit tests for every trigger, repeat on/off, one per run, random once a day.
-- [ ] Get-ready card teaser and the results block with question + answer; built-in
+- [x] Get-ready card teaser and the results block with question + answer; built-in
   teaser answer with its question.
-- [ ] Prekvapenia tab table and form; remove the own questions editor.
+- [x] Prekvapenia tab table and form; remove the own questions editor.
 - [ ] Specs (WHAT and WHY).
 - [ ] Build, vitest, e2e (adapt `own-content.spec.ts`); Playwright MCP: add a level rule
   for world 1 level 1 (not repeating), play it and see question + answer, check it is
   marked done and not shown again; a 1 minute rule; the table on a narrow screen.
+
+## State
+Decisions taken while implementing (2026-10-21):
+- Store v11 (plan 18 took v10). `progressFrom` holds the counter value when counting
+  started (trained seconds, finished levels or earned stars), not a time, so progress
+  is exact. New lifetime counters in `progress`: `trainedSeconds` (added in
+  `recordSession`, migrated from the session history), `levelsFinished` and
+  `starsEarned` (story levels and rescue missions; free practice and drills count
+  only toward minutes). `teasersAsked` went away with the own questions.
+- Surprises got their own parent tab "Prekvapenia" after "Vlastné" for the table room.
+- The get-ready card asks the level rule of this level, else a counting rule that is
+  already reached, else the first waiting one (minutes, levels, stars, oldest first).
+  On the results any counting rule reached during the run fires even when the card
+  asked another one, so a long minutes rule never starves a short levels rule.
+- A random question may replace the "still left" reminder of a waiting rule on the
+  results (only a reveal blocks it); drills never have a surprise.
+- Editing a rule's question or answer keeps its state; changing the trigger, number,
+  level or repeat makes it wait again from now (and clears done).
+- The built-in teaser answer shows above it "Pamätáš si otázku?" with the question.

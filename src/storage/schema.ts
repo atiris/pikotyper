@@ -1,4 +1,4 @@
-// Storage schema v10. These types are the data contract of `localStorage['pikotyper:v1']`
+// Storage schema v11. These types are the data contract of `localStorage['pikotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -107,33 +107,39 @@ export interface Progress {
   pawAuto: boolean;
   /** Companion kinds the child may pick: the starting kind first, then the ones earned by stars. */
   companionsUnlocked: CompanionKind[];
-  /** Teaser questions asked so far; every second one is the parent's own question. */
-  teasersAsked: number;
-  /** Index of the next own question to ask. */
-  ownQuestionNext: number;
-  /** Own question asked whose answer comes after the next story level. */
-  pendingQuestion: number | null;
+  /** Seconds of training ever (story levels and practice), the time `recordSession` counts. */
+  trainedSeconds: number;
+  /** Story levels and rescue missions finished ever. */
+  levelsFinished: number;
+  /** Stars earned ever, every finished run counts. */
+  starsEarned: number;
 }
 
-/** A parent's own question for the teaser, with its answer. */
-export interface OwnQuestion {
-  q: string;
-  a: string;
-}
+/** When a surprise tells its answer. */
+export type SurpriseTrigger = 'level' | 'minutes' | 'levels' | 'stars' | 'random';
 
 /**
- * A real reward a parent hid: Piko asks `q` before the level at `place` and tells `a`
- * after it, once the child reached `minStars`.
+ * A rule for a real reward a parent hid: Piko asks `q` and tells `a` when the trigger is met,
+ * always together with the question.
  */
 export interface Surprise {
   id: string;
   q: string;
   a: string;
-  /** A story level id, `next` (next story level or rescue mission) or `practice` (free practice of a minute). */
-  place: string;
-  minStars: number;
-  /** Local date the answer was shown; never asked again after it. */
-  revealedAt?: string;
+  trigger: SurpriseTrigger;
+  /** Minutes, levels or stars to collect (counting triggers). */
+  n?: number;
+  /** The story level id (trigger `level`). */
+  level?: string;
+  /** Count again after the reveal (or fire on every finish of the level, or go back to the pool). */
+  repeat: boolean;
+  createdAt: number;
+  /** The counter (trained seconds, finished levels or earned stars) when counting started: creation or the last reveal. */
+  progressFrom?: number;
+  /** Local date of the reveal of a rule that does not repeat; it is never shown again. */
+  doneAt?: string;
+  /** Local date the answer was shown last. */
+  lastShownAt?: string;
 }
 
 export interface Companion {
@@ -172,7 +178,6 @@ export interface Profile {
   avatar: CompanionKind;
   companion: Companion;
   customMessages: string[];
-  ownQuestions: OwnQuestion[];
   surprises: Surprise[];
   /** Tasks from links, newest first. */
   tasks: Task[];
@@ -191,7 +196,7 @@ export interface ParentLock {
 }
 
 export interface StoreData {
-  version: 10;
+  version: 11;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;

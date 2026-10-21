@@ -6,8 +6,8 @@ import { LEVELS, type LevelDef, WORLDS, levelById, practiceLevel, rescueLevel, s
 import type { LevelResult } from '../game/progress';
 import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
-import { captureKeys, surpriseAsk } from '../game/cards';
-import { surpriseReached, teaserLines } from '../game/own-content';
+import { captureKeys, surpriseAsk, surpriseLeft } from '../game/cards';
+import { surpriseOutcome } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
 import type { Friend, Profile, Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
@@ -125,11 +125,14 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   const toMap = () => go('map');
   actions.append(button(t('level.toMap'), toMap, 'btn ghost small', 'map'));
 
-  // The task, the surprise and Piko's question share one small framed block.
+  // The task, the surprise and Piko's question share one small framed block; a run with a
+  // surprise has no built-in teaser.
+  const outcome = surpriseOutcome(p, surprise, !!params.keys);
+  if (outcome) saveProfile();
   const notes = [
-    ...(surprise ? surpriseResult(p, def, r, surprise) : []),
+    outcome ? surpriseResult(p, outcome.rule, outcome.revealed) : null,
     task ? h('p', { class: `task-line ${task.doneAt ? 'good' : ''}` }, task.doneAt ? t('task.doneLine', { title: task.title }) : t('task.leftLine', { title: task.title, n: minutesLeft(task) })) : null,
-    ...teaser(p, def, !!nextDef && r.worldDone === null),
+    ...(outcome ? [] : teaser(p, def, !!nextDef && r.worldDone === null)),
   ].filter((x) => x !== null);
   const card = h('div', { class: 'card results-card' },
     h('div', { class: 'results-top' },
@@ -151,36 +154,31 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   });
 }
 
-/**
- * The surprise asked on the get-ready card, asked again: its answer, highlighted and only
- * this once, when the level went well enough; else a promise for the next try.
- */
-function surpriseResult(p: Profile, def: LevelDef, r: LevelResult, s: Surprise): HTMLElement[] {
-  const reached = surpriseReached(s, def, r);
-  if (reached) {
-    s.revealedAt = localDate();
-    saveProfile();
-  }
-  return [h('div', { class: 'surprise-result' },
+/** A surprise asked again: its answer highlighted right under it, or what is still left. */
+function surpriseResult(p: Profile, s: Surprise, revealed: boolean): HTMLElement {
+  return h('div', { class: 'surprise-result' },
     surpriseAsk(p, s.q),
-    reached ? h('p', { class: 'surprise answer' }, s.a) : h('p', { class: 'surprise almost' }, t('surprise.almost')))];
+    revealed ? h('p', { class: 'surprise answer' }, s.a) : surpriseLeft(p, s));
 }
 
 /**
  * Piko's curious question about the next level, answered only after that level is
- * finished, so the child wants to go on; every second one is the parent's own. Story levels only.
+ * finished, so the child wants to go on; the answer comes with its question. Story levels only.
  */
 function teaser(p: Profile, def: LevelDef, hasNext: boolean): HTMLElement[] {
   if (def.index < 0) return [];
   const world = WORLDS[def.world];
-  const { answer, question } = teaserLines(p, {
-    a: def.index > 0 ? tList(`teaser.${world}.a`)[def.index - 1] : undefined,
-    q: hasNext ? tList(`teaser.${world}.q`)[def.index] : undefined,
-  });
-  saveProfile();
+  const questions = tList(`teaser.${world}.q`);
+  const answer = def.index > 0 ? tList(`teaser.${world}.a`)[def.index - 1] : undefined;
+  const asked = def.index > 0 ? questions[def.index - 1] : undefined;
+  const question = hasNext ? questions[def.index] : undefined;
   const piko = p.companion.name;
   const out: HTMLElement[] = [];
-  if (answer) out.push(h('p', { class: 'teaser answer' }, h('b', {}, t('teaser.answer')), ' ', answer));
+  if (answer) {
+    out.push(h('div', { class: 'teaser-result' },
+      asked ? h('p', { class: 'teaser asked' }, h('b', {}, t('teaser.asked')), ' ', asked) : null,
+      h('p', { class: 'teaser answer' }, h('b', {}, t('teaser.answer')), ' ', answer)));
+  }
   if (question) out.push(h('p', { class: 'teaser ask' }, h('b', {}, t('teaser.ask', { piko })), ' ', question, h('br'), h('small', {}, t('teaser.later'))));
   return out;
 }

@@ -105,7 +105,7 @@ export class LevelRuntime {
   readonly stage: Stage;
   readonly mode: Mode;
   readonly words: WordSource;
-  /** The parent's surprise asked before this level and told after it, when one waits here. */
+  /** The parent's surprise rule asked on the get-ready card of this run, when one waits. */
   readonly surprise: Surprise | null;
   /** The profile's difficulty; "Slower" in the pause lowers it during the level. */
   difficulty: number;
@@ -278,7 +278,7 @@ export class LevelRuntime {
       saveProfile();
     }
     if (this.disposed) return;
-    if (!this.opts.keys && await showPosture(host, p, tip, this.surprise?.q) === 'cancel') return this.exit();
+    if (!this.opts.keys && await showPosture(host, p, tip, this.surprise) === 'cancel') return this.exit();
     if (this.disposed) return;
     this.mode.start();
     this.started = true;
