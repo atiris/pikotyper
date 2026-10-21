@@ -7,12 +7,12 @@ import { Tweens } from '../engine/tween';
 import { drawBackground, drawWord, type G, wordBox } from '../gfx/draw';
 import { type Mood, pawColors, pikoElement, renderPikoInto } from '../gfx/piko';
 import { preload } from '../gfx/assets';
-import { t } from '../i18n/i18n';
+import { t, tList } from '../i18n/i18n';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
-import { LAYOUTS, LayoutMismatchDetector, canType, fingerFor, stepsFor } from '../keyboard/layouts';
-import { activeKeys, keysToIntroduce, masteryLevel, newestGroup } from '../learning/lessons';
+import { LAYOUTS, LayoutMismatchDetector, fingerFor, stepsFor } from '../keyboard/layouts';
+import { SHIFT_L, SHIFT_R, SPACE, activeKeys, isLetterKey, keysToIntroduce, masteryLevel, newestGroup, shiftKeyOf } from '../learning/lessons';
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
-import { FINGER_KEYS, KeyboardGuide } from '../ui/keyboard-guide';
+import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, h } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
 import { pawRingSvg, rhythmGauge } from '../ui/hud';
@@ -37,6 +37,10 @@ interface PendingLabel {
 /** Space kept between two labels, and the move from which a line points back to the object. */
 const LABEL_GAP = 6;
 const LABEL_LINE_FROM = 30;
+/** A long label shrinks to fit, down to this font size. */
+const LABEL_MIN_SIZE = 28;
+/** Extra seconds a target with a capital letter gets (the Shift chord is hard). */
+const CAPITAL_EXTRA = 1.5;
 
 export interface RuntimeOptions {
   /** Practice: only these keys (drills), else the profile's active keys. */
@@ -118,15 +122,18 @@ export class LevelRuntime {
     this.ema = lastCpm ? lastCpm / 60 : 1;
     this.mismatch = new LayoutMismatchDetector(p.layout);
 
-    const keys = opts.keys ?? activeKeys(p);
+    // Practice of space, punctuation or a Shift needs letters around it: the known ones.
+    const keys = !opts.keys ? activeKeys(p) : opts.keys.every(isLetterKey) ? opts.keys : [...new Set([...activeKeys(p), ...opts.keys])];
     const lay = LAYOUTS[p.layout];
     this.words = new WordSource(app.words, {
       keys,
       len: p.settings.wordLen,
       noDiacritics: p.settings.noDiacritics,
       weights: keyWeights(p, keys),
-      focus: opts.keys ? [] : newestGroup(p),
-      canType: (ch) => canType(lay, ch),
+      focus: opts.keys ?? newestGroup(p),
+      layout: lay,
+      names: tList('names'),
+      shiftMastery: Object.fromEntries([SHIFT_L, SHIFT_R].map((k) => [k, masteryLevel(p.stats.keys[k], p.settings.difficulty)])),
     });
 
     // DOM: HUD, stage, Piko, bubble, guide.
@@ -241,18 +248,18 @@ export class LevelRuntime {
 
   // ---- words and pacing ------------------------------------------------------
 
-  /** Next word for a new target; avoids first letters already on screen. */
-  word(maxLen?: number): string {
+  /** Next target (a word, or a phrase of up to `words` words); avoids first letters already on screen. */
+  word(maxLen?: number, words = this.mode.phraseWords): string {
     const avoid = new Set(this.core.active.map((t) => t.word[0].toLowerCase()));
-    return this.words.next(avoid, maxLen);
+    return this.words.next(avoid, maxLen, words);
   }
 
-  /** Seconds a target takes to reach the player, from difficulty and the child's rhythm. */
+  /** Seconds a target takes to reach the player, from difficulty and the child's rhythm; a capital gets more. */
   travelTime(word: string): number {
     const d = this.difficulty;
     const cps = Math.max(0.5, this.ema * 0.85);
     const perChar = Math.min(2.2, Math.max(0.4, 1 / cps));
-    return (9 - d * 0.5) * 0.55 + word.length * perChar + 2;
+    return (9 - d * 0.5) * 0.55 + word.length * perChar + 2 + (/\p{Lu}/u.test(word) ? CAPITAL_EXTRA : 0);
   }
 
   /** How many targets may be on screen at once. */
@@ -288,7 +295,8 @@ export class LevelRuntime {
 
   private onChar(c: TypedChar): void {
     if (!this.started || this.paused || this.finished || this.pawWords) return;
-    if (c.ch === ' ') return;
+    // A space between targets is a habit, not a mistake.
+    if (c.ch === SPACE && !this.core.locked) return;
     this.deadPending = false;
     const res = this.core.type(c.ch);
     const p = app.profile!;
@@ -306,6 +314,7 @@ export class LevelRuntime {
       this.mode.onWrong(res.target);
     } else {
       recordPress(p, res.expected, c.ch, rt);
+      this.checkShiftHand(res.expected, c.shiftCode);
       this.chars++;
       this.wrongStreak.n = 0;
       const interval = Math.min(3, Math.max(0.12, rt / 1000));
@@ -324,6 +333,17 @@ export class LevelRuntime {
     }
     this.updateGuide();
   }
+
+  /** Once per level: a capital typed with the Shift of its own hand gets a short tip. */
+  private checkShiftHand(ch: string, shiftCode: string | null): void {
+    const need = shiftKeyOf(layout(), ch);
+    if (!need || !shiftCode || this.shiftTipShown) return;
+    if (shiftCode === (need === SHIFT_L ? 'ShiftLeft' : 'ShiftRight')) return;
+    this.shiftTipShown = true;
+    this.say(t('level.shiftOtherHand'), 4);
+  }
+
+  private shiftTipShown = false;
 
   private trackWrong(expected: string): void {
     this.wordStreak = 0;
@@ -345,8 +365,9 @@ export class LevelRuntime {
   private offerDrill(ch: string): void {
     const finger = fingerFor(layout(), ch);
     const fingerName = finger != null ? t(`fingers.${FINGER_KEYS[finger]}`) : '';
-    const hint = pickLine('piko.hint', { key: ch, finger: fingerName });
-    if (this.opts.keys) {
+    const hint = pickLine('piko.hint', { key: keyLabel(ch), finger: fingerName });
+    // The mini drill is made of letters; space and punctuation only get the hint.
+    if (this.opts.keys || !isLetterKey(ch.toLowerCase())) {
       this.say(hint, 5);
       return;
     }
@@ -637,6 +658,10 @@ export class LevelRuntime {
     const placed: { x0: number; x1: number; y0: number; y1: number }[] = [];
     const shifts = new Map<number, number>();
     for (const l of [...this.labels].sort((a, b) => rank(b) - rank(a))) {
+      // Phrases shrink to fit: in calm modes the stage around their place, moving targets half of it.
+      const room = this.mode.phraseWords > 2 ? Math.min(this.vw * 0.9, 2 * Math.min(l.x, this.vw - l.x) - 20) : this.vw * 0.5;
+      const full = wordBox(g, l.tg.word, l.size).w;
+      if (full > room) l.size = Math.max(LABEL_MIN_SIZE, Math.min(l.size, l.size * room / full));
       const { w, h } = wordBox(g, l.tg.word, l.size);
       const x0 = l.x - w / 2 - LABEL_GAP, x1 = l.x + w / 2 + LABEL_GAP;
       const clear = (dy: number) => placed.every((b) => x1 <= b.x0 || x0 >= b.x1 || l.y + dy + h / 2 + LABEL_GAP <= b.y0 || l.y + dy - h / 2 - LABEL_GAP >= b.y1);

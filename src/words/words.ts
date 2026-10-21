@@ -1,5 +1,6 @@
 import { Rng } from '../engine/rng';
-import { DIACRITICS, SHIFT_KEY } from '../learning/lessons';
+import { type Layout, canType } from '../keyboard/layouts';
+import { DIACRITICS, SHIFT_L, SHIFT_R, SPACE, isLetterKey, shiftKeyOf } from '../learning/lessons';
 
 const VOWELS = new Set([...'aeiouyáéíóúýäô']);
 const DIGITS = new Set([...'0123456789']);
@@ -31,69 +32,158 @@ export interface WordOptions {
   noDiacritics: boolean;
   /** Per key weight; weak keys get more. */
   weights?: Record<string, number>;
-  /** Keys that should appear in most words (newly introduced keys). */
+  /** Keys that should appear in most targets (newly introduced keys, punctuation and Shifts too). */
   focus?: string[];
-  /** Characters the layout can type (capitals need it). */
-  canType?: (ch: string) => boolean;
+  /** The keyboard; capitals need it (which Shift, can it be typed). */
+  layout?: Layout;
+  /** Children's names of the language, for capitals at the start of a target. */
+  names?: string[];
+  /** 0..1 how well each Shift goes; capitals grow from 1 target in 6 to every phrase start. */
+  shiftMastery?: Record<string, number>;
   seed?: number;
 }
 
 export function letterKeys(keys: string[], noDiacritics: boolean): string[] {
-  return keys.filter((k) => k.length === 1 && !DIGITS.has(k) && k !== ' ' && !(noDiacritics && DIACRITICS.has(k)));
+  return keys.filter((k) => isLetterKey(k) && !(noDiacritics && DIACRITICS.has(k)));
 }
 
 export function filterWords(words: string[], letters: Set<string>, len: [number, number]): string[] {
   return words.filter((w) => w.length >= len[0] && w.length <= len[1] && [...w].every((c) => letters.has(c)));
 }
 
-/** Endless supply of practice words for a key set. */
+/** Rates of punctuation in phrases: normal, and while the key is the one being learned. */
+const MARK_RATE: Record<string, [number, number]> = {
+  '.': [1 / 3, 0.6], ',': [1 / 5, 0.6], '?': [1 / 8, 0.5], '!': [1 / 10, 0.5], ':': [1 / 10, 0.5], '-': [1 / 10, 0.5],
+};
+/** Capitals while a Shift is new, and while it is the one being learned. */
+const CAPITAL_START = 1 / 6;
+const CAPITAL_FOCUS = 0.6;
+/** Story targets that fly or fall stay short: words of at most 5 letters, 12 characters in all. */
+const SHORT_WORD = 5;
+const SHORT_TOTAL = 12;
+
+/** Endless supply of practice targets for a key set: words, and phrases once space is known. */
 export class WordSource {
   readonly rng: Rng;
   private letters: string[];
   private pool: string[];
   private digits: string[];
-  private capitals: boolean;
+  private names: string[];
+  private space: boolean;
+  private keys: Set<string>;
+  private focus: Set<string>;
   private recent: string[] = [];
 
   constructor(words: string[], private opts: WordOptions) {
     this.rng = new Rng(opts.seed);
     this.letters = letterKeys(opts.keys, opts.noDiacritics);
     if (!this.letters.length) this.letters = ['f', 'j'];
+    this.keys = new Set(opts.keys);
+    this.focus = new Set(opts.focus ?? []);
     const set = new Set(this.letters);
     const len: [number, number] = [Math.max(1, opts.len[0]), Math.max(opts.len[0], opts.len[1])];
+    this.names = (opts.names ?? []).map((n) => n.normalize('NFC').toLowerCase()).filter((n) => [...n].every((c) => set.has(c)));
+    if (this.keys.has("'")) set.add("'");
     this.pool = filterWords(words, set, len);
     this.digits = opts.keys.filter((k) => DIGITS.has(k));
-    this.capitals = opts.keys.includes(SHIFT_KEY);
+    this.space = this.keys.has(SPACE);
   }
 
-  /** Next word; tries to start with a letter not in `avoidFirst` (letters of words already on screen). */
-  next(avoidFirst: Set<string> = new Set(), maxLen = this.opts.len[1]): string {
-    let word = '';
+  /**
+   * Next target of at most `words` words (more than one only once space is known), each at
+   * most `maxLen` letters; tries to start with a letter not in `avoidFirst` (targets already on screen).
+   */
+  next(avoidFirst: Set<string> = new Set(), maxLen = this.opts.len[1], words = 1): string {
+    let target = '';
     for (let attempt = 0; attempt < 12; attempt++) {
-      word = this.candidate(maxLen);
-      if (!avoidFirst.has(word[0].toLowerCase()) && !this.recent.includes(word)) break;
+      target = this.candidate(maxLen, words);
+      if (!avoidFirst.has(target[0].toLowerCase()) && !this.recent.includes(target)) break;
     }
-    this.recent.push(word);
+    this.recent.push(target);
     if (this.recent.length > 12) this.recent.shift();
-    return word;
+    return target;
   }
 
-  private candidate(maxLen: number): string {
+  private candidate(maxLen: number, words: number): string {
     const r = this.rng;
     if (this.digits.length && r.chance(0.15)) {
       return Array.from({ length: r.int(1, Math.min(3, maxLen)) }, () => r.pick(this.digits)).join('');
     }
-    let word: string;
-    const focusList = (this.opts.focus ?? []).filter((k) => this.letters.includes(k));
+    const focusList = [...this.focus].filter((k) => this.letters.includes(k));
     const focus = focusList.length ? r.pick(focusList) : null;
-    if (this.letters.length <= 4) word = this.drill(maxLen, focus);
-    else if (this.pool.length >= 8 && r.chance(this.pool.length >= 40 ? 0.9 : 0.6)) word = this.pickReal(maxLen, focus);
-    else word = this.pseudo(maxLen, focus);
-    if (this.capitals && r.chance(0.25)) {
-      const cap = word[0].toUpperCase() + word.slice(1);
-      if (cap[0] !== word[0] && (!this.opts.canType || this.opts.canType(cap[0]))) word = cap;
+    const n = this.phraseLength(words);
+    const short = words <= 2;
+    const perWord = n === 1 ? maxLen : Math.min(maxLen, short ? SHORT_WORD : this.opts.len[1]);
+    let list = Array.from({ length: n }, () => this.word(perWord, focus, n > 1));
+    if (short && n > 1 && list.join(' ').length > SHORT_TOTAL) list = list.slice(0, 1);
+    list[0] = this.capitalize(list[0], perWord, focus, n > 1);
+    if (words <= 1) return list[0];
+    return this.punctuate(list);
+  }
+
+  /** How many words: one before space is known; story targets one or two, calm modes two to four. */
+  private phraseLength(words: number): number {
+    const r = this.rng;
+    if (!this.space || words <= 1) return 1;
+    const inner = [',', ':', '-'].some((k) => this.keys.has(k) && this.focus.has(k));
+    if (words === 2) return this.focus.has(SPACE) || inner || r.chance(0.6) ? 2 : 1;
+    return r.int(2, Math.max(2, Math.min(words, this.keys.has(',') ? 4 : 3)));
+  }
+
+  private word(maxLen: number, focus: string | null, inPhrase: boolean): string {
+    const r = this.rng;
+    // Chunk pairs like `fj jf` for the first keys.
+    if (this.letters.length <= 4) return this.drill(inPhrase ? Math.min(2, maxLen) : maxLen, focus);
+    if (this.focus.has("'") && this.keys.has("'") && r.chance(0.5)) {
+      const own = this.pool.filter((w) => w.includes("'") && w.length <= maxLen);
+      if (own.length) return r.pick(own);
     }
-    return word;
+    if (this.pool.length >= 8 && r.chance(this.pool.length >= 40 ? 0.9 : 0.6)) return this.pickReal(maxLen, focus);
+    return this.pseudo(maxLen, focus);
+  }
+
+  /** The Shift a capital of `ch` needs, when that Shift is known and the capital can be typed. */
+  private shiftFor(ch: string): string | null {
+    const lay = this.opts.layout;
+    if (!lay) return null;
+    const cap = ch.toUpperCase();
+    const shift = shiftKeyOf(lay, cap);
+    return shift && this.keys.has(shift) && canType(lay, cap) ? shift : null;
+  }
+
+  /** A capital only at the start: a name, or the first word; more often as the Shift gets better. */
+  private capitalize(first: string, maxLen: number, focus: string | null, inPhrase: boolean): string {
+    const r = this.rng;
+    const learning = [SHIFT_L, SHIFT_R].filter((k) => this.focus.has(k) && this.keys.has(k));
+    const serves = (w: string) => learning.includes(this.shiftFor(w[0]) ?? '');
+    let word = first;
+    // While a Shift is learned, look for a start it serves.
+    for (let i = 0; learning.length && i < 6 && !serves(word); i++) word = this.word(maxLen, focus, inPhrase);
+    if (!serves(word)) word = first;
+    const shift = this.shiftFor(word[0]);
+    if (!shift) return first;
+    let rate = learning.includes(shift) ? CAPITAL_FOCUS : CAPITAL_START + (1 - CAPITAL_START) * (this.opts.shiftMastery?.[shift] ?? 0);
+    if (DIACRITICS.has(word[0])) rate /= 4;
+    if (!r.chance(rate)) return first;
+    const names = this.names.filter((n) => n.length <= maxLen + 2 && this.shiftFor(n[0]) === shift && !DIACRITICS.has(n[0]));
+    if (names.length && r.chance(0.35)) word = r.pick(names);
+    return word[0].toUpperCase() + word.slice(1);
+  }
+
+  /** Joins words with spaces; maybe a comma, colon or hyphen inside and a period, question or exclamation mark at the end. */
+  private punctuate(list: string[]): string {
+    const r = this.rng;
+    const rate = (k: string) => (this.keys.has(k) ? MARK_RATE[k][this.focus.has(k) ? 1 : 0] : 0);
+    const joins = list.map(() => ' ');
+    if (list.length > 1) {
+      if (r.chance(rate(','))) joins[0] = ', ';
+      else if (r.chance(rate(':'))) joins[0] = ': ';
+      else if (r.chance(rate('-'))) joins[0] = '-';
+    }
+    let text = list.map((w, i) => (i ? joins[i - 1] : '') + w).join('');
+    const end = ['?', '!', '.'].find((k) => r.chance(rate(k)));
+    if (end) text += end;
+    return text;
   }
 
   /** Weighted pick from a random sample of real words. */

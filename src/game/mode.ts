@@ -9,6 +9,8 @@ export abstract class Mode {
   /** Background scroll position (parallax). */
   scroll = 0;
   t = 0;
+  /** Most words in one target once space is known: two for moving targets, more in calm modes. */
+  readonly phraseWords: number = 2;
 
   constructor(protected L: LevelRuntime) {}
 

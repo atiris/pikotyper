@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { LAYOUTS } from '../keyboard/layouts';
 import { WordSource, filterWords, isBlocked } from './words';
 
 const WORDS = ['sad', 'lak', 'las', 'les', 'kde', 'ide', 'šaty', 'ruka', 'noha', 'dom', 'kôň', 'ja', 'aha', 'jeseň', 'slnko'];
@@ -48,10 +49,87 @@ describe('WordSource', () => {
     expect(clashes).toBeLessThan(5);
   });
 
-  it('capitalizes some words once Shift is learned', () => {
-    const src = new WordSource(WORDS, { keys: [...'fjdkslaeiruotnh', 'Shift'], len: [2, 6], noDiacritics: false, seed: 7 });
-    const caps = Array.from({ length: 200 }, () => src.next()).filter((w) => w[0] !== w[0].toLowerCase());
-    expect(caps.length).toBeGreaterThan(10);
+  it('drops capitals and punctuation from pseudo-word letters', () => {
+    const src = new WordSource([], { keys: [...'fjdkslae', '.', ',', 'ShiftL'], len: [3, 5], noDiacritics: false, seed: 8 });
+    for (let i = 0; i < 100; i++) expect(src.next()).toMatch(/^[fjdkslae]+$/);
+  });
+});
+
+const SK = LAYOUTS['sk-qwertz'];
+const KNOWN = [...'fjdkslaôgheiruotnh', ' ', '.', ','];
+const sample = (src: WordSource, n: number, words: number) => Array.from({ length: n }, () => src.next(new Set(), undefined, words));
+const wordCount = (s: string) => s.split(/[ -]/).length;
+
+describe('phrases', () => {
+  it('stay single words until space is known', () => {
+    const src = new WordSource(WORDS, { keys: [...'fjdkslaeiruotnh'], len: [2, 6], noDiacritics: false, seed: 9 });
+    for (const w of sample(src, 200, 4)) expect(w).not.toMatch(/[ .,]/);
+  });
+
+  it('start with chunk pairs on the first keys', () => {
+    const src = new WordSource(WORDS, { keys: ['f', 'j', ' '], len: [2, 6], noDiacritics: false, focus: ['f', 'j', ' '], seed: 10 });
+    for (const w of sample(src, 100, 2)) expect(w).toMatch(/^[fj]{1,2} [fj]{1,2}$/);
+  });
+
+  it('never use a key that is not known', () => {
+    const keys = [...KNOWN, 'ShiftL', '?'];
+    const src = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, layout: SK, names: ['Ema', 'Jano', 'Ola'], seed: 11 });
+    for (const w of [...sample(src, 300, 2), ...sample(src, 300, 4)]) {
+      for (const c of w) expect(keys.includes(c) || (c !== c.toLowerCase() && keys.includes(c.toLowerCase()))).toBe(true);
+      // Left Shift only: capitals only of right-hand letters.
+      expect(w).not.toMatch(/[QWERTASDFGYXCVB]/);
+    }
+  });
+
+  it('hold at most two words in story targets and two to four in calm modes', () => {
+    const src = new WordSource(WORDS, { keys: KNOWN, len: [2, 6], noDiacritics: false, seed: 12 });
+    const story = sample(src, 300, 2);
+    for (const w of story) expect(wordCount(w)).toBeLessThanOrEqual(2);
+    expect(story.some((w) => wordCount(w) === 2)).toBe(true);
+    const calm = sample(src, 300, 4).map(wordCount);
+    expect(Math.min(...calm)).toBe(2);
+    expect(Math.max(...calm)).toBe(4);
+  });
+
+  it('end about one phrase in three with a period and put a comma in about one in five', () => {
+    const src = new WordSource(WORDS, { keys: KNOWN, len: [2, 6], noDiacritics: false, seed: 13 });
+    const calm = sample(src, 2000, 4);
+    const period = calm.filter((w) => w.endsWith('.')).length / calm.length;
+    const comma = calm.filter((w) => w.includes(', ')).length / calm.length;
+    expect(period).toBeGreaterThan(0.27);
+    expect(period).toBeLessThan(0.4);
+    expect(comma).toBeGreaterThan(0.15);
+    expect(comma).toBeLessThan(0.25);
+  });
+
+  it('asks a question in about one phrase in eight once ? is known', () => {
+    const src = new WordSource(WORDS, { keys: [...KNOWN, '?'], len: [2, 6], noDiacritics: false, seed: 14 });
+    const calm = sample(src, 2000, 4);
+    const q = calm.filter((w) => w.endsWith('?')).length / calm.length;
+    expect(q).toBeGreaterThan(0.09);
+    expect(q).toBeLessThan(0.16);
+  });
+
+  it('starts about one target in six with a capital, every one once the Shifts are mastered', () => {
+    const keys = [...KNOWN, 'ShiftL', 'ShiftR'];
+    const caps = (mastery: number) => {
+      const src = new WordSource(WORDS, { keys, len: [2, 6], noDiacritics: false, layout: SK, shiftMastery: { ShiftL: mastery, ShiftR: mastery }, seed: 15 });
+      const list = sample(src, 2000, 4);
+      for (const w of list) expect(w.slice(1)).toBe(w.slice(1).toLowerCase());
+      return list.filter((w) => w[0] !== w[0].toLowerCase()).length / list.length;
+    };
+    const start = caps(0);
+    expect(start).toBeGreaterThan(0.12);
+    expect(start).toBeLessThan(0.22);
+    expect(caps(1)).toBeGreaterThan(0.95);
+  });
+
+  it('uses names and the learned Shift while it is new', () => {
+    const src = new WordSource(WORDS, { keys: [...KNOWN, 'ShiftL'], len: [2, 6], noDiacritics: false, layout: SK, names: ['Jano', 'Ola'], focus: ['ShiftL'], seed: 16 });
+    const list = sample(src, 500, 2);
+    const caps = list.filter((w) => w[0] !== w[0].toLowerCase());
+    expect(caps.length / list.length).toBeGreaterThan(0.4);
+    expect(list.some((w) => w.startsWith('Jano') || w.startsWith('Ola'))).toBe(true);
   });
 });
 

@@ -1,5 +1,6 @@
 import { type Finger, type Layout, type KeyStep, allKeys, fingerFor, shiftKeyFor, stepsFor } from '../keyboard/layouts';
 import { t } from '../i18n/i18n';
+import { SHIFT_L, SHIFT_R, SPACE } from '../learning/lessons';
 
 /** Finger colors (Okabe-Ito based, colorblind-safe) plus a number label on each key. */
 export const FINGER_COLORS: Record<Finger, string> = {
@@ -32,9 +33,19 @@ export function inkOn(hex: string): string {
   return onWhite >= onDark ? '#ffffff' : DARK_INK;
 }
 
+/** How a lesson key is named in texts: space and the Shifts by name, other keys as they are. */
+export function keyLabel(key: string): string {
+  return key === SPACE ? t('keys.space') : key === SHIFT_L ? t('keys.shiftL') : key === SHIFT_R ? t('keys.shiftR') : key;
+}
+
+/** Finger of a lesson key; each Shift is pressed by its own hand's pinky. */
+export function lessonFinger(layout: Layout, key: string): Finger | null {
+  return key === SHIFT_L ? 0 : key === SHIFT_R ? 9 : fingerFor(layout, key);
+}
+
 /** Finger name on the finger's own color, as on the keyboard guide. */
 export function fingerChip(layout: Layout, key: string): HTMLElement | null {
-  const f = key === 'Shift' ? null : fingerFor(layout, key);
+  const f = lessonFinger(layout, key);
   if (f == null) return null;
   const chip = document.createElement('b');
   chip.className = 'finger-chip';

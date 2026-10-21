@@ -254,7 +254,8 @@ export interface WordStyle {
 /** Word label on a target: typed letters in green, the next letter highlighted, gentle wobble on a mistake. */
 function letterWidths(g: G, word: string, size: number): number[] {
   g.font = `600 ${size}px ${fontFamily()}`;
-  return [...word].map((c) => g.measureText(c).width + size * 0.08);
+  // A space is wide enough to see its dot and to be its own step.
+  return [...word].map((c) => (c === ' ' ? size * 0.5 : g.measureText(c).width + size * 0.08));
 }
 
 /** Width and height of a word label as `drawWord` draws it. */
@@ -297,7 +298,15 @@ export function drawWord(g: G, word: string, typed: number, x: number, y: number
       g.fill();
       g.fillStyle = wobble > 0 ? '#d9534f' : '#2d2140';
     } else g.fillStyle = st.highContrast ? '#000' : '#4a3a5c';
-    g.fillText(c, cx, y + size * 0.04);
+    if (c === ' ') {
+      // A light dot shows the space to type.
+      g.save();
+      g.globalAlpha *= i === typed ? 0.8 : 0.4;
+      g.beginPath();
+      g.arc(cx + w / 2 - size * 0.02, y + size * 0.08, size * 0.07, 0, Math.PI * 2);
+      g.fill();
+      g.restore();
+    } else g.fillText(c, cx, y + size * 0.04);
     cx += w;
   });
   g.restore();

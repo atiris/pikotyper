@@ -171,7 +171,7 @@ export class SlopeMode extends Mode {
 export class MoleMode extends SlopeMode {
   protected spawnSomething(): void {
     if (this.spawned % 2 === 0) {
-      const word = this.L.word(4);
+      const word = this.L.word(4, 1);
       const x = this.L.rng.range(EGG_X + 320, this.L.vw - 140);
       const m: Mole = { kind: 'mole', x, up: 0, window: Math.max(2.5, this.L.travelTime(word) * 0.55), state: 'rise', t: 0 };
       this.L.core.add(word, m);

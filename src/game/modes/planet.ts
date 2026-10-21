@@ -60,6 +60,7 @@ abstract class HeroMode extends Mode {
 
 /** Swamp: every finished word places a stepping stone and Piko hops onto it. */
 export class SwampMode extends HeroMode {
+  readonly phraseWords = 4;
   private stones: { x: number; y: number; pop: number }[] = [];
   private current: Target | null = null;
   private spot = { x: 0, y: 0 };
@@ -143,6 +144,7 @@ export class SwampMode extends HeroMode {
 
 /** Road signs: the typed sign is the path taken; every path leads forward. */
 export class SignsMode extends HeroMode {
+  readonly phraseWords = 4;
   private signs: Target[] = [];
   private postX = 0;
   private busy = false;
@@ -241,7 +243,7 @@ export class BoulderMode extends HeroMode {
   }
 
   private nextChunk(): void {
-    this.chunk = this.L.core.add(this.L.word(4), {});
+    this.chunk = this.L.core.add(this.L.word(4, 1), {});
   }
 
   update(dt: number): void {

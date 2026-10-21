@@ -7,23 +7,31 @@ export async function playLevel(page: Page, mistakes = true): Promise<string> {
     const state = await page.evaluate(() => {
       const res = document.querySelector<HTMLElement>('.results-card');
       if (res) return { kind: 'results', text: res.innerText };
-      const nk = document.querySelector('.newkey-card .big-key');
-      if (nk) return { kind: 'newkey', key: nk.textContent ?? '' };
+      const nk = document.querySelector<HTMLElement>('.newkey-card');
+      if (nk) return { kind: 'newkey', key: nk.dataset.sample ?? '' };
       const pass = document.querySelector<HTMLElement>('.posture-card')?.dataset.password;
       if (pass) return { kind: 'password', key: pass };
       return { kind: 'play', next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '' };
     });
     if (state.kind === 'results') return state.text!;
     if (state.kind === 'password') await page.keyboard.type(state.key!);
-    else if (state.kind === 'newkey') await page.keyboard.type(state.key === '⇧' ? 'A' : state.key!);
+    else if (state.kind === 'newkey') await typeChar(page, state.key!);
     else if (state.next) {
       if (mistakes && typed % 13 === 4) await page.keyboard.type('q');
-      await page.keyboard.type(state.next);
+      await typeChar(page, state.next);
       typed++;
     }
     await page.waitForTimeout(state.kind === 'play' ? 90 : 200);
   }
   throw new Error('level did not finish');
+}
+
+/** One character as a child types it: a capital with Shift held. */
+export async function typeChar(page: Page, ch: string): Promise<void> {
+  const capital = ch !== ch.toLowerCase();
+  if (capital) await page.keyboard.down('Shift');
+  await page.keyboard.type(ch);
+  if (capital) await page.keyboard.up('Shift');
 }
 
 export async function createProfile(page: Page, name: string): Promise<void> {

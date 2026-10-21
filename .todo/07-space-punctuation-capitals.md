@@ -51,25 +51,45 @@ beginners and should not be a block at the very end.
   Unit tests for the migration.
 
 ## Steps
-- [ ] Lesson groups and migration (+ tests in `src/learning/lessons.test.ts`,
+- [x] Lesson groups and migration (+ tests in `src/learning/lessons.test.ts`,
   `src/storage/store.test.ts`).
-- [ ] Word/phrase builder in `src/words/words.ts`: phrases from known words, names
+- [x] Word/phrase builder in `src/words/words.ts`: phrases from known words, names
   list, punctuation and capital rules above; never a char that is not unlocked.
   Unit tests: no locked chars, phrase lengths per mode, frequencies roughly right
   (seeded RNG).
-- [ ] Runtime/typing: accept space; `TypingCore` unchanged except it may now see
+- [x] Runtime/typing: accept space; `TypingCore` unchanged except it may now see
   spaces; first-letter lock-on still on the first char. Shift side detection and
   the tip. Space is recorded in stats as `' '`.
-- [ ] Modes: label widths for phrases (word size shrinks to fit, min 28 px);
+- [x] Modes: label widths for phrases (word size shrinks to fit, min 28 px);
   approach speed from `travelTime` already scales by length.
-- [ ] Cards and guide: intro cards for the new keys; guide highlights space and the
+- [x] Cards and guide: intro cards for the new keys; guide highlights space and the
   correct Shift; finger names: space -> thumb.
-- [ ] Stats overlay and parent dashboard show space, punctuation and both Shifts
+- [x] Stats overlay and parent dashboard show space, punctuation and both Shifts
   (works with plan 08's "My keys" if that is already done; otherwise only the
   key-detail texts).
-- [ ] Super profile (`src/app/super.ts`) gets the new keys.
+- [x] Super profile (`src/app/super.ts`) gets the new keys.
 - [ ] Specs: `.specify/learning/lesson-progression.md`, `words.md`,
   `finger-guide.md`, `keyboard-layouts.md`. README "The game" lines.
 - [ ] Build, vitest, e2e (`e2e/helpers.ts` must type spaces and capitals: use
   `page.keyboard.type` with the char; for capitals it presses Shift), Playwright
   MCP: new profile plays to the space intro and types phrases.
+
+## Decisions taken while implementing
+- Space is in lesson group 1 (`f j space`), so its intro card is the third one; there is no
+  separate group, and every first target is a chunk pair (`fj jf`).
+- Space, punctuation and both Shifts are "light" keys: ready after 12 presses (letters 25),
+  so they do not block the next letter for long. Mastery (40) is unchanged.
+- The newest group is the word source's focus also for these keys: a new `.` ends 60 % of
+  targets, a new `,`/`?`/`!`/`:`/`-` about half, a new Shift starts 60 % of targets with a
+  capital of the letters it serves (normal rates as in the plan otherwise).
+- `-` joins two words without spaces (`sem-tam`), `:` follows the first word like a comma,
+  `!` ends 1 phrase in 10. US `'` comes from contractions added to the English word list.
+- Punctuation and phrases only where a mode asks for more than one word; small targets
+  (boulder chunks, moles, shield groups, asteroid pieces) stay single words.
+- Calm modes (practice, swamp, signs) ask for up to 4 words; their labels shrink to fit the
+  space around their place, moving targets to half the stage width (min 28 px).
+- A space typed while no target is locked is ignored (a habit between words, not an error).
+- Space, punctuation and capital mistakes get Piko's hint but no letter mini-drill.
+- Practice of a non-letter key (stats "Practice") mixes in the known letters.
+- Shift on the same hand: the letter still counts; Piko's tip shows once per level, and the
+  Shift key card says it in place of its hint.

@@ -1,4 +1,4 @@
-import { firstKeys } from '../learning/lessons';
+import { DIACRITICS, PUNCTUATION, SHIFT_L, SHIFT_R, SPACE, firstKeys, lessonOrder } from '../learning/lessons';
 import { RECENT_WRONG_KEEP } from '../learning/stats';
 import {
   type CompanionKind,
@@ -15,7 +15,7 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 4;
+export const STORE_VERSION = 5;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -26,7 +26,43 @@ const migrations: Record<number, (data: any) => any> = {
   2: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV2toV3) : data.profiles }),
   // v4: optional fullscreen on start.
   3: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV3toV4) : data.profiles }),
+  // v5: space and punctuation in the lesson path; the one Shift key splits into left and right.
+  4: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV4toV5) : data.profiles }),
 };
+
+/** Keys the v5 lesson path added. */
+const V5_KEYS = new Set([SPACE, SHIFT_L, SHIFT_R, ...PUNCTUATION]);
+
+/**
+ * The old `Shift` becomes both Shifts (its statistics too). A new key whose lesson
+ * predecessor is already unlocked is unlocked as well, but not introduced, so its
+ * card still shows once.
+ */
+export function profileV4toV5(p: any): any {
+  if (!p || typeof p !== 'object') return p;
+  const split = (keys: unknown) => (Array.isArray(keys) ? keys.flatMap((k) => (k === 'Shift' ? [SHIFT_L, SHIFT_R] : [k])) : keys);
+  const progress = p.progress ?? {};
+  const unlocked: string[] = Array.isArray(progress.unlockedKeys) ? split(progress.unlockedKeys) as string[] : [];
+  const layout = p.layout === 'us-qwerty' || p.layout === 'sk-qwerty' ? p.layout : 'sk-qwertz';
+  const skip = (k: string) => !!p.settings?.noDiacritics && DIACRITICS.has(k);
+  let prev: string | null = null;
+  for (const k of lessonOrder(layout)) {
+    if (skip(k)) continue;
+    if (V5_KEYS.has(k) && prev && unlocked.includes(prev) && !unlocked.includes(k)) unlocked.push(k);
+    prev = k;
+  }
+  const { Shift: shiftStat, ...keys } = p.stats?.keys ?? {};
+  if (shiftStat) {
+    keys[SHIFT_L] = structuredClone(shiftStat);
+    keys[SHIFT_R] = structuredClone(shiftStat);
+  }
+  return {
+    ...p,
+    settings: p.settings ? { ...p.settings, manualKeys: split(p.settings.manualKeys) } : p.settings,
+    progress: { ...progress, unlockedKeys: unlocked, introducedKeys: split(progress.introducedKeys) },
+    stats: p.stats ? { ...p.stats, keys } : p.stats,
+  };
+}
 
 function profileV3toV4(p: any): any {
   if (!p || typeof p !== 'object') return p;

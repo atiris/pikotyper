@@ -1,4 +1,4 @@
-// Storage schema v2. These types are the data contract of `localStorage['pikotyper:v1']`
+// Storage schema v5. These types are the data contract of `localStorage['pikotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -118,7 +118,7 @@ export interface Profile {
 }
 
 export interface StoreData {
-  version: 4;
+  version: 5;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;

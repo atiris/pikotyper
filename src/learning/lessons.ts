@@ -1,25 +1,30 @@
+import { type Layout, type KeyDef, fingerFor } from '../keyboard/layouts';
 import type { KeyStat, LayoutId, Profile } from '../storage/schema';
 
-/** Pseudo-key that stands for capital letters typed with Shift. */
-export const SHIFT_KEY = 'Shift';
+/** Lesson key of the space bar (typed with a thumb). */
+export const SPACE = ' ';
+/** Pseudo-keys of the two Shifts, each measured on the capitals it serves: left Shift on right-hand letters. */
+export const SHIFT_L = 'ShiftL';
+export const SHIFT_R = 'ShiftR';
+/** Punctuation the lesson path teaches (the US apostrophe included). */
+export const PUNCTUATION = new Set(['.', ',', '?', '-', '!', ':', "'"]);
 
 /**
  * Lesson groups: keys that unlock together. The home row and the first reaches
- * come in mirrored pairs (same finger, other hand), the rest one by one.
+ * come in mirrored pairs (same finger, other hand), the rest one by one. Space comes
+ * with the first pair, period and comma with the letters, each Shift in the middle.
  */
 const SK_GROUPS = [
-  ['f', 'j'], ['d', 'k'], ['s', 'l'], ['a', 'ô'], ['g', 'h'], ['e', 'i'], ['r', 'u'], ['o'], ['t'], ['n'], ['c'], ['v'], ['m'], ['p'],
-  ['b'], ['z'], ['y'], ['w'], ['x'], ['q'],
-  ['á'], ['í'], ['é'], ['ý'], ['ž'], ['ť'], ['č'], ['š'], ['ľ'], ['ú'], ['ä'], ['ň'], ['ó'], ['ĺ'], ['ŕ'], ['ď'],
-  [SHIFT_KEY],
+  ['f', 'j', SPACE], ['d', 'k'], ['s', 'l'], ['a', 'ô'], ['g', 'h'], ['e', 'i'], ['r', 'u'], ['.'], ['o'], ['t'], ['n'], [','], ['c'], ['v'], ['m'], ['p'], [SHIFT_L],
+  ['b'], ['z'], [SHIFT_R], ['y'], ['w'], ['x'], ['q'], ['?'], ['-'],
+  ['á'], ['!'], [':'], ['í'], ['é'], ['ý'], ['ž'], ['ť'], ['č'], ['š'], ['ľ'], ['ú'], ['ä'], ['ň'], ['ó'], ['ĺ'], ['ŕ'], ['ď'],
   ['1'], ['2'], ['3'], ['4'], ['5'], ['6'], ['7'], ['8'], ['9'], ['0'],
 ];
 
 const US_GROUPS = [
-  ['f', 'j'], ['d', 'k'], ['s', 'l'], ['a', ';'], ['g', 'h'], ['e', 'i'], ['r', 'u'], ['o'], ['t'], ['n'], ['c'], ['v'], ['m'], ['p'],
-  ['b'], ['y'], ['w'], ['x'], ['q'], ['z'],
-  [SHIFT_KEY],
-  ['1'], ['2'], ['3'], ['4'], ['5'], ['6'], ['7'], ['8'], ['9'], ['0'],
+  ['f', 'j', SPACE], ['d', 'k'], ['s', 'l'], ['a', ';'], ['g', 'h'], ['e', 'i'], ['r', 'u'], ['.'], ['o'], ['t'], ['n'], [','], ["'"], ['c'], ['v'], ['m'], ['p'], [SHIFT_L],
+  ['b'], ['y'], [SHIFT_R], ['w'], ['x'], ['q'], ['z'], ['?'], [':'],
+  ['1'], ['!'], ['2'], ['3'], ['4'], ['5'], ['6'], ['7'], ['8'], ['9'], ['0'], ['-'],
 ];
 
 export const DIACRITICS = new Set([...'áäčďéíĺľňóôŕšťúýž']);
@@ -40,6 +45,31 @@ export function firstKeys(layout: LayoutId): string[] {
 export const MASTERY_WINDOW = 40;
 /** A key is ready for the next one after fewer presses than full mastery. */
 export const READY_WINDOW = 25;
+/** Space, punctuation and the Shifts come up less often than letters, so they get ready sooner. */
+export const LIGHT_READY_WINDOW = 12;
+
+/** A letter key (not space, punctuation, a digit or a Shift). */
+export function isLetterKey(key: string): boolean {
+  return /^\p{L}$/u.test(key);
+}
+
+function readyWindow(key: string): number {
+  return isLetterKey(key) || /^\d$/.test(key) ? READY_WINDOW : LIGHT_READY_WINDOW;
+}
+
+/** The Shift pseudo-key a capital letter needs: the other hand's Shift. Null for anything else. */
+export function shiftKeyOf(layout: Layout, ch: string): string | null {
+  const lower = ch.toLowerCase();
+  if (lower === ch || !isLetterKey(lower)) return null;
+  const f = fingerFor(layout, lower);
+  return f == null ? null : f <= 4 ? SHIFT_R : SHIFT_L;
+}
+
+/** The lesson key a keyboard key teaches (Shift keys as their pseudo-keys), null for dead keys. */
+export function lessonKeyOf(def: KeyDef): string | null {
+  if (def.base === 'shift') return def.code === 'ShiftLeft' ? SHIFT_L : SHIFT_R;
+  return [...def.base].length === 1 ? def.base : null;
+}
 
 /** Median reaction limit: 1600 ms at difficulty 1 down to 800 ms at 10. */
 export function reactionLimit(difficulty: number): number {
@@ -74,15 +104,10 @@ export function masteryLevel(stat: KeyStat | undefined, difficulty: number): num
   return Math.min(0.9, fill * recentAccuracy(stat));
 }
 
-/** The stat entry that measures a key: Shift is measured on capital letters. */
-export function statFor(profile: Profile, key: string): KeyStat | undefined {
-  return profile.stats.keys[key];
-}
-
-/** Accurate and steady enough to move on: the last 25 presses, 90 % right, calm rhythm. */
-export function isReady(stat: KeyStat | undefined, difficulty: number): boolean {
-  if (!stat || stat.recent.length < READY_WINDOW) return false;
-  const window = stat.recent.slice(-READY_WINDOW);
+/** Accurate and steady enough to move on: the last presses (25, or 12 for a light key), 90 % right, calm rhythm. */
+export function isReady(stat: KeyStat | undefined, difficulty: number, size = READY_WINDOW): boolean {
+  if (!stat || stat.recent.length < size) return false;
+  const window = stat.recent.slice(-size);
   const ok = window.filter((v) => v > 0);
   return ok.length / window.length >= 0.9 && median(ok) <= reactionLimit(difficulty);
 }
@@ -95,7 +120,7 @@ export function advanceLesson(profile: Profile): string[] {
   const groups = lessonGroups(profile.layout);
   const unlocked = profile.progress.unlockedKeys;
   const newest = [...groups].reverse().find((g) => g.some((k) => unlocked.includes(k)));
-  if (newest && !newest.every((k) => isReady(statFor(profile, k), profile.settings.difficulty))) return [];
+  if (newest && !newest.every((k) => isReady(profile.stats.keys[k], profile.settings.difficulty, readyWindow(k)))) return [];
   const skip = (k: string) => profile.settings.noDiacritics && DIACRITICS.has(k);
   const next = groups.find((g) => g.some((k) => !unlocked.includes(k) && !skip(k)));
   if (!next) return [];

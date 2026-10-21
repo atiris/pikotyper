@@ -2,10 +2,10 @@ import { app, applyProfileLook, go, saveProfile, useLanguage } from '../app/app'
 import { t } from '../i18n/i18n';
 import { LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, WORLDS } from '../game/levels';
-import { lessonOrder, SHIFT_KEY } from '../learning/lessons';
+import { lessonKeyOf, lessonOrder } from '../learning/lessons';
 import { COMPANION_KINDS, GUEST_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type Profile } from '../storage/schema';
 import { applyImport, parseImport, planImport } from '../storage/store';
-import { KeyboardGuide } from '../ui/keyboard-guide';
+import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { pikoElement } from '../gfx/piko';
 import { soundButton } from '../ui/chrome';
@@ -137,14 +137,14 @@ function keysTab(p: Profile): HTMLElement {
   const paint = () => {
     for (const def of allKeys(lay)) {
       const el = kb.keyEl(def.code);
-      const key = def.base === 'shift' ? SHIFT_KEY : def.base;
-      el?.classList.toggle('picked', picked.has(key));
+      const key = lessonKeyOf(def);
+      el?.classList.toggle('picked', !!key && picked.has(key));
     }
   };
   kb.onKeyClick((code) => {
     const def = allKeys(lay).find((d) => d.code === code)!;
-    const key = def.base === 'shift' ? SHIFT_KEY : def.base;
-    if (key.length !== 1 && key !== SHIFT_KEY) return;
+    const key = lessonKeyOf(def);
+    if (!key) return;
     if (picked.has(key)) picked.delete(key); else picked.add(key);
     s.manualKeys = [...picked];
     paint();
@@ -156,7 +156,7 @@ function keysTab(p: Profile): HTMLElement {
   const presets: [string, string][] = [['home', 'fjdkslaô'], ['homeUs', 'fjdksla;'], ['top', 'qwertzuiop'], ['bottom', 'yxcvbnm']];
   return h('div', {},
     field(t('parent.keysMode'), mode, t('parent.keysHint')),
-    h('p', { class: 'hint' }, t('parent.unlocked', { keys: p.progress.unlockedKeys.join(' ') })),
+    h('p', { class: 'hint' }, t('parent.unlocked', { keys: p.progress.unlockedKeys.map(keyLabel).join(' ') })),
     kb.el,
     h('div', { class: 'row' },
       ...presets.filter(([id]) => (p.layout === 'us-qwerty' ? id !== 'home' : id !== 'homeUs')).map(([id, keys]) => button(t(`parent.preset.${id}`), () => {

@@ -85,7 +85,8 @@
     "progress": "Progress",
     "rhythm": "Rhythm: {n} letters per minute",
     "speed": "Speed",
-    "layoutHint": "Your keyboard looks like {layout}. Ask a parent to switch it in the parent area."
+    "layoutHint": "Your keyboard looks like {layout}. Ask a parent to switch it in the parent area.",
+    "shiftOtherHand": "Press Shift with the other hand: the little finger on the side away from the letter."
   },
   "guide": {
     "deadStep1": "{ch}: first the accent key, then the letter",
@@ -117,7 +118,9 @@
     "title": "A new key!",
     "finger": "Press it with your {finger}, then go back home.",
     "typeIt": "Type {key} three times.",
-    "shift": "Capital letters: hold Shift with the little finger of the other hand. Type a capital A three times."
+    "shiftL": "Hold the left Shift with your left little finger and type the capital with your right hand. Type a capital {sample} three times.",
+    "shiftR": "Hold the right Shift with your right little finger and type the capital with your left hand. Type a capital {sample} three times.",
+    "space": "Press the space bar with a thumb; the other fingers stay at home. Press it three times."
   },
   "drill": {
     "title": "Little practice: {keys}",
@@ -643,5 +646,11 @@
   },
   "super": {
     "badge": "Super mode: everything unlocked. Click to end it."
-  }
+  },
+  "keys": {
+    "space": "space bar",
+    "shiftL": "left Shift",
+    "shiftR": "right Shift"
+  },
+  "names": ["Tom", "Sam", "Ann", "Ben", "Kim", "Max", "Mia", "Lily", "Jack", "Emma", "Leo", "Ella", "Noah", "Zoe", "Finn", "Ruby", "Alex", "Jade", "Owen", "Grace", "Lucy", "Eli", "Ida", "Hugo", "Nora", "Rose", "Dan", "Kate", "Ted", "Ava", "Liam", "Olivia", "Isla", "Oscar", "Holly", "Jake", "Molly", "Harry", "Amy", "Luke"]
 }

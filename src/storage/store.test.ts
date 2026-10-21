@@ -77,6 +77,42 @@ describe('Store', () => {
     const out = migrate({ version: 3, profiles: [p] }).profiles[0];
     expect(out.settings.autoFullscreen).toBe(false);
   });
+
+  it('splits the v4 Shift into both Shifts, stats included', () => {
+    const p: any = newProfile('Ema', 'sk');
+    p.progress.unlockedKeys = [...'fjdkslaôgheiruotncvmpbzywxq', 'Shift'];
+    p.progress.introducedKeys = [...p.progress.unlockedKeys];
+    p.settings.manualKeys = ['f', 'Shift'];
+    p.stats.keys.Shift = { presses: 3, errors: 1, recent: [400, 0, 500], recentWrong: ['a'], days: [] };
+    const out = migrate({ version: 4, profiles: [p] }).profiles[0];
+    expect(out.progress.unlockedKeys).toEqual(expect.arrayContaining(['ShiftL', 'ShiftR']));
+    expect(out.progress.unlockedKeys).not.toContain('Shift');
+    expect(out.progress.introducedKeys).toEqual(expect.arrayContaining(['ShiftL', 'ShiftR']));
+    expect(out.settings.manualKeys).toEqual(['f', 'ShiftL', 'ShiftR']);
+    expect(out.stats.keys.ShiftL).toEqual(p.stats.keys.Shift);
+    expect(out.stats.keys.ShiftR).toEqual(p.stats.keys.Shift);
+    expect(out.stats.keys.Shift).toBeUndefined();
+  });
+
+  it('unlocks the new keys a v4 profile already passed, without introducing them', () => {
+    const p: any = newProfile('Ema', 'sk');
+    p.progress.unlockedKeys = [...'fjdkslaôgheiru'];
+    p.progress.introducedKeys = [...p.progress.unlockedKeys];
+    const out = migrate({ version: 4, profiles: [p] }).profiles[0];
+    expect(out.progress.unlockedKeys).toEqual([...'fjdkslaôgheiru', ' ', '.']);
+    expect(out.progress.introducedKeys).not.toContain('.');
+    expect(out.progress.introducedKeys).not.toContain(' ');
+  });
+
+  it('chains new keys and skips diacritics a parent turned off', () => {
+    const p: any = newProfile('Ema', 'sk');
+    p.settings.noDiacritics = true;
+    p.progress.unlockedKeys = [...'fjdkslaôgheiruotncvmpbzywxq', 'Shift'];
+    const out = migrate({ version: 4, profiles: [p] }).profiles[0];
+    expect(out.progress.unlockedKeys).toEqual(expect.arrayContaining([' ', '.', ',', '?', '-', '!', ':']));
+    const fresh = migrate({ version: 4, profiles: [{ ...p, settings: { ...p.settings, noDiacritics: false } }] }).profiles[0];
+    expect(fresh.progress.unlockedKeys).not.toContain('!');
+  });
 });
 
 describe('export and import', () => {

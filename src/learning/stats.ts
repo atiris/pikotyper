@@ -1,5 +1,6 @@
+import { LAYOUTS } from '../keyboard/layouts';
 import { type KeyStat, type Profile, type SessionRecord, emptyKeyStat } from '../storage/schema';
-import { MASTERY_WINDOW, SHIFT_KEY, median } from './lessons';
+import { MASTERY_WINDOW, median, shiftKeyOf } from './lessons';
 
 const RECENT_KEEP = MASTERY_WINDOW * 2;
 export const RECENT_WRONG_KEEP = 30;
@@ -13,9 +14,10 @@ export function localDate(d = new Date()): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-/** Records one key press against the expected character. */
+/** Records one key press against the expected character; a capital also counts for its Shift. */
 export function recordPress(profile: Profile, expected: string, typed: string, reactionMs: number): void {
-  const keys = expected !== expected.toLowerCase() ? [expected.toLowerCase(), SHIFT_KEY] : [expected];
+  const shift = shiftKeyOf(LAYOUTS[profile.layout], expected);
+  const keys = shift ? [expected.toLowerCase(), shift] : [expected];
   const ok = typed === expected;
   const rt = Math.max(1, Math.min(RT_CAP, Math.round(reactionMs)));
   const date = localDate();

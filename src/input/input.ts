@@ -2,6 +2,8 @@ export interface TypedChar {
   ch: string;
   code: string;
   shift: boolean;
+  /** Which Shift is held (`ShiftLeft` / `ShiftRight`), null without Shift. */
+  shiftCode: string | null;
   /** `performance.now()` of the key press. */
   time: number;
 }
@@ -27,14 +29,18 @@ const IGNORED = new Set(['Shift', 'Control', 'Alt', 'AltGraph', 'Meta', 'CapsLoc
  */
 export class KeyInput {
   private handler = (e: KeyboardEvent) => this.handle(e);
+  private release = (e: KeyboardEvent) => { if (e.key === 'Shift') this.shiftCode = null; };
   private pendingDead: string | null = null;
+  private shiftCode: string | null = null;
 
   constructor(private target: EventTarget, private handlers: InputHandlers) {
     target.addEventListener('keydown', this.handler as EventListener);
+    target.addEventListener('keyup', this.release as EventListener);
   }
 
   dispose(): void {
     this.target.removeEventListener('keydown', this.handler as EventListener);
+    this.target.removeEventListener('keyup', this.release as EventListener);
   }
 
   get deadPending(): boolean {
@@ -53,6 +59,7 @@ export class KeyInput {
       if (this.handlers.onEnter?.()) e.preventDefault();
       return;
     }
+    if (key === 'Shift' && !e.repeat) this.shiftCode = e.code;
     if (e.repeat || IGNORED.has(key)) return;
     // Shortcuts like Ctrl+R stay with the browser; AltGr (Ctrl+Alt) still types characters.
     if ((e.ctrlKey || e.metaKey) && !(e.ctrlKey && e.altKey)) return;
@@ -72,6 +79,6 @@ export class KeyInput {
     if ([...key].length !== 1) return;
     e.preventDefault();
     this.pendingDead = null;
-    this.handlers.onChar?.({ ch: key.normalize('NFC'), code: e.code, shift: e.shiftKey, time: performance.now() });
+    this.handlers.onChar?.({ ch: key.normalize('NFC'), code: e.code, shift: e.shiftKey, shiftCode: e.shiftKey ? this.shiftCode : null, time: performance.now() });
   }
 }

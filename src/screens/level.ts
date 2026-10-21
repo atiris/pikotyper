@@ -8,6 +8,7 @@ import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
 import { localDate } from '../learning/stats';
 import { button, h } from '../ui/dom';
+import { keyLabel } from '../ui/keyboard-guide';
 import { medal } from '../ui/medal';
 import { playLevel } from './map';
 
@@ -66,7 +67,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   ];
   if (r.cpm > 0) lines.push(h('p', {}, t('results.rhythm', { n: r.cpm })));
   if (r.trend && r.trend > 1.05) lines.push(h('p', { class: 'good' }, t('results.trendUp')));
-  for (const k of r.newKeys) lines.push(h('p', { class: 'new-key' }, t('results.newKey', { key: k === 'Shift' ? '⇧ Shift' : k })));
+  for (const k of r.newKeys) lines.push(h('p', { class: 'new-key' }, t('results.newKey', { key: keyLabel(k) })));
   if (r.newAccessories.length) lines.push(h('p', { class: 'new-acc' }, t('results.newAccessory', { n: r.newAccessories.length })));
   if (rescued) lines.push(h('p', { class: 'good' }, t('results.rescued', { name: rescued.name })));
   if (r.growth) {

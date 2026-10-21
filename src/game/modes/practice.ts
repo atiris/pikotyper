@@ -11,6 +11,7 @@ const MIN_INFO_PX = 18;
 /** Free practice: calm words one after another, no story, no motion pressure. */
 export class PracticeMode extends Mode {
   readonly world = 'meadow';
+  readonly phraseWords = 4;
   private current: Target | null = null;
   private pop = 0;
   private count = 0;

@@ -175,7 +175,7 @@ export class AsteroidMode extends SpaceMode {
     this.L.sfx('pop');
     const pieces = this.L.rng.int(3, 4);
     for (let i = 0; i < pieces; i++) {
-      const word = this.L.word(4);
+      const word = this.L.word(4, 1);
       const a = (i / pieces) * Math.PI * 2;
       const x = m.x + Math.cos(a) * 60;
       const piece: Mover = {

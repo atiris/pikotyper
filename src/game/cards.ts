@@ -9,7 +9,7 @@ import { button, h } from '../ui/dom';
 import { pikoElement } from '../gfx/piko';
 import { WordSource, letterKeys } from '../words/words';
 import { imageUrl } from '../gfx/assets';
-import { activeKeys } from '../learning/lessons';
+import { SHIFT_L, SHIFT_R, SPACE, activeKeys } from '../learning/lessons';
 
 interface CardOpts {
   button?: string;
@@ -142,33 +142,56 @@ export function showPosture(host: HTMLElement, p: Profile, tip?: string): Promis
   });
 }
 
+/** Big symbol of a lesson key on its card. */
+function bigKeyText(key: string): string {
+  return key === SPACE ? '␣' : key === SHIFT_L || key === SHIFT_R ? '⇧' : key;
+}
+
+/** What the child types on a key's card: a capital served by a Shift, else the key itself. */
+export function cardSample(key: string): string {
+  return key === SHIFT_L ? 'J' : key === SHIFT_R ? 'F' : key;
+}
+
+/** The card's line under the key: Shifts and space say how they are used. */
+function cardHint(key: string): string {
+  if (key === SHIFT_L) return t('newKey.shiftL', { sample: cardSample(key) });
+  if (key === SHIFT_R) return t('newKey.shiftR', { sample: cardSample(key) });
+  if (key === SPACE) return t('newKey.space');
+  return t('newKey.typeIt', { key });
+}
+
 /** Introduces a new key alone: where it is and which finger, typed three times; Piko shows it. */
 export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide: KeyboardGuide, p: Profile): Promise<void> {
   return new Promise((resolve) => {
     const chip = fingerChip(layout, key);
     const dots = h('div', { class: 'dots' }, h('span'), h('span'), h('span'));
-    const big = h('div', { class: 'big-key' }, key === 'Shift' ? '⇧' : key);
-    const sample = key === 'Shift' ? 'A' : key;
+    const big = h('div', { class: `big-key ${key === SPACE ? 'wide' : ''}` }, bigKeyText(key));
+    const sample = cardSample(key);
+    const shift = key === SHIFT_L ? 'ShiftLeft' : key === SHIFT_R ? 'ShiftRight' : null;
     // The finger name sits inside the sentence, highlighted in the finger's color.
     const [before, after] = t('newKey.finger', { finger: '\u0000' }).split('\u0000');
-    const card = h('div', { class: 'card newkey-card' },
+    const card = h('div', { class: 'card newkey-card', 'data-sample': sample },
       h('div', { class: 'newkey-body' },
         pikoElement(p.companion, 'happy', 150),
         h('div', {},
           h('h2', {}, t('newKey.title')),
           big,
           chip ? h('p', { class: 'newkey-finger' }, before, chip, after ?? '') : null,
-          h('p', { class: 'hint' }, key === 'Shift' ? t('newKey.shift') : t('newKey.typeIt', { key })),
+          h('p', { class: 'hint' }, cardHint(key)),
           dots)),
       button(t('common.skip'), () => done(), 'btn small ghost'));
     const overlay = h('div', { class: 'overlay' }, card);
     host.append(overlay);
     guide.show(sample);
     let n = 0;
+    let shiftCode: string | null = null;
     const onKey = (e: KeyboardEvent) => {
-      if (e.repeat || e.key.length !== 1) return;
+      if (e.key === 'Shift') shiftCode = e.code;
+      if (e.repeat || [...e.key].length !== 1) return;
       e.preventDefault();
-      const ok = key === 'Shift' ? e.shiftKey && e.key !== e.key.toLowerCase() : e.key.normalize('NFC') === key;
+      // Shift cards count the capital with either Shift, but say once when it was the wrong one.
+      const ok = e.key.normalize('NFC') === sample;
+      if (ok && shift && shiftCode && shiftCode !== shift) hint.textContent = t('level.shiftOtherHand');
       if (ok) {
         dots.children[n]?.classList.add('on');
         n++;
@@ -181,6 +204,7 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
         audio.sfx('wrong');
       }
     };
+    const hint = card.querySelector<HTMLElement>('.hint')!;
     let finished = false;
     const done = () => {
       if (finished) return;

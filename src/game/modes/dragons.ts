@@ -150,7 +150,7 @@ export class WaveMode extends Mode {
   private next(): void {
     if (this.groups >= this.L.def.count) return;
     this.groups++;
-    this.group = this.L.core.add(this.L.word(3), {});
+    this.group = this.L.core.add(this.L.word(3, 1), {});
   }
 
   update(dt: number): void {
