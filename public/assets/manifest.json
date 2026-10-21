@@ -72,6 +72,14 @@
    "w": 160,
    "h": 160
   },
+  "acc-wand": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-wand-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "base-template": {
    "w": 512,
    "h": 512
@@ -317,14 +325,6 @@
    "h": 512
   },
   "acc-wizard-hat-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-wand": {
-   "w": 512,
-   "h": 512
-  },
-  "acc-wand-thumb": {
    "w": 160,
    "h": 160
   },
@@ -623,6 +623,11 @@
    "set": "single"
   },
   {
+   "id": "wand",
+   "slot": "hand",
+   "set": "c"
+  },
+  {
    "id": "cap",
    "slot": "head",
    "set": "a"
@@ -655,11 +660,6 @@
   {
    "id": "wizard-hat",
    "slot": "head",
-   "set": "c"
-  },
-  {
-   "id": "wand",
-   "slot": "hand",
    "set": "c"
   },
   {
