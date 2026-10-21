@@ -176,7 +176,7 @@ In the attached image keep only FRONT, exactly where it is, with the same size, 
 | `acc-star-glasses.jpg` | glasses: FRAME = yellow star-shaped glasses with a soft dark-brown outline, a thin bridge between the two stars, and two short temple arms reaching toward the sides of the head | done 2026-10-21 |
 | `acc-sunglasses.jpg` | glasses: FRAME = cool black wayfarer sunglasses: a thick glossy black frame with a slightly wider, raised top edge and lenses that are a bit narrower at the bottom, a straight bridge, and two short temple arms reaching toward the sides of the head | done 2026-10-21 (the script makes the lenses a soft see-through dark tint) |
 | `acc-dragon-wings.jpg` | back: ITEM = small soft orange baby-dragon wings on the back, visible on both sides | done 2026-10-21 (longer than before; drawn behind the body) |
-| `acc-star-cape.jpg` | a dark blue cape with stars hanging from the shoulders behind the body, visible on both sides | broken into pieces, crossed by the wand |
+| `acc-star-cape.jpg` | a dark blue cape with stars hanging from the shoulders behind the body, visible on both sides | done 2026-10-21 (with `acc-star-cape-front.jpg`: clasp and collar over the body) |
 | `acc-knit-vest.jpg` | a cozy green knitted vest on the body | backpack straps left at both sides |
 | `acc-backpack.jpg` | a small orange backpack on the back, its straps visible over the shoulders | only broken pieces of the straps |
 | `acc-lantern.jpg` | a small lantern in the right hand | a stray vertical line next to it |

@@ -1,5 +1,9 @@
 {
  "images": {
+  "Gemini_Generated_Image_fsw74tfsw74tfsw7": {
+   "w": 456,
+   "h": 102
+  },
   "acc-dragon-wings": {
    "w": 512,
    "h": 512
@@ -13,6 +17,18 @@
    "h": 512
   },
   "acc-round-glasses-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-star-cape-front": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-star-cape": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-star-cape-thumb": {
    "w": 160,
    "h": 160
   },
@@ -293,14 +309,6 @@
    "h": 512
   },
   "acc-boots-thumb": {
-   "w": 160,
-   "h": 160
-  },
-  "acc-star-cape": {
-   "w": 512,
-   "h": 512
-  },
-  "acc-star-cape-thumb": {
    "w": 160,
    "h": 160
   },
@@ -585,6 +593,11 @@
    "set": "a"
   },
   {
+   "id": "star-cape",
+   "slot": "back",
+   "set": "c"
+  },
+  {
    "id": "star-glasses",
    "slot": "eyes",
    "set": "b"
@@ -637,11 +650,6 @@
   {
    "id": "boots",
    "slot": "feet",
-   "set": "c"
-  },
-  {
-   "id": "star-cape",
-   "slot": "back",
    "set": "c"
   },
   {
