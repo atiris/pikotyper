@@ -5,7 +5,8 @@ import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
 import { OWN_QUESTIONS_MAX, OWN_QUESTION_LEN, SURPRISES_MAX, SURPRISE_LEN } from '../game/own-content';
 import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder } from '../learning/lessons';
-import { COMPANION_KINDS, GUEST_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type OwnMix, type Profile, type TaskKind } from '../storage/schema';
+import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type OwnMix, type ParentLock, type Profile, type TaskKind } from '../storage/schema';
+import { checkLock, makeLock } from '../storage/lock';
 import { linkOf } from '../share/codec';
 import { TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, taskCode } from '../share/task';
 import { moveCode } from '../share/transfer';
@@ -21,15 +22,77 @@ import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion, masteredCount } from '../game/rewards';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
-/** Settings are for parents: one calm question instead of a lock a child solves anyway. */
+/**
+ * Settings are for parents: one calm question, or the parent's password when one is set.
+ * The super player is never asked.
+ */
 function parentAccess(): Promise<boolean> {
   const p = app.profile;
+  if (p?.id === SUPER_ID) return Promise.resolve(true);
+  const lock = app.store.data.parentLock;
+  if (lock) return passwordDialog(lock);
   return confirmDialog({
     title: t('parent.checkTitle'),
     text: t('parent.checkText'),
     ok: t('parent.checkOk'),
     cancel: t('common.back'),
     art: p ? pikoElement(p.companion, 'thinking', 110) : undefined,
+  });
+}
+
+const LOCK_TRIES = 5;
+const LOCK_WAIT_MS = 30_000;
+/** Wrong passwords in a row and the end of the wait after too many; kept while the app runs. */
+const lockTries = { wrong: 0, until: 0 };
+
+function passwordDialog(lock: ParentLock): Promise<boolean> {
+  return new Promise((resolve) => {
+    let yes = false;
+    let timer = 0;
+    const input = h('input', { type: 'password', class: 'lock-input', autocomplete: 'current-password', 'aria-label': t('parent.lock.password'), autofocus: true });
+    const msg = h('p', { class: 'error', role: 'status' });
+    const open = button(t('parent.lock.open'), () => void tryOpen(), 'btn primary');
+    const tick = () => {
+      const left = Math.ceil((lockTries.until - Date.now()) / 1000);
+      input.disabled = open.disabled = left > 0;
+      if (left > 0) msg.textContent = t('parent.lock.wait', { n: left });
+      else if (timer) {
+        clearInterval(timer);
+        timer = 0;
+        msg.textContent = '';
+        input.focus();
+      }
+    };
+    const wait = () => { tick(); if (!timer && lockTries.until > Date.now()) timer = window.setInterval(tick, 250); };
+    const tryOpen = async () => {
+      if (lockTries.until > Date.now()) return;
+      if (await checkLock(lock, input.value)) {
+        lockTries.wrong = 0;
+        yes = true;
+        return close();
+      }
+      input.value = '';
+      input.classList.remove('shake');
+      void input.offsetWidth;
+      input.classList.add('shake');
+      msg.textContent = t('parent.lock.wrong');
+      if (++lockTries.wrong >= LOCK_TRIES) {
+        lockTries.wrong = 0;
+        lockTries.until = Date.now() + LOCK_WAIT_MS;
+        wait();
+      }
+    };
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') void tryOpen(); });
+    const close = modal(h('div', { class: 'confirm lock-dialog' },
+      app.profile ? pikoElement(app.profile.companion, 'thinking', 110) : null,
+      h('h2', {}, t('parent.checkTitle')),
+      h('p', {}, t('parent.lock.ask')),
+      input, msg,
+      h('div', { class: 'row center' }, button(t('common.back'), () => close(), 'btn'), open)), {
+      cls: 'confirm-modal',
+      onClose: () => { clearInterval(timer); resolve(yes); },
+    });
+    wait();
   });
 }
 
@@ -129,7 +192,50 @@ function settingsTab(p: Profile): HTMLElement {
       field(t('parent.largeText'), check(s.largeText, (v) => { s.largeText = v; save(); })),
       field(t('parent.reduceMotion'), check(s.reduceMotion, (v) => { s.reduceMotion = v; save(); })),
       field(t('parent.highContrast'), check(s.highContrast, (v) => { s.highContrast = v; save(); })),
-      field(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint'))));
+      field(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint'))),
+    lockGroup());
+}
+
+/** The device-wide password on this screen: set, change or remove. The super player needs no current one. */
+function lockGroup(): HTMLElement {
+  const box = h('fieldset', { class: 'lock-group' });
+  const render = (done = '') => {
+    const lock = app.store.data.parentLock;
+    const pw = (auto: string) => h('input', { type: 'password', autocomplete: auto, maxlength: 64 });
+    const current = lock && app.profile?.id !== SUPER_ID ? pw('current-password') : null;
+    const next = pw('new-password');
+    const again = pw('new-password');
+    const msg = h('p', { class: done ? 'hint lock-msg' : 'error lock-msg', role: 'status' }, done);
+    const fail = (key: string) => { msg.className = 'error lock-msg'; msg.textContent = t(key); };
+    const allowed = async () => !lock || !current || (await checkLock(lock, current.value));
+    const keep = (l: ParentLock | null, doneKey: string) => {
+      if (l) app.store.data.parentLock = l;
+      else delete app.store.data.parentLock;
+      app.store.save();
+      render(t(doneKey));
+    };
+    const setPassword = async () => {
+      if (!(await allowed())) return fail('parent.lock.wrong');
+      if (!next.value) return fail('parent.lock.empty');
+      if (next.value !== again.value) return fail('parent.lock.mismatch');
+      keep(await makeLock(next.value), 'parent.lock.saved');
+    };
+    const remove = async () => {
+      if (!(await allowed())) return fail('parent.lock.wrong');
+      keep(null, 'parent.lock.removed');
+    };
+    box.replaceChildren(h('legend', {}, t('parent.group.lock')),
+      h('p', { class: 'hint' }, t(lock ? 'parent.lock.on' : 'parent.lock.off')),
+      ...(current ? [field(t('parent.lock.current'), current)] : []),
+      field(t(lock ? 'parent.lock.new' : 'parent.lock.password'), next),
+      field(t('parent.lock.again'), again),
+      h('div', { class: 'row' },
+        button(t(lock ? 'parent.lock.change' : 'parent.lock.set'), () => void setPassword(), 'btn primary', 'lock'),
+        lock ? button(t('parent.lock.remove'), () => void remove(), 'btn danger', 'trash') : null),
+      msg);
+  };
+  render();
+  return box;
 }
 
 /** The parent's own content: encouragements, surprises, questions, words and text. */

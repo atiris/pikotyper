@@ -687,7 +687,8 @@
     "group": {
       "child": "Child",
       "practice": "Practice",
-      "look": "Look and sound"
+      "look": "Look and sound",
+      "lock": "Settings password"
     },
     "childName": "Child's name",
     "companionName": "Companion's name",
@@ -756,7 +757,26 @@
     "checkOk": "Yes, open",
     "deleteOk": "Yes, delete",
     "auto": "Automatic (grows with the child)",
-    "autoHint": "In automatic mode, difficulty and word length take turns going up after a few minutes of accurate typing; each step earns the child a medal. The start is slow: a short word takes about 10 seconds to reach the companion and at most two are on screen. If the child still cannot keep up, turn on No time pressure."
+    "autoHint": "In automatic mode, difficulty and word length take turns going up after a few minutes of accurate typing; each step earns the child a medal. The start is slow: a short word takes about 10 seconds to reach the companion and at most two are on screen. If the child still cannot keep up, turn on No time pressure.",
+    "lock": {
+      "ask": "The settings are locked with a password. Please enter it.",
+      "password": "Password",
+      "open": "Open",
+      "wrong": "Wrong password",
+      "wait": "Too many tries. Try again in {n} s.",
+      "off": "One question opens the settings. A password locks them for every player on this device.",
+      "on": "The settings are locked with a password for every player on this device.",
+      "current": "Current password",
+      "new": "New password",
+      "again": "Password again",
+      "set": "Set password",
+      "change": "Change password",
+      "remove": "Remove password",
+      "empty": "Enter a password.",
+      "mismatch": "The passwords do not match.",
+      "saved": "The password is saved.",
+      "removed": "The password is removed."
+    }
   },
   "own": {
     "group": {

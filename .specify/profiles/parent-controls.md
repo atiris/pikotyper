@@ -2,7 +2,16 @@
 
 ## What
 - A parent area behind a gear button and one calm question ("do you really want to open
-  the settings?"); no passwords are stored. Deleting a profile asks in the app's own style.
+  the settings?"). Deleting a profile asks in the app's own style.
+- An optional **settings password**, one for the whole device (every profile and the
+  guest). While it is set, every way into the parent area (the gear, the settings address)
+  asks for it instead of the question; a wrong one says so, and after five wrong tries in a
+  row the next try waits 30 seconds. An unlock lasts until the parent area is left. The
+  settings tab sets it (typed twice), changes it or removes it; changing or removing needs
+  the current password. Only a salted hash is stored, never the password, and it is not in
+  exported files.
+- The super player is never asked and can change or remove the password without the
+  current one; this is the only way back from a forgotten password.
 - Difficulty and word length each have an **automatic** mode (on by default): after a few
   minutes of accurate play (90 %+) one of them goes up by one step, taking turns, up to a
   ceiling (difficulty 8, words of 9 letters); each step gives the child a numbered medal.
@@ -36,6 +45,9 @@
 ## Why
 - A 10-year-old solves any arithmetic "adult check"; a plain question keeps settings out of
   the way without pretending to be a lock.
+- Some children open the settings anyway and change things; a family that wants it can put
+  a simple password on the page. It is a lock on the page, not security of the data, so it
+  needs no encryption, and the owner keeps a way back through the super player.
 - Fixed settings either bore a growing child or overwhelm a new one; small automatic steps,
   each celebrated, make getting better visible and rewarding.
 - Parents and teachers want control and visible progress; printable cards avoid accounts

@@ -23,3 +23,36 @@ test('parent changes settings, exports and imports into a fresh browser', async 
   expect(imported).toBe(true);
   await other.close();
 });
+
+test('a settings password locks every way into the parent screen', async ({ page }) => {
+  await createProfile(page, 'Ema');
+  await page.locator('.top-actions .icon-btn').first().click();
+  await page.locator('.confirm .btn:not(.primary)').last().click();
+  const group = page.locator('.lock-group');
+  await group.locator('input[type=password]').nth(0).fill('mama1');
+  await group.locator('input[type=password]').nth(1).fill('mama2');
+  await group.locator('.btn.primary').click();
+  await expect(group.locator('.lock-msg.error')).toBeVisible();
+  await group.locator('input[type=password]').nth(1).fill('mama1');
+  await group.locator('.btn.primary').click();
+  await expect(group.locator('.btn.danger')).toBeVisible();
+  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('pikotyper:v1')!).parentLock);
+  expect(stored.hash).toMatch(/^[0-9a-f]{64}$/);
+  expect(JSON.stringify(stored)).not.toContain('mama1');
+
+  await page.locator('.parent-screen .bar .btn').first().click();
+  await page.locator('.top-actions .icon-btn').first().click();
+  await page.locator('.lock-input').fill('wrong');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.lock-dialog .error')).not.toBeEmpty();
+  await expect(page.locator('.parent-screen')).toHaveCount(0);
+  await page.locator('.lock-input').fill('mama1');
+  await page.locator('.lock-dialog .btn.primary').click();
+  await expect(page.locator('.parent-screen')).toBeVisible();
+
+  // The address of the settings asks too.
+  await page.reload();
+  await expect(page.locator('.lock-dialog')).toBeVisible();
+  await page.locator('.lock-dialog .btn:not(.primary)').click();
+  await expect(page.locator('.map-screen')).toBeVisible();
+});

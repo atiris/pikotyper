@@ -31,10 +31,25 @@ take the number after it.
 - The super player (`SUPER_ID`) is never asked.
 
 ## Steps
-- [ ] Schema field + migration + store tests.
-- [ ] Hash helper (unit test: same password matches, another does not).
-- [ ] Lock modal on every way into the parent screen; super player bypass.
-- [ ] Settings group to set / change / remove.
-- [ ] Specs (WHAT and WHY).
-- [ ] Build, vitest, e2e (set a password, leave, entering needs it); Playwright MCP the
+- [x] Schema field + migration + store tests.
+- [x] Hash helper (unit test: same password matches, another does not).
+- [x] Lock modal on every way into the parent screen; super player bypass.
+- [x] Settings group to set / change / remove.
+- [x] Specs (WHAT and WHY).
+- [x] Build, vitest, e2e (set a password, leave, entering needs it); Playwright MCP the
   same as a real user, plus the super player bypass and change.
+
+## Done - 2026-10-21
+- Store v10 with `parentLock?: { salt, hash }` (migration only bumps; a broken lock is
+  dropped on load), `src/storage/lock.ts` (SHA-256 of salt + password via SubtleCrypto)
+  with unit tests.
+- `parentAccess` in `src/screens/parent.ts` is the single gate for every way in (the map
+  gear and the `#/p/<id>/settings` address): super player passes, a set lock asks for the
+  password, otherwise the calm question stays. Wrong password shakes the field; 5 wrong
+  in a row start a 30 s countdown, kept in memory while the app runs (a reload resets
+  it - acceptable for a lock on the page, not security).
+- Settings tab group "Heslo na nastavenia": set (twice), change and remove; current
+  password asked except for the super player. The lock is not part of exported files.
+- Specs: parent-controls, privacy. E2E test in `e2e/parent.spec.ts`; Playwright MCP
+  run covered set, wrong + countdown, super bypass + change, remove.
+- Left out: nothing.

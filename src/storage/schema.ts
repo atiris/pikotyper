@@ -1,4 +1,4 @@
-// Storage schema v9. These types are the data contract of `localStorage['pikotyper:v1']`
+// Storage schema v10. These types are the data contract of `localStorage['pikotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -184,11 +184,19 @@ export interface Profile {
   createdAt: number;
 }
 
+/** The password on the parent screen: SHA-256 of salt + password, both hex. A lock on the page, not encryption. */
+export interface ParentLock {
+  salt: string;
+  hash: string;
+}
+
 export interface StoreData {
-  version: 9;
+  version: 10;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;
+  /** One password for the whole device; the super player is never asked. */
+  parentLock?: ParentLock;
 }
 
 export const GUEST_ID = 'guest';

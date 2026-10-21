@@ -4,6 +4,7 @@ import {
   type CompanionKind,
   type Lang,
   type LayoutId,
+  type ParentLock,
   type Profile,
   type StoreData,
   COMPANION_KINDS,
@@ -15,7 +16,7 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 9;
+export const STORE_VERSION = 10;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -36,6 +37,8 @@ const migrations: Record<number, (data: any) => any> = {
   7: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => (p && typeof p === 'object' ? { ...p, tasks: [] } : p)) : data.profiles }),
   // v9: rescued dragons become little friends, dragons or robots.
   8: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV8toV9) : data.profiles }),
+  // v10: an optional password on the parent screen; nothing to change.
+  9: (data) => data,
 };
 
 function profileV8toV9(p: any): any {
@@ -137,6 +140,7 @@ export function migrate(raw: any): StoreData {
   while (migrations[version]) data = migrations[version](data), version++;
   const store: StoreData = { ...emptyStore(), ...data, version: STORE_VERSION };
   store.profiles = Array.isArray(store.profiles) ? store.profiles.filter(isProfile).map(normalizeProfile) : [];
+  if (!isParentLock(store.parentLock)) delete store.parentLock;
   return store;
 }
 
@@ -154,6 +158,10 @@ export function normalizeProfile(p: Profile): Profile {
       sessions: p.stats?.sessions ?? [],
     },
   };
+}
+
+function isParentLock(l: any): l is ParentLock {
+  return !!l && typeof l === 'object' && typeof l.salt === 'string' && typeof l.hash === 'string';
 }
 
 export function isProfile(p: any): p is Profile {

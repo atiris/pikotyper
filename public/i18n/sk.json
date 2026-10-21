@@ -687,7 +687,8 @@
     "group": {
       "child": "Dieťa",
       "practice": "Cvičenie",
-      "look": "Vzhľad a zvuk"
+      "look": "Vzhľad a zvuk",
+      "lock": "Heslo na nastavenia"
     },
     "childName": "Meno dieťaťa",
     "companionName": "Meno kamaráta",
@@ -756,7 +757,26 @@
     "checkOk": "Áno, otvoriť",
     "deleteOk": "Áno, vymazať",
     "auto": "Automaticky (rastie s pokrokom dieťaťa)",
-    "autoHint": "Automaticky sa náročnosť a dĺžka slov striedavo zvyšujú po niekoľkých minútach presného písania; každý krok dieťa odmení medailou. Začiatok je pomalý: krátke slovo putuje ku kamarátovi asi 10 sekúnd a na obrazovke sú najviac dve. Ak dieťa ani tak nestíha, zapnite Bez časového tlaku."
+    "autoHint": "Automaticky sa náročnosť a dĺžka slov striedavo zvyšujú po niekoľkých minútach presného písania; každý krok dieťa odmení medailou. Začiatok je pomalý: krátke slovo putuje ku kamarátovi asi 10 sekúnd a na obrazovke sú najviac dve. Ak dieťa ani tak nestíha, zapnite Bez časového tlaku.",
+    "lock": {
+      "ask": "Nastavenia sú zamknuté heslom. Zadajte ho, prosím.",
+      "password": "Heslo",
+      "open": "Otvoriť",
+      "wrong": "Nesprávne heslo",
+      "wait": "Priveľa pokusov. Skúste znova o {n} s.",
+      "off": "Nastavenia otvára jedna otázka. Heslo ich zamkne pre všetkých hráčov na tomto zariadení.",
+      "on": "Nastavenia sú zamknuté heslom pre všetkých hráčov na tomto zariadení.",
+      "current": "Súčasné heslo",
+      "new": "Nové heslo",
+      "again": "Heslo ešte raz",
+      "set": "Nastaviť heslo",
+      "change": "Zmeniť heslo",
+      "remove": "Odstrániť heslo",
+      "empty": "Zadajte heslo.",
+      "mismatch": "Heslá sa nezhodujú.",
+      "saved": "Heslo je uložené.",
+      "removed": "Heslo je odstránené."
+    }
   },
   "own": {
     "group": {

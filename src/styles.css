@@ -145,7 +145,7 @@ p { line-height: 1.5; }
 .form-screen { display: grid; place-items: center; }
 .form { width: min(760px, 100%); display: flex; flex-direction: column; gap: 0.4rem; }
 .form label, .field-label { font-weight: 600; margin-top: 0.7rem; }
-input[type='text'], select, textarea, input:not([type]) {
+input[type='text'], input[type='password'], select, textarea, input:not([type]) {
   width: 100%; padding: 0.7em 0.9em; border-radius: 14px; border: 2px solid var(--line); background: #fff; min-height: 48px; font-size: 1.05rem;
 }
 input:focus, select:focus, textarea:focus { border-color: var(--brand); outline: none; }
@@ -570,6 +570,10 @@ body.super-on .hud, body.super-on .bar, body.super-on .map-top { padding-right: 
 .chart-label { font-size: 12px; fill: var(--ink-soft); font-family: var(--font-game); }
 .world-list { line-height: 2; }
 .world-list .lv { display: inline-block; min-width: 3.2em; color: #e0a400; }
+.lock-input { max-width: 320px; text-align: center; }
+.lock-input.shake { animation: wobble 0.4s ease; }
+.lock-dialog .error { min-height: 1.4em; }
+.lock-group .lock-msg { min-height: 1.2em; margin: 0.6rem 0 0; }
 .danger-zone { margin-top: 2rem; border-top: 2px dashed var(--line); padding-top: 1rem; }
 
 /* Break */

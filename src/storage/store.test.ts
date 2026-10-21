@@ -147,6 +147,19 @@ describe('Store', () => {
     expect(out.progress.friends).toEqual([{ kind: 'dragon', name: 'Luna', hue: 40, date: '2026-05-01' }]);
     expect('dragons' in out.progress).toBe(false);
   });
+
+  it('v9 -> v10 keeps the data and has no parent lock', () => {
+    const out = migrate({ version: 9, profiles: [newProfile('Ema', 'sk')], lastProfileId: null, language: 'sk' });
+    expect(out.version).toBe(10);
+    expect(out.profiles).toHaveLength(1);
+    expect('parentLock' in out).toBe(false);
+  });
+
+  it('keeps a parent lock and drops a broken one', () => {
+    const lock = { salt: 'ab', hash: 'cd' };
+    expect(migrate({ version: 10, profiles: [], parentLock: lock }).parentLock).toEqual(lock);
+    expect('parentLock' in migrate({ version: 10, profiles: [], parentLock: { salt: 1 } })).toBe(false);
+  });
 });
 
 describe('export and import', () => {
