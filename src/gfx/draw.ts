@@ -252,14 +252,26 @@ export interface WordStyle {
 }
 
 /** Word label on a target: typed letters in green, the next letter highlighted, gentle wobble on a mistake. */
+function letterWidths(g: G, word: string, size: number): number[] {
+  g.font = `600 ${size}px ${fontFamily()}`;
+  return [...word].map((c) => g.measureText(c).width + size * 0.08);
+}
+
+/** Width and height of a word label as `drawWord` draws it. */
+export function wordBox(g: G, word: string, size = 40): { w: number; h: number } {
+  g.save();
+  const total = letterWidths(g, word, size).reduce((a, b) => a + b, 0);
+  g.restore();
+  return { w: total + size * 0.9, h: size * 1.45 };
+}
+
 export function drawWord(g: G, word: string, typed: number, x: number, y: number, wobble: number, st: WordStyle = {}): void {
   const size = st.size ?? 40;
   g.save();
-  g.font = `600 ${size}px ${fontFamily()}`;
+  const chars = [...word];
+  const widths = letterWidths(g, word, size);
   g.textBaseline = 'middle';
   g.textAlign = 'left';
-  const chars = [...word];
-  const widths = chars.map((c) => g.measureText(c).width + size * 0.08);
   const total = widths.reduce((a, b) => a + b, 0);
   const padX = size * 0.45, h = size * 1.45;
   const shake = wobble > 0 ? Math.sin(wobble * 60) * 5 * (wobble / 0.35) : 0;

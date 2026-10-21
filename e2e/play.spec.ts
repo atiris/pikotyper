@@ -87,3 +87,15 @@ test('guest progress is forgotten in a new browser context', async ({ page, brow
   await expect(p2.locator('.profile-card:not(.new)')).toHaveCount(0);
   await other.close();
 });
+
+test('Escape on the get-ready card goes back to the map', async ({ page }) => {
+  await page.goto('./');
+  await page.locator('.start-screen').waitFor();
+  await page.keyboard.type('superpikotyper', { delay: 40 });
+  await page.locator('.map-side .btn.primary').click();
+  await page.locator('.story-screen').waitFor();
+  await page.keyboard.press('Escape');
+  await page.locator('.posture-card').waitFor();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.map-screen')).toBeVisible();
+});

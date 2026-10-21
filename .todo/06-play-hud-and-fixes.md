@@ -41,7 +41,7 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   settings ("Spúšťať na celú obrazovku"): browsers allow fullscreen only after a
   user gesture, so when on, the app asks for fullscreen on the first key press or
   click after start. Migration v3 -> v4 adds `autoFullscreen: false`.
-- [ ] **Words never overlap.** Add a label layout pass to `LevelRuntime`: modes keep
+- [x] **Words never overlap.** Add a label layout pass to `LevelRuntime`: modes keep
   calling `L.label(...)`, but labels are collected during `mode.render` and drawn
   after it. Before drawing, sort by urgency (most urgent keeps its place) and move
   each later label up (or down if at the top edge) until its box does not intersect
@@ -56,7 +56,7 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   `grow()` gets no seconds. Unit test in `src/game/progress.test.ts`.
 - [x] **Piko on the map jumps less.** Halve the hover lift/scale of `.map-piko`
   (`src/styles.css`).
-- [ ] **World 3 level 1 typing.** The owner saw "hora" with no reaction; most likely
+- [x] **World 3 level 1 typing.** The owner saw "hora" with no reaction; most likely
   the key-swallowing card bug fixed in e3d90ab. Verify with Playwright: play
   `w3-1` to the end typing the guide's next char (see `e2e/helpers.ts`); if it
   still fails, find the cause in `src/game/modes/planet.ts` and fix it.
@@ -71,7 +71,7 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   posture reminder) and the password. Remove the separate tip card from
   `LevelRuntime.prepare`; `app.tipShown` logic stays. New key cards stay separate
   (they need typing).
-- [ ] **Calm pause.** Esc pause must not hide the game: the pause card is small and
+- [x] **Calm pause.** Esc pause must not hide the game: the pause card is small and
   sits at the top of the stage; no blur and no dark layer over the stage words or
   the keyboard guide; the guide keeps showing the next key and the current word
   stays visible (frozen). Buttons: Continue, "Pomalšie" (lowers `difficulty` by 1,
@@ -80,13 +80,13 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   that the start is slow: today a 3-letter word at difficulty 3 needs about 10 s to
   reach Piko and only 2 words are on screen (`travelTime`, `maxActive` in
   `runtime.ts`); keep it so, and mention "Bez časového tlaku" in the parent help.
-- [ ] **Nicer hands.** Redraw `handsSvg()` in `src/ui/keyboard-guide.ts`: real hand
+- [x] **Nicer hands.** Redraw `handsSvg()` in `src/ui/keyboard-guide.ts`: real hand
   shapes seen from above (palm with soft outline, five rounded fingers of natural
   length, thumb at the side, small nails), skin tone `#f3d2b3` with brown outline;
   each finger keeps `data-f` and gets its finger color as a fingertip band (so the
   active finger is still clear); active finger lifts slightly and is fully opaque,
   others at 0.45. Same size and place as today; check on 1366x768.
-- [ ] **Piko runs off at the end.** When a level is finished, before the results
+- [x] **Piko runs off at the end.** When a level is finished, before the results
   card, Piko (the stage Piko element, or the canvas Piko in planet modes) turns and
   runs off to the right edge with a small hop (about 0.9 s, ease-in), with a short
   happy sound; the results card then opens. With reduced motion: a quick fade.
@@ -108,3 +108,15 @@ so `STORE_VERSION` 3 -> 4 with a migration in `src/storage/store.ts`.
   1 star and no growth at all (`grow` is skipped, not called with 0 seconds).
 - The parent hint for automatic difficulty now says the start is slow and points to
   "Bez časového tlaku".
+- Labels: the locked target ranks first, then `urgency`; the free spot is searched in 4 px
+  steps up, then down; the dashed line runs from the moved label to the object's anchor.
+- The get-ready card puts the picture beside the text (one column under 700 px) so the
+  password stays in sight at 1366x768.
+- "Pomalšie" is disabled at difficulty 1; it changes the profile's difficulty even when a
+  parent fixed it (the child asked for it), and the running level uses it at once.
+- Run-off uses Web Animations (DOM Piko) and `LevelRuntime.exitRun` (canvas Piko in the
+  planet modes), so the reduced-motion CSS rule cannot cut it; the existing `reward`
+  sound is the happy sound.
+- Hands: the active finger lifts 3 px (not more: a lone lifted middle finger reads rude).
+- w3-1 played to the end with a new profile in the Playwright MCP: no hang. The super
+  profile stalls there only because Playwright cannot send a real key press for `š`.

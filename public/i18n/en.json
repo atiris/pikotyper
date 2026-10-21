@@ -79,6 +79,8 @@
     "pause": "Pause",
     "paused": "Little pause",
     "resume": "Continue",
+    "slower": "Slower",
+    "slowerSaid": "Okay, we will go slower.",
     "toMap": "Map",
     "progress": "Progress",
     "rhythm": "Rhythm: {n} letters per minute",

@@ -79,6 +79,8 @@
     "pause": "Pauza",
     "paused": "Malá prestávka",
     "resume": "Pokračovať",
+    "slower": "Pomalšie",
+    "slowerSaid": "Dobre, pôjdeme pomalšie.",
     "toMap": "Mapa",
     "progress": "Postup",
     "rhythm": "Rytmus: {n} písmen za minútu",

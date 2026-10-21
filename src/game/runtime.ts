@@ -1,10 +1,10 @@
 import { app, layout, pickLine, reduceMotion, saveProfile } from '../app/app';
 import { audio, type Sfx } from '../audio/audio';
-import { Loop, Stage } from '../engine/loop';
+import { Loop, Stage, VH } from '../engine/loop';
 import { Particles } from '../engine/particles';
 import { Rng } from '../engine/rng';
 import { Tweens } from '../engine/tween';
-import { drawBackground, drawWord, type G } from '../gfx/draw';
+import { drawBackground, drawWord, type G, wordBox } from '../gfx/draw';
 import { type Mood, pawColors, pikoElement, renderPikoInto } from '../gfx/piko';
 import { preload } from '../gfx/assets';
 import { t } from '../i18n/i18n';
@@ -26,6 +26,18 @@ import { type LevelResult, completeLevel } from './progress';
 import { type Target, TypingCore } from './typing';
 import { pickTip, showCard, showDrill, showNewKey, showPosture } from './cards';
 
+/** A word label a mode asked for in this frame, at its object's anchor. */
+interface PendingLabel {
+  tg: Target;
+  x: number;
+  y: number;
+  size: number;
+}
+
+/** Space kept between two labels, and the move from which a line points back to the object. */
+const LABEL_GAP = 6;
+const LABEL_LINE_FROM = 30;
+
 export interface RuntimeOptions {
   /** Practice: only these keys (drills), else the profile's active keys. */
   keys?: string[];
@@ -44,7 +56,8 @@ export class LevelRuntime {
   readonly stage: Stage;
   readonly mode: Mode;
   readonly words: WordSource;
-  readonly difficulty: number;
+  /** The profile's difficulty; "Slower" in the pause lowers it during the level. */
+  difficulty: number;
   readonly noPressure: boolean;
   readonly highContrast: boolean;
   readonly reduceMotion: boolean;
@@ -507,14 +520,28 @@ export class LevelRuntime {
   pause(): void {
     if (this.paused || this.finished || !this.started) return;
     this.paused = true;
-    this.pauseEl = h('div', { class: 'overlay pause-overlay' },
-      h('div', { class: 'card' },
-        h('h2', {}, t('level.paused')),
-        h('div', { class: 'row' },
-          button(t('level.resume'), () => this.resume(), 'btn primary', 'play'),
-          button(t('level.toMap'), () => this.exit(), 'btn', 'map'))));
-    this.el.append(this.pauseEl);
+    // A small card at the top: the words and the guide's next key stay in sight.
+    const slower = button(t('level.slower'), () => this.slowDown(), 'btn');
+    slower.disabled = this.difficulty <= 1;
+    this.pauseEl = h('div', { class: 'card pause-card', role: 'dialog', 'aria-label': t('level.paused') },
+      h('h2', {}, t('level.paused')),
+      h('div', { class: 'row' },
+        button(t('level.resume'), () => this.resume(), 'btn primary', 'play'),
+        slower,
+        button(t('level.toMap'), () => this.exit(), 'btn', 'map')));
+    this.el.querySelector('.stage-wrap')!.append(this.pauseEl);
     (this.pauseEl.querySelector('button') as HTMLButtonElement).focus();
+  }
+
+  /** One step lower difficulty from now on; automatic growth may raise it again after accurate play. */
+  private slowDown(): void {
+    const p = app.profile!;
+    this.difficulty = Math.max(1, this.difficulty - 1);
+    p.settings.difficulty = this.difficulty;
+    p.progress.growthSeconds = 0;
+    saveProfile();
+    this.resume();
+    this.say(t('level.slowerSaid'), 3);
   }
 
   resume(): void {
@@ -580,18 +607,67 @@ export class LevelRuntime {
   private render(): void {
     const g = this.stage.begin();
     drawBackground(g, this.mode.world, this.stage.vw, this.mode.scroll, !this.reduceMotion);
+    this.labels = [];
     this.mode.render(g);
+    this.drawLabels(g);
     this.particles.render(g);
   }
 
-  /** Word label above a target (helper for modes). */
-  label(g: G, tg: Target, x: number, y: number, size = 40): void {
-    drawWord(g, tg.word, tg.typed, x, y, tg.wobble, {
-      size,
-      highContrast: this.highContrast,
-      dim: !tg.selectable,
-      locked: this.core.locked === tg,
-    });
+  private labels: PendingLabel[] = [];
+  /** Vertical shift of each target's label, smoothed over frames. */
+  private labelShift = new Map<number, number>();
+  private labelTime = 0;
+
+  /** Word label above a target (helper for modes); drawn after the mode, so labels never overlap. */
+  label(_g: G, tg: Target, x: number, y: number, size = 40): void {
+    this.labels.push({ tg, x, y, size });
+  }
+
+  /**
+   * The locked and most urgent labels keep their place; each later one moves up (down
+   * near the top) until it is clear of the placed ones. Far moves get a line to the object.
+   */
+  private drawLabels(g: G): void {
+    const now = performance.now();
+    const dt = this.labelTime ? Math.min(0.1, (now - this.labelTime) / 1000) : 0;
+    this.labelTime = now;
+    // 0.25 of the way per frame at 60 Hz, the same at any frame rate.
+    const follow = 1 - Math.pow(0.75, dt * 60);
+    const rank = (l: PendingLabel) => (this.core.locked === l.tg ? Infinity : l.tg.urgency);
+    const placed: { x0: number; x1: number; y0: number; y1: number }[] = [];
+    const shifts = new Map<number, number>();
+    for (const l of [...this.labels].sort((a, b) => rank(b) - rank(a))) {
+      const { w, h } = wordBox(g, l.tg.word, l.size);
+      const x0 = l.x - w / 2 - LABEL_GAP, x1 = l.x + w / 2 + LABEL_GAP;
+      const clear = (dy: number) => placed.every((b) => x1 <= b.x0 || x0 >= b.x1 || l.y + dy + h / 2 + LABEL_GAP <= b.y0 || l.y + dy - h / 2 - LABEL_GAP >= b.y1);
+      let want = 0;
+      if (!clear(0)) {
+        const up = Array.from({ length: Math.max(0, Math.floor((l.y - h / 2) / 4)) }, (_, i) => -(i + 1) * 4).find(clear);
+        want = up ?? Array.from({ length: Math.max(0, Math.floor((VH - l.y - h / 2) / 4)) }, (_, i) => (i + 1) * 4).find(clear) ?? 0;
+      }
+      placed.push({ x0: x0 + LABEL_GAP, x1: x1 - LABEL_GAP, y0: l.y + want - h / 2, y1: l.y + want + h / 2 });
+      const prev = this.labelShift.get(l.tg.id);
+      const shift = prev == null ? want : prev + (want - prev) * follow;
+      shifts.set(l.tg.id, shift);
+      if (Math.abs(shift) > LABEL_LINE_FROM) {
+        g.save();
+        g.strokeStyle = 'rgba(255,253,246,0.7)';
+        g.lineWidth = 2;
+        g.setLineDash([4, 5]);
+        g.beginPath();
+        g.moveTo(l.x, l.y + shift + (shift < 0 ? h / 2 : -h / 2));
+        g.lineTo(l.x, l.y);
+        g.stroke();
+        g.restore();
+      }
+      drawWord(g, l.tg.word, l.tg.typed, l.x, l.y + shift, l.tg.wobble, {
+        size: l.size,
+        highContrast: this.highContrast,
+        dim: !l.tg.selectable,
+        locked: this.core.locked === l.tg,
+      });
+    }
+    this.labelShift = shifts;
   }
 
   // ---- end ---------------------------------------------------------------------
@@ -625,7 +701,30 @@ export class LevelRuntime {
     const result = completeLevel(p, this.def, { accuracy, chars, errors, cpm, seconds });
     saveProfile();
     this.sfx('reward');
+    this.runOff();
     setTimeout(() => this.opts.onFinish(result), this.reduceMotion ? 300 : 900);
+  }
+
+  private runOffStart = 0;
+
+  /** 0..1 while Piko runs off at the end of the level, else null (modes with a canvas Piko read it). */
+  get exitRun(): number | null {
+    if (!this.runOffStart) return null;
+    return Math.min(1, (performance.now() - this.runOffStart) / (this.reduceMotion ? 250 : 900));
+  }
+
+  /** Piko runs off to the right edge with small hops before the results card; a quick fade with reduced motion. */
+  private runOff(): void {
+    this.runOffStart = performance.now();
+    this.hideBubble();
+    if (this.pikoOnStage) return;
+    // Web animations: the reduced-motion CSS rules would cut a CSS animation to nothing.
+    if (this.reduceMotion) {
+      this.piko.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 250, fill: 'forwards' });
+      return;
+    }
+    const hop = (x: number, y: number) => ({ transform: `translate(${x}vw, ${-y}px)` });
+    this.piko.animate([hop(0, 0), hop(3, 28), hop(12, 0), hop(28, 24), hop(50, 0), hop(75, 18), hop(105, 0)], { duration: 900, easing: 'ease-in', fill: 'forwards' });
   }
 
   /** Ends an untimed practice on request. */

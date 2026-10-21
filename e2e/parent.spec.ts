@@ -6,7 +6,7 @@ test('parent changes settings, exports and imports into a fresh browser', async 
   await page.locator('.top-actions .icon-btn').first().click();
   await page.locator('.confirm .btn.danger, .confirm .btn:not(.primary)').last().click();
   await expect(page.locator('.parent-screen')).toBeVisible();
-  await page.locator('.field', { hasText: /časového|time pressure/i }).locator('input').check();
+  await page.getByRole('checkbox', { name: /^(Bez časového tlaku|No time pressure)/ }).check();
   await page.locator('.tab').nth(3).click();
   const download = page.waitForEvent('download');
   await page.locator('.data-tab .btn').first().click();
