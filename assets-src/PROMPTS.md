@@ -178,7 +178,7 @@ In the attached image keep only FRONT, exactly where it is, with the same size, 
 | `acc-dragon-wings.jpg` | back: ITEM = small soft orange baby-dragon wings on the back, visible on both sides | done 2026-10-21 (longer than before; drawn behind the body) |
 | `acc-star-cape.jpg` | a dark blue cape with stars hanging from the shoulders behind the body, visible on both sides | done 2026-10-21 (with `acc-star-cape-front.jpg`: clasp and collar over the body) |
 | `acc-knit-vest.jpg` | a cozy green knitted vest on the body | done 2026-10-21 |
-| `acc-backpack.jpg` | a small orange backpack on the back, its straps visible over the shoulders | only broken pieces of the straps |
+| `acc-backpack.jpg` | a small orange backpack on the back, its straps visible over the shoulders | done 2026-10-21 (with `acc-backpack-front.jpg`: straps over the body) |
 | `acc-lantern.jpg` | a small lantern in the right hand | a stray vertical line next to it |
 
 Fixed in code, no new picture needed: green spots in `heart-glasses` lenses (done 2026-10-21). If the pink

@@ -4,6 +4,18 @@
    "w": 456,
    "h": 102
   },
+  "acc-backpack-front": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-backpack": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-backpack-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-dragon-wings": {
    "w": 512,
    "h": 512
@@ -336,14 +348,6 @@
    "w": 160,
    "h": 160
   },
-  "acc-backpack": {
-   "w": 512,
-   "h": 512
-  },
-  "acc-backpack-thumb": {
-   "w": 160,
-   "h": 160
-  },
   "acc-balloon": {
    "w": 512,
    "h": 512
@@ -583,6 +587,11 @@
  },
  "accessories": [
   {
+   "id": "backpack",
+   "slot": "back",
+   "set": "d"
+  },
+  {
    "id": "dragon-wings",
    "slot": "back",
    "set": "e"
@@ -665,11 +674,6 @@
   {
    "id": "rain-boots",
    "slot": "feet",
-   "set": "d"
-  },
-  {
-   "id": "backpack",
-   "slot": "back",
    "set": "d"
   },
   {
