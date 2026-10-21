@@ -12,6 +12,24 @@ const SRC = 'assets-src';
 const OUT = 'public/assets';
 const SPRITE_MAX = 512;
 const BG_WIDTH = 1920;
+// Parallax layers drawn as close-up strips are placed into a frame of this size.
+const FRAME_W = 1376;
+const FRAME_H = 768;
+// Height of each strip layer as a fraction of the frame (the values in PROMPTS.md).
+const STRIP_HEIGHT = {
+  'bg-meadow-mid': 0.45, 'bg-meadow-near': 0.25,
+  'bg-planet-mid': 0.5, 'bg-planet-near': 0.3,
+  'bg-dragons-mid': 0.45, 'bg-dragons-near': 0.25,
+  'bg-egg-mid': 0.5, 'bg-egg-near': 0.2,
+  'bg-junkyard-mid': 0.45, 'bg-junkyard-near': 0.25,
+  'bg-workshop-mid': 0.45, 'bg-workshop-near': 0.25,
+  'bg-raintown-mid': 0.4, 'bg-raintown-near': 0.2,
+  'bg-robocity-mid': 0.4, 'bg-robocity-near': 0.2,
+  'bg-robohome-mid': 0.4, 'bg-robohome-near': 0.2,
+};
+// Content at least this tall (of the image height) marks a strip; older layer files
+// keep their content in the lower part (up to about 70 %) and are used as they are.
+const STRIP_MIN = 0.8;
 
 // Keying works on the RGB distance from the sampled background color.
 const D_FLOOD = 70; // border-connected background
@@ -246,6 +264,10 @@ async function processImage(name, file, manifest) {
   keyOut(data, w, h, { layer: name.startsWith('bg-') });
   // Bolt's pictures stay square, so the raincoat overlay fits every one of them.
   if (name === 'base-template' || name.startsWith('piko-') || name.startsWith('robot')) return writeSquare(name, data, w, h, manifest);
+  if (STRIP_HEIGHT[name]) {
+    const box = bbox(data, w, h);
+    if (box.height >= h * STRIP_MIN) return writeStrip(name, data, w, h, box, manifest);
+  }
   if (name.startsWith('bg-')) {
     const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).resize({ width: BG_WIDTH, withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
     manifest.images[name] = { w: info.width, h: info.height };
@@ -253,6 +275,28 @@ async function processImage(name, file, manifest) {
   }
   const box = bbox(data, w, h);
   const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(box).resize(SPRITE_MAX, SPRITE_MAX, { fit: 'inside', withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
+  manifest.images[name] = { w: info.width, h: info.height };
+}
+
+/**
+ * A close-up strip: scaled to its target height, repeated across the frame (its edges
+ * continue seamlessly, so a whole number of copies is fitted in) and placed at the
+ * bottom of a transparent frame.
+ */
+async function writeStrip(name, data, w, h, box, manifest) {
+  const stripH = Math.round(FRAME_H * STRIP_HEIGHT[name]);
+  // The 3 px bbox padding at the sides would leave gaps between the copies.
+  const crop = { ...box, left: 0, width: w };
+  const copies = Math.max(1, Math.round(FRAME_W / (w * stripH / crop.height)));
+  const tileW = Math.round(FRAME_W / copies);
+  const tile = await sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(crop).resize(tileW, stripH, { fit: 'fill' }).png().toBuffer();
+  const row = await sharp({ create: { width: tileW * copies, height: stripH, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite(Array.from({ length: copies }, (_, i) => ({ input: tile, left: i * tileW, top: 0 }))).png().toBuffer();
+  const fitted = await sharp(row).resize(FRAME_W, stripH, { fit: 'fill' }).png().toBuffer();
+  const frame = await sharp({ create: { width: FRAME_W, height: FRAME_H, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([{ input: fitted, left: 0, top: FRAME_H - stripH }]).raw().toBuffer();
+  bleedColor(frame, FRAME_W, FRAME_H);
+  const info = await webp(sharp(frame, { raw: { width: FRAME_W, height: FRAME_H, channels: 4 } })).toFile(join(OUT, `${name}.webp`));
   manifest.images[name] = { w: info.width, h: info.height };
 }
 

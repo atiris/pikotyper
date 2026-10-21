@@ -6,7 +6,6 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P2] 22-background-prompts-no-sun-strips.md - prompts first, so the owner can regenerate robot and sky art early
 - [P2] 16-results-and-progress.md - compact results card; 19 adds its surprise block to it
 - [P2] 17-free-practice-key-picker.md - independent; before 20 so help shows the final entries
 - [P2] 18-settings-password.md - schema bump; take the next version if 19 landed first

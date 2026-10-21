@@ -42,11 +42,27 @@ new files.
 - Space mid/near (star sprinkles on magenta) are not strips; leave them out of this.
 
 ## Steps
-- [ ] Far prompt and scene fixes in `PROMPTS.md`; mark rows to regenerate.
-- [ ] Strip prompt and table in `PROMPTS.md`.
-- [ ] Strip handling in `scripts/assets.mjs`; check by running `npm run assets` on the
+- [x] Far prompt and scene fixes in `PROMPTS.md`; mark rows to regenerate.
+- [x] Strip prompt and table in `PROMPTS.md`.
+- [x] Strip handling in `scripts/assets.mjs`; check by running `npm run assets` on the
   current files (they must come out as before) and on a made-up strip (a test image
   made in the scratchpad, never committed) that it lands at the bottom, tiled.
-- [ ] Spec `visuals.md` (WHAT and WHY: even skies, strip layers).
-- [ ] Playwright MCP: meadow and egg levels at 1920x1080 still look right with the old
+- [x] Spec `visuals.md` (WHAT and WHY: even skies, strip layers).
+- [x] Playwright MCP: meadow and egg levels at 1920x1080 still look right with the old
   files.
+
+## Progress notes
+- Strip test: old mid/near files measured 33-71 % content height (Gemini overshoots the
+  asked "bottom N %"), so "taller than the target" would treat them as strips. A file is
+  a strip only when its content fills at least 80 % of the image height (`STRIP_MIN`).
+- Copies are fitted as a whole number across 1376 px (slight horizontal stretch), so
+  the 1376 px frame itself still repeats seamlessly in the game.
+- Space mid/near carry "not a strip" in the table and have no `STRIP_HEIGHT` entry.
+
+## Done - 2026-10-21
+Shipped: even-sky far prompt and scene fixes (meadow, egg, planet, dragons, junkyard
+marked "regenerate"), 21:9 strip prompt with a height column, strip handling in
+`scripts/assets.mjs` (old files come out byte-identical; a made-up strip lands tiled at
+the bottom 25 %), spec `visuals.md`. Meadow and egg levels checked at 1920x1080 with the
+old files. `src/gfx/draw.ts` needed no change: strips are written as full 1376x768
+frames. Left out: nothing; the owner regenerates the images.

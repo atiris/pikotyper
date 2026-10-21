@@ -188,39 +188,45 @@ Fixed in code, no new picture needed: green spots in `heart-glasses` lenses (don
 
 ## 3. World backgrounds
 
-Each world needs 3 layers for a gentle parallax effect: `far` (full picture), `mid` and
-`near` (only the lower part of the picture, the rest a flat background color that will be
-removed). Wide 16:9 images.
+Each world needs 3 layers for a gentle parallax effect: `far` (full picture, 16:9) and
+`mid` and `near` (a close-up strip, 21:9). The far layer repeats horizontally, so its sky
+must be even: no sun, no moon, no single big planet (on a wide screen it would be seen
+twice). Gemini cannot keep a picture in the bottom part only, so `mid` and `near` ask for
+a strip that fills the whole image; `npm run assets` shrinks it to the target height in
+the table, repeats it across the width and places it at the bottom. Older `mid`/`near`
+files with the layer already in the lower part still work as they are.
 
 ### Common prompt for `*-far.jpg` (replace SCENE)
 ```
 Cute, soft 2D children's storybook illustration, flat vector style with gentle gradients, rounded friendly shapes, warm pastel palette, calm and peaceful mood, suitable for children and young teens aged 10 to 15. No text, no letters, no watermark, no characters, no animals.
 
-Wide game background, landscape 16:9: SCENE. Simple and uncluttered, soft colors, low contrast so that big letters can be read on top of it. The left and right edges should continue smoothly so the image can repeat horizontally.
+Wide game background, landscape 16:9: SCENE. Simple and uncluttered, soft colors, low contrast so that big letters can be read on top of it. The left and right edges should continue smoothly so the image can repeat horizontally. No sun, no moon and no single big object in the sky: the image repeats horizontally, so the sky must be even (soft clouds or gradient only).
 ```
 
 ### Common prompt for `*-mid.jpg` and `*-near.jpg` (replace LAYER)
 ```
-Same style and palette as the previous background image. Wide 16:9 image of only a foreground layer for a side-scrolling parallax game: LAYER. The layer fills only the bottom part of the image; everything above it is one perfectly flat solid pure magenta color (#FF00FF), no gradient, no sky. No characters, no text. The left and right edges should continue smoothly so the image can repeat horizontally.
+Same style and palette as the previous background image. Ultra-wide panoramic image, 21:9: a close-up strip of LAYER that fills the whole image from the bottom edge up to an uneven top silhouette near the top edge. Above the silhouette only a thin band of one perfectly flat solid pure magenta color (#FF00FF), no sky, no gradient. Big, close objects. No characters, no text. The left and right edges continue smoothly so the strip can repeat.
 ```
+The height column is where the script places the strip (part of the screen height,
+counted from the bottom); it lives in `STRIP_HEIGHT` in `scripts/assets.mjs`.
 
-| File | SCENE / LAYER |
-|---|---|
-| `bg-meadow-far.jpg` | a sunny training meadow with soft blue sky, a few fluffy clouds, gentle green hills far away and a small wooden fence |
-| `bg-meadow-mid.jpg` | rolling green grass hills with a few round bushes and small trees, bottom 45 % of the image |
-| `bg-meadow-near.jpg` | tall grass blades, clover and small daisies close to the viewer, bottom 25 % of the image |
-| `bg-space-far.jpg` | deep friendly space in dark blue and violet with soft glowing stars, a pastel nebula and the curve of a blue-green Earth at the bottom left |
-| `bg-space-mid.jpg` | **use the far prompt instead**, SCENE: "only scattered soft glowing stars and tiny distant pastel planets on a flat pure magenta (#FF00FF) background" |
-| `bg-space-near.jpg` | **use the far prompt instead**, SCENE: "only a few small soft star sparkles and tiny space dust on a flat pure magenta (#FF00FF) background" |
-| `bg-planet-far.jpg` | a magical alien planet with a mint-green sky, two pastel moons, purple and turquoise mushroom-shaped trees far away |
-| `bg-planet-mid.jpg` | a magical forest edge with round turquoise and lilac trees and glowing flowers, bottom 50 % |
-| `bg-planet-near.jpg` | a calm green swamp with lily pads, reeds and soft mud, bottom 30 % |
-| `bg-dragons-far.jpg` | a peaceful dragon valley at sunset with warm orange and pink sky, soft rounded mountains and a waterfall |
-| `bg-dragons-mid.jpg` | rounded rocky hills with cozy cave entrances and soft moss, bottom 45 % |
-| `bg-dragons-near.jpg` | soft grass, smooth round pebbles and small ferns, bottom 25 % |
-| `bg-egg-far.jpg` | a sunny morning valley with a long gentle grassy slope going down from left to right, a few trees and a blue river far away |
-| `bg-egg-mid.jpg` | a gentle grassy slope going down from left to right with a few bushes, bottom 50 % |
-| `bg-egg-near.jpg` | grass tufts and small flowers close to the viewer, bottom 20 % |
+| File | SCENE / LAYER | Height | Status |
+|---|---|---|---|
+| `bg-meadow-far.jpg` | a training meadow in soft daylight with soft blue sky, a few fluffy clouds, gentle green hills far away and a small wooden fence | full | regenerate (had a sun) |
+| `bg-meadow-mid.jpg` | rolling green grass hills with a few round bushes and small trees | 45 % | |
+| `bg-meadow-near.jpg` | tall grass blades, clover and small daisies | 25 % | |
+| `bg-space-far.jpg` | deep friendly space in dark blue and violet with soft glowing stars, a pastel nebula and the curve of a blue-green Earth at the bottom left | full | |
+| `bg-space-mid.jpg` | **use the far prompt instead**, SCENE: "only scattered soft glowing stars and tiny distant pastel planets on a flat pure magenta (#FF00FF) background" | full | not a strip |
+| `bg-space-near.jpg` | **use the far prompt instead**, SCENE: "only a few small soft star sparkles and tiny space dust on a flat pure magenta (#FF00FF) background" | full | not a strip |
+| `bg-planet-far.jpg` | a magical alien planet with a pastel mint sky with soft glowing clouds, purple and turquoise mushroom-shaped trees far away | full | regenerate (had two moons) |
+| `bg-planet-mid.jpg` | a magical forest edge with round turquoise and lilac trees and glowing flowers | 50 % | |
+| `bg-planet-near.jpg` | a calm green swamp with lily pads, reeds and soft mud | 30 % | |
+| `bg-dragons-far.jpg` | a peaceful dragon valley at sunset, warm orange and pink colours in the sky, the sun hidden behind the mountains, soft rounded mountains and a waterfall | full | regenerate (had a sun) |
+| `bg-dragons-mid.jpg` | rounded rocky hills with cozy cave entrances and soft moss | 45 % | |
+| `bg-dragons-near.jpg` | soft grass, smooth round pebbles and small ferns | 25 % | |
+| `bg-egg-far.jpg` | a bright morning valley with a long gentle grassy slope going down from left to right, a few trees and a blue river far away | full | regenerate (had a sun) |
+| `bg-egg-mid.jpg` | a gentle grassy slope going down from left to right with a few bushes | 50 % | |
+| `bg-egg-near.jpg` | grass tufts and small flowers | 20 % | |
 
 ## 4. Game objects (sprites)
 
@@ -371,23 +377,23 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 | `ui-map-robohome.jpg` | a small floating island with a cozy round robot house with warm lit windows |
 
 ### Backgrounds (section 3 prompts)
-| File | SCENE / LAYER |
-|---|---|
-| `bg-junkyard-far.jpg` | a friendly sunny junkyard with soft hills of old things far away, a rusty but cheerful crane and a light blue sky |
-| `bg-junkyard-mid.jpg` | soft piles of old tires, wooden crates and round metal cans, bottom 45 % |
-| `bg-junkyard-near.jpg` | scattered small springs, bolts and grass tufts on the ground, bottom 25 % |
-| `bg-workshop-far.jpg` | the inside of a warm cozy workshop with wooden walls, shelves with jars of screws, hanging tools and a round window |
-| `bg-workshop-mid.jpg` | a long workbench with drawers and small toolboxes, bottom 45 % |
-| `bg-workshop-near.jpg` | a conveyor belt running across the whole image with rollers below, bottom 25 % |
-| `bg-raintown-far.jpg` | a calm small town on a rainy afternoon, soft grey-blue sky with gentle rain lines, colorful rounded houses with lit windows |
-| `bg-raintown-mid.jpg` | wet cobblestone street with small lamp posts and round bushes, bottom 40 % |
-| `bg-raintown-near.jpg` | shiny puddles with ripples and a few fallen leaves, bottom 20 % |
-| `bg-robocity-far.jpg` | a friendly futuristic city with rounded silver and pastel towers, soft light trails and a lilac evening sky |
-| `bg-robocity-mid.jpg` | a smooth metal walkway with glowing pastel lines and rounded railings, bottom 40 % |
-| `bg-robocity-near.jpg` | floor tiles with soft glowing seams and small round lights, bottom 20 % |
-| `bg-robohome-far.jpg` | the inside of a cozy robot home: round windows, warm lamps, soft sofa, shelves with little gadgets, pastel colors |
-| `bg-robohome-mid.jpg` | a row of cozy furniture: a low cabinet, a plant in a pot, a round rug, bottom 40 % |
-| `bg-robohome-near.jpg` | a warm wooden floor with a soft round rug edge, bottom 20 % |
+| File | SCENE / LAYER | Height | Status |
+|---|---|---|---|
+| `bg-junkyard-far.jpg` | a friendly junkyard in soft daylight with soft hills of old things far away, a rusty but cheerful crane and a light blue sky | full | regenerate (was sunny) |
+| `bg-junkyard-mid.jpg` | soft piles of old tires, wooden crates and round metal cans | 45 % | |
+| `bg-junkyard-near.jpg` | scattered small springs, bolts and grass tufts on the ground | 25 % | |
+| `bg-workshop-far.jpg` | the inside of a warm cozy workshop with wooden walls, shelves with jars of screws, hanging tools and a round window | full | |
+| `bg-workshop-mid.jpg` | a long workbench with drawers and small toolboxes | 45 % | |
+| `bg-workshop-near.jpg` | a conveyor belt running across the whole image with rollers below | 25 % | |
+| `bg-raintown-far.jpg` | a calm small town on a rainy afternoon, soft grey-blue sky with gentle rain lines, colorful rounded houses with lit windows | full | |
+| `bg-raintown-mid.jpg` | wet cobblestone street with small lamp posts and round bushes | 40 % | |
+| `bg-raintown-near.jpg` | shiny puddles with ripples and a few fallen leaves | 20 % | |
+| `bg-robocity-far.jpg` | a friendly futuristic city with rounded silver and pastel towers, soft light trails and a lilac evening sky | full | |
+| `bg-robocity-mid.jpg` | a smooth metal walkway with glowing pastel lines and rounded railings | 40 % | |
+| `bg-robocity-near.jpg` | floor tiles with soft glowing seams and small round lights | 20 % | |
+| `bg-robohome-far.jpg` | the inside of a cozy robot home: round windows, warm lamps, soft sofa, shelves with little gadgets, pastel colors | full | |
+| `bg-robohome-mid.jpg` | a row of cozy furniture: a low cabinet, a plant in a pot, a round rug | 40 % | |
+| `bg-robohome-near.jpg` | a warm wooden floor with a soft round rug edge | 20 % | |
 
 ### Game objects (section 4 prompt)
 | File | OBJECT | BG |
