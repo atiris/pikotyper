@@ -146,7 +146,7 @@ class AudioEngine {
 
 /** A calm pentatonic sequencer: soft pad + plucks, 70-90 BPM. */
 function synthLoop(ctx: AudioContext, out: GainNode, name: string): () => void {
-  const roots: Record<string, number> = { menu: 261.6, meadow: 196, space: 146.8, planet: 174.6, dragons: 155.6, egg: 220, break: 130.8, relaxing: 130.8 };
+  const roots: Record<string, number> = { menu: 261.6, meadow: 196, space: 146.8, planet: 174.6, dragons: 155.6, egg: 220, junkyard: 174.6, workshop: 261.6, raintown: 146.8, robocity: 220, robohome: 196, break: 130.8, relaxing: 130.8 };
   const root = roots[name] ?? 220;
   const bpm = name === 'break' || name === 'relaxing' ? 62 : name === 'egg' ? 90 : 78;
   const scale = [0, 2, 4, 7, 9, 12, 14, 16];

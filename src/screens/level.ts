@@ -2,14 +2,14 @@ import { app, go, pickLine, saveProfile } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
 import { t, tList } from '../i18n/i18n';
-import { LEVELS, type LevelDef, WORLDS, levelById, practiceLevel, rescueLevel } from '../game/levels';
+import { LEVELS, type LevelDef, WORLDS, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
 import type { LevelResult } from '../game/progress';
 import { WORLD_REWARDS } from '../game/rewards';
 import { LevelRuntime } from '../game/runtime';
 import { surpriseAsk } from '../game/cards';
 import { surpriseReached, teaserLines } from '../game/own-content';
 import { ownTextPhrases } from '../game/modes/practice';
-import type { Profile, Surprise, Task } from '../storage/schema';
+import type { Friend, Profile, Surprise, Task } from '../storage/schema';
 import { recordTaskRun, taskOwn } from '../share/task';
 import { localDate } from '../learning/stats';
 import { button, h } from '../ui/dom';
@@ -33,7 +33,7 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   const p = app.profile!;
   let def: LevelDef;
   if (params.id === 'practice') def = practiceLevel(params.seconds ?? null, params.text ? ownTextPhrases(p) : undefined);
-  else if (params.id === 'rescue') def = rescueLevel(p.progress.dragons.length * 7 + Math.floor(Math.random() * 5));
+  else if (params.id === 'rescue') def = rescueLevel(p, p.progress.friends.length * 7 + Math.floor(Math.random() * 5));
   else def = levelById(params.id) ?? LEVELS[0];
   const task = p.tasks.find((x) => x.id === params.task && !x.doneAt) ?? null;
   let rt: LevelRuntime;
@@ -59,16 +59,19 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
   return () => rt.dispose();
 }
 
-const DRAGON_NAMES_FALLBACK = ['Iskra', 'Mäta', 'Luna', 'Bubu'];
+const NAMES_FALLBACK: Record<Friend['kind'], string[]> = { dragon: ['Iskra', 'Mäta', 'Luna', 'Bubu'], robot: ['Bip', 'Zip', 'Kolík', 'Dioda'] };
 
 function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: LevelParams, surprise: Surprise | null, task: Task | null): void {
   const p = app.profile!;
-  let rescued: { name: string; hue: number } | null = null;
+  let rescued: Friend | null = null;
   if (def.id === 'rescue') {
-    const names = tList('dragonNames');
-    const pool = names.length ? names : DRAGON_NAMES_FALLBACK;
-    rescued = { name: pool[p.progress.dragons.length % pool.length], hue: Math.floor(Math.random() * 360) };
-    p.progress.dragons.push({ ...rescued, date: localDate() });
+    // The friend helped follows the mission's story.
+    const kind = storyOf(def.world).id === 'robot' ? 'robot' : 'dragon';
+    const names = tList(`${kind}Names`);
+    const pool = names.length ? names : NAMES_FALLBACK[kind];
+    const same = p.progress.friends.filter((f) => f.kind === kind).length;
+    rescued = { kind, name: pool[same % pool.length], hue: Math.floor(Math.random() * 360), date: localDate() };
+    p.progress.friends.push(rescued);
     saveProfile();
   }
   const star = imageUrl('ui-star'), empty = imageUrl('ui-star-empty');
@@ -86,7 +89,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   for (const k of r.newKeys) lines.push(h('p', { class: 'new-key' }, t('results.newKey', { key: keyLabel(k) })));
   if (r.newAccessories.length) lines.push(h('p', { class: 'new-acc' }, t('results.newAccessory', { n: r.newAccessories.length })));
   for (const kind of r.newCompanions) lines.push(h('p', { class: 'new-acc' }, t('results.newCompanion', { kind: t(`kinds.${kind}`) })));
-  if (rescued) lines.push(h('p', { class: 'good' }, t('results.rescued', { name: rescued.name })));
+  if (rescued) lines.push(h('p', { class: 'good' }, t(rescued.kind === 'robot' ? 'results.repaired' : 'results.rescued', { name: rescued.name })));
   if (r.growth) {
     lines.push(h('div', { class: 'growth' }, medal(r.growth.medal),
       h('p', {}, h('b', {}, t('results.growthTitle')), h('br'),

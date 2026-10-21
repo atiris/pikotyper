@@ -55,7 +55,12 @@
     "space": "Rocket Flight",
     "planet": "New Planet",
     "dragons": "Dragon Valley",
-    "egg": "Egg Journey"
+    "egg": "Egg Journey",
+    "junkyard": "Junkyard",
+    "workshop": "Workshop",
+    "raintown": "Rainy Town",
+    "robocity": "Robot City",
+    "robohome": "Robot Home"
   },
   "map": {
     "ownText": "My text",
@@ -64,12 +69,14 @@
     "practice": "Free practice",
     "wardrobe": "Buddy and wardrobe",
     "rescue": "Rescue missions",
-    "dragons": "My dragons",
     "switchProfile": "Players",
     "super": "big challenge",
     "starsAria": "{n} stars",
     "storyName": "Piko and the Dragon Egg",
-    "settings": "Settings for parents"
+    "settings": "Settings for parents",
+    "storyRobot": "Piko and Bolt the Robot",
+    "storyOpens": "Opens when you finish world {world}.",
+    "friends": "Little friends"
   },
   "level": {
     "ownText": "My text",
@@ -197,7 +204,8 @@
     "growthTitle": "A new medal! You got better and the game grows with you.",
     "growthDifficulty": "Things will move a little faster now.",
     "growthWordLen": "Words can now have {n} letters.",
-    "medalAria": "medal number {n}"
+    "medalAria": "medal number {n}",
+    "repaired": "You repaired the little robot {name}!"
   },
   "surprise": {
     "ask": "{piko} has a secret:",
@@ -275,6 +283,76 @@
         "The ostrich egg! It is about as big as twenty hen eggs.",
         "The shell has thousands of tiny holes that let air through.",
         "The platypus! It is a mammal, but its babies hatch from eggs."
+      ]
+    },
+    "junkyard": {
+      "q": [
+        "Do you know how many times a glass bottle can be recycled?",
+        "Can you guess what a new park bench can be made of?",
+        "Do you know why iron rusts?",
+        "Do you know how a big magnet can lift a car?"
+      ],
+      "a": [
+        "Again and again! Glass can be melted into a new bottle forever.",
+        "Old plastic bottles and caps! Recycling turns them into boards for benches.",
+        "When water and air touch iron for a long time, it gets covered with brown rust.",
+        "Junkyards have electromagnets that lift a whole car. When the power goes off, they let it go."
+      ]
+    },
+    "workshop": {
+      "q": [
+        "Do you know why gears have teeth?",
+        "Can you guess how many parts a bicycle has?",
+        "Do you know what a spring does in a watch?",
+        "Do you know what is inside a battery?"
+      ],
+      "a": [
+        "The teeth fit into each other, so when one gear turns, the other turns too.",
+        "About a thousand, if you count every screw, ball and chain link!",
+        "A wound-up spring slowly unwinds and that moves the hands.",
+        "Materials that react together and make electricity. When they are used up, the battery is flat."
+      ]
+    },
+    "raintown": {
+      "q": [
+        "Do you know what color a raindrop is?",
+        "Can you guess where a rainbow comes from?",
+        "Do you know why the air smells nice after a storm?",
+        "Do you know why you hear thunder after the lightning?"
+      ],
+      "a": [
+        "None! It is clear, we just draw it blue.",
+        "Sunlight goes through raindrops and splits into colors.",
+        "Rain lets out the smell of soil and plants, and lightning makes a little fresh ozone.",
+        "Light is much faster than sound, so you see the flash before you hear the thunder."
+      ]
+    },
+    "robocity": {
+      "q": [
+        "Do you know what makes a good password?",
+        "Can you guess how long people have used locks?",
+        "Do you know what a secret code is?",
+        "Do you know why you never tell anyone your password?"
+      ],
+      "a": [
+        "Long and hard to guess, for example three words that have nothing to do with each other.",
+        "Thousands of years! The ancient Egyptians had wooden locks with pins.",
+        "A message written so that only someone who knows the key can read it.",
+        "Whoever knows it can open your things. Only your parents may know it."
+      ]
+    },
+    "robohome": {
+      "q": [
+        "Do you know how a robot vacuum finds its way?",
+        "Can you guess where most robots work?",
+        "Do you know if a robot can feel a touch?",
+        "Do you know who made up the word robot?"
+      ],
+      "a": [
+        "It has sensors that feel walls and stairs, and some draw a map of the home.",
+        "In factories! They build cars, pack parcels and never get tired.",
+        "Some can! Sensitive sensors in their fingers let them gently hold even an egg.",
+        "The Czech writer Karel Čapek, about a hundred years ago."
       ]
     }
   },
@@ -372,8 +450,92 @@
         "Crack... crack... the egg hatches!",
         "A tiny baby dragon looks at you. You have a new friend!",
         "Now you can go on rescue missions and help more dragons."
+      ],
+      "world6": [
+        "Piko walks past an old junkyard. What is that beeping?",
+        "Someone is beeping sadly under a pile of old things.",
+        "Type a word and a soft magnet lifts the junk off the pile."
+      ],
+      "friends": [
+        "A small rusty robot climbs out of the pile.",
+        "He wants to say thank you, but he can only beep: Beep beep!",
+        "He gives you a tiny gear. His name is Bolt, and now you are friends!"
+      ],
+      "world7": [
+        "Bolt wants to go home, but he is missing some parts.",
+        "Gears, bolts and springs ride along the conveyor belt.",
+        "Type a part's word and Piko tosses it into the basket."
+      ],
+      "legs": [
+        "Done! Bolt has new long legs.",
+        "And a bright new yellow antenna on his head.",
+        "Now he can walk the long way home."
+      ],
+      "world8": [
+        "Oh no, it starts to rain!",
+        "Robots must not get wet, or they rust.",
+        "Type the word on a raindrop and Piko's umbrella catches it."
+      ],
+      "raincoat": [
+        "The rain stopped and a rainbow shines over the town.",
+        "Bolt gets a yellow raincoat and Piko a new umbrella.",
+        "Now no rain can hurt them."
+      ],
+      "world9": [
+        "The way home leads through Robot City.",
+        "All doors are locked and the panels show passwords.",
+        "Type a password and the door opens with a chime."
+      ],
+      "key": [
+        "The big gate is open!",
+        "Bolt found the key card to his home.",
+        "We are almost home!"
+      ],
+      "world10": [
+        "Bolt's home is dark and all the robots are asleep.",
+        "Type a word and a lamp switches on.",
+        "The helper robots wake up and wave hello."
+      ],
+      "home": [
+        "Bolt's family is so happy he is home.",
+        "They thank you, {name}, for helping Bolt.",
+        "Now you can repair little robots on rescue missions too."
       ]
-    }
+    },
+    "junkStart": [
+      "Can you hear that beeping? Someone is under the pile!",
+      "Type a word and the magnet takes the junk away."
+    ],
+    "knotOpen": [
+      "The knot is untied! Bolt is free.",
+      "Beep beep! That means thank you."
+    ],
+    "batteryFull": [
+      "The battery is full! Bolt is glowing with joy.",
+      "Nice steady rhythm!"
+    ],
+    "rainTickle": [
+      "Bolt: Beep, that tickles!",
+      "Bolt shakes like a puppy.",
+      "Bolt: Beep beep, a drop on my head!"
+    ],
+    "stormCalm": [
+      "The storm calmed down. Here comes the sun!",
+      "A calm rhythm did it!"
+    ],
+    "doorOpen": [
+      "Ding! The door is open.",
+      "Right password!",
+      "Another door is open!"
+    ],
+    "gateOpen": [
+      "The big gate is opening! Welcome to Robot City.",
+      "The whole code is right!"
+    ],
+    "welcomeDone": [
+      "The whole family said hello!",
+      "Beep beep beep! The little robots are happy."
+    ]
   },
   "wave": {
     "onBeat": "On the beat!",
@@ -455,12 +617,13 @@
     "explorer-vest": "Explorer vest",
     "lantern": "Lantern",
     "green-boots": "Green boots",
-    "sunglasses": "Sunglasses"
-  },
-  "dragons": {
-    "title": "My dragons",
-    "first": "My first dragon",
-    "empty": "Go on a rescue mission to meet more dragons."
+    "sunglasses": "Sunglasses",
+    "umbrella": "Umbrella",
+    "raincoat": "Raincoat",
+    "hard-hat": "Hard hat",
+    "goggles": "Safety goggles",
+    "jetpack": "Jetpack",
+    "antenna-band": "Antenna headband"
   },
   "dragonNames": [
     "Sparky",
@@ -852,5 +1015,35 @@
     "tooLong": "This profile is too big for a link. Export it to a file and load the file on the other computer.",
     "importTitle": "A player from another computer",
     "importText": "Load {name} ({n} stars) into this browser?"
-  }
+  },
+  "friends": {
+    "title": "Little friends",
+    "dragons": "Dragons",
+    "robots": "Robots",
+    "firstDragon": "My first dragon",
+    "bolt": "Bolt",
+    "empty": "Go on a rescue mission to meet new little friends."
+  },
+  "robotNames": [
+    "Bip",
+    "Zip",
+    "Cog",
+    "Diode",
+    "Springy",
+    "Nutty",
+    "Bzzz",
+    "Chip",
+    "Screwy",
+    "Sparky",
+    "Volt",
+    "Pixel",
+    "Bubo",
+    "Button",
+    "Tick",
+    "Tock",
+    "Lampy",
+    "Click",
+    "Roller",
+    "Beepo"
+  ]
 }

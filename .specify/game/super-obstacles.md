@@ -16,6 +16,14 @@ Each world ends with a bigger, special challenge:
   typed to a steady beat. Off-beat typing still counts, only less smoothly.
 - **Friendly mole** (egg journey): pops up unexpectedly with a short word that rewards a
   quick reaction; missing it just makes the mole wave and hide.
+- **Cable knot** (junkyard): every short word unties one loop; an exact word unties a
+  whole loop, one with mistakes half of it.
+- **Battery** (workshop) and **storm cloud** (rainy town): rhythm sequences like the
+  energy wave; the battery fills four bars, the cloud shrinks and the sun comes out.
+- **Main gate** (robot city): a long code split into short groups; each group lights one
+  part of the gate's ring.
+- **Family welcome** (robot home): little robots pop out of boxes with short words, like
+  the friendly mole.
 - None of them can fail the level.
 
 ## Why

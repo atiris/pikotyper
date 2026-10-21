@@ -6,7 +6,7 @@ import { detectLanguage } from './i18n/i18n';
 import { watchAutoFullscreen } from './ui/chrome';
 import { aboutScreen } from './screens/about';
 import { breakScreen } from './screens/break';
-import { dragonsScreen } from './screens/dragons';
+import { friendsScreen } from './screens/friends';
 import { levelScreen } from './screens/level';
 import { moveImportScreen, taskImportScreen } from './screens/link-import';
 import { mapScreen } from './screens/map';
@@ -34,7 +34,7 @@ registerScreen('level', needsProfile(levelScreen));
 registerScreen('story', needsProfile(storyScreen));
 registerScreen('parent', needsProfile((root, params) => void parentScreen(root, params)));
 registerScreen('wardrobe', needsProfile(wardrobeScreen));
-registerScreen('dragons', needsProfile(dragonsScreen));
+registerScreen('friends', needsProfile(friendsScreen));
 registerScreen('break', needsProfile(breakScreen));
 
 async function boot(): Promise<void> {

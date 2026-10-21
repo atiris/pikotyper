@@ -165,7 +165,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .map-side .btn.big { font-size: 1.2rem; }
 .map-piko { border: 0; background: radial-gradient(circle at 50% 70%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 70%); cursor: pointer; align-self: center; border-radius: 50%; padding: 0; }
 .map-piko:hover .piko-stack { animation: jump-small 0.6s ease; }
+.story-rows { display: grid; gap: var(--sp-5); align-content: start; }
 .story-row { display: grid; gap: var(--sp-3); align-content: start; }
+.story-opens { margin: 0; color: var(--ink-soft); }
 .story-name { margin: 0; font-size: 1.5rem; color: var(--brand-dark); }
 /* The row gap leaves room for the even cards, which sit 18 px lower. */
 .islands { display: flex; flex-wrap: wrap; justify-content: flex-start; align-content: flex-start; gap: calc(var(--sp-3) + 18px) var(--sp-3); }
@@ -404,6 +406,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .story-fan img { display: block; width: 100%; }
 .story-fan { width: clamp(60px, 7vw, 90px); margin-left: -2.5rem; animation: float 3.5s ease-in-out infinite; filter: drop-shadow(0 2px 3px rgba(60, 80, 60, 0.45)); }
 .story-piko .piko-stack { filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); }
+.robot-stack { position: relative; width: var(--size); height: var(--size); flex: none; animation: breathe 3.2s ease-in-out infinite; transform-origin: 50% 95%; }
+.robot-stack img, .robot-stack canvas { position: absolute; inset: 0; width: 100%; height: 100%; user-select: none; pointer-events: none; }
+.story-bolt .robot-stack { filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.2)); }
 .envelope { position: absolute; left: 50%; top: 18%; width: 120px; height: 80px; background: #fff7e0; border-radius: 10px; box-shadow: var(--shadow); display: grid; place-items: center; color: #e5534b; font-size: 2rem; animation: float 2.5s ease-in-out infinite; }
 .sparkles { position: absolute; inset: 0; pointer-events: none; }
 .sparkles i { position: absolute; left: calc(10% + var(--k) * 6%); top: calc(20% + (var(--k) * 37 % 50) * 1%); width: 14px; height: 14px; background: #fff6a8; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); animation: twinkle 2s ease-in-out infinite; animation-delay: calc(var(--k) * -0.3s); }
@@ -449,6 +454,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .dragon figcaption { font-weight: 700; display: flex; flex-direction: column; }
 .dragon small { color: var(--ink-soft); font-weight: 400; }
 .dragon.first { background: #fff3c9; }
+.dragon .robot-stack { margin: 0 auto; }
+.friend-group { margin-bottom: 1.4rem; }
 
 /* Parent */
 .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }

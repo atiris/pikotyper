@@ -78,16 +78,51 @@ figure on the stage, never a replacement for Piko).
   about recycling, machines, rain, locks and codes, robots.
 
 ## Steps
-- [ ] Stories table, worlds 6-10, levels, unlock rule, map rows (+ unit tests for
+- [x] Stories table, worlds 6-10, levels, unlock rule, map rows (+ unit tests for
   unlocks).
-- [ ] Level kinds: reuse modes with sprite sets; new `doors` and `rooms` modes.
-- [ ] Bolt on stage and in scenes; robot states and upgrades.
-- [ ] Story scenes and texts sk + en (world intros, friends, legs, raincoat, key, home),
+- [x] Level kinds: reuse modes with sprite sets; new `doors` and `rooms` modes.
+- [x] Bolt on stage and in scenes; robot states and upgrades.
+- [x] Story scenes and texts sk + en (world intros, friends, legs, raincoat, key, home),
   teaser questions, robot names.
-- [ ] Little friends screen, `friends` migration + tests, rescue missions from both
+- [x] Little friends screen, `friends` migration + tests, rescue missions from both
   stories.
-- [ ] Story 2 accessories in `rewards.ts` (unlocked by story 2 levels) and their
+- [x] Story 2 accessories in `rewards.ts` (unlocked by story 2 levels) and their
   `SINGLES` entries (slot) in `scripts/assets.mjs`; the media list is in
   `assets-src/PROMPTS.md` section 7.
-- [ ] Specs and README; build, vitest, e2e (super mode plays w6-1 and sees Bolt);
+- [x] Specs and README; build, vitest, e2e (super mode plays w6-1 and sees Bolt);
   Playwright MCP check of the map with two story rows.
+
+## Decisions taken while implementing
+- **Bolt is drawn on the canvas** by the runtime, under the mode's objects (behind Piko in
+  the hero modes, next to the DOM Piko elsewhere); a mode can place him (`boltSpot`), e.g.
+  under the raindrops in the middle of the rainy town. The level screen carries
+  `data-bolt="<look>"` so tests can see him.
+- **World 6 shows Bolt from level 1** as `robot-broken` under a junk pile that shrinks with
+  every lifted piece and every level (the plan's "after the friends scene" and its e2e step
+  "plays w6-1 and sees Bolt" contradicted each other; the pile keeps the story right).
+  Looks by world: 6 broken, 7 `robot-*`, 8+ `robot2-*`, 9+ with the raincoat overlay;
+  rescue missions use the final look.
+- **Cable knot** is built like the boulder (the meadow's web kind no longer exists since
+  plan 13). **Battery** and **storm** share a new rhythm base (`BeatMode`, like the wave),
+  because the story text asks for a steady rhythm, not split asteroids.
+- **Rescue missions** open with the first finished story (not only story 1) and are drawn
+  from finished stories only; the "Little friends" button shows whenever missions are open.
+- **Bolt's pictures are processed square** (`scripts/assets.mjs`, like `piko-*`), so the
+  `robot-raincoat` overlay fits every look.
+- **Story 2 accessories**: hard hat, goggles, umbrella, jetpack, antenna headband for
+  finishing worlds 6-10; raincoat for level `w8-2`.
+- World numbers run on across stories (6-10), so level titles and wardrobe hints stay
+  unique.
+
+## Done - 2026-10-21
+Shipped: stories table and second map row (closed row says when it opens), worlds 6-10
+with 25 levels and ten new level kinds (`junk`, `knot`, `belt`, `battery`, `rain`,
+`storm`, `doors`, `gate`, `rooms`, `welcome`), Bolt on stage and in ten new scenes, all
+texts sk + en (scenes, story lines, teasers, robot names, items), the Little friends
+screen with storage v9 (`progress.dragons` -> `progress.friends`) and its migration test,
+rescue missions from both stories, six story 2 accessories in `rewards.ts` and `SINGLES`,
+specs and README, unit tests for unlocks and rescue, e2e test (super mode plays w6-1 and
+sees Bolt), Playwright MCP check of the map and all ten new kinds (no page errors).
+Left out: the pictures and music themselves stay with the owner (`assets-src/PROMPTS.md`
+section 7); every one has a drawn fallback. The e2e typing helper cannot type accented
+letters (in BACKLOG.md).

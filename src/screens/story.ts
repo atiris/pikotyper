@@ -1,7 +1,8 @@
 import { app, go, saveProfile, type ScreenName } from '../app/app';
 import { audio } from '../audio/audio';
-import { imageUrl } from '../gfx/assets';
-import { pikoElement } from '../gfx/piko';
+import { hasImage, imageUrl } from '../gfx/assets';
+import { type Mood, pikoElement } from '../gfx/piko';
+import { type RobotMood, type RobotState, robotElement } from '../gfx/robot';
 import { t, tList } from '../i18n/i18n';
 import { button, h } from '../ui/dom';
 
@@ -12,6 +13,10 @@ interface SceneDef {
   envelope?: boolean;
   sparkles?: boolean;
   fan?: boolean;
+  /** Piko's mood; a mood without pictures for the kind falls back to happy. */
+  mood?: Mood;
+  /** Bolt in story 2. */
+  bolt?: RobotState & { mood: RobotMood };
 }
 
 /** Piko's fan, the same look as the code-drawn one in the meadow levels. */
@@ -40,6 +45,16 @@ const SCENES: Record<string, SceneDef> = {
   egg: { world: 'dragons', sprites: ['obj-egg', 'obj-dragon-baby-2'], piko: true, sparkles: true },
   world5: { world: 'egg', sprites: ['obj-egg'], piko: true },
   hatched: { world: 'egg', sprites: ['obj-dragon-hatched'], piko: true, sparkles: true },
+  world6: { world: 'junkyard', sprites: ['obj-tire', 'obj-crate', 'obj-can'], piko: true },
+  friends: { world: 'junkyard', sprites: [], piko: true, mood: 'surprised', bolt: { look: 'broken', raincoat: false, mood: 'happy' }, sparkles: true },
+  world7: { world: 'workshop', sprites: ['obj-gear', 'obj-bolt', 'obj-wheel'], bolt: { look: 'robot', raincoat: false, mood: 'idle' } },
+  legs: { world: 'workshop', sprites: [], piko: true, bolt: { look: 'robot2', raincoat: false, mood: 'happy' }, sparkles: true },
+  world8: { world: 'raintown', sprites: ['obj-raindrop', 'obj-umbrella'], bolt: { look: 'robot2', raincoat: false, mood: 'worried' } },
+  raincoat: { world: 'raintown', sprites: [], piko: true, bolt: { look: 'robot2', raincoat: true, mood: 'happy' }, sparkles: true },
+  world9: { world: 'robocity', sprites: ['obj-door', 'obj-panel'], bolt: { look: 'robot2', raincoat: true, mood: 'idle' } },
+  key: { world: 'robocity', sprites: ['obj-door-open'], piko: true, bolt: { look: 'robot2', raincoat: true, mood: 'happy' }, sparkles: true },
+  world10: { world: 'robohome', sprites: ['obj-lamp'], piko: true, bolt: { look: 'robot2', raincoat: true, mood: 'idle' } },
+  home: { world: 'robohome', sprites: ['obj-vacuum-robot', 'obj-toaster-robot', 'obj-robot-small-1'], piko: true, bolt: { look: 'robot2', raincoat: true, mood: 'happy' }, sparkles: true },
 };
 
 interface StoryParams {
@@ -64,7 +79,8 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
       return src ? h('img', { class: 'story-sprite', src, alt: '', style: `--k:${k}` }) : null;
     }),
     def.envelope ? h('div', { class: 'envelope', 'aria-hidden': 'true' }, h('span', {}, '★')) : null,
-    def.piko ? h('div', { class: 'story-piko' }, pikoElement(p.companion, 'happy', 220)) : null,
+    def.piko ? h('div', { class: 'story-piko' }, pikoElement(p.companion, def.mood && hasImage(`piko-${p.companion.kind}-${def.mood}`) ? def.mood : 'happy', 220)) : null,
+    def.bolt ? h('div', { class: 'story-bolt' }, robotElement(def.bolt, def.bolt.mood, 180)) : null,
     def.fan ? fan() : null,
     def.sparkles ? h('div', { class: 'sparkles', 'aria-hidden': 'true' }, ...Array.from({ length: 14 }, (_, k) => h('i', { style: `--k:${k}` }))) : null);
   const finish = () => {

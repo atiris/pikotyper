@@ -2,7 +2,8 @@ import type { Companion, CompanionKind } from '../storage/schema';
 import { accessories, hasImage, imageUrl, sprite, type Slot } from './assets';
 import { drawFace, type G } from './draw';
 
-export type Mood = 'idle' | 'happy' | 'thinking';
+/** `surprised` is optional art, used only in story 2's meeting scene. */
+export type Mood = 'idle' | 'happy' | 'thinking' | 'surprised';
 
 /** Draw order of accessory slots around the companion image. */
 export const SLOT_ORDER: (Slot | 'companion')[] = ['back', 'companion', 'feet', 'body', 'neck', 'hand', 'eyes', 'head'];

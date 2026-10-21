@@ -44,10 +44,10 @@ describe('Store', () => {
   it('fills missing fields of older profiles', () => {
     const p: any = newProfile('Ema', 'sk');
     delete p.settings.font;
-    delete p.progress.dragons;
+    delete p.progress.friends;
     const out = migrate({ version: 1, profiles: [p] }).profiles[0];
     expect(out.settings.font).toBe('lexend');
-    expect(out.progress.dragons).toEqual([]);
+    expect(out.progress.friends).toEqual([]);
   });
 
   it('upgrades v1 key stats and keeps settings a parent changed', () => {
@@ -137,6 +137,15 @@ describe('Store', () => {
     const p: any = newProfile('Ema', 'sk');
     delete p.tasks;
     expect(migrate({ version: 7, profiles: [p] }).profiles[0].tasks).toEqual([]);
+  });
+
+  it('v8 -> v9 turns rescued dragons into dragon friends', () => {
+    const p: any = newProfile('Ema', 'sk');
+    delete p.progress.friends;
+    p.progress.dragons = [{ name: 'Luna', hue: 40, date: '2026-05-01' }];
+    const out = migrate({ version: 8, profiles: [p] }).profiles[0];
+    expect(out.progress.friends).toEqual([{ kind: 'dragon', name: 'Luna', hue: 40, date: '2026-05-01' }]);
+    expect('dragons' in out.progress).toBe(false);
   });
 });
 

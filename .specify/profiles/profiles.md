@@ -9,7 +9,7 @@
   Import validates the file and never silently overwrites (it asks: replace or keep both).
   A player can also move by link ([teacher-links.md](teacher-links.md)).
 - Stored data has a version; older data is migrated on load.
-- Every player has an address (`#/p/<id>`, plus `/wardrobe`, `/dragons`, `/settings`), so a
+- Every player has an address (`#/p/<id>`, plus `/wardrobe`, `/friends`, `/settings`), so a
   link or desktop shortcut opens that child's map directly; the browser's back and forward
   buttons move between screens. Leaving the whole app asks first while a player is active.
 - **Super mode** for parents and testers: typing `superpikotyper` fast (within 4 seconds,

@@ -3,7 +3,8 @@
 A peaceful, story-driven touch-typing adventure for children (about 10-15 years).
 Kids learn to type with **all ten fingers** together with their friend **Piko**: they play catch
 with animals on a meadow, fly a rocket through space, explore a new planet, protect dragons and
-hatch a new friend. No explosions, no punishment, no ads, no accounts.
+hatch a new friend; in a second story they help the little robot Bolt get home. No explosions,
+no punishment, no ads, no accounts.
 
 *Pokojná príbehová hra pre deti na nácvik písania všetkými desiatimi. Po slovensky aj po anglicky.*
 
@@ -46,6 +47,8 @@ hatch a new friend. No explosions, no punishment, no ads, no accounts.
 
 ## The game
 
+**Story 1: Piko and the Dragon Egg**
+
 | World | What happens | Big challenge | Reward |
 |---|---|---|---|
 | 1. Training Meadow | goalkeeper Piko fans back the leaves bees, ladybugs and mice send him; a miss is a cheered goal | hedgehog throwing leaf volleys | invitation to space, meet Piko |
@@ -54,7 +57,19 @@ hatch a new friend. No explosions, no punishment, no ads, no accounts.
 | 4. Dragon Valley | shield bubbles protect baby dragons | rhythm wave | a dragon egg |
 | 5. Egg Journey | the egg jumps over rocks and stumps | friendly mole | a baby dragon, endless rescue missions |
 
-Piko can be one of nine animals and wears 28 accessories earned by progress (never by chance).
+**Story 2: Piko and Bolt the Robot** (opens after world 2; Bolt walks next to Piko)
+
+| World | What happens | Big challenge | Reward |
+|---|---|---|---|
+| 6. Junkyard | a magnet crane lifts junk off the pile where Bolt beeps | tangled cable knot | Bolt becomes a friend |
+| 7. Workshop | parts on a conveyor belt go into Bolt's basket | battery charged by rhythm | new legs and antenna |
+| 8. Rainy Town | Piko's umbrella catches raindrops before Bolt gets wet | grumpy storm cloud | a raincoat and an umbrella |
+| 9. Robot City | doors open with passwords typed on their panels | main gate with a long code | the home key card |
+| 10. Robot Home | lamps switch on and helper robots wake up | little robots popping out of boxes | Bolt's family, little robots in rescue missions |
+
+Rescued dragons and repaired robots collect on the Little friends screen.
+
+Piko can be one of nine animals and wears 35 accessories earned by progress (never by chance).
 
 ![Meadow level](docs/meadow.png)
 ![Space level](docs/space.png)

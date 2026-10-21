@@ -45,6 +45,13 @@ const OUTFITS = {
 // `tint`: lenses become this semi-transparent color instead of clear glass.
 const SINGLES = {
   sunglasses: { slot: 'eyes', tint: [40, 32, 52, 0.5] },
+  // Story 2 rewards.
+  umbrella: { slot: 'hand' },
+  raincoat: { slot: 'body' },
+  'hard-hat': { slot: 'head' },
+  goggles: { slot: 'eyes' },
+  jetpack: { slot: 'back' },
+  'antenna-band': { slot: 'head' },
 };
 
 const run = promisify(execFile);
@@ -237,7 +244,8 @@ async function processImage(name, file, manifest) {
   if (name.startsWith('outfit-')) return processOutfit(name.slice(7), data, w, h, manifest);
   if (name.startsWith('acc-')) return processAccessory(name.slice(4), data, w, h, manifest);
   keyOut(data, w, h, { layer: name.startsWith('bg-') });
-  if (name === 'base-template' || name.startsWith('piko-')) return writeSquare(name, data, w, h, manifest);
+  // Bolt's pictures stay square, so the raincoat overlay fits every one of them.
+  if (name === 'base-template' || name.startsWith('piko-') || name.startsWith('robot')) return writeSquare(name, data, w, h, manifest);
   if (name.startsWith('bg-')) {
     const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).resize({ width: BG_WIDTH, withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
     manifest.images[name] = { w: info.width, h: info.height };

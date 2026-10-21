@@ -339,7 +339,7 @@ Calm, gentle instrumental background music for a peaceful children's educational
 
 ## 7. Story 2: Piko and Bolt the robot
 
-Plan: `.todo/11-story-robot.md`. Deliver in any order; the game draws a simple shape for
+Plan: `.todo/.done/11-story-robot.md`. Deliver in any order; the game draws a simple shape for
 anything still missing. Use the common prompts of sections 3, 4, 5 and 6 with the texts
 below. Suggested order: Bolt first (he is in every level), then world by world.
 

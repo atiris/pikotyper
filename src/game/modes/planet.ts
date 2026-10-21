@@ -7,9 +7,9 @@ import { Mode } from '../mode';
 import type { LevelRuntime } from '../runtime';
 import type { Target } from '../typing';
 
-/** Piko as the hero walking and hopping through the planet. */
-abstract class HeroMode extends Mode {
-  readonly world = 'planet';
+/** Piko as the hero walking and hopping through the planet (and Bolt's robot city and home). */
+export abstract class HeroMode extends Mode {
+  readonly world: string = 'planet';
   protected heroX = 220;
   protected heroY = VH * 0.78;
   protected jump = 0;
@@ -46,6 +46,11 @@ abstract class HeroMode extends Mode {
   onWrong(): void {
     this.mood = 'thinking';
     this.moodT = 1;
+  }
+
+  /** Bolt walks right behind the hero. */
+  boltSpot(): { x: number; y: number } {
+    return { x: this.heroX - 105, y: this.heroY };
   }
 
   protected drawHero(g: G): void {

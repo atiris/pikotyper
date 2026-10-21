@@ -55,7 +55,12 @@
     "space": "Let raketou",
     "planet": "Nová planéta",
     "dragons": "Dračie údolie",
-    "egg": "Cesta vajíčka"
+    "egg": "Cesta vajíčka",
+    "junkyard": "Šrotisko",
+    "workshop": "Dielňa",
+    "raintown": "Daždivé mesto",
+    "robocity": "Robotické mesto",
+    "robohome": "Robotická domácnosť"
   },
   "map": {
     "ownText": "Môj text",
@@ -64,12 +69,14 @@
     "practice": "Voľné cvičenie",
     "wardrobe": "Kamarát a šatník",
     "rescue": "Záchranné misie",
-    "dragons": "Moje dráčiky",
     "switchProfile": "Hráči",
     "super": "veľká výzva",
     "starsAria": "hviezdičky: {n}",
     "storyName": "Piko a dračie vajíčko",
-    "settings": "Nastavenia pre rodičov"
+    "settings": "Nastavenia pre rodičov",
+    "storyRobot": "Piko a robot Šróbik",
+    "storyOpens": "Otvorí sa, keď prejdeš svet {world}.",
+    "friends": "Malí priatelia"
   },
   "level": {
     "ownText": "Môj text",
@@ -197,7 +204,8 @@
     "growthTitle": "Nová medaila! Si šikovnejší a hra rastie s tebou.",
     "growthDifficulty": "Predmety sa budú hýbať o kúsok rýchlejšie.",
     "growthWordLen": "Slová môžu mať už {n} písmen.",
-    "medalAria": "medaila číslo {n}"
+    "medalAria": "medaila číslo {n}",
+    "repaired": "Robotík {name} je opravený!"
   },
   "surprise": {
     "ask": "{piko} má tajomstvo:",
@@ -275,6 +283,76 @@
         "Pštrosie! Je veľké asi ako dvadsať slepačích vajec.",
         "Škrupina má tisíce maličkých dierok, cez ktoré prechádza vzduch.",
         "Vtákopysk! Je to cicavec, ale mláďatá sa mu liahnu z vajíčok."
+      ]
+    },
+    "junkyard": {
+      "q": [
+        "Vieš, koľkokrát sa dá recyklovať sklenená fľaša?",
+        "Uhádneš, z čoho sa dá vyrobiť nová lavička?",
+        "Vieš, prečo železo hrdzavie?",
+        "Vieš, ako veľký magnet dokáže zdvihnúť auto?"
+      ],
+      "a": [
+        "Stále znova! Sklo sa dá roztaviť a vyrobiť z neho nová fľaša, a to donekonečna.",
+        "Zo starých plastových fliaš a vrchnákov! Recykláciou z nich vznikajú dosky na lavičky.",
+        "Keď sa železa dlho dotýka voda a vzduch, pokryje sa hnedou hrdzou.",
+        "Na šrotiskách sú elektromagnety, ktoré zdvihnú celé auto. Keď vypnú prúd, auto pustia."
+      ]
+    },
+    "workshop": {
+      "q": [
+        "Vieš, prečo majú ozubené kolieska zúbky?",
+        "Uhádneš, koľko súčiastok má bicykel?",
+        "Vieš, čo robí v hodinkách pružina?",
+        "Vieš, čo je vo vnútri batérie?"
+      ],
+      "a": [
+        "Zúbky do seba zapadnú, takže keď sa točí jedno koliesko, točí sa aj druhé.",
+        "Okolo tisíc, keď spočítaš každú skrutku, guličku a článok reťaze!",
+        "Natiahnutá pružina pomaly povoľuje a tým poháňa ručičky.",
+        "Látky, ktoré spolu reagujú a vyrábajú elektrinu. Keď sa minú, batéria je vybitá."
+      ]
+    },
+    "raintown": {
+      "q": [
+        "Vieš, akú farbu má kvapka dažďa?",
+        "Uhádneš, odkiaľ sa berie dúha?",
+        "Vieš, prečo po búrke voňia vzduch?",
+        "Vieš, prečo je hrom počuť až po blesku?"
+      ],
+      "a": [
+        "Žiadnu! Je priehľadná a na obrázkoch ju kreslíme modrou.",
+        "Slnečné svetlo prejde cez kvapky dažďa a rozloží sa na farby.",
+        "Dážď uvoľní vôňu zeme a rastlín a blesk vyrobí trochu čerstvého ozónu.",
+        "Svetlo je oveľa rýchlejšie ako zvuk, preto blesk vidíš skôr, ako hrom počuješ."
+      ]
+    },
+    "robocity": {
+      "q": [
+        "Vieš, aké heslo je dobré?",
+        "Uhádneš, ako dlho sa používajú zámky?",
+        "Vieš, čo je to tajná šifra?",
+        "Vieš, prečo sa heslo nikomu nehovorí?"
+      ],
+      "a": [
+        "Dlhé a ťažké na uhádnutie, napríklad tri slová, ktoré spolu nesúvisia.",
+        "Tisíce rokov! Už starí Egypťania mali drevené zámky s kolíkmi.",
+        "Správa napísaná tak, že ju prečíta len ten, kto pozná kľúč.",
+        "Kto pozná heslo, môže otvoriť tvoje veci. Povedať ho môžeš len rodičom."
+      ]
+    },
+    "robohome": {
+      "q": [
+        "Vieš, ako robotický vysávač nájde cestu?",
+        "Uhádneš, kde pracuje najviac robotov?",
+        "Vieš, či môže robot cítiť dotyk?",
+        "Vieš, kto vymyslel slovo robot?"
+      ],
+      "a": [
+        "Má senzory, ktoré cítia steny a schody, a niektoré si kreslia mapu bytu.",
+        "V továrňach! Skladajú autá, balia balíky a nikdy sa neunavia.",
+        "Niektoré áno! Majú citlivé senzory v prstoch a vedia jemne chytiť aj vajíčko.",
+        "Slovo robot vymyslel pred sto rokmi český spisovateľ Karel Čapek."
       ]
     }
   },
@@ -372,8 +450,92 @@
         "Krak... krak... vajíčko sa liahne!",
         "Malý dráčik sa na teba pozerá. Máš nového kamaráta!",
         "Teraz môžeš chodiť na záchranné misie a pomáhať ďalším dráčikom."
+      ],
+      "world6": [
+        "Piko ide okolo starého šrotiska. Čo to tam pípa?",
+        "Pod kopou starých vecí niekto smutne pípa.",
+        "Napíš slovo a jemný magnet zdvihne haraburdu z kopy."
+      ],
+      "friends": [
+        "Z kopy vylieza malý hrdzavý robot.",
+        "Chce povedať ďakujem, ale vie len pípať: Píp píp!",
+        "Daruje ti malé ozubené koliesko. Volá sa Šróbik a odteraz ste kamaráti!"
+      ],
+      "world7": [
+        "Šróbik chce ísť domov, ale chýbajú mu súčiastky.",
+        "Po páse sa vezú kolieska, skrutky a pružiny.",
+        "Napíš slovo súčiastky a Piko ju hodí do košíka."
+      ],
+      "legs": [
+        "Hotovo! Šróbik má nové dlhé nohy.",
+        "A na hlave mu svieti nová žltá anténa.",
+        "Teraz zvládne aj dlhú cestu domov."
+      ],
+      "world8": [
+        "Ojoj, začína pršať!",
+        "Roboti nesmú zmoknúť, inak zhrdzavejú.",
+        "Napíš slovo na kvapke a Pikov dáždnik ju zachytí."
+      ],
+      "raincoat": [
+        "Dážď prestal a nad mestom svieti dúha.",
+        "Šróbik dostal žltú pláštenku a Piko nový dáždnik.",
+        "Teraz im žiadny dážď neublíži."
+      ],
+      "world9": [
+        "Cesta domov vedie cez Robotické mesto.",
+        "Všetky dvere sú zamknuté a na paneloch sú heslá.",
+        "Napíš heslo a dvere sa so zvonením otvoria."
+      ],
+      "key": [
+        "Veľká brána je otvorená!",
+        "Šróbik našiel svoju kľúčovú kartu od domu.",
+        "Už sme skoro doma!"
+      ],
+      "world10": [
+        "Šróbikov dom je tmavý a všetci roboti spia.",
+        "Napíš slovo a rozsvieti sa lampa.",
+        "Pomocní roboti sa zobudia a zamávajú."
+      ],
+      "home": [
+        "Šróbikova rodina je šťastná, že je doma.",
+        "Ďakujú ti, {name}, za pomoc Šróbikovi.",
+        "Teraz môžeš na záchranných misiách opravovať aj malých robotov."
       ]
-    }
+    },
+    "junkStart": [
+      "Počuješ to pípanie? Niekto je pod tou kopou!",
+      "Napíš slovo a magnet odnesie haraburdu."
+    ],
+    "knotOpen": [
+      "Uzol je rozmotaný! Šróbik je voľný.",
+      "Píp píp! To znamená ďakujem."
+    ],
+    "batteryFull": [
+      "Batéria je nabitá! Šróbik svieti od radosti.",
+      "Pekný rovnomerný rytmus!"
+    ],
+    "rainTickle": [
+      "Šróbik: Píp, to šteklí!",
+      "Šróbik sa otriasa ako psík.",
+      "Šróbik: Píp píp, kvapka na hlave!"
+    ],
+    "stormCalm": [
+      "Búrka sa upokojila. Vykuklo slniečko!",
+      "Pokojný rytmus pomohol!"
+    ],
+    "doorOpen": [
+      "Cink! Dvere sa otvorili.",
+      "Správne heslo!",
+      "Ďalšie dvere sú otvorené!"
+    ],
+    "gateOpen": [
+      "Veľká brána sa otvára! Vitaj v Robotickom meste.",
+      "Celý kód je správne!"
+    ],
+    "welcomeDone": [
+      "Celá rodina ťa pozdravila!",
+      "Píp píp píp! Malí roboti sa tešia."
+    ]
   },
   "wave": {
     "onBeat": "Presne v rytme!",
@@ -455,12 +617,13 @@
     "explorer-vest": "Vesta objaviteľa",
     "lantern": "Lampáš",
     "green-boots": "Zelené čižmy",
-    "sunglasses": "Slnečné okuliare"
-  },
-  "dragons": {
-    "title": "Moje dráčiky",
-    "first": "Môj prvý dráčik",
-    "empty": "Choď na záchrannú misiu a spoznáš ďalšie dráčiky."
+    "sunglasses": "Slnečné okuliare",
+    "umbrella": "Dáždnik",
+    "raincoat": "Pláštenka",
+    "hard-hat": "Prilba",
+    "goggles": "Ochranné okuliare",
+    "jetpack": "Raketový batoh",
+    "antenna-band": "Čelenka s anténkami"
   },
   "dragonNames": [
     "Iskrička",
@@ -852,5 +1015,35 @@
     "tooLong": "Tento profil je na odkaz príliš veľký. Exportujte ho do súboru a súbor načítajte na druhom počítači.",
     "importTitle": "Hráč z iného počítača",
     "importText": "Načítať hráča {name} ({n} hviezdičiek) do tohto prehliadača?"
-  }
+  },
+  "friends": {
+    "title": "Malí priatelia",
+    "dragons": "Dráčiky",
+    "robots": "Robotíci",
+    "firstDragon": "Môj prvý dráčik",
+    "bolt": "Šróbik",
+    "empty": "Choď na záchrannú misiu a spoznáš nových malých priateľov."
+  },
+  "robotNames": [
+    "Bip",
+    "Zip",
+    "Kolík",
+    "Dioda",
+    "Pružinka",
+    "Matička",
+    "Bzzz",
+    "Čip",
+    "Skrutkáčik",
+    "Iskrička",
+    "Volt",
+    "Pixel",
+    "Bubo",
+    "Gombík",
+    "Tik",
+    "Tak",
+    "Lampáš",
+    "Klik",
+    "Rolka",
+    "Pípo"
+  ]
 }

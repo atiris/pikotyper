@@ -8,7 +8,7 @@ import { GUEST_ID, type Lang, type Profile, SUPER_ID } from '../storage/schema';
 import type { TaskSpec } from '../share/task';
 import { loadWords } from '../words/words';
 
-export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'dragons' | 'about' | 'break' | 'teacher' | 'taskImport' | 'moveImport';
+export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'about' | 'break' | 'teacher' | 'taskImport' | 'moveImport';
 export type Screen = (root: HTMLElement, params: any) => (() => void) | void;
 
 const screens = new Map<ScreenName, Screen>();
@@ -41,8 +41,8 @@ export function registerScreen(name: ScreenName, s: Screen): void {
 }
 
 /** Screens with their own address; the others belong to the player's map. */
-const ROUTES: Partial<Record<ScreenName, string>> = { wardrobe: 'wardrobe', dragons: 'dragons', parent: 'settings', level: 'play', story: 'play', break: 'play' };
-const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'dragons', 'parent'];
+const ROUTES: Partial<Record<ScreenName, string>> = { wardrobe: 'wardrobe', friends: 'friends', parent: 'settings', level: 'play', story: 'play', break: 'play' };
+const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'friends', 'parent'];
 
 /** Screens of a link with data in it, by the link's first part. */
 const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };

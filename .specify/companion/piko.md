@@ -11,7 +11,8 @@
   encouraging messages.
 - Accessories unlock by progress (finishing levels and worlds, mastering keys), never by
   chance (each player earns their own; siblings share a computer): hats, glasses, scarves and bows, vests and shirts, wings, capes and backpacks,
-  shoes, things to hold (wand, balloon, lantern). One item per body area (head, eyes,
+  shoes, things to hold (wand, balloon, lantern, umbrella). Story 2 adds a hard hat,
+  safety goggles, a raincoat, an umbrella, a small jetpack and an antenna headband. One item per body area (head, eyes,
   neck, body, back, hand, feet); the child mixes them freely in the "Buddy and wardrobe"
   screen.
 - In the same screen the child renames the companion (up to 16 characters, never empty)
@@ -23,7 +24,8 @@
   A back item can have a front part (a cape's clasp, a backpack's straps) that lies
   over the body while the item itself stays behind.
 - After each story level that has a next one, Piko asks a curious question about the
-  world's theme (real facts about animals, space, eggs) and gives the answer only after
+  world's theme (real facts about animals, space, eggs, recycling, machines, rain, locks
+  and codes, robots) and gives the answer only after
   the next level is finished. When a parent wrote own questions, every second one is
   theirs ([parent controls](../profiles/parent-controls.md)).
 - **Paw help**: fifteen words in a row without a mistake charge one paw (three at most,
@@ -39,8 +41,11 @@
   not typing it. The button pulses gently only while Piko is typing by himself after such
   an automatic start, which says "I am helping" without words.
 - Clicking Piko opens the statistics overlay ([statistics](../profiles/statistics.md)).
-- After world 5 a newly hatched friend (a baby dragon) joins; more friends come from
-  rescue missions.
+- After world 5 a newly hatched friend (a baby dragon) joins; in story 2 the robot Bolt
+  walks next to Piko ([story](../game/story.md)). More little friends, dragons and
+  robots, come from rescue missions.
+- Piko needs no new base pictures for story 2; an optional "surprised" face is used only
+  in the meeting scene with Bolt (else the happy one).
 
 ## Why
 - A companion that gives gentle, personal feedback replaces punishment and makes the

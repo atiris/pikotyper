@@ -40,7 +40,7 @@ describe('surprises', () => {
     p.surprises = [surprise('1', 'w1-3'), surprise('2', 'next'), surprise('3', 'next'), surprise('4', 'practice')];
     expect(surpriseFor(p, w12, false)?.id).toBe('2');
     expect(surpriseFor(p, levelById('w1-3')!, false)?.id).toBe('1');
-    expect(surpriseFor(p, rescueLevel(1), false)?.id).toBe('2');
+    expect(surpriseFor(p, rescueLevel(p, 1), false)?.id).toBe('2');
     expect(surpriseFor(p, practiceLevel(null), false)?.id).toBe('4');
     expect(surpriseFor(p, practiceLevel(60), true)).toBeNull();
   });

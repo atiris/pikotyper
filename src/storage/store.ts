@@ -15,7 +15,7 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 8;
+export const STORE_VERSION = 9;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -34,7 +34,16 @@ const migrations: Record<number, (data: any) => any> = {
   6: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV6toV7) : data.profiles }),
   // v8: tasks from a teacher's or parent's link.
   7: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map((p: any) => (p && typeof p === 'object' ? { ...p, tasks: [] } : p)) : data.profiles }),
+  // v9: rescued dragons become little friends, dragons or robots.
+  8: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV8toV9) : data.profiles }),
 };
+
+function profileV8toV9(p: any): any {
+  if (!p || typeof p !== 'object') return p;
+  const { dragons, ...progress } = p.progress ?? {};
+  const friends = Array.isArray(dragons) ? dragons.map((d: any) => ({ kind: 'dragon', ...d })) : [];
+  return { ...p, progress: { ...progress, friends } };
+}
 
 function profileV6toV7(p: any): any {
   if (!p || typeof p !== 'object') return p;
@@ -173,7 +182,7 @@ export function newProfile(name: string, language: Lang, layout?: LayoutId, kind
       levels: {},
       worldsDone: [],
       rewards: [],
-      dragons: [],
+      friends: [],
       lastTips: [],
       scenesSeen: [],
       growth: 0,

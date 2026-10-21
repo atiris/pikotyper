@@ -21,6 +21,10 @@ export abstract class Mode {
   /** Words typed so far / needed, for the progress bar. */
   abstract progress(): number;
   abstract get finished(): boolean;
+  /** Where Bolt stands in story 2 (his feet), or null for his place next to Piko. */
+  boltSpot(): { x: number; y: number } | null {
+    return null;
+  }
   onCorrect(_t: Target): void {}
   onDone(_t: Target): void {}
   onWrong(_t: Target | null): void {}

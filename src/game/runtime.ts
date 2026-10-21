@@ -8,6 +8,7 @@ import { Tweens } from '../engine/tween';
 import { drawBackground, drawWord, type G, wordBox } from '../gfx/draw';
 import { type Mood, pawColors, pikoElement, renderPikoInto } from '../gfx/piko';
 import { preload } from '../gfx/assets';
+import { type RobotMood, type RobotState, drawRobot, robotFor } from '../gfx/robot';
 import { t, tList } from '../i18n/i18n';
 import { type InputHandlers, KeyInput, type TypedChar } from '../input/input';
 import { LAYOUTS, LayoutMismatchDetector, fingerFor, stepsFor } from '../keyboard/layouts';
@@ -20,7 +21,7 @@ import { pawRingSvg, rhythmGauge } from '../ui/hud';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import type { Profile, Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
-import { WORLDS } from './levels';
+import { WORLDS, storyOf } from './levels';
 import type { Mode } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS, isHardMoment } from './paw';
 import { createMode } from './modes';
@@ -44,6 +45,9 @@ const LABEL_LINE_FROM = 30;
 const LABEL_MIN_SIZE = 28;
 /** Extra seconds a target with a capital letter gets (the Shift chord is hard). */
 const CAPITAL_EXTRA = 1.5;
+/** Bolt's place next to the DOM Piko, in CSS pixels from the left, and his height in game units. */
+const BOLT_CSS_X = 200;
+const BOLT_SIZE = 150;
 
 /**
  * The targets of a profile: its active keys (or a drill's), weak keys more often, the newest
@@ -94,6 +98,10 @@ export class LevelRuntime {
   readonly highContrast: boolean;
   readonly reduceMotion: boolean;
   readonly el: HTMLElement;
+  /** Bolt walks with Piko in story 2 levels and its rescue missions (with his final look); null elsewhere. */
+  readonly robot: RobotState | null;
+  private robotMood: RobotMood = 'idle';
+  private robotMoodT = 0;
 
   private loop: Loop;
   private input: KeyInput | null = null;
@@ -158,6 +166,8 @@ export class LevelRuntime {
 
     // DOM: HUD, stage, Piko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
+    this.robot = def.kind !== 'practice' && storyOf(def.world).id === 'robot' ? robotFor(def.id === 'rescue' ? WORLDS.length - 1 : def.world) : null;
+    if (this.robot) this.el.dataset.bolt = this.robot.look;
     this.progressFill = h('div', { class: 'progress-fill' });
     const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.id === 'rescue' ? t('level.rescue') : t('level.title', { world: def.world + 1, level: def.index + 1 });
     const guideBtn = button('', () => this.toggleGuide(), 'icon-btn', 'keyboard');
@@ -214,7 +224,7 @@ export class LevelRuntime {
   }
 
   get pikoOnStage(): boolean {
-    return ['swamp', 'signs', 'boulder'].includes(this.def.kind);
+    return ['swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms'].includes(this.def.kind);
   }
 
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
@@ -338,6 +348,7 @@ export class LevelRuntime {
       }
       this.sfx('wrong');
       this.setMood('thinking', 1.2);
+      this.setRobotMood('worried', 1);
       this.mode.onWrong(res.target);
     } else {
       recordPress(p, res.expected, c.ch, rt);
@@ -350,6 +361,7 @@ export class LevelRuntime {
         this.sfx('word');
         this.wordStreak++;
         this.setMood('happy', 1.4);
+        this.setRobotMood('happy', 1.2);
         this.mode.onDone(res.target);
         this.cheer();
         if (this.pawsAllowed && this.wordStreak % PAW_STREAK === 0) this.chargePaw();
@@ -498,6 +510,27 @@ export class LevelRuntime {
       this.piko.classList.add('jump');
     }
     this.moodTimer = seconds;
+  }
+
+  // ---- Bolt --------------------------------------------------------------------
+
+  setRobotMood(mood: RobotMood, seconds: number): void {
+    this.robotMood = mood;
+    this.robotMoodT = seconds;
+  }
+
+  /** Bolt's feet: where the mode puts him, else next to Piko. */
+  boltSpot(): { x: number; y: number } {
+    return this.mode.boltSpot() ?? { x: BOLT_CSS_X / this.stage.scale, y: VH - 6 };
+  }
+
+  /** Bolt on the canvas, under the mode's objects; he runs off with Piko at the end. */
+  private drawBolt(g: G): void {
+    const { x, y } = this.boltSpot();
+    const run = this.exitRun;
+    if (run == null) return drawRobot(g, this.robot!, this.robotMood, x, y, BOLT_SIZE, this.mode.t);
+    if (this.reduceMotion) return drawRobot(g, this.robot!, 'happy', x, y, BOLT_SIZE, this.mode.t, 1 - run);
+    drawRobot(g, this.robot!, 'happy', x + (this.vw + 150 - x) * run * run, y - Math.abs(Math.sin(run * Math.PI * 4)) * 20, BOLT_SIZE, this.mode.t);
   }
 
   // ---- paw help ------------------------------------------------------------------
@@ -682,6 +715,7 @@ export class LevelRuntime {
     this.readFocus();
     if (this.bubbleTimer > 0 && (this.bubbleTimer -= dt) <= 0) this.hideBubble();
     if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) renderPikoInto(this.piko, app.profile!.companion, 'idle');
+    if (this.robotMoodT > 0 && (this.robotMoodT -= dt) <= 0) this.robotMood = 'idle';
     this.progressFill.style.width = `${Math.round(this.mode.progress() * 100)}%`;
     const target = 0.9 + this.difficulty * 0.35;
     this.gauge.set(this.ema / target);
@@ -703,6 +737,7 @@ export class LevelRuntime {
   private render(): void {
     const g = this.stage.begin();
     drawBackground(g, this.mode.world, this.stage.vw, this.mode.scroll, !this.reduceMotion);
+    if (this.robot) this.drawBolt(g);
     this.labels = [];
     this.mode.render(g);
     this.drawLabels(g);

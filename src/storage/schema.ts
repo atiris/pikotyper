@@ -1,4 +1,4 @@
-// Storage schema v8. These types are the data contract of `localStorage['pikotyper:v1']`
+// Storage schema v9. These types are the data contract of `localStorage['pikotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -75,7 +75,9 @@ export interface Settings {
   readAloud: boolean;
 }
 
-export interface RescuedDragon {
+/** A little friend helped in a rescue mission: a dragon (story 1) or a robot (story 2). */
+export interface Friend {
+  kind: 'dragon' | 'robot';
   name: string;
   hue: number;
   date: string;
@@ -90,7 +92,7 @@ export interface Progress {
   worldsDone: number[];
   /** Unlocked reward ids: accessories (`acc:<id>`) and story rewards. */
   rewards: string[];
-  dragons: RescuedDragon[];
+  friends: Friend[];
   /** Ids of the last preparation tips shown, newest last. */
   lastTips: string[];
   /** Story scenes already seen (they stay skippable). */
@@ -183,7 +185,7 @@ export interface Profile {
 }
 
 export interface StoreData {
-  version: 8;
+  version: 9;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;

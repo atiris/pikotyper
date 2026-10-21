@@ -39,6 +39,24 @@ test('the super password typed fast on the start page opens everything', async (
   await expect(page.locator('.super-badge')).toHaveCount(0);
 });
 
+test('the robot story is a second row on the map, and Bolt walks with Piko in it', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('./');
+  await page.locator('.start-screen').waitFor();
+  await page.keyboard.type('superpikotyper', { delay: 40 });
+  await expect(page.locator('.story-row')).toHaveCount(2);
+  await page.locator('.story-robot .level-node').first().click();
+  await expect(page.locator('.story-screen.world-junkyard')).toBeVisible();
+  await page.keyboard.press('Escape');
+  const pass = await page.locator('.posture-card').getAttribute('data-password');
+  await page.keyboard.type(pass!);
+  await expect(page.locator('.level-screen.world-junkyard[data-bolt="broken"]')).toBeVisible();
+  await expect(page.locator('.level-piko.waiting')).toHaveCount(0);
+  await expect.poll(() => page.locator('.kb-guide').getAttribute('data-next')).not.toBe('');
+  expect(errors).toEqual([]);
+});
+
 test('Enter sends Piko\'s paws to type a few words', async ({ page }) => {
   await page.goto('./');
   await page.locator('.start-screen').waitFor();

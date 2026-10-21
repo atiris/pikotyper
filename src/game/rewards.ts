@@ -8,12 +8,13 @@ const BY_LEVEL: Record<string, string> = {
   'w3-1': 'rain-boots', 'w3-2': 'knit-vest', 'w3-3': 'backpack', 'w3-4': 'explorer-vest',
   'w4-1': 'wand', 'w4-2': 'star-cape', 'w4-3': 'boots', 'w4-4': 'lantern',
   'w5-1': 'beanie', 'w5-2': 'neckerchief', 'w5-3': 'balloon', 'w5-4': 'hair-bow',
+  'w8-2': 'raincoat',
 };
-const BY_WORLD = ['flower-wreath', 'explorer-hat', 'wizard-hat', 'green-boots', 'dragon-wings'];
+const BY_WORLD = ['flower-wreath', 'explorer-hat', 'wizard-hat', 'green-boots', 'dragon-wings', 'hard-hat', 'goggles', 'umbrella', 'jetpack', 'antenna-band'];
 const BY_MASTERY: [number, string][] = [[8, 'heart-glasses'], [16, 'star-shirt'], [24, 'pink-sneakers'], [32, 'sunglasses']];
 
 /** Story rewards per world. */
-export const WORLD_REWARDS = ['invitation', 'landing', 'force', 'egg', 'hatched'];
+export const WORLD_REWARDS = ['invitation', 'landing', 'force', 'egg', 'hatched', 'friends', 'legs', 'raincoat', 'key', 'home'];
 
 export interface UnlockRule {
   acc: string;
