@@ -1,9 +1,5 @@
 {
  "images": {
-  "Gemini_Generated_Image_fsw74tfsw74tfsw7": {
-   "w": 456,
-   "h": 102
-  },
   "acc-backpack-front": {
    "w": 512,
    "h": 512
@@ -29,6 +25,14 @@
    "h": 512
   },
   "acc-knit-vest-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-lantern": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-lantern-thumb": {
    "w": 160,
    "h": 160
   },
@@ -412,14 +416,6 @@
    "w": 160,
    "h": 160
   },
-  "acc-lantern": {
-   "w": 512,
-   "h": 512
-  },
-  "acc-lantern-thumb": {
-   "w": 160,
-   "h": 160
-  },
   "acc-explorer-vest": {
    "w": 512,
    "h": 512
@@ -602,6 +598,11 @@
    "set": "d"
   },
   {
+   "id": "lantern",
+   "slot": "hand",
+   "set": "g"
+  },
+  {
    "id": "round-glasses",
    "slot": "eyes",
    "set": "a"
@@ -714,11 +715,6 @@
   {
    "id": "explorer-hat",
    "slot": "head",
-   "set": "g"
-  },
-  {
-   "id": "lantern",
-   "slot": "hand",
    "set": "g"
   },
   {

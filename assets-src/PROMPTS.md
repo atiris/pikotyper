@@ -179,7 +179,10 @@ In the attached image keep only FRONT, exactly where it is, with the same size, 
 | `acc-star-cape.jpg` | a dark blue cape with stars hanging from the shoulders behind the body, visible on both sides | done 2026-10-21 (with `acc-star-cape-front.jpg`: clasp and collar over the body) |
 | `acc-knit-vest.jpg` | a cozy green knitted vest on the body | done 2026-10-21 |
 | `acc-backpack.jpg` | a small orange backpack on the back, its straps visible over the shoulders | done 2026-10-21 (with `acc-backpack-front.jpg`: straps over the body) |
-| `acc-lantern.jpg` | a small lantern in the right hand | a stray vertical line next to it |
+| `acc-lantern.jpg` | a small lantern in the right hand | done 2026-10-21 (the wire handle has a small gap at the top) |
+| `acc-wand.jpg` | hand: ITEM = a small magic wand with a golden star on top, held in the right hand | a dark blue piece of the cape at its lower end |
+| `acc-balloon.jpg` | hand: ITEM = a red balloon on a thin string, the string held in the left hand | a small blue stray piece next to the balloon, an orange bit on the string |
+| `acc-boots.jpg` | feet: ITEM = brown boots on the feet | thin dark lines left above the boots |
 
 Fixed in code, no new picture needed: green spots in `heart-glasses` lenses (done 2026-10-21). If the pink
 sneakers still look wrong on Piko after that, add `acc-pink-sneakers.jpg` with "white
