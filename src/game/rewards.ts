@@ -10,7 +10,7 @@ const BY_LEVEL: Record<string, string> = {
   'w5-1': 'beanie', 'w5-2': 'neckerchief', 'w5-3': 'balloon', 'w5-4': 'hair-bow',
 };
 const BY_WORLD = ['flower-wreath', 'explorer-hat', 'wizard-hat', 'green-boots', 'dragon-wings'];
-const BY_MASTERY: [number, string][] = [[8, 'heart-glasses'], [16, 'star-shirt'], [24, 'pink-sneakers']];
+const BY_MASTERY: [number, string][] = [[8, 'heart-glasses'], [16, 'star-shirt'], [24, 'pink-sneakers'], [32, 'sunglasses']];
 
 /** Story rewards per world. */
 export const WORLD_REWARDS = ['invitation', 'landing', 'force', 'egg', 'hatched'];

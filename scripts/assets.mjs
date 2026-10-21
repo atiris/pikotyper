@@ -40,6 +40,12 @@ const OUTFITS = {
   g: [['explorer-hat', 'head', (x, y) => y < 0.3], ['lantern', 'hand', (x) => x < 0.35], ['explorer-vest', 'body', (x, y) => y < 0.76], ['green-boots', 'feet', () => true]],
 };
 
+// Accessories that never were part of an outfit set: drawn alone (`acc-<id>`).
+// `tint`: lenses become this semi-transparent color instead of clear glass.
+const SINGLES = {
+  sunglasses: { slot: 'eyes', tint: [40, 32, 52, 0.42] },
+};
+
 const run = promisify(execFile);
 
 function sampleKey(data, w, h) {
@@ -56,7 +62,7 @@ function sampleKey(data, w, h) {
 }
 
 /** Removes the flat key background in place (RGBA buffer). */
-function keyOut(data, w, h, { glass = false, layer = false } = {}) {
+function keyOut(data, w, h, { glass = false, layer = false, tint = null } = {}) {
   const key = sampleKey(data, w, h);
   const green = key[1] > key[0] && key[1] > key[2];
   const kKey = green ? key[1] - Math.max(key[0], key[2]) : Math.min(key[0], key[2]) - key[1];
@@ -110,7 +116,11 @@ function keyOut(data, w, h, { glass = false, layer = false } = {}) {
   }
   for (let p = 0; p < n; p++) {
     const i = p * 4;
-    if (removed[p]) { data[i + 3] = 0; continue; }
+    if (removed[p]) {
+      if (tint && enclosed[p]) { data[i] = tint[0]; data[i + 1] = tint[1]; data[i + 2] = tint[2]; data[i + 3] = Math.round(tint[3] * 255); }
+      else data[i + 3] = 0;
+      continue;
+    }
     if (glass && k[p] > K_GLASS && (nearEnclosed[p] || isInsideEnclosed(p, enclosed, w))) {
       // Light reflection on a glass lens: semi-transparent white.
       data[i] = 255; data[i + 1] = 255; data[i + 2] = 255; data[i + 3] = 110;
@@ -217,9 +227,10 @@ const singleAccessories = new Set();
 
 /** One accessory drawn alone on the template position (no other item can cut it). */
 async function processAccessory(id, data, w, h, manifest) {
-  const entry = Object.entries(OUTFITS).flatMap(([set, rules]) => rules.map(([rid, slot]) => ({ rid, slot, set }))).find((r) => r.rid === id);
-  if (!entry) { console.warn(`acc-${id}: not in any outfit table, skipped`); return; }
-  keyOut(data, w, h, { glass: true });
+  const single = SINGLES[id] && { rid: id, slot: SINGLES[id].slot, set: 'single', tint: SINGLES[id].tint };
+  const entry = single ?? Object.entries(OUTFITS).flatMap(([set, rules]) => rules.map(([rid, slot]) => ({ rid, slot, set }))).find((r) => r.rid === id);
+  if (!entry) { console.warn(`acc-${id}: not in an outfit table nor in SINGLES, skipped`); return; }
+  keyOut(data, w, h, { glass: true, tint: entry.tint ?? null });
   singleAccessories.add(id);
   await writeAccessory(id, entry.slot, entry.set, data, w, h, manifest);
 }

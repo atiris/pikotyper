@@ -149,11 +149,18 @@ Keep only the glasses frames, exactly where they are, with the same size, shape,
 If a piece of an eye stays, add in the same chat: "Inside both lenses there must be only
 flat green (#00FF00) and the one pale green highlight; remove every remaining part of the eyes."
 
+Back items (wings, cape, backpack) remove prompt (replace ITEM; the parts hidden behind
+the body are completed, the game draws the body over them anyway):
+```
+Keep only the ITEM, exactly where it is, with the same size, shape, colors and outline. Remove the whole character completely: head, fur, skin, ears, eyes, cheeks, arms, legs and body. Where the body covered the middle of the ITEM, complete the hidden part of the ITEM naturally so it is one whole, unbroken piece, in the same style and colors. Nothing else may cross or cut the ITEM: no lines, no strings, no other objects. Fill everything that is not the ITEM with one perfectly flat solid pure green color (#00FF00). No shading, no shadow, no outline where the character was, no gradient. Same square size.
+```
+
 | File | ITEM | What is wrong now |
 |---|---|---|
 | `acc-round-glasses.jpg` | glasses: FRAME = round orange glasses with a soft dark-brown outline, a short curved bridge, and two short temple arms reaching toward the sides of the head | top edge cut off by the cap, green spots in the lenses |
 | `acc-star-glasses.jpg` | glasses: FRAME = yellow star-shaped glasses with a soft dark-brown outline, a thin bridge between the two stars, and two short temple arms reaching toward the sides of the head | lower points cut off, small stray bits |
-| `acc-dragon-wings.jpg` | small soft orange baby-dragon wings on the back, visible on both sides | the right wing is crossed by the balloon string |
+| `acc-sunglasses.jpg` | glasses: FRAME = cool sunglasses with a thick black rounded-rectangle frame with a soft dark-brown outline, a straight bridge, and two short temple arms reaching toward the sides of the head | new item; the script makes the lenses a soft see-through dark tint |
+| `acc-dragon-wings.jpg` | back: ITEM = small soft orange baby-dragon wings on the back, visible on both sides | the right wing is crossed by the balloon string |
 | `acc-star-cape.jpg` | a dark blue cape with stars hanging from the shoulders behind the body, visible on both sides | broken into pieces, crossed by the wand |
 | `acc-knit-vest.jpg` | a cozy green knitted vest on the body | backpack straps left at both sides |
 | `acc-backpack.jpg` | a small orange backpack on the back, its straps visible over the shoulders | only broken pieces of the straps |
