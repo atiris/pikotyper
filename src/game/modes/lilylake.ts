@@ -275,7 +275,8 @@ export class ReflectionMode extends HeroMode {
   }
 
   progress(): number {
-    const part = this.parts.length && this.phrases < this.L.def.count ? this.at / this.parts.length : 0;
+    // A finished phrase already counts in `phrases`.
+    const part = this.at < this.parts.length ? this.at / this.parts.length : 0;
     return Math.min(1, (this.phrases + part) / this.L.def.count);
   }
 

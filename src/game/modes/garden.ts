@@ -102,7 +102,8 @@ export class BudsMode extends HeroMode {
     for (const b of this.buds) {
       const x = b.x - this.scroll;
       if (x < -200) continue;
-      drawBud(g, x, VH * 0.82, 180, ease.outBack(b.open), b.color);
+      // outBack(0) is not exactly 0: a closed bud stays closed.
+      drawBud(g, x, VH * 0.82, 180, b.open > 0 ? ease.outBack(b.open) : 0, b.color);
     }
     if (this.current) this.L.label(g, this.current, this.buds[this.buds.length - 1].x - this.scroll, VH * 0.24);
     this.drawHero(g);

@@ -224,7 +224,9 @@ export class OwlMode extends HeroMode {
   }
 
   progress(): number {
-    return Math.min(1, (this.riddles + (this.parts.length ? this.typedParts.length / this.parts.length : 0) * (this.riddles < this.L.def.count ? 1 : 0)) / this.L.def.count);
+    // A solved riddle already counts in `riddles`.
+    const part = this.typedParts.length < this.parts.length ? this.typedParts.length / this.parts.length : 0;
+    return Math.min(1, (this.riddles + part) / this.L.def.count);
   }
 
   get finished(): boolean {

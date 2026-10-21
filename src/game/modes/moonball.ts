@@ -79,7 +79,8 @@ export class FirefliesMode extends Mode {
     // Sentences are long: one at a time, two for quick typists.
     if (this.spawned < L.def.count && this.spawnTimer <= 0 && core.active.length < Math.min(2, L.maxActive)) {
       const word = L.word();
-      const startY = -40;
+      // It starts just under its sentence, so the label never hides it.
+      const startY = 120;
       core.add(word, { x: L.vw * L.rng.range(0.38, 0.62), y: startY, vy: (FLOOR_Y - startY) / L.travelTime(word), stopY: VH * 0.45, state: 'drift', fade: 0 } satisfies Fly);
       this.spawned++;
       this.spawnTimer = L.spawnGap * 1.5;

@@ -91,7 +91,7 @@ The forest has forgotten its songs and fell quiet. Each world brings one song ba
 - [x] Texts sk + en.
 - [x] `PROMPTS.md` section 8, `SINGLES` for the new accessories.
 - [x] Specs (WHAT and WHY) and README.
-- [ ] Build, vitest, e2e; Playwright MCP with a super profile: map with three rows, one
+- [x] Build, vitest, e2e; Playwright MCP with a super profile: map with three rows, one
   level of each world (copy, dictation, memory, mixed, sentences), one super-obstacle,
   reward scene, friends screen. Screenshots.
 
@@ -125,3 +125,27 @@ The forest has forgotten its songs and fell quiet. Each world brings one song ba
 - **Friends:** `Friend.kind` gains `forest` (new value only, no migration); names from
   `forestNames`; the results chip says the friend is home again.
 - New `note` sound (a pentatonic bell) for buds, birds, lilies and notes.
+- Melody's start line "Listen, the forest is waiting" became "The forest is waiting for
+  its song": it also shows in the memory and copy worlds.
+- Fixed while checking in the browser: a sentence target could be a digit group (the super
+  profile knows digits), the reflection and owl progress counted a finished phrase twice
+  until the next one, a closed bud drew as open (`ease.outBack(0)` is not exactly 0), and a
+  new firefly started under its own label.
+
+## Done - 2026-10-21
+Shipped: the third story row "Piko a víla Melódia" (opens at 20 keys, levels 20-40 keys
+capped at the lesson path), worlds 11-15 with 25 levels and ten new level kinds (`buds`,
+`flower`, `birds`, `owl`, `lilies`, `reflection`, `notes`, `treesong`, `fireflies`,
+`lastsong`) in copy, dictation, memory and the new mixed style; Melody on the canvas with a
+drawn fallback and four moods, in ten new scenes and on the friends screen; sentences of
+3-6 words; the forest friends group and rescue missions of story 3 with their styles;
+feather, harp and fairy wings (`SINGLES`), five badges' colours, listening and memory
+tips, all texts sk + en (scenes, lines, teasers, names, items); `PROMPTS.md` section 8;
+specs and README; unit tests (unlock, key cap, rescue styles, mixed targets, sentences)
+and an e2e test (third row, Melody, dictation without a voice plays as copying). Playwright
+MCP with a super profile: map with three rows, the path played by ear (10 of 10), the
+lake, the mixed tree, the ball's dictated sentence, the long reflection played to its end
+from memory, the owl's riddle, the wings reward scene and the friends screen; no console
+errors. Screenshots in `.playwright-mcp/` (not committed).
+Left out: the pictures and music stay with the owner (`assets-src/PROMPTS.md` section 8);
+every one has a drawn fallback. Nothing went to the backlog.

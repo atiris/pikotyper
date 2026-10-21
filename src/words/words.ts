@@ -208,7 +208,8 @@ export class WordSource {
 
   private candidate(maxLen: number, words: number, minWords: number): string {
     const r = this.rng;
-    if (this.digits.length && r.chance(0.15)) {
+    // A sentence stays words; other targets are now and then a digit group.
+    if (this.digits.length && minWords <= 2 && r.chance(0.15)) {
       return Array.from({ length: r.int(1, Math.min(3, maxLen)) }, () => r.pick(this.digits)).join('');
     }
     const focusList = [...this.focus].filter((k) => this.letters.includes(k));

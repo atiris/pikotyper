@@ -61,8 +61,8 @@ const sample = (src: WordSource, n: number, words: number) => Array.from({ lengt
 const wordCount = (s: string) => s.split(/[ -]/).length;
 
 describe('phrases', () => {
-  it('make sentences of the asked number of words', () => {
-    const src = new WordSource(WORDS, { keys: KNOWN, len: [2, 6], noDiacritics: false, seed: 12 });
+  it('make sentences of the asked number of words, never digit groups', () => {
+    const src = new WordSource(WORDS, { keys: [...KNOWN, '1', '2'], len: [2, 6], noDiacritics: false, seed: 12 });
     const counts = Array.from({ length: 100 }, () => src.next(new Set(), undefined, 6, 3).split(' ').length);
     expect(Math.min(...counts)).toBe(3);
     expect(Math.max(...counts)).toBe(6);
