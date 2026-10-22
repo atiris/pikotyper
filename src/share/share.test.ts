@@ -78,22 +78,53 @@ describe('results', () => {
     expect((await parseResult(forged)).intact).toBe(false);
   });
 
-  it('teacher store keeps one result per child and task, and exports CSV', () => {
+  it('carry a group, and a result without one keeps its old checksum', async () => {
+    const p = newProfile('Ema', 'sk');
+    const task = addTask(p, { id: 't1', title: 'Zvieratá', words: ['pes'], text: '', minutes: 1, kind: 'story', group: '5.A' });
+    recordTaskRun(task, { seconds: 60, chars: 90, errors: 10, cpm: 50 });
+    const r = makeResult(p, task);
+    expect(r.group).toBe('5.A');
+    expect(await parseResult(await resultCode(r))).toEqual({ result: r, intact: true });
+    const spec = { id: 't1', title: 'x', words: ['a'], text: '', minutes: 1, kind: 'practice' as const };
+    expect((await parseTask(await taskCode({ ...spec, group: ' 5.A ' }))).group).toBe('5.A');
+    expect('group' in (await parseTask(await taskCode(spec)))).toBe(false);
+    // An older link has no group field and the sum of the old field list.
+    const old = { taskId: 't1', title: 'Z', name: 'Ema', date: '2026-10-21', minutes: 1, accuracy: 90, cpm: 50, weak: [] };
+    const sum = checksum(JSON.stringify([old.taskId, old.title, old.name, old.date, old.minutes, old.accuracy, old.cpm, old.weak]));
+    const back = await parseResult(await encode({ app: 'pikotyper', type: 'result', ...old, sum }));
+    expect(back.intact).toBe(true);
+    expect(back.result.group).toBeUndefined();
+    const forged = await encode({ app: 'pikotyper', type: 'result', ...old, group: '5.B', sum });
+    expect((await parseResult(forged)).intact).toBe(false);
+  });
+
+  it('teacher store keeps one result per child and task, groups rows, and exports CSV', () => {
     const map = new Map<string, string>();
     const local = { getItem: (k: string) => map.get(k) ?? null, setItem: (k: string, v: string) => void map.set(k, v) } as unknown as Storage;
     const s = new TeacherStore(local);
     const r = { taskId: 't1', title: 'Zvieratá', name: 'Ema', date: '2026-10-21', minutes: 2, accuracy: 90, cpm: 50, weak: [['ô', 70]] as [string, number][] };
-    expect(s.add(r, true)).toBe(true);
-    expect(s.add(r, true)).toBe(false);
-    s.add({ ...r, accuracy: 95 }, true);
+    expect(s.add(r, true)).toBe('added');
+    expect(s.add(r, true)).toBe('same');
+    expect(s.add({ ...r, accuracy: 95 }, true)).toBe('updated');
     s.add({ ...r, name: 'Adam, "A"' }, false);
     expect(new TeacherStore(local).results).toHaveLength(2);
-    const csv = s.csv(['task', 'child', 'date', 'min', 'acc', 'cpm', 'weak', 'broken'], (k) => k);
-    expect(csv.split('\n')).toEqual([
-      'task,child,date,min,acc,cpm,weak,broken',
-      'Zvieratá,"Adam, ""A""",2026-10-21,2,90,50,ô 70 %,!',
-      'Zvieratá,Ema,2026-10-21,2,95,50,ô 70 %,',
+    const head = ['group', 'task', 'child', 'date', 'min', 'acc', 'cpm', 'weak', 'broken'];
+    expect(s.csv(head, (k) => k).split('\n')).toEqual([
+      head.join(','),
+      ',Zvieratá,"Adam, ""A""",2026-10-21,2,90,50,ô 70 %,!',
+      ',Zvieratá,Ema,2026-10-21,2,95,50,ô 70 %,',
     ]);
+    const ema = s.results.find((x) => x.name === 'Ema')!;
+    s.assign([ema], '5.A');
+    expect(s.groups()).toEqual(['5.A']);
+    expect(s.sorted()[0].name).toBe('Ema');
+    // A newer hand-in without a group keeps the assigned one.
+    expect(s.add({ ...r, accuracy: 99 }, true)).toBe('updated');
+    const kept = s.results.find((x) => x.name === 'Ema')!;
+    expect(kept.group).toBe('5.A');
+    expect(s.csv(head, (k) => k, [kept]).split('\n')).toHaveLength(2);
+    s.removeMany([kept]);
+    expect(s.results).toHaveLength(1);
   });
 });
 

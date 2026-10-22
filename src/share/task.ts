@@ -4,9 +4,10 @@ import { OWN_SHARE, OWN_TEXT_MAX, type WordSourceOwn, parseOwnWords } from '../w
 import { decode, encode } from './codec';
 
 /** What a task link carries: the task without the child's play. */
-export type TaskSpec = Pick<Task, 'id' | 'title' | 'words' | 'text' | 'minutes' | 'kind'>;
+export type TaskSpec = Pick<Task, 'id' | 'title' | 'words' | 'text' | 'minutes' | 'kind' | 'group'>;
 
 export const TASK_TITLE_MAX = 60;
+export const TASK_GROUP_MAX = 20;
 export const TASK_MINUTES: [number, number] = [1, 20];
 /** Tasks a profile keeps; the oldest go first. */
 export const TASKS_MAX = 10;
@@ -26,7 +27,8 @@ export async function parseTask(code: string): Promise<TaskSpec> {
   if (!words.length && !text) throw new Error('share.broken');
   const minutes = Math.round(Math.min(TASK_MINUTES[1], Math.max(TASK_MINUTES[0], Number(v.minutes) || 5)));
   const kind: TaskKind = v.kind === 'story' ? 'story' : 'practice';
-  return { id: v.id.slice(0, 40), title: v.title.trim().slice(0, TASK_TITLE_MAX), words, text, minutes, kind };
+  const group = typeof v.group === 'string' ? v.group.trim().slice(0, TASK_GROUP_MAX) : '';
+  return { id: v.id.slice(0, 40), title: v.title.trim().slice(0, TASK_TITLE_MAX), words, text, minutes, kind, ...(group && { group }) };
 }
 
 /** Gives a task to a player; the same task again keeps what was played of it. */

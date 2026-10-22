@@ -163,6 +163,8 @@ export interface Task {
   minutes: number;
   /** Free practice of the task's words only, or the next story levels with them mixed in. */
   kind: TaskKind;
+  /** Class or group label the teacher typed, for example "5.A". */
+  group?: string;
   seconds: number;
   chars: number;
   errors: number;

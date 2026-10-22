@@ -1,11 +1,14 @@
 import { weakKeys } from '../learning/stats';
 import type { Profile, Task } from '../storage/schema';
 import { checksum, decode, encode } from './codec';
+import { TASK_GROUP_MAX } from './task';
 
 /** What a child hands in after a task. */
 export interface TaskResult {
   taskId: string;
   title: string;
+  /** The task's group label, when it had one. */
+  group?: string;
   name: string;
   /** Local date the task was finished. */
   date: string;
@@ -26,6 +29,7 @@ export function makeResult(p: Profile, task: Task): TaskResult {
   return {
     taskId: task.id,
     title: task.title,
+    ...(task.group && { group: task.group }),
     name: p.name,
     date: task.doneAt ?? '',
     minutes: Math.round(task.seconds / 6) / 10,
@@ -36,7 +40,8 @@ export function makeResult(p: Profile, task: Task): TaskResult {
 }
 
 /** Fields in a fixed order, so the checksum does not depend on how the object was built. */
-const sumOf = (r: TaskResult) => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak]));
+/** The group joins the sum only when set, so results without one keep verifying. */
+const sumOf = (r: TaskResult) => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : [])]));
 
 export function resultCode(r: TaskResult): Promise<string> {
   return encode({ app: 'pikotyper', type: 'result', ...r, sum: sumOf(r) });
@@ -51,6 +56,7 @@ export async function parseResult(code: string): Promise<{ result: TaskResult; i
   const result: TaskResult = {
     taskId: str(v.taskId),
     title: str(v.title),
+    ...(str(v.group) && { group: str(v.group).trim().slice(0, TASK_GROUP_MAX) }),
     name: str(v.name),
     date: str(v.date),
     minutes: num(v.minutes),

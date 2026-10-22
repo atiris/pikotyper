@@ -8,7 +8,7 @@ import { lessonKeyOf, lessonOrder, punctuationKeys } from '../learning/lessons';
 import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type Lang, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
 import { checkLock, makeLock } from '../storage/lock';
 import { linkOf } from '../share/codec';
-import { TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, taskCode } from '../share/task';
+import { TASK_GROUP_MAX, TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, taskCode } from '../share/task';
 import { moveCode } from '../share/transfer';
 import { linkBox } from '../ui/link-box';
 import { handInDialog } from './task';
@@ -481,6 +481,7 @@ function taskTab(p: Profile): HTMLElement {
   const title = h('input', { type: 'text', maxlength: TASK_TITLE_MAX, placeholder: t('task.titlePlaceholder') });
   const words = h('textarea', { rows: 3, placeholder: t('own.wordsPlaceholder') });
   const text = h('textarea', { rows: 4, maxlength: OWN_TEXT_MAX, placeholder: t('own.textPlaceholder') });
+  const group = h('input', { type: 'text', maxlength: TASK_GROUP_MAX, placeholder: t('task.groupPlaceholder') });
   let minutes = 10;
   const kind = select<TaskKind>('practice', [['practice', t('task.kind.practice')], ['story', t('task.kind.story')]], () => undefined);
   const msg = h('p', { class: 'error', role: 'alert' });
@@ -488,7 +489,7 @@ function taskTab(p: Profile): HTMLElement {
   const list = h('ul', { class: 'own-list task-list' });
   const make = async () => {
     msg.textContent = '';
-    const spec: TaskSpec = { id: newId(), title: title.value.trim(), words: parseOwnWords(words.value), text: text.value.slice(0, OWN_TEXT_MAX).trim(), minutes, kind: kind.value as TaskKind };
+    const spec: TaskSpec = { id: newId(), title: title.value.trim(), words: parseOwnWords(words.value), text: text.value.slice(0, OWN_TEXT_MAX).trim(), minutes, kind: kind.value as TaskKind, ...(group.value.trim() && { group: group.value.trim() }) };
     if (!spec.words.length && !spec.text) return void (msg.textContent = t('task.needContent'));
     const link = linkOf('task', await taskCode(spec));
     out.replaceChildren(
@@ -507,6 +508,7 @@ function taskTab(p: Profile): HTMLElement {
     h('fieldset', { class: 'task-new' }, h('legend', {}, t('task.group.new')),
       h('p', { class: 'hint' }, t('task.intro')),
       field(t('task.title'), title),
+      field(t('task.group'), group, t('task.groupHint')),
       field(t('own.words'), words, t('own.wordsHint')),
       field(t('own.text'), text),
       h('div', { class: 'row' },
