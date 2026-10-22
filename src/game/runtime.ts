@@ -862,7 +862,11 @@ export class LevelRuntime {
     if (this.robotMoodT > 0 && (this.robotMoodT -= dt) <= 0) this.robotMood = 'idle';
     if (this.fairyMoodT > 0 && (this.fairyMoodT -= dt) <= 0) this.fairyMood = 'idle';
     this.fairySpin = Math.max(0, this.fairySpin - dt);
-    this.progressFill.style.width = `${Math.round(this.mode.progress() * 100)}%`;
+    const pct = Math.round(this.mode.progress() * 100);
+    if (pct !== this.progressPct) {
+      this.progressPct = pct;
+      this.progressFill.style.width = `${pct}%`;
+    }
     const target = 0.9 + this.difficulty * 0.35;
     this.gauge.set(this.ema / target);
     if ((this.gaugeLabelIn -= dt) <= 0) {
@@ -879,8 +883,11 @@ export class LevelRuntime {
   }
 
   private lastExpected: string | null = null;
+  private progressPct = -1;
 
   private render(): void {
+    // A paused level does not move: the last frame stays unless a resize cleared it.
+    if (this.paused && !this.stage.dirty) return;
     const g = this.stage.begin();
     drawBackground(g, this.mode.world, this.stage.vw, this.mode.scroll, !this.reduceMotion);
     if (this.robot) this.drawBolt(g);

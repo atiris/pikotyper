@@ -59,10 +59,15 @@ export function roundPic(kind: RoundKind, glyph: keyof typeof ICONS, ring = ''):
 /** Rhythm (a picture, not a button): the green ring fills from calm to excellent. */
 export function rhythmPic(): { el: HTMLElement; set(ratio: number): void; label(text: string): void } {
   const el = h('div', { class: 'round-btn rhythm', role: 'img', html: roundSvg('wave', rhythmRing(0.25)) });
+  // The ring is redrawn only when its 1/40 step changes, not on every frame.
+  let step = -1;
   return {
     el,
     set(ratio) {
-      paintRound(el, 'wave', rhythmRing(0.25 + 0.7 * Math.max(0, Math.min(1, ratio))));
+      const next = Math.round(Math.max(0, Math.min(1, ratio)) * 40);
+      if (next === step) return;
+      step = next;
+      paintRound(el, 'wave', rhythmRing(0.25 + 0.7 * (next / 40)));
     },
     label(text) {
       el.title = text;

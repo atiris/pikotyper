@@ -46,6 +46,8 @@ export class Stage {
   /** Virtual width. */
   vw = 1280;
   scale = 1;
+  /** The canvas was cleared by a resize and needs a redraw even when nothing moves. */
+  dirty = true;
   private observer: ResizeObserver;
 
   constructor(parent: HTMLElement) {
@@ -69,6 +71,7 @@ export class Stage {
     this.canvas.style.height = `${h}px`;
     this.scale = h / VH;
     this.vw = w / this.scale;
+    this.dirty = true;
   }
 
   /** Prepares the context for drawing in virtual units. */
@@ -76,6 +79,7 @@ export class Stage {
     const dpr = this.canvas.width / Math.max(1, this.canvas.clientWidth || 1);
     this.g.setTransform(this.scale * dpr, 0, 0, this.scale * dpr, 0, 0);
     this.g.clearRect(0, 0, this.vw, VH);
+    this.dirty = false;
     return this.g;
   }
 
