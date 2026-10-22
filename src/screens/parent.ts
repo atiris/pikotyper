@@ -16,7 +16,7 @@ import { applyImport, parseImport, planImport } from '../storage/store';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { pikoElement } from '../gfx/piko';
-import { soundButton } from '../ui/chrome';
+import { soundButton, superStar } from '../ui/chrome';
 import { clickableHeatmap } from './stats';
 import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion, masteredCount } from '../game/rewards';
@@ -115,7 +115,7 @@ export async function parentScreen(root: HTMLElement, params: { granted?: boolea
     nav.append(b);
   }
   root.append(h('div', { class: 'screen parent-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('parent.title', { name: p.name })), soundButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('parent.title', { name: p.name })), superStar(), soundButton()),
     nav, body));
   show('settings');
 }

@@ -36,6 +36,8 @@
   buttons among the round buttons at the top right so they stay reachable with any number
   of profiles. The new-key card has its heading above Piko, the finger guide beside Piko and
   Esc to skip. The get-ready card has the picture beside the text and always shows its button.
+- The super star (super mode) and the wardrobe's star count are normal members of the layout: the star sits in the top row before the sound button on every screen; the wardrobe's count sits under the animal picture.
+- The results card's three buttons (next level, replay, map) share one style; only the next level is accented.
 - Back buttons in top bars have the same height as the round buttons beside them.
 - Fullscreen: a round button on the map and in levels; a parent can set a profile to
   start in fullscreen (browsers allow it only after the first key press or click).

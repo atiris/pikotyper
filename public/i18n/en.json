@@ -1142,14 +1142,20 @@
       "fullscreen": "Play on the whole screen and back again.",
       "help": "This help.",
       "pause": "Pause. The Esc key pauses too.",
-      "paw": "Paw help: {n} words without a mistake charge a paw. Press Enter and {piko} types {words} words for you.",
+      "paw": "The paw shows whether your help is ready: every word without a mistake fills a bit of the ring, after {n} words the paw is charged. Press Enter when you are stuck and {piko} types {words} words for you.",
+      "dots": "The dots under the world name are the levels: green is done, orange is this one, empty is still to come. The web is the big challenge at the end of the world.",
       "progress": "The bar shows how much of the level is behind you.",
       "gauge": "The green ring shows your rhythm. When you type smoothly, it fills up.",
       "levelHelp": "Help for this level: what to do and how to improve.",
-      "super": "The star in the corner: super mode. Click it to turn it off.",
+      "super": "The star at the top: super mode. Click it to turn it off.",
       "read": "Read aloud: the computer reads the words to you.",
       "guide": "Shows or hides the keyboard that tells where the finger goes."
     },
+    "moreTitle": "Rescue mission and badge",
+    "more": [
+      "Rescue mission: a short task where you help a little friend. It opens when you finish the first story, and you find it on the map.",
+      "Badge: you get one for every finished world. The more stars you collect in that world, the nicer it is: bronze, silver, gold."
+    ],
     "playTitle": "How to play",
     "play": [
       "Type the word on the object. Then it clears the way.",

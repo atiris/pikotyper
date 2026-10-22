@@ -15,8 +15,9 @@
   now (the level's intro and one tip), how to do best (accuracy first, then a steady rhythm,
   the paw when stuck, repeat for three stars, rest after a few levels) and the real buttons.
   Escape or "Continue" closes it and resumes.
-- Back or Escape returns where the child came from: the map, or the paused level.
-- Works on a 1024x600 screen; the page scrolls, the back button stays in sight.
+- The round close button in the top right corner (the one of every dialog) or Escape returns where the child came from: the map, or the paused level.
+- Works on a 1024x600 screen; the page scrolls, the close button stays in sight.
+- Explains the paw (what it shows, when to press), the dots under the world name (done, this one, to come, a web for the big challenge), the rescue mission and the badge, each in one short sentence. The level help card has the same text, left-aligned and without the super star.
 
 ## Why
 - Children do not guess what symbols mean, and the parent is not always next to them.

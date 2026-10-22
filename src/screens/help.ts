@@ -2,7 +2,7 @@ import { app, go } from '../app/app';
 import { t, tList } from '../i18n/i18n';
 import { captureKeys } from '../game/cards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
-import { type Child, ICONS, button, h, icon } from '../ui/dom';
+import { type Child, ICONS, closeButton, h, icon } from '../ui/dom';
 import { pawRing, rhythmPic, roundButton, roundPic } from '../ui/hud';
 
 /** A top icon as the child sees it (a picture, not a working button) with its one line. */
@@ -24,7 +24,14 @@ function mapIcons(): HTMLElement[] {
   ];
 }
 
-export function levelIcons(): HTMLElement[] {
+/** The level's dots as the child sees them under the world name. */
+function dotsPic(): HTMLElement {
+  return h('span', { class: 'level-dots', 'aria-hidden': 'true' },
+    h('span', { class: 'dot done' }), h('span', { class: 'dot now' }), h('span', { class: 'dot todo' }));
+}
+
+/** The buttons of a level; the super star only where it can appear on screen (the help page). */
+export function levelIcons(withSuper = false): HTMLElement[] {
   const p = app.profile!;
   const gauge = rhythmPic();
   gauge.set(0.6);
@@ -32,6 +39,7 @@ export function levelIcons(): HTMLElement[] {
     iconLine(round('pause'), t('help.icons.pause')),
     iconLine(roundPic('paw', 'paw', pawRing(2, PAW_MAX)),
       t('help.icons.paw', { n: PAW_STREAK, words: PAW_WORDS, piko: p.companion.name })),
+    iconLine(dotsPic(), t('help.icons.dots')),
     iconLine(h('div', { class: 'progress' }, h('div', { class: 'progress-fill', style: 'width: 60%' })), t('help.icons.progress')),
     iconLine(gauge.el, t('help.icons.gauge')),
     iconLine(round('help'), t('help.icons.levelHelp')),
@@ -39,7 +47,7 @@ export function levelIcons(): HTMLElement[] {
     iconLine(round('keyboard'), t('help.icons.guide')),
     iconLine(round('sound'), t('help.icons.sound')),
     iconLine(round('fullscreen'), t('help.icons.fullscreen')),
-    iconLine(roundPic('super', 'star'), t('help.icons.super')),
+    ...(withSuper ? [iconLine(roundPic('super', 'star'), t('help.icons.super'))] : []),
   ];
 }
 
@@ -52,11 +60,12 @@ function helpPage(onBack: () => void): HTMLElement {
   const list = (key: string) => h('ul', {}, ...tList(key).map((l) => h('li', {}, l)));
   return h('article', { class: 'panel prose help-page' },
     h('div', { class: 'bar' },
-      button(t('common.back'), onBack, 'btn primary', 'back'),
-      h('h1', {}, t('help.title'))),
+      h('h1', {}, t('help.title')),
+      closeButton(onBack)),
     section(t('help.typeTitle'), list('help.type')),
     section(t('help.mapTitle'), h('ul', { class: 'help-icons' }, ...mapIcons())),
-    section(t('help.levelTitle'), h('ul', { class: 'help-icons' }, ...levelIcons())),
+    section(t('help.levelTitle'), h('ul', { class: 'help-icons' }, ...levelIcons(true))),
+    section(t('help.moreTitle'), list('help.more')),
     section(t('help.playTitle'), list('help.play')));
 }
 
@@ -74,7 +83,7 @@ function escapeBack(el: HTMLElement, onBack: () => void): () => void {
 export function helpScreen(root: HTMLElement): () => void {
   const screen = h('div', { class: 'screen help-screen' }, helpPage(() => go('map')));
   root.append(screen);
-  screen.querySelector<HTMLElement>('.btn.primary')!.focus();
+  screen.querySelector<HTMLElement>('.modal-x')!.focus();
   return escapeBack(screen, () => go('map'));
 }
 
@@ -89,7 +98,7 @@ export function openHelp(host: HTMLElement, onBack: () => void): void {
   overlay.append(helpPage(close));
   const stop = escapeBack(overlay, close);
   host.append(overlay);
-  overlay.querySelector<HTMLElement>('.btn.primary')!.focus();
+  overlay.querySelector<HTMLElement>('.modal-x')!.focus();
 }
 
 /** The round "?" button of the map's top actions. */

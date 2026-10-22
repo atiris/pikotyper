@@ -9,7 +9,7 @@ import { activeKeys } from '../learning/lessons';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { button, h, icon } from '../ui/dom';
-import { fullscreenButton, soundButton } from '../ui/chrome';
+import { fullscreenButton, soundButton, superStar } from '../ui/chrome';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords, roundButton } from '../ui/hud';
 import { helpButton } from './help';
@@ -71,7 +71,7 @@ export function mapScreen(root: HTMLElement): void {
       button(t('map.switchProfile'), () => go('start'), 'btn ghost small', 'back'),
       h('div', { class: 'top-actions' },
         settingsButton(),
-        soundButton(),
+        superStar(), soundButton(),
         fullscreenButton(),
         helpButton())),
     h('main', { class: 'map-body' },

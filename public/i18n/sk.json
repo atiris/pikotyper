@@ -1142,14 +1142,20 @@
       "fullscreen": "Hra na celú obrazovku a zase späť.",
       "help": "Táto pomoc.",
       "pause": "Pauza. Rovnako ju zapne aj kláves Esc.",
-      "paw": "Labková pomoc: {n} slov bez chyby nabije labku. Stlač Enter a {piko} napíše za teba {words} slová.",
+      "paw": "Labka ti ukazuje, či máš pomoc pripravenú: každé slovo bez chyby zaplní kúsok kruhu, po {n} slovách je labka nabitá. Stlač Enter, keď si zaseknutý, a {piko} napíše za teba {words} slová.",
+      "dots": "Bodky pod menom sveta sú úrovne: zelená je hotová, oranžová je táto, prázdna ťa ešte čaká. Pavučina je veľká výzva na konci sveta.",
       "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
       "gauge": "Zelený kruh ukazuje tvoj rytmus. Keď píšeš plynulo, naplní sa.",
       "levelHelp": "Pomoc k úrovni: čo robiť a ako sa zlepšiť.",
-      "super": "Hviezda v rohu: super režim. Kliknutím ho vypneš.",
+      "super": "Hviezda hore: super režim. Kliknutím ho vypneš.",
       "read": "Čítanie nahlas: počítač ti slová prečíta.",
       "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst."
     },
+    "moreTitle": "Záchranná misia a odznak",
+    "more": [
+      "Záchranná misia: krátka úloha, v ktorej pomôžeš malému kamarátovi. Otvorí sa, keď dokončíš prvý príbeh, a nájdeš ju na mape.",
+      "Odznak: dostaneš ho za dokončený svet. Čím viac hviezdičiek v svete zbieraš, tým je krajší: bronzový, strieborný, zlatý."
+    ],
     "playTitle": "Ako hrať",
     "play": [
       "Napíš slovo, ktoré je na predmete. Potom ti uvoľní cestu.",

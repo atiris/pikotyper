@@ -136,9 +136,9 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
   } else if (def.id === 'rescue') {
     actions.append(button(t('results.nextRescue'), () => go('level', { id: 'rescue' }), `btn ${calm ? '' : 'primary'}`, 'rescue'));
   }
-  actions.append(button(t('results.replay'), () => go('level', params), 'btn small', 'replay'));
+  actions.append(button(t('results.replay'), () => go('level', params), 'btn', 'replay'));
   const toMap = () => go('map');
-  actions.append(button(t('level.toMap'), toMap, 'btn ghost small', 'map'));
+  actions.append(button(t('level.toMap'), toMap, 'btn', 'map'));
 
   // The task, the surprise and Piko's question share one small framed block; a run with a
   // surprise has no built-in teaser.

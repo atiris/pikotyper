@@ -87,7 +87,7 @@ export function titleBlock(def: LevelDef, name: string): HTMLElement {
       ? h('span', { class: `dot web ${cls}`, html: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">${WEB}</svg>` })
       : h('span', { class: `dot ${cls}` });
   });
-  return h('div', { class: 'hud-title' }, h('b', {}, name), dots.length ? h('span', { class: 'dots', 'aria-hidden': 'true' }, dots) : null);
+  return h('div', { class: 'hud-title' }, h('b', {}, name), dots.length ? h('span', { class: 'level-dots', 'aria-hidden': 'true' }, dots) : null);
 }
 
 /** "Meadow · level 3": a level named without a world number. */

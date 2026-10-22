@@ -1,8 +1,17 @@
-import { app } from '../app/app';
+import { app, go } from '../app/app';
 import { audio, type SoundLevel } from '../audio/audio';
 import { t } from '../i18n/i18n';
 import { ICONS } from './dom';
 import { paintRound, roundButton } from './hud';
+
+/** Super mode is on: a round star in the top row; clicking it ends the mode. Nothing otherwise. */
+export function superStar(): HTMLButtonElement | null {
+  if (!app.superPlayer) return null;
+  return roundButton('super', 'star', t('super.badge'), () => {
+    app.superPlayer = null;
+    go('start');
+  });
+}
 
 const LEVEL_ICON: Record<SoundLevel, keyof typeof ICONS> = { normal: 'sound', quiet: 'soundLow', off: 'mute' };
 

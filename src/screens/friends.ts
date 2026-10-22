@@ -6,7 +6,7 @@ import { t } from '../i18n/i18n';
 import { STORIES, storyDone } from '../game/levels';
 import type { Friend } from '../storage/schema';
 import { button, h } from '../ui/dom';
-import { soundButton } from '../ui/chrome';
+import { soundButton, superStar } from '../ui/chrome';
 
 const LITTLE_ROBOTS = ['obj-robot-small-1', 'obj-robot-small-2', 'obj-robot-small-3'];
 const FOREST_FRIENDS = ['obj-baby-bird', 'obj-firefly'];
@@ -43,7 +43,7 @@ export function friendsScreen(root: HTMLElement): void {
     ? h('figure', { class: 'dragon first' }, fairyElement('happy', 120), h('figcaption', {}, t('friends.melody')))
     : null;
   root.append(h('div', { class: 'screen dragons-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('friends.title')), soundButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('friends.title')), superStar(), soundButton()),
     group('dragon', firstDragon),
     group('robot', bolt),
     group('forest', melody),

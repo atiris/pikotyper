@@ -244,7 +244,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .hud-title { font-weight: 700; white-space: nowrap; }
 .hud-title { display: flex; flex-direction: column; gap: 0.2rem; white-space: nowrap; }
 .hud-title b { font-size: 17px; }
-.dots { display: flex; align-items: center; gap: 5px; }
+.level-dots { display: flex; align-items: center; gap: 5px; }
 .dot { width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box; border: 2px solid #c9b8a4; }
 .dot.done { background: #2f8a4c; border-color: #2f8a4c; }
 .dot.now { background: #d9661f; border-color: #d9661f; }
@@ -359,7 +359,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 /* The pause leaves the stage and the guide in sight: no dark layer, no blur. */
 .pause-card { position: absolute; top: 0.8rem; left: 50%; transform: translateX(-50%); z-index: 10; animation: fade-in 0.2s ease; width: max-content; max-width: calc(100% - 2rem); padding: 0.8rem 1.2rem; }
 .pause-card h2 { margin: 0 0 0.5rem; font-size: 1.3rem; }
-.pause-card.help-card { width: min(560px, calc(100% - 2rem)); max-height: calc(100% - 1.6rem); overflow-y: auto; }
+.pause-card.help-card { width: min(560px, calc(100% - 2rem)); max-height: calc(100% - 1.6rem); overflow-y: auto; text-align: left; }
 .help-card h3 { margin: 0.8rem 0 0.3rem; color: var(--brand-dark); font-size: 1.05rem; }
 .help-card p, .help-card li { margin: 0.2rem 0; }
 .about-actions { justify-content: space-between; }
@@ -539,7 +539,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .story-dots i.on { background: var(--brand); }
 
 /* Wardrobe */
-.star-count { display: inline-flex; align-items: center; gap: 0.3rem; margin-left: 0.8rem; padding: 0.1em 0.6em; border-radius: 999px; background: #fff3c9; color: #7a4b00; font-size: 1.2rem; vertical-align: middle; }
+.star-count { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.1em 0.6em; border-radius: 999px; background: #fff3c9; color: #7a4b00; font-size: 1.2rem; }
 .star-count img { width: 26px; }
 .wardrobe-body { display: grid; grid-template-columns: 320px 1fr; gap: var(--sp-4); }
 .wardrobe-main { display: grid; gap: var(--sp-3); align-content: start; }
@@ -620,10 +620,6 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 }
 .own-preview { margin: 0.3rem 0 0.5rem; padding-left: 1.2rem; font-family: var(--font-game); font-size: 1.1rem; }
 .sound-btn[data-level='quiet'] { color: var(--ink-soft); }
-/* The star sits in the top right corner; the controls there move aside for it. */
-body.super-on .top-right { right: 4.6rem; }
-body.super-on .hud, body.super-on .bar, body.super-on .map-top { padding-right: 4.4rem; }
-.super-badge { position: fixed; top: 0.4rem; right: 0.4rem; z-index: 60; }
 .dashboard .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.8rem; margin-bottom: 1rem; }
 .stat { background: var(--paper-2); border-radius: 18px; padding: 0.8rem; text-align: center; display: flex; flex-direction: column; }
 .stat b { font-size: 2rem; color: var(--brand-dark); }
@@ -659,6 +655,7 @@ body.super-on .hud, body.super-on .bar, body.super-on .map-top { padding-right: 
 
 /* Help */
 .help-page { max-width: 760px; font-size: 1.1rem; }
+.help-page .modal-x { position: static; flex: none; }
 .help-page .bar { position: sticky; top: 0; z-index: 1; background: var(--paper); padding: 0.4rem 0; margin-top: -0.4rem; }
 .help-section h2 { color: var(--brand-dark); margin: 1.2rem 0 0.4rem; }
 .help-icons { list-style: none; padding: 0; display: grid; gap: 0.6rem; }

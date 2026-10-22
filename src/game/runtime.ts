@@ -17,7 +17,7 @@ import { SHIFT_L, SHIFT_R, SPACE, activeKeys, isLetterKey, keysToIntroduce, mast
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, h } from '../ui/dom';
-import { fullscreenButton, soundButton } from '../ui/chrome';
+import { fullscreenButton, soundButton, superStar } from '../ui/chrome';
 import { levelIcons } from '../screens/help';
 import { paintRound, pawRing, rhythmPic, roundButton, titleBlock, worldName } from '../ui/hud';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
@@ -248,7 +248,7 @@ export class LevelRuntime {
       h('div', { class: 'progress', title: t('level.progress') }, this.progressFill),
       this.gauge.el,
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
-      helpBtn, guideBtn, this.readBtn, soundButton(), fullscreenButton());
+      helpBtn, guideBtn, this.readBtn, superStar(), soundButton(), fullscreenButton());
     const stageWrap = h('div', { class: 'stage-wrap' });
     this.piko = pikoElement(p.companion, 'idle', 150);
     // Piko joins the stage when play starts; the preparation cards show him themselves.
@@ -801,6 +801,8 @@ export class LevelRuntime {
       h('ol', {}, ...tList('level.helpSteps').map((s) => h('li', {}, s))),
       h('h3', {}, t('level.helpButtons')),
       h('ul', { class: 'help-icons' }, ...levelIcons()),
+      h('h3', {}, t('help.moreTitle')),
+      h('ul', {}, ...tList('help.more').map((s) => h('li', {}, s))),
       h('div', { class: 'row' }, button(t('level.resume'), () => this.resume(), 'btn primary', 'play')));
     (this.pauseEl.querySelector('.btn.primary') as HTMLButtonElement).focus({ preventScroll: true });
   }

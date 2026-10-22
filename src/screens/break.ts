@@ -4,7 +4,7 @@ import { pikoElement } from '../gfx/piko';
 import { t } from '../i18n/i18n';
 import { postureContent } from '../game/cards';
 import { button, confirmDialog, h } from '../ui/dom';
-import { soundButton } from '../ui/chrome';
+import { soundButton, superStar } from '../ui/chrome';
 
 const EXERCISES = ['arms', 'fists', 'shoulders'] as const;
 const SECONDS = 20;
@@ -49,7 +49,7 @@ export function breakScreen(root: HTMLElement): () => void {
   timer.textContent = String(left);
   show();
   root.append(h('div', { class: 'screen break-screen' },
-    h('div', { class: 'top-right' }, soundButton()),
+    h('div', { class: 'top-right' }, superStar(), soundButton()),
     box,
     h('div', { class: 'row center' }, button(t('break.parentSkip'), async () => {
       if (await confirmDialog({ title: t('break.skipTitle'), text: t('break.skipText'), ok: t('break.skipOk'), cancel: t('common.back') })) end();

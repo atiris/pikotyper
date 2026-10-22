@@ -5,7 +5,7 @@ import { parseResult } from '../share/result';
 import { type StoredResult, TeacherStore } from '../share/teacher';
 import { button, confirmDialog, download, h } from '../ui/dom';
 import { keyLabel } from '../ui/keyboard-guide';
-import { soundButton } from '../ui/chrome';
+import { soundButton, superStar } from '../ui/chrome';
 
 /**
  * The teacher's table of handed-in results, kept in this browser only. Opened from the start
@@ -72,7 +72,7 @@ export function teacherScreen(root: HTMLElement, params: { code?: string }): voi
   const exportCsv = () => download('pikotyper-results.csv', `﻿${store.csv([...head, t('teacher.col.broken')], keyLabel)}`, 'text/csv');
 
   root.append(h('div', { class: 'screen teacher-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('start'), 'btn ghost small', 'back'), h('h1', {}, t('teacher.title')), soundButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('start'), 'btn ghost small', 'back'), h('h1', {}, t('teacher.title')), superStar(), soundButton()),
     h('main', { class: 'panel' },
       h('p', {}, t('teacher.intro')),
       h('form', { class: 'row', onSubmit: (e: Event) => { e.preventDefault(); void addCode(codeFrom(paste.value, 'result')).then(() => (paste.value = '')); } },

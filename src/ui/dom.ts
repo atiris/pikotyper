@@ -71,6 +71,11 @@ export function button(label: string | Node, onClick: () => void, cls = 'btn', i
   return b;
 }
 
+/** The round close button of dialogs and the help page. */
+export function closeButton(onClick: () => void): HTMLButtonElement {
+  return h('button', { class: 'modal-x', type: 'button', 'aria-label': 'close', onClick: () => onClick() }, icon('close'));
+}
+
 /** Modal dialog; returns a close function. */
 export function modal(content: HTMLElement, opts: { onClose?: () => void; cls?: string; closable?: boolean } = {}): () => void {
   const prev = document.activeElement as HTMLElement | null;
@@ -94,7 +99,7 @@ export function modal(content: HTMLElement, opts: { onClose?: () => void; cls?: 
     }
   };
   if (opts.closable !== false) {
-    box.prepend(h('button', { class: 'modal-x', type: 'button', 'aria-label': 'close', onClick: close }, icon('close')));
+    box.prepend(closeButton(close));
     back.addEventListener('pointerdown', (e) => { if (e.target === back) close(); });
   }
   document.addEventListener('keydown', onKey, true);

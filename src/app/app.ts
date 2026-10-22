@@ -1,7 +1,6 @@
 import { audio } from '../audio/audio';
 import { resetFontFamily } from '../gfx/draw';
 import { language, setLanguage, t, tList } from '../i18n/i18n';
-import { roundButton } from '../ui/hud';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { Store } from '../storage/store';
 import { GUEST_ID, type Lang, type Profile, SUPER_ID } from '../storage/schema';
@@ -92,20 +91,6 @@ export function go(name: ScreenName, params: any = {}, push = true): void {
   root.dataset.screen = name;
   window.scrollTo(0, 0);
   cleanup = screens.get(name)!(root, params);
-  superBadge();
-}
-
-/** Super mode is on: a round star in the top right corner of every screen; clicking it ends the mode. */
-function superBadge(): void {
-  document.querySelector('.super-badge')?.remove();
-  document.body.classList.toggle('super-on', !!app.superPlayer);
-  if (!app.superPlayer) return;
-  const b = roundButton('super', 'star', t('super.badge'), () => {
-    app.superPlayer = null;
-    go('start');
-  });
-  b.classList.add('super-badge');
-  document.body.append(b);
 }
 
 export function saveProfile(): void {
