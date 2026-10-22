@@ -65,6 +65,12 @@ so a child who finishes it still cannot type a school sentence.
 | 12 | One-hand learning path | P3 | M | Hand differences or a broken arm; only paid niche tools exist | [learning/one-hand-path.md](learning/one-hand-path.md) |
 | 13 | Czech language and keyboard | P3 | M | Bigger neighbour market, same gap: only paid or old Windows tools | [experience/czech.md](experience/czech.md) |
 
+## World rhythm 2026-10-22
+
+A child plays about one world per session, but levels 1-4 of a world are the same game.
+Brainstorm with open questions: [game/world-rhythm.md](game/world-rhythm.md) (fixed roles
+per level: main game, calm step, harder main game with a surprise, twist, super-obstacle).
+
 Areas: [learning/](learning/index.md), [game/](game/index.md),
 [profiles/](profiles/index.md), [experience/](experience/index.md).
 
