@@ -10,6 +10,9 @@
 - Background skies repeat across wide screens, so they are even (clouds or a gradient,
   no sun, moon or single planet). The ground layers in front are close-up strips placed
   along the bottom of the screen at a set height per world.
+- Every background layer is generated from a standalone prompt: each world has a written style
+  spec (palette, outline weight, light, ground line, what never appears) pasted into its far,
+  mid and near prompts, so a strip needs no attached picture and still matches.
 - Big, readable words on targets, with high contrast against the scene; practice words
   and their info line keep a minimum on-screen size in small windows.
 - One button set everywhere: every round button is the same white circle with a ring, a colored

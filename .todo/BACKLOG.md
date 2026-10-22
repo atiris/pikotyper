@@ -9,3 +9,4 @@ Search before adding; an entry is worked only when it is named.
 - [P3] An update re-downloads the whole install cache - scripts/sw-template.js addAll(CORE) fetches every file again when the version changes (about 6.6 MB)
 - [P2] Super password e2e fails - e2e/play.spec.ts 'the super password typed fast' never shows .super-badge (fails on a clean checkout too)
 - [P2] Help e2e fails - e2e/help.spec.ts expects 15 .help-icons li but the page shows 16 (fails on a clean checkout too)
+- [P2] Test standalone strip prompts - generate bg-junkyard-near alone from the new World style prompt (no attachment) in assets-src/PROMPTS.md, compare with the current picture, then regenerate the six flagged strips
