@@ -104,7 +104,5 @@ export function openPracticeKeys(): void {
     h('div', { class: 'pk-row' }, shiftChip, count),
     h('label', { class: 'pk-slider' }, h('span', {}, t('practiceKeys.slider')), slider, stepLabel),
     hint,
-    h('div', { class: 'row center' },
-      button(t('common.back'), () => close(), 'btn ghost', 'back'),
-      start)), { cls: 'practice-keys-modal' });
+    h('div', { class: 'row center' }, start)), { cls: 'practice-keys-modal' });
 }

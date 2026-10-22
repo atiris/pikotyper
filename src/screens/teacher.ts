@@ -6,7 +6,7 @@ import { TASK_GROUP_MAX } from '../share/task';
 import { type StoredResult, TeacherStore } from '../share/teacher';
 import { button, confirmDialog, download, h } from '../ui/dom';
 import { keyLabel } from '../ui/keyboard-guide';
-import { soundButton, superStar } from '../ui/chrome';
+import { cornerControls } from '../ui/chrome';
 import { type ScanCard, scanCard } from './teacher-scan';
 
 /** Accuracy in percent from which a child has mastered the task (two stars in the game). */
@@ -203,7 +203,8 @@ export function teacherScreen(root: HTMLElement, params: { code?: string }): () 
   };
 
   root.append(h('div', { class: 'screen teacher-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('start'), 'btn ghost small', 'back'), h('h1', {}, t('teacher.title')), superStar(), soundButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('start'), 'btn ghost small', 'back'), h('h1', {}, t('teacher.title'))),
+    cornerControls(),
     h('main', { class: 'panel' },
       h('p', {}, t('teacher.intro')),
       h('div', { class: 'row scan-start' }, scanGroup, groupNames, scanButton, h('span', { class: 'hint' }, t('teacher.scan.privacy'))),

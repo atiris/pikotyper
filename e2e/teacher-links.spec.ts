@@ -13,7 +13,7 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
   // The parent builds a one-minute practice task.
   const parent = await open();
   await createProfile(parent, 'Ema');
-  await parent.locator('.top-actions .round-btn').first().click();
+  await parent.locator('.top-right .round-btn').first().click();
   await parent.locator('.confirm .btn:not(.primary)').last().click();
   await parent.locator('.tab[data-tab=task]').click();
   await parent.locator('.task-new input[type=text]').first().fill('Zvieratá');

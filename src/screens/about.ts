@@ -1,7 +1,7 @@
 import { app, go } from '../app/app';
 import { t, tList } from '../i18n/i18n';
 import { button, h, icon } from '../ui/dom';
-import { soundButton, superStar } from '../ui/chrome';
+import { cornerControls } from '../ui/chrome';
 
 const COUNTER = 'https://pikotyper.goatcounter.com';
 
@@ -20,7 +20,8 @@ export function aboutScreen(root: HTMLElement): void {
   const visits = h('p', { class: 'hint' });
   void showVisits(visits);
   root.append(h('div', { class: 'screen about-screen' },
-    h('div', { class: 'top-right' }, superStar(), soundButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go(app.profile ? 'map' : 'start'), 'btn ghost small', 'back')),
+    cornerControls(),
     h('article', { class: 'panel prose' },
       h('h1', {}, t('about.title')),
       h('p', {}, t('about.intro')),
@@ -34,7 +35,6 @@ export function aboutScreen(root: HTMLElement): void {
       h('h2', {}, t('about.creditsTitle')),
       h('p', {}, t('about.credits')),
       h('div', { class: 'row about-actions' },
-        button(t('common.back'), () => go(app.profile ? 'map' : 'start'), 'btn primary', 'back'),
         h('a', { class: 'btn', href: 'https://github.com/atiris/pikotyper', target: '_blank', rel: 'noopener' }, icon('code'), t('about.code')),
         h('a', { class: 'btn', href: 'https://github.com/atiris/pikotyper/issues/new', target: '_blank', rel: 'noopener' }, icon('edit'), t('about.report'))))));
 }

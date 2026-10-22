@@ -17,9 +17,9 @@ import { SHIFT_L, SHIFT_R, SPACE, activeKeys, isLetterKey, keysToIntroduce, mast
 import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, h } from '../ui/dom';
-import { fullscreenButton, soundButton, superStar } from '../ui/chrome';
+import { globalButtons } from '../ui/chrome';
 import { levelIcons } from '../screens/help';
-import { paintRound, pawRing, rhythmPic, roundButton, titleBlock, worldName } from '../ui/hud';
+import { paintRound, pawRing, placeRing, rhythmPic, roundButton, worldName } from '../ui/hud';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import type { Profile, Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
@@ -244,11 +244,12 @@ export class LevelRuntime {
     const hud = h('div', { class: 'hud' },
       pauseBtn,
       this.pawBtn,
-      def.kind === 'practice' || def.id === 'rescue' ? h('div', { class: 'hud-title' }, h('b', {}, title)) : titleBlock(def, title),
+      def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
+      h('b', { class: 'hud-title' }, title),
       h('div', { class: 'progress', title: t('level.progress') }, this.progressFill),
       this.gauge.el,
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
-      helpBtn, guideBtn, this.readBtn, superStar(), soundButton(), fullscreenButton());
+      guideBtn, this.readBtn, ...globalButtons(helpBtn));
     const stageWrap = h('div', { class: 'stage-wrap' });
     this.piko = pikoElement(p.companion, 'idle', 150);
     // Piko joins the stage when play starts; the preparation cards show him themselves.
@@ -976,10 +977,7 @@ export class LevelRuntime {
     this.labelShift = shifts;
   }
 
-  /**
-   * The word is the task, so Piko's bubble never covers one: over a label it moves to its
-   * second spot (top left), and when that is covered too it hides until a spot is free.
-   */
+  /** The word is the task, so Piko's bubble never covers one: over a label it hides until its spot is free. */
   private placeBubble(): void {
     const b = this.bubble;
     if (b.classList.contains('hidden')) return;
@@ -989,10 +987,7 @@ export class LevelRuntime {
       const y0 = b.offsetTop / s - LABEL_GAP, y1 = (b.offsetTop + b.offsetHeight) / s + LABEL_GAP;
       return this.labelRects.some((r) => r.x0 < x1 && r.x1 > x0 && r.y0 < y1 && r.y1 > y0);
     };
-    b.classList.remove('top', 'covered');
-    if (!covers()) return;
-    b.classList.add('top');
-    if (covers()) b.classList.add('covered');
+    b.classList.toggle('covered', covers());
   }
 
   // ---- end ---------------------------------------------------------------------

@@ -16,7 +16,7 @@ import { applyImport, parseImport, planImport } from '../storage/store';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { pikoElement } from '../gfx/piko';
-import { soundButton, starRow, superStar } from '../ui/chrome';
+import { cornerControls, starRow } from '../ui/chrome';
 import { clickableHeatmap, summaryRow } from './stats';
 import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion, masteredCount, totalStars } from '../game/rewards';
@@ -119,7 +119,8 @@ export async function parentScreen(root: HTMLElement, params: { granted?: boolea
   }
   root.append(h('div', { class: 'screen parent-screen' },
     h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'),
-      others.length ? childSwitch(p, others, () => current) : null, h('h1', {}, t('parent.title')), superStar(), soundButton()),
+      others.length ? childSwitch(p, others, () => current) : null, h('h1', {}, t('parent.title'))),
+    cornerControls(),
     nav, body));
   show(current);
 }

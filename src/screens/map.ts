@@ -9,11 +9,10 @@ import { activeKeys } from '../learning/lessons';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { button, h, icon } from '../ui/dom';
-import { fullscreenButton, soundButton, superStar } from '../ui/chrome';
+import { cornerControls } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords, roundButton } from '../ui/hud';
-import { helpButton } from './help';
 import { openPracticeKeys } from './practice-keys';
 import { openStats } from './stats';
 import { taskCard } from './task';
@@ -70,11 +69,7 @@ export function mapScreen(root: HTMLElement): void {
   root.append(h('div', { class: 'screen map-screen' },
     h('header', { class: 'map-top' },
       button(t('map.switchProfile'), () => go('start'), 'btn ghost small', 'back'),
-      h('div', { class: 'top-actions' },
-        settingsButton(),
-        superStar(), soundButton(),
-        fullscreenButton(),
-        helpButton())),
+      cornerControls(settingsButton())),
     h('main', { class: 'map-body' },
       h('aside', { class: 'map-side' },
         h('h1', { class: 'map-hello' }, t('map.hello', { name: p.name })),

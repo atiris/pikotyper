@@ -6,7 +6,7 @@ import { newProfile } from '../storage/store';
 import { addTask } from '../share/task';
 import { button, h } from '../ui/dom';
 import { LAYOUT_IDS } from '../keyboard/layouts';
-import { soundButton, superStar } from '../ui/chrome';
+import { cornerControls } from '../ui/chrome';
 
 export function newProfileScreen(root: HTMLElement): void {
   let kind: CompanionKind = 'fox';
@@ -57,5 +57,5 @@ export function newProfileScreen(root: HTMLElement): void {
     h('div', { class: 'row' },
       button(t('common.back'), () => { app.pendingTask = null; go('start'); }, 'btn ghost', 'back'),
       h('button', { class: 'btn primary', type: 'submit' }, t('newProfile.create'))));
-  root.append(h('div', { class: 'screen form-screen' }, h('div', { class: 'top-right' }, superStar(), soundButton()), form));
+  root.append(h('div', { class: 'screen form-screen' }, cornerControls(), form));
 }

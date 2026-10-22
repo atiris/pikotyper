@@ -4,7 +4,7 @@ import { pikoElement } from '../gfx/piko';
 import { t } from '../i18n/i18n';
 import { postureContent } from '../game/cards';
 import { button, confirmDialog, h } from '../ui/dom';
-import { soundButton, superStar } from '../ui/chrome';
+import { cornerControls } from '../ui/chrome';
 
 const EXERCISES = ['arms', 'fists', 'shoulders'] as const;
 const SECONDS = 20;
@@ -48,8 +48,11 @@ export function breakScreen(root: HTMLElement): () => void {
   }, 1000);
   timer.textContent = String(left);
   show();
+  const corner = cornerControls();
+  // The break is not skipped through the help page.
+  corner.querySelector<HTMLButtonElement>('.help-btn')!.disabled = true;
   root.append(h('div', { class: 'screen break-screen' },
-    h('div', { class: 'top-right' }, superStar(), soundButton()),
+    corner,
     box,
     h('div', { class: 'row center' }, button(t('break.parentSkip'), async () => {
       if (await confirmDialog({ title: t('break.skipTitle'), text: t('break.skipText'), ok: t('break.skipOk'), cancel: t('common.back') })) end();

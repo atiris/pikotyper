@@ -6,7 +6,7 @@ import { type TaskSpec, addTask, parseTask } from '../share/task';
 import { parseMove } from '../share/transfer';
 import { applyImport, planImport } from '../storage/store';
 import { button, h, icon } from '../ui/dom';
-import { soundButton, superStar } from '../ui/chrome';
+import { cornerControls } from '../ui/chrome';
 
 /** Shell of a link screen: a panel with a way back to the start. */
 function linkScreen(root: HTMLElement, cls: string): HTMLElement {
@@ -14,14 +14,14 @@ function linkScreen(root: HTMLElement, cls: string): HTMLElement {
   applyProfileLook(null);
   const panel = h('main', { class: 'panel' }, h('p', { class: 'hint' }, t('share.reading')));
   root.append(h('div', { class: `screen link-screen ${cls}` },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('start'), 'btn ghost small', 'back'), h('span'), superStar(), soundButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('start'), 'btn ghost small', 'back')),
+    cornerControls(),
     panel));
   return panel;
 }
 
 function broken(panel: HTMLElement, e: unknown): void {
-  panel.replaceChildren(h('h1', {}, t('share.brokenTitle')), h('p', { class: 'error', role: 'alert' }, t((e as Error).message)),
-    button(t('common.back'), () => go('start'), 'btn primary', 'back'));
+  panel.replaceChildren(h('h1', {}, t('share.brokenTitle')), h('p', { class: 'error', role: 'alert' }, t((e as Error).message)));
 }
 
 /** A task link: which player takes it, or a new one. */

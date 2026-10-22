@@ -5,7 +5,7 @@ import { t } from '../i18n/i18n';
 import { friendStars, grantCompanions, hasAccessory, hasCompanion, totalStars, unlockRules } from '../game/rewards';
 import { COMPANION_KINDS } from '../storage/schema';
 import { button, h, icon } from '../ui/dom';
-import { soundButton, superStar } from '../ui/chrome';
+import { cornerControls } from '../ui/chrome';
 import { levelTitleWords } from '../ui/hud';
 
 /** Longest companion name the child can type. */
@@ -94,7 +94,8 @@ export function wardrobeScreen(root: HTMLElement): void {
   const owned = accessories().filter((a) => hasAccessory(p, a.id)).length;
   const star = imageUrl('ui-star');
   root.append(h('div', { class: 'screen wardrobe-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title')), superStar(), soundButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('wardrobe.title'))),
+    cornerControls(),
     h('div', { class: 'wardrobe-body' },
       h('div', { class: 'wardrobe-preview' }, preview,
         h('span', { class: 'star-count', role: 'img', 'aria-label': t('wardrobe.stars', { n: stars }) }, star ? h('img', { src: star, alt: '' }) : '★', String(stars)),

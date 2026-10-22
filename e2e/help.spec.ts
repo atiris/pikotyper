@@ -10,9 +10,9 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await page.locator('.map-top .help-btn').click();
   const help = page.locator('.help-page');
   await expect(help.locator('h2', { hasText: 'How to type' })).toBeVisible();
-  await expect(help.locator('.help-icons li')).toHaveCount(15);
+  await expect(help.locator('.help-icons li')).toHaveCount(16);
   expect(page.url()).toMatch(/\/help$/);
-  await help.getByRole('button', { name: 'Back' }).click();
+  await help.locator('.modal-x').click();
   await page.locator('.map-screen').waitFor();
   // Map -> help -> Escape.
   await page.locator('.map-top .help-btn').click();
@@ -47,7 +47,7 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await expect(page.locator('.help-overlay')).toHaveCount(0);
   await expect(pause).toBeVisible();
   await pause.getByRole('button', { name: 'Help' }).click();
-  await page.locator('.help-overlay').getByRole('button', { name: 'Back' }).click();
+  await page.locator('.help-overlay').locator('.modal-x').click();
   await expect(pause).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(pause).toHaveCount(0);

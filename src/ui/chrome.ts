@@ -2,7 +2,7 @@ import { app, go } from '../app/app';
 import { audio, type SoundLevel } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { t } from '../i18n/i18n';
-import { ICONS, h } from './dom';
+import { type Child, ICONS, h } from './dom';
 import { paintRound, roundButton } from './hud';
 
 /** Super mode is on: a round star in the top row; clicking it ends the mode. Nothing otherwise. */
@@ -45,7 +45,7 @@ function toggleFullscreen(): void {
   void req.catch(() => undefined);
 }
 
-/** Fullscreen switch (map and level screens); null where the browser has no fullscreen. */
+/** Fullscreen switch; null where the browser has no fullscreen. */
 export function fullscreenButton(): HTMLButtonElement | null {
   if (!document.fullscreenEnabled) return null;
   const b = roundButton('control', 'fullscreen', '', toggleFullscreen);
@@ -61,6 +61,25 @@ export function fullscreenButton(): HTMLButtonElement | null {
   document.addEventListener('fullscreenchange', onChange);
   paint();
   return b;
+}
+
+/** The round "?": the player's help page, or the about page before a player is chosen. */
+export function helpButton(): HTMLButtonElement {
+  const b = app.profile
+    ? roundButton('control', 'help', t('help.title'), () => go('help'))
+    : roundButton('control', 'help', t('about.title'), () => go('about'));
+  b.classList.add('help-btn');
+  return b;
+}
+
+/** The global round buttons, right to left: help, fullscreen, sound, the super star. A level passes its own help. */
+export function globalButtons(help: HTMLButtonElement = helpButton()): (HTMLButtonElement | null)[] {
+  return [superStar(), soundButton(), fullscreenButton(), help];
+}
+
+/** The top right corner of every screen but a level: the screen's own buttons (`lead`), then the global ones, at one fixed offset. */
+export function cornerControls(...lead: Child[]): HTMLElement {
+  return h('div', { class: 'top-right' }, ...lead, ...globalButtons());
 }
 
 /**

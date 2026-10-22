@@ -5,6 +5,7 @@ import { type FairyMood, fairyElement } from '../gfx/fairy';
 import { type Mood, pikoElement } from '../gfx/piko';
 import { type RobotMood, type RobotState, robotElement } from '../gfx/robot';
 import { t, tList } from '../i18n/i18n';
+import { cornerControls } from '../ui/chrome';
 import { button, h } from '../ui/dom';
 
 interface SceneDef {
@@ -116,6 +117,7 @@ export function storyScreen(root: HTMLElement, params: StoryParams): () => void 
   };
   const nextBtn = button(t('story.next'), () => { i++; show(); }, 'btn primary', 'next');
   const screen = h('div', { class: `screen story-screen world-${def.world}`, style: bg ? `--bg:url("${bg}")` : '' },
+    cornerControls(),
     stage,
     h('div', { class: 'story-box' }, text, dots, h('div', { class: 'row' }, button(t('common.skip'), finish, 'btn ghost small'), nextBtn)));
   root.append(screen);

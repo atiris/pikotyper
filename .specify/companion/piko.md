@@ -41,9 +41,10 @@
   many as the level allows), the closest one has used most of its time and the child is
   not typing it. The button pulses gently only while Piko is typing by himself after such
   an automatic start, which says "I am helping" without words.
-- Piko's speech bubble never covers a word: when it would, it moves to the top left of
-  the scene, and when that spot is covered too, it hides until a spot is free. The bubble
-  and its tail pointing to Piko read as one shape, with one shadow around both.
+- Piko's speech bubble in a level has one fixed spot at the top left of the scene, slightly
+  see-through, and does not move with his jumps. It never covers a word: when it would, it
+  hides until the spot is free. The bubble and its tail pointing down to Piko read as one
+  shape, with one shadow around both.
 - Clicking Piko, on the map or in a level, opens the progress and statistics overlay
   ([statistics](../profiles/statistics.md)); his title says "Click me to see how you are
   doing".

@@ -3,7 +3,7 @@ import { t, tList } from '../i18n/i18n';
 import { captureKeys } from '../game/cards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, closeButton, h, icon } from '../ui/dom';
-import { pawRing, rhythmPic, roundButton, roundPic } from '../ui/hud';
+import { levelRing, pawRing, rhythmPic, roundPic } from '../ui/hud';
 
 /** A top icon as the child sees it (a picture, not a working button) with its one line. */
 function iconLine(pic: HTMLElement, text: string): HTMLElement {
@@ -24,12 +24,6 @@ function mapIcons(): HTMLElement[] {
   ];
 }
 
-/** The level's dots as the child sees them under the world name. */
-function dotsPic(): HTMLElement {
-  return h('span', { class: 'level-dots', 'aria-hidden': 'true' },
-    h('span', { class: 'dot done' }), h('span', { class: 'dot now' }), h('span', { class: 'dot todo' }));
-}
-
 /** The buttons of a level; the super star only where it can appear on screen (the help page). */
 export function levelIcons(withSuper = false): HTMLElement[] {
   const p = app.profile!;
@@ -39,7 +33,7 @@ export function levelIcons(withSuper = false): HTMLElement[] {
     iconLine(round('pause'), t('help.icons.pause')),
     iconLine(roundPic('paw', 'paw', pawRing(2, PAW_MAX)),
       t('help.icons.paw', { n: PAW_STREAK, words: PAW_WORDS, piko: p.companion.name })),
-    iconLine(dotsPic(), t('help.icons.dots')),
+    iconLine(levelRing([true, true, false, false, false], 2, false), t('help.icons.ring')),
     iconLine(h('div', { class: 'progress' }, h('div', { class: 'progress-fill', style: 'width: 60%' })), t('help.icons.progress')),
     iconLine(gauge.el, t('help.icons.gauge')),
     iconLine(round('help'), t('help.icons.levelHelp')),
@@ -100,11 +94,4 @@ export function openHelp(host: HTMLElement, onBack: () => void): void {
   const stop = escapeBack(overlay, close);
   host.append(overlay);
   overlay.querySelector<HTMLElement>('.modal-x')!.focus();
-}
-
-/** The round "?" button of the map's top actions. */
-export function helpButton(): HTMLButtonElement {
-  const b = roundButton('control', 'help', t('help.title'), () => go('help'));
-  b.classList.add('help-btn');
-  return b;
 }

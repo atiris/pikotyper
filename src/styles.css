@@ -93,10 +93,13 @@ p { line-height: 1.5; }
 .round-btn.paw { --rb: #d9661f; --rb-ring: #ff8a3d; }
 .round-btn.rhythm { --rb: #2f8a4c; --rb-ring: #4fb57a; cursor: default; }
 .round-btn.super { --rb: #b07a0e; --rb-ring: #b07a0e; }
+.round-btn.place { --rb: #4a6fa5; --rb-ring: #4fb57a; cursor: default; }
 .rb-base { fill: none; stroke: #efe4d6; stroke-width: 4; }
 .rb-disc { fill: var(--rb); }
 .rb-arc { fill: none; stroke: transparent; stroke-width: 4; stroke-linecap: round; transition: stroke-dasharray 0.4s ease; }
 .rb-arc.on { stroke: var(--rb-ring); }
+.rb-arc.now { stroke: var(--brand); }
+.rb-num { fill: #fff; font: 700 19px var(--font-game); text-anchor: middle; dominant-baseline: central; }
 .round-btn[aria-pressed='true'] .rb-base { stroke: var(--brand); }
 .round-btn:disabled { opacity: 0.4; cursor: default; }
 .round-btn[hidden] { display: none; }
@@ -108,10 +111,13 @@ p { line-height: 1.5; }
 
 /* ---------- Screens ---------- */
 .screen { min-height: 100vh; padding: 1.2rem clamp(1rem, 3vw, 2.5rem) 2rem; position: relative; }
-.top-right { position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.6rem; align-items: center; z-index: 2; }
+/* The corner controls of every screen but a level: one fixed offset from the window's edge. */
+.top-right { position: fixed; top: 1rem; right: 1rem; display: flex; gap: 0.6rem; align-items: center; z-index: 4; }
 .lang-switch { display: flex; gap: 0.3rem; background: rgba(255, 255, 255, 0.5); padding: 4px; border-radius: 999px; }
 .panel { background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); padding: clamp(1rem, 3vw, 2rem); max-width: 960px; margin: 0 auto; }
 .bar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+/* A page's header leaves the corner controls their room: four round buttons and the super star. */
+.screen > .bar { min-height: 52px; padding-right: calc(5 * 52px + 4 * 0.6rem); }
 .bar h1 { flex: 1; margin: 0; font-size: 1.6rem; }
 /* Back buttons in top bars match the round 48 px buttons beside them. */
 .bar > .btn, .map-top > .btn { height: 48px; min-height: 48px; }
@@ -174,8 +180,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 
 /* ---------- Map ---------- */
 .map-screen { padding-top: var(--sp-3); }
-.map-top { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); }
-.top-actions { display: flex; gap: var(--sp-2); }
+.map-top { display: flex; align-items: center; min-height: 52px; }
 .map-body { display: grid; grid-template-columns: 260px 1fr; gap: var(--sp-5); margin-top: var(--sp-3); }
 @media (max-width: 1299px) { .map-body { grid-template-columns: 200px 1fr; } }
 .map-side { display: flex; flex-direction: column; gap: var(--sp-3); align-items: stretch; }
@@ -247,17 +252,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .level-screen.world-space { background: #1d1b4b; }
 .level-screen.world-moonball { background: #1f2350; }
 .hud { display: flex; align-items: center; gap: 0.7rem; padding: 0.5rem 0.8rem; background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(6px); z-index: 3; flex-wrap: wrap; }
-.hud-title { font-weight: 700; white-space: nowrap; }
-.hud-title { display: flex; flex-direction: column; gap: 0.2rem; white-space: nowrap; }
-.hud-title b { font-size: 17px; }
-.level-dots { display: flex; align-items: center; gap: 5px; }
-.dot { width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box; border: 2px solid #c9b8a4; }
-.dot.done { background: #2f8a4c; border-color: #2f8a4c; }
-.dot.now { background: #d9661f; border-color: #d9661f; }
-.dot.web { width: 14px; height: 14px; border: 0; color: #c9b8a4; display: inline-flex; }
-.dot.web.done { background: none; color: #2f8a4c; }
-.dot.web.now { background: none; color: #d9661f; }
-.dot.web svg { width: 100%; height: 100%; }
+.hud-title { font-size: 17px; white-space: nowrap; }
 .hud-divider { width: 2px; align-self: stretch; margin: 0.2rem 0; background: rgba(90, 61, 43, 0.15); border-radius: 2px; }
 .paw-btn.empty { opacity: 0.6; cursor: default; }
 .paw-btn.auto-helping { animation: paw-pulse 2.4s ease-in-out infinite; }
@@ -274,21 +269,18 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .level-piko.jump { animation: jump 0.6s ease; }
 .level-piko.celebrate { animation: jump 0.4s ease 3; }
 .bubble {
-  position: absolute; left: 150px; bottom: 120px; z-index: 3; max-width: min(360px, 60vw);
+  position: absolute; top: 0.8rem; left: 0.8rem; z-index: 3; max-width: min(360px, 60vw);
   background: #fff; border-radius: 20px; padding: 0.7rem 1rem; font-weight: 600;
-  /* One shadow around the bubble and its tail together, so they read as one shape. */
-  filter: drop-shadow(0 6px 10px rgba(70, 45, 30, 0.14)) drop-shadow(0 1px 2px rgba(70, 45, 30, 0.1));
+  /* One shadow around the bubble and its tail together, so they read as one shape; in a level slightly see-through. */
+  filter: drop-shadow(0 6px 10px rgba(70, 45, 30, 0.14)) drop-shadow(0 1px 2px rgba(70, 45, 30, 0.1)) opacity(0.85);
   animation: pop-in 0.25s ease;
 }
-/* The tail: a square of the bubble's own color turned 45 deg, half of it inside the bubble. */
-.bubble::before { content: ''; position: absolute; width: 16px; height: 16px; left: -8px; bottom: 18px; background: inherit; border-radius: 2px; transform: rotate(45deg); }
+/* The tail: a square of the bubble's own color turned 45 deg, half of it inside the bubble, pointing down to Piko. */
+.bubble::before { content: ''; position: absolute; width: 16px; height: 16px; left: 40px; bottom: -8px; background: inherit; border-radius: 2px; transform: rotate(45deg); }
 .bubble p { margin: 0; }
-/* Second spot, when the first one would cover a word: top left, the tail pointing down. */
-.bubble.top { top: 0.8rem; bottom: auto; left: 0.8rem; }
-.bubble.top::before { left: 40px; bottom: -8px; }
 .bubble.covered { visibility: hidden; }
 .bubble-actions { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
-.bubble.static { position: relative; left: auto; bottom: auto; animation: none; margin: 0; background: #fff1e3; }
+.bubble.static { position: relative; top: auto; left: auto; animation: none; margin: 0; background: #fff1e3; filter: drop-shadow(0 6px 10px rgba(70, 45, 30, 0.14)) drop-shadow(0 1px 2px rgba(70, 45, 30, 0.1)); }
 .bubble.static::before { left: calc(50% - 8px); top: -8px; bottom: auto; }
 @keyframes pop-in { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
@@ -324,14 +316,14 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .hand .finger.active .skin { stroke: #c9946c; stroke-width: 2; }
 .kb-guide.hidden { display: none; }
 .kb-paws { display: contents; }
-.paw { width: clamp(60px, 11vw, 150px); align-self: end; transform: translateY(130%); opacity: 0; transition: transform 0.45s ease, opacity 0.3s; pointer-events: none; }
-.paw-l { grid-column: 1; grid-row: 2; justify-self: end; }
-.paw-r { grid-column: 3; grid-row: 2; justify-self: start; }
-.paw .paw-fur { fill: var(--paw); stroke: #8b6650; stroke-width: 2.5; }
-.paw .bean { fill: var(--bean); }
+.kb-paw { width: clamp(60px, 11vw, 150px); align-self: end; transform: translateY(130%); opacity: 0; transition: transform 0.45s ease, opacity 0.3s; pointer-events: none; }
+.kb-paw-l { grid-column: 1; grid-row: 2; justify-self: end; }
+.kb-paw-r { grid-column: 3; grid-row: 2; justify-self: start; }
+.kb-paw .paw-fur { fill: var(--paw); stroke: #8b6650; stroke-width: 2.5; }
+.kb-paw .bean { fill: var(--bean); }
 .kb-guide.paws-on .hand { transform: translateY(130%); opacity: 0; }
-.kb-guide.paws-on .paw { transform: none; opacity: 1; }
-.paw.tap { animation: paw-tap 0.14s ease; }
+.kb-guide.paws-on .kb-paw { transform: none; opacity: 1; }
+.kb-paw.tap { animation: paw-tap 0.14s ease; }
 @keyframes paw-tap { 50% { transform: translateY(-8px) scale(0.95); } }
 .heatmap .kb-key, .picker .kb-key { box-shadow: inset 0 -5px 0 var(--finger), 0 2px 0 rgba(90, 61, 43, 0.2); }
 .heatmap .kb-key.heat-good { background: #c9efd3; }
@@ -339,7 +331,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .heatmap .kb-key.heat-practice { background: #ffd4c4; }
 .heatmap .kb-key[data-heat]::before { content: attr(data-heat); position: absolute; bottom: 7px; right: 6px; font-size: 0.6em; font-weight: 700; }
 .heatmap, .picker { grid-template-columns: 0 1fr 0; box-shadow: none; background: var(--paper-2); border-radius: 16px; margin: 0.6rem 0; }
-.heatmap .hand, .picker .hand, .heatmap .paw, .picker .paw, .heatmap .kb-hint, .picker .kb-hint { display: none; }
+.heatmap .hand, .picker .hand, .heatmap .kb-paw, .picker .kb-paw, .heatmap .kb-hint, .picker .kb-hint { display: none; }
 .picker .kb-key { cursor: pointer; }
 .picker .kb-key.picked { background: var(--green); color: #fff; }
 .picker.disabled { opacity: 0.5; pointer-events: none; }

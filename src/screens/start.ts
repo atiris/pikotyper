@@ -6,7 +6,7 @@ import { totalStars } from '../game/rewards';
 import { LANGS, language, t } from '../i18n/i18n';
 import type { Lang } from '../storage/schema';
 import { button, h, icon } from '../ui/dom';
-import { soundButton } from '../ui/chrome';
+import { cornerControls } from '../ui/chrome';
 import { roundButton } from '../ui/hud';
 import { MAX_PER_ROW, rowSplit } from '../ui/rows';
 import { listenForSuperPassword, superProfile } from '../app/super';
@@ -45,10 +45,7 @@ export function startScreen(root: HTMLElement): () => void {
   }
 
   root.append(h('div', { class: 'screen start-screen' },
-    h('div', { class: 'top-right' }, langSwitch,
-      roundButton('control', 'info', t('about.title'), () => go('about')),
-      roundButton('control', 'chart', t('teacher.title'), () => go('teacher')),
-      soundButton()),
+    cornerControls(langSwitch, roundButton('control', 'chart', t('teacher.title'), () => go('teacher'))),
     h('header', { class: 'hero' },
       logo ? h('img', { class: 'logo', src: logo, alt: '' }) : null,
       h('div', { class: 'hero-text' },

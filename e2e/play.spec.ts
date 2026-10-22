@@ -36,11 +36,11 @@ test('the super password typed fast on the start page opens everything', async (
   await page.goto('./');
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('superpikotyper', { delay: 40 });
-  await expect(page.locator('.super-badge')).toBeVisible();
+  await expect(page.locator('.top-right .round-btn.super')).toBeVisible();
   await expect(page.locator('.level-node:disabled')).toHaveCount(0);
-  await page.locator('.super-badge').click();
+  await page.locator('.top-right .round-btn.super').click();
   await expect(page.locator('.start-screen')).toBeVisible();
-  await expect(page.locator('.super-badge')).toHaveCount(0);
+  await expect(page.locator('.top-right .round-btn.super')).toHaveCount(0);
 });
 
 test('the robot story is a second row on the map, and Bolt walks with Piko in it', async ({ page }) => {

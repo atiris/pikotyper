@@ -178,7 +178,7 @@ export class KeyboardGuide {
   /** The paw on the side of the finger for `ch` presses a key. */
   pawTap(ch: string): void {
     const f = fingerFor(this.layout, ch);
-    const paw = f == null ? null : this.paws.querySelector(`.paw-${f < 5 ? 'l' : 'r'}`);
+    const paw = f == null ? null : this.paws.querySelector(`.kb-paw-${f < 5 ? 'l' : 'r'}`);
     if (!paw) return;
     paw.classList.remove('tap');
     void (paw as HTMLElement).getBoundingClientRect();
@@ -242,6 +242,6 @@ function handsSvg(): string {
 function pawSvg(side: 'l' | 'r'): string {
   const toes = [[22, 50], [48, 30], [82, 30], [108, 50]]
     .map(([x, y]) => `<ellipse class="paw-fur" cx="${x}" cy="${y}" rx="15" ry="18"/><ellipse class="bean" cx="${x}" cy="${y + 3}" rx="7" ry="9"/>`).join('');
-  return `<svg viewBox="0 0 130 132" class="paw paw-${side}" aria-hidden="true">${toes}` +
+  return `<svg viewBox="0 0 130 132" class="kb-paw kb-paw-${side}" aria-hidden="true">${toes}` +
     `<ellipse class="paw-fur" cx="65" cy="96" rx="48" ry="34"/><ellipse class="bean" cx="65" cy="100" rx="24" ry="17"/></svg>`;
 }

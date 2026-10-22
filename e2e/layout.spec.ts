@@ -31,8 +31,8 @@ test('the start screen does not scroll with 1, 5 and 7 profiles', async ({ page 
       await page.locator('.start-screen').waitFor();
       await noScroll(page);
       await expect(page.locator('.profile-row')).toHaveCount(rows);
-      // The about and teacher buttons are in the first viewport whatever the number of profiles.
-      await expect(page.locator('.top-right .round-btn')).toHaveCount(3);
+      // The teacher, sound and help buttons are in the first viewport whatever the number of profiles.
+      await expect(page.locator('.top-right .help-btn, .top-right .sound-btn')).toHaveCount(2);
       for (const b of await page.locator('.top-right .round-btn').all()) await expect(b).toBeInViewport();
       const newAsCard = count < 5;
       await expect(page.locator('.profile-card.new')).toHaveCount(newAsCard ? 1 : 0);
@@ -63,4 +63,36 @@ test('the new key card and the get-ready card fit and Esc skips the key', async 
     await noScroll(page);
     await expect(page.locator('.space-key')).toBeInViewport({ ratio: 1 });
   }
+});
+
+/** The sound button's distance from the top and the right edge of the window. */
+async function soundOffset(page: Page): Promise<[number, number]> {
+  await page.locator('.top-right .sound-btn').waitFor();
+  return page.evaluate(() => {
+    const r = document.querySelector('.top-right .sound-btn')!.getBoundingClientRect();
+    return [Math.round(r.top), Math.round(document.documentElement.clientWidth - r.right)];
+  });
+}
+
+test('the corner buttons sit at one offset and a level shows its place in the world', async ({ page }) => {
+  await createProfile(page, 'Corner');
+  const map = await soundOffset(page);
+  const id = page.url().split('/p/')[1];
+  await page.evaluate((pid) => { location.hash = `#/p/${pid}/wardrobe`; }, id);
+  await page.locator('.wardrobe-screen').waitFor();
+  expect(await soundOffset(page)).toEqual(map);
+  await page.evaluate(() => { location.hash = '#/teacher'; });
+  await page.locator('.teacher-screen').waitFor();
+  expect(await soundOffset(page)).toEqual(map);
+  await page.evaluate(() => { location.hash = '#/'; });
+  await page.locator('.start-screen').waitFor();
+  expect(await soundOffset(page)).toEqual(map);
+
+  await page.evaluate((pid) => { location.hash = `#/p/${pid}`; }, id);
+  await page.locator('.level-node.current').first().click({ force: true });
+  await page.locator('.story-screen').waitFor();
+  await page.keyboard.press('Escape');
+  const ring = page.locator('.hud .round-btn.place');
+  await expect(ring).toHaveText('1');
+  await expect(page.locator('.hud .level-dots')).toHaveCount(0);
 });
