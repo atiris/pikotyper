@@ -177,11 +177,29 @@ function seamlessCopy(img: HTMLImageElement): HTMLCanvasElement {
   return c;
 }
 
+const fitted = new Map<HTMLCanvasElement, { px: number; c: HTMLCanvasElement }>();
+
+/** The tile scaled once to the pixel height it is drawn at, so each frame is a plain 1:1 copy. */
+function fittedTile(tile: HTMLCanvasElement, px: number): HTMLCanvasElement {
+  if (px >= tile.height) return tile;
+  const hit = fitted.get(tile);
+  if (hit && hit.px === px) return hit.c;
+  const c = document.createElement('canvas');
+  c.width = Math.round(tile.width * px / tile.height);
+  c.height = px;
+  const cg = c.getContext('2d')!;
+  cg.imageSmoothingQuality = 'high';
+  cg.drawImage(tile, 0, 0, c.width, px);
+  fitted.set(tile, { px, c });
+  return c;
+}
+
 /** Draws a background layer at full screen height, repeated horizontally by `offset`. */
 function tiled(g: G, img: HTMLImageElement, vw: number, offset: number): void {
-  const tile = seamlessCopy(img);
-  const s = VH / tile.height;
-  const w = tile.width * s, h = tile.height * s;
+  const full = seamlessCopy(img);
+  const s = VH / full.height;
+  const tile = fittedTile(full, Math.round(VH * g.getTransform().d));
+  const w = full.width * s, h = full.height * s;
   const y = VH - h;
   // Sub-pixel positions: rounding made slow layers move in visible jumps.
   for (let x = -(((offset % w) + w) % w); x < vw; x += w) g.drawImage(tile, x, y, w + 1, h);
