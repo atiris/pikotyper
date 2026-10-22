@@ -761,6 +761,19 @@
     "keys": "Keys you type well and fast: {n} of {total}",
     "worlds": "Finished worlds: {n} of {total}",
     "stories": "Finished stories: {n} of {total}",
+    "stars": "Stars in total: {n}",
+    "tabProgress": "Progress",
+    "tabKeys": "Keys",
+    "tabExercises": "Exercises",
+    "showCode": "QR code of all my progress",
+    "overallTitle": "All progress",
+    "overallCaption": "All my statistics",
+    "exerciseCaption": "Exercise: {title}",
+    "exercisesEmpty": "No exercise yet. Exercises from a teacher or parent are listed here.",
+    "exerciseLine": "{min} min, accuracy {acc} %, rhythm {cpm}",
+    "exerciseOpen": "Not finished yet",
+    "exerciseCode": "QR code",
+    "codeClose": "Tap the screen to close the code.",
     "quality": "Accuracy of the keys you know well: {n} %",
     "speed": "Speed of the keys you know well: {n} characters per minute",
     "storyStars": "Stars in this story: {n}",
@@ -1107,13 +1120,14 @@
   "about": {
     "title": "About PikoTyper",
     "code": "Code on GitHub",
+    "report": "Report a bug or an idea",
     "intro": "PikoTyper is a free, peaceful game that teaches children to type with all ten fingers. Together with a companion they travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
     "privacyTitle": "Our promise to parents",
     "privacy": [
-      "No ads, purchases, tracking or cookies.",
-      "No accounts and no passwords.",
-      "All progress is stored only in this browser; you can export it as a file.",
-      "Works offline after the first visit."
+      "No sign-in, ads, purchases, tracking or cookies. This site has no server of its own in the background.",
+      "All progress is stored only in this browser, but you can export it as a file.",
+      "Works offline after the first visit.",
+      "It can be installed as a desktop web app: it opens in its own window, with no need to start the whole browser."
     ],
     "howTitle": "How it teaches",
     "how": [
@@ -1122,7 +1136,7 @@
       "Accuracy comes first; speed is only shown as a personal trend.",
       "Weak keys appear more often, and short breaks keep sessions healthy."
     ],
-    "creditsTitle": "Credits",
+    "creditsTitle": "Links",
     "credits": "Open source under the MIT license. Fonts: Lexend, Atkinson Hyperlegible and OpenDyslexic (SIL Open Font License)."
   },
   "help": {
@@ -1284,6 +1298,7 @@
   "share": {
     "link": "Link",
     "copy": "Copy link",
+    "copyCode": "Copy code",
     "copied": "Copied.",
     "qr": "QR code of the link",
     "noQr": "The link is too long for a QR code; copy it instead.",
@@ -1408,6 +1423,12 @@
     "tooLong": "This profile is too big for a link. Export it to a file and load the file on the other computer.",
     "importTitle": "A player from another computer",
     "importText": "Load {name} ({n} stars) into this browser?"
+  },
+  "install": {
+    "title": "Install on your desktop",
+    "text": "You can install PikoTyper as a web app. It opens in its own window, so you do not have to start the whole browser to type for a while.",
+    "button": "Install",
+    "later": "Not now"
   },
   "friends": {
     "title": "Little friends",

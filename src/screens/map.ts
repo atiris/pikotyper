@@ -4,12 +4,13 @@ import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
 import { t } from '../i18n/i18n';
 import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels, worldLock } from '../game/levels';
-import type { Profile } from '../storage/schema';
+import { type Profile, SUPER_ID } from '../storage/schema';
 import { activeKeys } from '../learning/lessons';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
 import { button, h, icon } from '../ui/dom';
 import { fullscreenButton, soundButton, superStar } from '../ui/chrome';
+import { offerInstall } from '../ui/install';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords, roundButton } from '../ui/hud';
 import { helpButton } from './help';
@@ -89,6 +90,7 @@ export function mapScreen(root: HTMLElement): void {
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
       h('div', { class: 'story-rows' }, ...STORIES.map((s) => storyRow(p, s, next?.id, keysBubble, lockBubble))))));
   (root.querySelector('.btn.primary') as HTMLElement | null)?.focus();
+  if (p.id !== SUPER_ID) offerInstall(p.companion);
 }
 
 /**

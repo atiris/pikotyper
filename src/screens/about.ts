@@ -18,5 +18,6 @@ export function aboutScreen(root: HTMLElement): void {
       h('p', {}, t('about.credits')),
       h('div', { class: 'row about-actions' },
         button(t('common.back'), () => go(app.profile ? 'map' : 'start'), 'btn primary', 'back'),
-        h('a', { class: 'btn', href: 'https://github.com/atiris/pikotyper', target: '_blank', rel: 'noopener' }, icon('code'), t('about.code'))))));
+        h('a', { class: 'btn', href: 'https://github.com/atiris/pikotyper', target: '_blank', rel: 'noopener' }, icon('code'), t('about.code')),
+        h('a', { class: 'btn', href: 'https://github.com/atiris/pikotyper/issues/new', target: '_blank', rel: 'noopener' }, icon('edit'), t('about.report'))))));
 }

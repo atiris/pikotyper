@@ -18,6 +18,7 @@ test('a new child plays the first level by typing and sees stars', async ({ page
   await expect(page.locator('.level-node.done')).toHaveCount(1);
   await page.locator('.map-piko').click();
   await expect(page.locator('.stats-modal .progress-story').first().locator('.story-stars')).toHaveAttribute('aria-label', /: [1-3]$/);
+  await page.locator('.stats-modal .tab[data-tab="keys"]').click();
   await page.locator('.heatmap .kb-key[data-heat]').first().click();
   await expect(page.locator('.stats-modal .key-detail')).toContainText('%');
   expect(errors).toEqual([]);

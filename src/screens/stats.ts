@@ -7,10 +7,13 @@ import { t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
 import { STATS_WINDOW, keyHistory, keyReport, lastTraining, masterySummary, weakKeys } from '../learning/stats';
+import { linkOf } from '../share/codec';
+import { makeOverallResult, makeResult, resultCode } from '../share/result';
 import type { Profile } from '../storage/schema';
 import { lineChart } from '../ui/charts';
 import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
+import { bigCode } from '../ui/big-code';
 import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
 
@@ -106,12 +109,14 @@ function chip(pic: string | null, glyph: string, text: string, label: string): H
 export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const percent = Math.round(m.accuracy * 100);
+  const stories = STORIES.filter((x) => storyDone(p, x)).length;
   return h('ul', { class: 'progress-sum' },
     chip(imageUrl('ui-key'), '⌨', `${m.mastered}/${m.total}`, t('progress.keys', { n: m.mastered, total: m.total })),
+    chip(imageUrl('ui-level'), '▲', `${stories}/${STORIES.length}`, t('progress.stories', { n: stories, total: STORIES.length })),
     chip(imageUrl('ui-earth'), '●', `${p.progress.worldsDone.length}/${WORLDS.length}`, t('progress.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
-    chip(imageUrl('ui-level'), '▲', `${STORIES.filter((s) => storyDone(p, s)).length}/${STORIES.length}`, t('progress.stories', { n: STORIES.filter((s) => storyDone(p, s)).length, total: STORIES.length })),
     m.mastered ? chip(null, '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
-    m.mastered ? chip(null, '»', String(m.cpm), t('progress.speed', { n: m.cpm })) : null);
+    m.mastered ? chip(null, '»', String(m.cpm), t('progress.speed', { n: m.cpm })) : null,
+    chip(imageUrl('ui-star'), '★', String(p.progress.starsEarned), t('progress.stars', { n: p.progress.starsEarned })));
 }
 
 /** Who a story is about, for its row. */
@@ -148,19 +153,33 @@ function progressSection(p: Profile): HTMLElement {
     h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));
 }
 
-/** The child's friendly progress and statistics overlay (click on Piko). */
-export function openStats(): void {
-  const p = app.profile!;
-  let close = () => {};
+type StatsTab = 'progress' | 'keys' | 'exercises';
+
+/** The QR code of all the player's statistics, over the whole screen. */
+async function showOverallCode(p: Profile): Promise<void> {
+  const link = linkOf('result', await resultCode(makeOverallResult(p, t('progress.overallTitle'))));
+  bigCode(link, t('progress.overallCaption'), p.name, 'overall');
+}
+
+/** Progress: the summary rows and badges, the growth medals and the code of all statistics. */
+function progressTab(p: Profile): HTMLElement {
+  return h('div', {},
+    h('div', { class: 'stats-head' }, pikoElement(p.companion, 'happy', 170),
+      h('div', {}, h('h2', {}, t('progress.title')), progressSection(p))),
+    p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')),
+      h('div', { class: 'medal-row' }, ...Array.from({ length: p.progress.growth }, (_, i) => medal(i + 1, true)))) : null,
+    h('div', { class: 'row stats-code' }, button(t('progress.showCode'), () => void showOverallCode(p), 'btn', 'code')));
+}
+
+/** The keyboard heat map, the keys to practice and the details of one key. */
+function keysTab(p: Profile, close: () => void): HTMLElement {
   const practice = (keys: string[]) => { close(); go('level', { id: 'practice', keys, seconds: 60 }); };
   const detail = h('div', { class: 'key-detail-host' }, h('p', { class: 'hint' }, t('stats.clickKey')));
   const heat = clickableHeatmap(p, detail, (key) => practice([key]));
   const showKey = (key: string) => detail.replaceChildren(keyDetail(p, key, () => practice([key])));
   const weak = weakKeys(p, activeKeys(p));
   const total = Object.values(p.stats.keys).reduce((a, s) => a + s.presses, 0);
-  const content = h('div', { class: 'stats' },
-    h('div', { class: 'stats-head' }, pikoElement(p.companion, 'happy', 110),
-      h('div', {}, h('h2', {}, t('progress.title')), progressSection(p))),
+  return h('div', {},
     h('h3', {}, t('stats.title')),
     h('p', {}, total ? t('stats.intro', { piko: p.companion.name, n: STATS_WINDOW }) : t('stats.empty')),
     heat,
@@ -168,8 +187,6 @@ export function openStats(): void {
       h('span', { class: 'lg heat-good' }, `✓ ${t('stats.good')}`),
       h('span', { class: 'lg heat-ok' }, `~ ${t('stats.ok')}`),
       h('span', { class: 'lg heat-practice' }, `! ${t('stats.practice')}`)),
-    p.progress.growth ? h('div', { class: 'medals' }, h('h3', {}, t('stats.medals')),
-      h('div', { class: 'medal-row' }, ...Array.from({ length: p.progress.growth }, (_, i) => medal(i + 1, true)))) : null,
     h('div', { class: 'stats-split' },
       weak.length ? h('div', { class: 'weak' },
         h('h3', {}, t('stats.practiceKeys')),
@@ -180,5 +197,41 @@ export function openStats(): void {
         button(t('stats.practiceNow'), () => practice(weak.map((w) => w.key)), 'btn primary', 'practice'))
         : null,
       detail));
-  close = modal(content, { cls: 'stats-modal' });
+}
+
+/** The exercises given by a teacher or parent, newest first, each with the code of its result. */
+function exercisesTab(p: Profile): HTMLElement {
+  const played = p.tasks.filter((x) => x.seconds > 0 || x.doneAt);
+  if (!played.length) return h('p', { class: 'hint center' }, t('progress.exercisesEmpty'));
+  return h('ul', { class: 'exercise-list' }, ...played.map((task) => {
+    const total = task.chars + task.errors;
+    const show = async () => bigCode(linkOf('result', await resultCode(makeResult(p, task))), t('progress.exerciseCaption', { title: task.title || t('task.untitled') }), p.name, 'exercise');
+    return h('li', { class: `exercise ${task.doneAt ? 'done' : ''}` },
+      h('div', {},
+        h('b', {}, task.title || t('task.untitled')), task.group ? h('span', { class: 'chip' }, task.group) : null,
+        h('p', { class: 'hint' }, task.doneAt ?? t('progress.exerciseOpen'), ' · ',
+          t('progress.exerciseLine', { min: Math.round(task.seconds / 6) / 10, acc: total ? Math.round((task.chars / total) * 100) : 100, cpm: task.cpm }))),
+      button(t('progress.exerciseCode'), () => void show(), 'btn small', 'code'));
+  }));
+}
+
+/** The child's friendly progress and statistics overlay (click on Piko), in tabs: progress, keys, exercises. */
+export function openStats(): void {
+  const p = app.profile!;
+  let close = () => {};
+  const tabs: [StatsTab, string][] = [['progress', 'progress.tabProgress'], ['keys', 'progress.tabKeys'], ['exercises', 'progress.tabExercises']];
+  const body = h('div', { class: 'stats-body' });
+  const nav = h('nav', { class: 'tabs', role: 'tablist' });
+  const show = (tab: StatsTab) => {
+    nav.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
+    body.replaceChildren(tab === 'progress' ? progressTab(p) : tab === 'keys' ? keysTab(p, close) : exercisesTab(p));
+  };
+  for (const [tab, label] of tabs) {
+    const b = button(t(label), () => show(tab), 'tab');
+    b.dataset.tab = tab;
+    b.setAttribute('role', 'tab');
+    nav.append(b);
+  }
+  show('progress');
+  close = modal(h('div', { class: 'stats' }, nav, body), { cls: 'stats-modal' });
 }

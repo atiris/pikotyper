@@ -2,6 +2,7 @@
 
 ## What
 - No ads, no accounts, no tracking, no cookies, no external requests at runtime.
+- The about page also links to reporting a bug or an idea (a GitHub issue).
 - A short, plain statement of this on the start screen and the about page, for parents.
 - Nothing leaves the browser except what a person copies themselves: task, result and
   move links carry their data in the address hash, which browsers never send to the server

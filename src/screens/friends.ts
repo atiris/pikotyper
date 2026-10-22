@@ -44,9 +44,15 @@ export function friendsScreen(root: HTMLElement): void {
     : null;
   root.append(h('div', { class: 'screen dragons-screen' },
     h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('friends.title')), superStar(), soundButton()),
-    group('dragon', firstDragon),
-    group('robot', bolt),
-    group('forest', melody),
-    p.progress.friends.length ? null : h('p', { class: 'center hint' }, t('friends.empty')),
-    h('div', { class: 'row center' }, button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn primary', 'rescue'))));
+    h('main', { class: 'panel friends-board' },
+      group('dragon', firstDragon),
+      group('robot', bolt),
+      group('forest', melody),
+      p.progress.friends.length ? null : h('div', { class: 'friends-empty' },
+        h('div', { class: 'friends-teasers', 'aria-hidden': 'true' }, ...[...LITTLE_ROBOTS.slice(0, 1), 'obj-dragon-baby-1', ...FOREST_FRIENDS.slice(0, 1)].map((id) => {
+          const src = imageUrl(id);
+          return h('span', { class: 'teaser' }, src ? h('img', { src, alt: '' }) : '?');
+        })),
+        h('p', {}, t('friends.empty'))),
+      h('div', { class: 'row center' }, button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn primary', 'rescue')))));
 }

@@ -1,4 +1,4 @@
-import { weakKeys } from '../learning/stats';
+import { localDate, masterySummary, weakKeys } from '../learning/stats';
 import type { Profile, Task } from '../storage/schema';
 import { checksum, decode, encode } from './codec';
 import { TASK_GROUP_MAX } from './task';
@@ -37,6 +37,27 @@ export function makeResult(p: Profile, task: Task): TaskResult {
     minutes: Math.round(task.seconds / 6) / 10,
     accuracy: total ? Math.round((task.chars / total) * 100) : 100,
     cpm: task.cpm,
+    levels: Object.keys(p.progress.levels).length,
+    weak: weakKeys(p, Object.keys(p.stats.keys), RESULT_WEAK_KEYS).map((k) => [k.key, Math.round(k.accuracy * 100)]),
+  };
+}
+
+/** Task id of the result that holds a player's whole statistics, so the teacher keeps one row of it per child. */
+export const OVERALL_ID = '_overall';
+
+/** All of a player's training in the shape of a task result: all minutes and the accuracy over all recorded sessions. */
+export function makeOverallResult(p: Profile, title: string): TaskResult {
+  const sessions = p.stats.sessions;
+  const chars = sessions.reduce((a, s) => a + s.chars, 0);
+  const errors = sessions.reduce((a, s) => a + s.errors, 0);
+  return {
+    taskId: OVERALL_ID,
+    title,
+    name: p.name,
+    date: localDate(),
+    minutes: Math.round(p.progress.trainedSeconds / 6) / 10,
+    accuracy: chars + errors ? Math.round((chars / (chars + errors)) * 100) : 100,
+    cpm: masterySummary(p).cpm || (sessions[sessions.length - 1]?.cpm ?? 0),
     levels: Object.keys(p.progress.levels).length,
     weak: weakKeys(p, Object.keys(p.stats.keys), RESULT_WEAK_KEYS).map((k) => [k.key, Math.round(k.accuracy * 100)]),
   };

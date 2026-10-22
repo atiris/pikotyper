@@ -4,6 +4,7 @@ import { loadManifest } from './gfx/assets';
 import { SUPER_ID } from './storage/schema';
 import { detectLanguage } from './i18n/i18n';
 import { watchAutoFullscreen } from './ui/chrome';
+import { noteVisit } from './ui/install';
 import { aboutScreen } from './screens/about';
 import { breakScreen } from './screens/break';
 import { friendsScreen } from './screens/friends';
@@ -45,6 +46,7 @@ async function boot(): Promise<void> {
   document.body.classList.remove('booting');
   window.addEventListener('popstate', () => void openRoute(location.hash));
   watchAutoFullscreen();
+  noteVisit();
   if (location.hash.length > 2) return openRoute(location.hash);
   // A guest session survives reloads of the same tab only.
   if (app.store.guest) {

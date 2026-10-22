@@ -761,6 +761,19 @@
     "keys": "Klávesy, ktoré ti idú dobre a rýchlo: {n} z {total}",
     "worlds": "Dokončené svety: {n} z {total}",
     "stories": "Dokončené príbehy: {n} z {total}",
+    "stars": "Hviezdičky spolu: {n}",
+    "tabProgress": "Postup",
+    "tabKeys": "Klávesy",
+    "tabExercises": "Cvičenia",
+    "showCode": "QR kód celého postupu",
+    "overallTitle": "Celý postup",
+    "overallCaption": "Celé moje štatistiky",
+    "exerciseCaption": "Cvičenie: {title}",
+    "exercisesEmpty": "Zatiaľ tu nie je žiadne cvičenie. Cvičenia od učiteľa alebo rodiča sa zapíšu sem.",
+    "exerciseLine": "{min} min, presnosť {acc} %, rytmus {cpm}",
+    "exerciseOpen": "Ešte nedokončené",
+    "exerciseCode": "QR kód",
+    "codeClose": "Ťukni na obrazovku a kód sa zavrie.",
     "quality": "Presnosť dobre zvládnutých kláves: {n} %",
     "speed": "Rýchlosť dobre zvládnutých kláves: {n} znakov za minútu",
     "storyStars": "Hviezdičky v tomto príbehu: {n}",
@@ -1107,13 +1120,14 @@
   "about": {
     "title": "O hre PikoTyper",
     "code": "Kód na GitHube",
+    "report": "Nahlásiť chybu alebo nápad",
     "intro": "PikoTyper je bezplatná pokojná hra, ktorá učí deti písať všetkými desiatimi prstami. Spolu s kamarátom cestujú po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
     "privacyTitle": "Náš sľub rodičom",
     "privacy": [
-      "Žiadne reklamy, nákupy, sledovanie ani cookies.",
-      "Žiadne účty ani heslá.",
-      "Všetky pokroky sú uložené len v tomto prehliadači; môžete ich exportovať do súboru.",
-      "Po prvej návšteve funguje aj bez internetu."
+      "Žiadne prihlasovanie, reklamy, nákupy, sledovanie ani cookies. Tento web nemá na pozadí vlastný server.",
+      "Všetky pokroky sú uložené len v tomto prehliadači, ale môžete ich exportovať do súboru.",
+      "Po prvej návšteve funguje aj bez internetu.",
+      "Dá sa nainštalovať ako desktopová webová aplikácia: otvorí sa vo vlastnom okne a netreba na to spúšťať celý prehliadač."
     ],
     "howTitle": "Ako učí",
     "how": [
@@ -1122,7 +1136,7 @@
       "Najprv presnosť; rýchlosť sa ukazuje len ako osobný pokrok.",
       "Slabšie klávesy sa objavujú častejšie a krátke prestávky chránia zdravie."
     ],
-    "creditsTitle": "Poďakovanie",
+    "creditsTitle": "Prepojenia",
     "credits": "Otvorený kód pod licenciou MIT. Písma: Lexend, Atkinson Hyperlegible a OpenDyslexic (SIL Open Font License)."
   },
   "help": {
@@ -1284,6 +1298,7 @@
   "share": {
     "link": "Odkaz",
     "copy": "Kopírovať odkaz",
+    "copyCode": "Kopírovať kód",
     "copied": "Skopírované.",
     "qr": "QR kód odkazu",
     "noQr": "Odkaz je na QR kód príliš dlhý, skopírujte ho.",
@@ -1408,6 +1423,12 @@
     "tooLong": "Tento profil je na odkaz príliš veľký. Exportujte ho do súboru a súbor načítajte na druhom počítači.",
     "importTitle": "Hráč z iného počítača",
     "importText": "Načítať hráča {name} ({n} hviezdičiek) do tohto prehliadača?"
+  },
+  "install": {
+    "title": "Inštalácia na plochu",
+    "text": "PikoTyper si môžeš nainštalovať ako webovú aplikáciu. Otvorí sa vo vlastnom okne, nemusíš spúšťať celý prehliadač, keď chceš chvíľu písať.",
+    "button": "Nainštalovať",
+    "later": "Nie teraz"
   },
   "friends": {
     "title": "Malí priatelia",

@@ -19,6 +19,15 @@
   practice of just that key. A switch ("⇧ symbols") shows the shifted symbols of the keys
   instead (question mark, exclamation mark, colon, Slovak digits), each with its own
   statistics; capitals count for their letter and its Shift.
+- The overlay has three tabs: **Postup** (the progress above, a bigger Piko, the growth
+  medals and the total stars ever earned as the last chip; stories come before worlds),
+  **Klávesy** (the key map and the key details) and **Cvičenia** (the history of exercises
+  from a teacher or parent, newest first, each with a button for its QR code).
+- QR codes (an exercise's result, or all of the player's statistics from the Postup tab) fill
+  the whole screen until clicked; the caption and frame colour tell an exercise from all
+  statistics, and a button at the bottom copies the code to send to the teacher. The code for
+  all statistics is a result link like any other, so the teacher's table takes it as one row
+  per child.
 - The parent dashboard has the same clickable key map, and the trends over sessions
   (accuracy, rhythm, time per day) as charts side by side on wide screens.
 
