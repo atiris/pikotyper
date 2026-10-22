@@ -1,9 +1,18 @@
-import { app, go } from '../app/app';
+import { app, go, routeOf } from '../app/app';
 import { t, tList } from '../i18n/i18n';
 import { captureKeys } from '../game/cards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, closeButton, h, icon } from '../ui/dom';
 import { levelRing, pawRing, rhythmPic, roundPic } from '../ui/hud';
+import { tabBar } from '../ui/tabs';
+
+const TABS = ['ui', 'typing', 'progress', 'settings', 'about'] as const;
+export type HelpTab = (typeof TABS)[number];
+
+/** The parent's settings tabs, in the order of the settings screen; each gets its own lines. */
+const SETTINGS_TABS = ['settings', 'own', 'surprises', 'task', 'keys', 'dashboard', 'data'] as const;
+
+const COUNTER = 'https://pikotyper.goatcounter.com';
 
 /** A top icon as the child sees it (a picture, not a working button) with its one line. */
 function iconLine(pic: HTMLElement, text: string): HTMLElement {
@@ -26,13 +35,12 @@ function mapIcons(): HTMLElement[] {
 
 /** The buttons of a level; the super star only where it can appear on screen (the help page). */
 export function levelIcons(withSuper = false): HTMLElement[] {
-  const p = app.profile!;
   const gauge = rhythmPic();
   gauge.set(0.6);
   return [
     iconLine(round('pause'), t('help.icons.pause')),
     iconLine(roundPic('paw', 'paw', pawRing(2, PAW_MAX)),
-      t('help.icons.paw', { n: PAW_STREAK, words: PAW_WORDS, piko: p.companion.name })),
+      t('help.icons.paw', { n: PAW_STREAK, words: PAW_WORDS, piko: app.profile?.companion.name ?? 'Piko' })),
     iconLine(levelRing([true, true, false, false, false], 2, false), t('help.icons.ring')),
     iconLine(h('div', { class: 'progress' }, h('div', { class: 'progress-fill', style: 'width: 60%' })), t('help.icons.progress')),
     iconLine(gauge.el, t('help.icons.gauge')),
@@ -49,22 +57,73 @@ function section(title: string, ...kids: Child[]): HTMLElement {
   return h('section', { class: 'help-section' }, h('h2', {}, title), ...kids);
 }
 
-/** The child's help: how to sit and type, what the top icons mean, how a level is played. */
-function helpPage(onBack: () => void): HTMLElement {
-  const list = (key: string) => h('ul', {}, ...tList(key).map((l) => h('li', {}, l)));
-  return h('article', { class: 'panel prose help-page' },
-    h('div', { class: 'bar' },
-      h('h1', {}, t('help.title')),
-      closeButton(onBack)),
-    section(t('help.typeTitle'), list('help.type')),
-    section(t('help.mapTitle'), h('ul', { class: 'help-icons' }, ...mapIcons())),
-    section(t('help.levelTitle'), h('ul', { class: 'help-icons' }, ...levelIcons(true))),
-    section(t('help.progressTitle'), list('help.progress')),
-    section(t('help.moreTitle'), list('help.more')),
-    section(t('help.playTitle'), list('help.play')));
+const list = (key: string) => h('ul', {}, ...tList(key).map((l) => h('li', {}, l)));
+
+/** Fills `line` with the visit count the public counter reports; stays empty when offline. */
+async function showVisits(line: HTMLElement): Promise<void> {
+  try {
+    const r = await fetch(`${COUNTER}/counter/TOTAL.json`);
+    const { count } = await r.json();
+    if (typeof count !== 'string') return;
+    line.replaceChildren(t('about.visits', { n: count }), ' ', h('a', { href: COUNTER, target: '_blank', rel: 'noopener' }, t('about.visitsLink')));
+  } catch { /* offline or blocked: the line stays empty */ }
 }
 
-/** Escape goes back, like the back button; a dialog over the help closes first. */
+/** About the game and the privacy promise, for parents. */
+function aboutTab(): HTMLElement[] {
+  const visits = h('p', { class: 'hint' });
+  void showVisits(visits);
+  return [
+    h('p', {}, t('about.intro')),
+    section(t('about.privacyTitle'), list('about.privacy')),
+    section(t('about.dataTitle'), list('about.data'), visits),
+    section(t('about.howTitle'), list('about.how')),
+    section(t('about.creditsTitle'), h('p', {}, t('about.credits')),
+      h('div', { class: 'row about-actions' },
+        h('a', { class: 'btn', href: 'https://github.com/atiris/pikotyper', target: '_blank', rel: 'noopener' }, icon('code'), t('about.code')),
+        h('a', { class: 'btn', href: 'https://github.com/atiris/pikotyper/issues/new', target: '_blank', rel: 'noopener' }, icon('edit'), t('about.report')))),
+  ];
+}
+
+function tabContent(tab: HelpTab): HTMLElement[] {
+  switch (tab) {
+    case 'ui': return [
+      section(t('help.mapTitle'), h('ul', { class: 'help-icons' }, ...mapIcons())),
+      section(t('help.cardTitle'), list('help.card')),
+      section(t('help.levelTitle'), h('ul', { class: 'help-icons' }, ...levelIcons(true))),
+    ];
+    case 'typing': return [
+      section(t('help.typeTitle'), list('help.type')),
+      section(t('help.playTitle'), list('help.play')),
+    ];
+    case 'progress': return [
+      section(t('help.journeyTitle'), list('help.journey')),
+      section(t('help.progressTitle'), list('help.progress')),
+      section(t('help.moreTitle'), list('help.more')),
+      section(t('help.taskTitle'), list('help.task')),
+    ];
+    case 'settings': return [
+      h('p', {}, t('help.settingsIntro')),
+      ...SETTINGS_TABS.map((s) => section(t(`parent.tab.${s}`), list(`help.settings.${s}`))),
+    ];
+    case 'about': return aboutTab();
+  }
+}
+
+/** The one help page: the buttons, how to type, how to progress, the settings and about the game, in tabs. */
+function helpPage(tab: HelpTab, onBack: () => void, onTab: (tab: HelpTab) => void = () => {}): HTMLElement {
+  const body = h('div', { class: 'tab-panel prose' });
+  const nav = tabBar(TABS.map((x) => [x, t(`help.tab.${x}`)] as const), tab, (x) => {
+    body.replaceChildren(...tabContent(x));
+    body.scrollTop = 0;
+    onTab(x);
+  });
+  return h('article', { class: 'help-page' },
+    h('div', { class: 'bar' }, h('h1', {}, t('help.title')), closeButton(onBack)),
+    nav, body);
+}
+
+/** Escape goes back, like the close button; a dialog over the help closes first. */
 function escapeBack(el: HTMLElement, onBack: () => void): () => void {
   return captureKeys(el, (e) => {
     if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
@@ -74,15 +133,18 @@ function escapeBack(el: HTMLElement, onBack: () => void): () => void {
   });
 }
 
-/** Help as its own screen, opened from the map. */
-export function helpScreen(root: HTMLElement): () => void {
-  const screen = h('div', { class: 'screen help-screen' }, helpPage(() => go('map')));
+/** Help as its own screen: from the map (on the buttons) or from the start page (on the about tab). */
+export function helpScreen(root: HTMLElement, params: { tab?: string }): () => void {
+  const back = () => go(app.profile ? 'map' : 'start');
+  const tab = TABS.find((x) => x === params.tab) ?? (app.profile ? 'ui' : 'about');
+  const screen = h('div', { class: 'screen help-screen' },
+    helpPage(tab, back, (x) => history.replaceState(null, '', routeOf('help', { tab: x }))));
   root.append(screen);
   screen.querySelector<HTMLElement>('.modal-x')!.focus();
-  return escapeBack(screen, () => go('map'));
+  return escapeBack(screen, back);
 }
 
-/** Help over a paused level; back (or Escape) returns to the paused level. */
+/** Help over a paused level, on how to type; close (or Escape) returns to the paused level. */
 export function openHelp(host: HTMLElement, onBack: () => void): void {
   const overlay = h('div', { class: 'help-overlay', role: 'dialog', 'aria-label': t('help.title') });
   const close = () => {
@@ -90,7 +152,7 @@ export function openHelp(host: HTMLElement, onBack: () => void): void {
     overlay.remove();
     onBack();
   };
-  overlay.append(helpPage(close));
+  overlay.append(helpPage('typing', close));
   const stop = escapeBack(overlay, close);
   host.append(overlay);
   overlay.querySelector<HTMLElement>('.modal-x')!.focus();

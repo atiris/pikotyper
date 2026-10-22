@@ -1128,7 +1128,6 @@
     "rhythm": "Rytmus: {n} písmen za minútu"
   },
   "about": {
-    "title": "O hre PikoTyper",
     "code": "Kód na GitHube",
     "report": "Nahlásiť chybu alebo nápad",
     "intro": "PikoTyper je bezplatná pokojná hra, ktorá učí deti písať všetkými desiatimi prstami. Spolu s kamarátom cestujú po svetoch plných dobrodružstiev. Nikdy sa nestane nič zlé: prekážky sa odsunú alebo sa im pomôže, nikdy sa neničia.",
@@ -1158,6 +1157,13 @@
   },
   "help": {
     "title": "Pomoc",
+    "tab": {
+      "ui": "Rozhranie",
+      "typing": "Ako písať",
+      "progress": "Ako postupovať",
+      "settings": "Nastavenia",
+      "about": "O hre PikoTyper"
+    },
     "typeTitle": "Ako písať",
     "type": [
       "Seď rovno, chodidlá maj na zemi a ramená uvoľnené.",
@@ -1187,11 +1193,24 @@
       "read": "Čítanie nahlas: počítač ti slová prečíta.",
       "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst."
     },
+    "cardTitle": "Tvoja karta na mape",
+    "card": [
+      "Klikni na svojho kamaráta a otvorí sa Môj postup: čo ti už ide a čo si ešte precvičiť.",
+      "Pokračovať spustí ďalšiu úroveň príbehu.",
+      "Vlastné cvičenie: krátke cvičenie na klávesy, ktoré si vyberieš.",
+      "Môj text: keď ti rodič pridá vlastný text, napíšeš ho celý po poradí.",
+      "Kamarát a šatník: vyber si kamaráta a obleč ho do vecí, ktoré si získal.",
+      "Záchranné misie a Malí priatelia: objavia sa po prvom dokončenom príbehu.",
+      "Úloha na dnes: keď ti učiteľ pošle úlohu, nájdeš ju na karte. Po splnení ju odovzdáš."
+    ],
     "progressTitle": "Môj postup",
     "progress": [
       "Kláves, svet a príbeh: koľko kláves ti ide dobre a rýchlo (aspoň 9 z 10 stlačení správne), koľko svetov a príbehov máš hotových.",
       "Fajka je presnosť týchto kláves v percentách, šípky sú ich rýchlosť v znakoch za minútu.",
-      "V každom riadku príbehu sú jeho svety: hotové sú farebné, ostatné sivé, a hviezdičky z toho príbehu."
+      "V každom riadku príbehu sú jeho svety: hotové sú farebné, ostatné sivé, a hviezdičky z toho príbehu.",
+      "Môj postup má tri karty: Postup, Klávesy a Cvičenia.",
+      "Klávesy ukazujú, ktoré ti idú a ktoré si ešte precvičiť. Odtiaľ hneď spustíš cvičenie.",
+      "QR kód ukáže tvoj postup alebo cvičenie učiteľovi či rodičovi, stačí ho odfotiť."
     ],
     "moreTitle": "Záchranná misia a odznak",
     "more": [
@@ -1205,7 +1224,61 @@
       "Hviezdičky dostaneš za presnosť: čím menej chýb, tým viac hviezdičiek.",
       "Keď píšeš dobre, prídu nové písmenká.",
       "Esc hru zastaví a ďalší Esc ju pustí ďalej."
-    ]
+    ],
+    "journeyTitle": "Svety, úrovne a hviezdičky",
+    "journey": [
+      "Hra má príbehy. Každý príbeh má svety a každý svet má niekoľko úrovní.",
+      "Úrovne hráš po poradí. Na konci sveta ťa čaká veľká výzva.",
+      "Za každú úroveň dostaneš až tri hviezdičky. Čím menej chýb, tým viac hviezdičiek.",
+      "Úroveň môžeš hrať znova, keď chceš viac hviezdičiek.",
+      "Nové písmenká prídu, keď ti tie staré idú dobre. Niektoré úrovne a príbehy sa otvoria, až keď vieš dosť písmeniek.",
+      "Keď ti chýba písmenko, precvič ho vo Vlastnom cvičení."
+    ],
+    "taskTitle": "Úloha od učiteľa",
+    "task": [
+      "Učiteľ ti môže poslať úlohu ako odkaz. Otvor ho a vyber, kto ju bude robiť.",
+      "Na mape uvidíš Úlohu na dnes. Píš, kým neuplynie čas.",
+      "Keď je hotová, stlač Odovzdať a pošli učiteľovi odkaz s výsledkom."
+    ],
+    "settingsIntro": "Nastavenia sú pre rodičov. Otvoria sa ozubeným kolieskom na mape. Kým ich nezamknete heslom, otvorí ich jedna otázka.",
+    "settings": {
+      "settings": [
+        "Dieťa: meno, kamarát a jeho meno, jazyk a rozloženie klávesnice. Rozloženie vyberte podľa skutočnej klávesnice, sprievodca prstov sa podľa neho riadi.",
+        "Cvičenie: náročnosť a dĺžka slov. Automaticky rastú spolu s dieťaťom; ručne ich nastavíte, keď chcete.",
+        "Slová bez diakritiky pomôžu začiatočníkom na chvíľu. Bez časového tlaku veci zastanú a čakajú na dieťa.",
+        "Dĺžka hrania pred prestávkou: potom kamarát pozve dieťa na krátky oddych.",
+        "Sprievodca prstov: zmizne, keď sú klávesy zvládnuté, alebo je stále zapnutý či vypnutý. Môžete ho dieťaťu zamknúť.",
+        "Vzhľad a zvuk: písmo, veľký text, menej pohybu, vysoký kontrast, hlasitosť, celá obrazovka.",
+        "Heslo na nastavenia zamkne nastavenia pre všetkých hráčov na tomto zariadení. Zabudnuté heslo nevieme obnoviť."
+      ],
+      "own": [
+        "Vlastné slová: napríklad slovíčka na tento týždeň. Použijú sa aj s klávesmi, ktoré dieťa ešte nepozná.",
+        "Vlastný text: rozdelí sa na vety a časti. Na mape ho tlačidlo Môj text napíše celý po poradí.",
+        "Vlastné povzbudenia: kamarát ich občas povie.",
+        "Koľko vlastných slov a textu: aký diel cieľov v úrovniach budú tvoriť."
+      ],
+      "surprises": [
+        "Schovajte skutočnú odmenu za pravidlo: po úrovni, po minútach cvičenia, po ďalších úrovniach či hviezdičkách, alebo náhodou.",
+        "Kamarát sa na otázku spýta pred úrovňou a odpoveď prezradí, keď sa pravidlo splní."
+      ],
+      "task": [
+        "Pre učiteľa: vytvorte úlohu so slovami alebo textom a dĺžkou. Vznikne odkaz a QR kód.",
+        "Deti odkaz otvoria a po splnení vám pošlú odkaz s výsledkom. Výsledky si prezriete cez tlačidlo Pre učiteľov na úvodnej stránke."
+      ],
+      "keys": [
+        "Automaticky prídu klávesy po jednom, od základného radu F a J. To je najlepšie.",
+        "Ručne vyberiete, ktoré klávesy sa dieťa učí, aj interpunkciu."
+      ],
+      "dashboard": [
+        "Ako ide každý kláves, presnosť a rytmus v čase, čas hrania po dňoch a hotové úrovne.",
+        "Kartu s pokrokom si môžete vytlačiť."
+      ],
+      "data": [
+        "Všetko je uložené len v tomto prehliadači. Keď sa vymažú údaje prehliadača alebo sa pokazí počítač, pokrok sa stratí, ak nemáte zálohu.",
+        "Preto občas exportujte profil do súboru. Import ho načíta späť alebo na inom zariadení.",
+        "Preniesť na iný počítač: celý profil je v odkaze. Hosťovský profil sa zabudne po zatvorení karty."
+      ]
+    }
   },
   "tips": {
     "sit-straight": "Seď rovno a chrbát si opri o operadlo.",

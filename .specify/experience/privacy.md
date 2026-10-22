@@ -3,11 +3,11 @@
 ## What
 - No ads, no accounts, no cookies and no data about users. The only external request of the
   page is an anonymous visit counter (GoatCounter, no cookies, no personal data), and nothing
-  is counted offline. The about page names it and shows the count it reports.
-- The about page also links to reporting a bug or an idea (a GitHub issue).
-- The about page says that, as everything is only on the device, a forgotten settings password
+  is counted offline. The help page's about tab names it and shows the count it reports.
+- The help page's about tab also links to reporting a bug or an idea (a GitHub issue).
+- The help page's about tab says that, as everything is only on the device, a forgotten settings password
   or lost progress cannot be recovered by us, so progress should be exported now and then.
-- A short, plain statement of this on the start screen and the about page, for parents.
+- A short, plain statement of this on the start screen and the help page's about tab, for parents.
 - Nothing leaves the browser except what a person copies themselves: task, result and
   move links carry their data in the address hash, which browsers never send to the server
   ([teacher links](../profiles/teacher-links.md)).

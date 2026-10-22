@@ -7,7 +7,7 @@ import { GUEST_ID, type Lang, type Profile, SUPER_ID } from '../storage/schema';
 import type { TaskSpec } from '../share/task';
 import { loadWords } from '../words/words';
 
-export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'about' | 'break' | 'teacher' | 'taskImport' | 'moveImport' | 'help';
+export type ScreenName = 'start' | 'newProfile' | 'map' | 'level' | 'story' | 'parent' | 'wardrobe' | 'friends' | 'break' | 'teacher' | 'taskImport' | 'moveImport' | 'help';
 export type Screen = (root: HTMLElement, params: any) => (() => void) | void;
 
 const screens = new Map<ScreenName, Screen>();
@@ -47,29 +47,31 @@ const OWN_ROUTE: ScreenName[] = ['map', 'wardrobe', 'friends', 'parent', 'help']
 const LINKS: Partial<Record<string, ScreenName>> = { task: 'taskImport', move: 'moveImport', result: 'teacher' };
 
 /** Address of a screen, so a player's map can be bookmarked or put on the desktop. */
-export function routeOf(name: ScreenName, params: { code?: string } = {}): string {
+export function routeOf(name: ScreenName, params: { code?: string; tab?: string } = {}): string {
   if (name === 'newProfile') return '#/new';
-  if (name === 'about') return '#/about';
   // A result link is read once into the teacher's table.
   if (name === 'teacher') return '#/teacher';
   if (name === 'taskImport') return `#/task/${params.code ?? ''}`;
   if (name === 'moveImport') return `#/move/${params.code ?? ''}`;
   const id = app.profile?.id;
+  const tab = name === 'help' && params.tab ? `/${params.tab}` : '';
+  // Help works before a player is chosen too.
+  if (name === 'help' && !id) return `#/help${tab}`;
   if (name === 'start' || !id) return '#/';
   const sub = ROUTES[name];
-  return `#/p/${encodeURIComponent(id)}${sub ? `/${sub}` : ''}`;
+  return `#/p/${encodeURIComponent(id)}${sub ? `/${sub}` : ''}${tab}`;
 }
 
-export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string } {
+export function parseRoute(hash: string): { name: ScreenName; profileId: string | null; code?: string; tab?: string } {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(decodeURIComponent);
   if (parts[0] === 'new') return { name: 'newProfile', profileId: null };
-  if (parts[0] === 'about') return { name: 'about', profileId: null };
+  if (parts[0] === 'help') return { name: 'help', profileId: null, tab: parts[1] };
   if (parts[0] === 'teacher') return { name: 'teacher', profileId: null };
   const link = LINKS[parts[0]];
   if (link && parts[1]) return { name: link, profileId: null, code: parts[1] };
   if (parts[0] !== 'p' || !parts[1]) return { name: 'start', profileId: null };
   const name = (Object.keys(ROUTES) as ScreenName[]).find((n) => ROUTES[n] === parts[2] && OWN_ROUTE.includes(n)) ?? 'map';
-  return { name, profileId: parts[1] };
+  return { name, profileId: parts[1], ...(name === 'help' && parts[3] ? { tab: parts[3] } : {}) };
 }
 
 /** Opens the screen of an address (on start and on the browser's back and forward). */
@@ -78,7 +80,7 @@ export async function openRoute(hash: string): Promise<void> {
   const p = r.profileId === SUPER_ID ? app.superPlayer : r.profileId ? app.store.get(r.profileId) : null;
   if (r.profileId && !p) return go('start', {}, false);
   if (p && app.profile?.id !== p.id) await selectProfile(p);
-  go(r.name, r.code ? { code: r.code } : {}, false);
+  go(r.name, r.code ? { code: r.code } : r.tab ? { tab: r.tab } : {}, false);
 }
 
 export function go(name: ScreenName, params: any = {}, push = true): void {

@@ -17,6 +17,7 @@ import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { pikoElement } from '../gfx/piko';
 import { cornerControls, starRow } from '../ui/chrome';
+import { tabBar } from '../ui/tabs';
 import { clickableHeatmap, summaryRow } from './stats';
 import { barChart, lineChart } from '../ui/charts';
 import { hasCompanion, masteredCount, totalStars } from '../game/rewards';
@@ -103,26 +104,17 @@ export async function parentScreen(root: HTMLElement, params: { granted?: boolea
   const others = app.store.profiles.filter((q) => q.id !== p.id);
   const tabs = ['settings', 'own', 'surprises', 'task', 'keys', 'dashboard', 'data'] as const;
   type Tab = (typeof tabs)[number];
-  const body = h('div', { class: 'parent-body' });
+  const body = h('div', { class: 'tab-panel' });
   let current: Tab = tabs.find((x) => x === params.tab) ?? 'settings';
-  const nav = h('nav', { class: 'tabs', role: 'tablist' });
-  const show = (tab: Tab) => {
+  const nav = tabBar(tabs.map((tab) => [tab, t(`parent.tab.${tab}`)] as const), current, (tab) => {
     current = tab;
-    nav.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
     body.replaceChildren(tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : tab === 'task' ? taskTab(p) : tab === 'keys' ? keysTab(p) : tab === 'dashboard' ? dashboardTab(p) : dataTab(p));
-  };
-  for (const tab of tabs) {
-    const b = button(t(`parent.tab.${tab}`), () => show(tab), 'tab');
-    b.dataset.tab = tab;
-    b.setAttribute('role', 'tab');
-    nav.append(b);
-  }
+  });
   root.append(h('div', { class: 'screen parent-screen' },
     h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'),
       others.length ? childSwitch(p, others, () => current) : null, h('h1', {}, t('parent.title'))),
     cornerControls(),
     nav, body));
-  show(current);
 }
 
 /** The button by "Back": the child, and a card list of the other profiles to switch to without leaving the parent area. */

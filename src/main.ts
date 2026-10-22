@@ -5,7 +5,6 @@ import { SUPER_ID } from './storage/schema';
 import { detectLanguage } from './i18n/i18n';
 import { watchAutoFullscreen } from './ui/chrome';
 import { noteVisit } from './ui/install';
-import { aboutScreen } from './screens/about';
 import { breakScreen } from './screens/break';
 import { friendsScreen } from './screens/friends';
 import { helpScreen } from './screens/help';
@@ -26,7 +25,6 @@ const needsProfile = (s: (root: HTMLElement, params: any) => any) => (root: HTML
 
 registerScreen('start', startScreen);
 registerScreen('newProfile', newProfileScreen);
-registerScreen('about', aboutScreen);
 registerScreen('teacher', teacherScreen);
 registerScreen('taskImport', taskImportScreen);
 registerScreen('moveImport', moveImportScreen);
@@ -38,7 +36,8 @@ registerScreen('parent', needsProfile((root, params) => void import('./screens/p
 registerScreen('wardrobe', needsProfile(wardrobeScreen));
 registerScreen('friends', needsProfile(friendsScreen));
 registerScreen('break', needsProfile(breakScreen));
-registerScreen('help', needsProfile(helpScreen));
+// Help works without a player too: the start page opens it on the about tab.
+registerScreen('help', helpScreen);
 
 async function boot(): Promise<void> {
   const lang = app.store.data.language ?? detectLanguage();

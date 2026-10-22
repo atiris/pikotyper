@@ -1128,7 +1128,6 @@
     "rhythm": "Rhythm: {n} letters per minute"
   },
   "about": {
-    "title": "About PikoTyper",
     "code": "Code on GitHub",
     "report": "Report a bug or an idea",
     "intro": "PikoTyper is a free, peaceful game that teaches children to type with all ten fingers. Together with a companion they travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
@@ -1158,6 +1157,13 @@
   },
   "help": {
     "title": "Help",
+    "tab": {
+      "ui": "Buttons",
+      "typing": "How to type",
+      "progress": "How to progress",
+      "settings": "Settings",
+      "about": "About PikoTyper"
+    },
     "typeTitle": "How to type",
     "type": [
       "Sit up straight, feet on the floor, shoulders relaxed.",
@@ -1187,11 +1193,24 @@
       "read": "Read aloud: the computer reads the words to you.",
       "guide": "Shows or hides the keyboard that tells where the finger goes."
     },
+    "cardTitle": "Your card on the map",
+    "card": [
+      "Click your buddy and My progress opens: what you already do well and what to practise.",
+      "Continue starts the next level of the story.",
+      "Own practice: a short exercise on the keys you pick.",
+      "My text: when a parent adds their own text, you type all of it in order.",
+      "Buddy and wardrobe: pick your buddy and dress it in the things you have earned.",
+      "Rescue missions and Little friends: they appear after you finish your first story.",
+      "Today's task: when your teacher sends a task, you find it on the card. When it is done, you hand it in."
+    ],
     "progressTitle": "My progress",
     "progress": [
       "Key, world and story: how many keys you type well and fast (at least 9 of 10 presses right), how many worlds and stories you have finished.",
       "The tick is the accuracy of those keys in percent, the arrows are their speed in characters per minute.",
-      "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story."
+      "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story.",
+      "My progress has three tabs: Progress, Keys and Exercises.",
+      "Keys shows which keys go well and which to practise. You can start practice right from there.",
+      "A QR code shows your progress or an exercise to your teacher or parent: they just take a photo of it."
     ],
     "moreTitle": "Rescue mission and badge",
     "more": [
@@ -1205,7 +1224,61 @@
       "Stars come from accuracy: the fewer mistakes, the more stars.",
       "When you type well, new letters come.",
       "Esc stops the game and another Esc lets it go on."
-    ]
+    ],
+    "journeyTitle": "Worlds, levels and stars",
+    "journey": [
+      "The game has stories. Each story has worlds, and each world has a few levels.",
+      "You play the levels in order. At the end of a world a big challenge waits.",
+      "Every level gives you up to three stars. The fewer mistakes, the more stars.",
+      "You can play a level again when you want more stars.",
+      "New letters come when the old ones go well. Some levels and stories open only when you know enough letters.",
+      "When you miss a letter, practise it in Own practice."
+    ],
+    "taskTitle": "A task from your teacher",
+    "task": [
+      "Your teacher can send you a task as a link. Open it and choose who does it.",
+      "On the map you see Today's task. Type until the time is up.",
+      "When it is done, press Hand in and send your teacher the result link."
+    ],
+    "settingsIntro": "The settings are for parents. They open with the gear on the map. Until you lock them with a password, one question opens them.",
+    "settings": {
+      "settings": [
+        "Child: name, companion and its name, language and keyboard layout. Pick the layout of the real keyboard; the finger guide follows it.",
+        "Practice: difficulty and word length. In automatic mode they grow with the child; set them by hand when you want.",
+        "Words without diacritics help beginners for a while. No time pressure makes moving things stop and wait for the child.",
+        "Session length before a break: then the companion invites the child to a short rest.",
+        "Finger guide: fades when keys are mastered, or always on or off. You can lock it for the child.",
+        "Look and sound: font, large text, reduced motion, high contrast, volumes, fullscreen.",
+        "The settings password locks the settings for every player on this device. We cannot recover a forgotten password."
+      ],
+      "own": [
+        "Own words: for example this week's spelling words. They are used even with keys the child does not know yet.",
+        "Own text: split into sentences and parts. On the map, the My text button types all of it in order.",
+        "Own encouragements: the companion says them now and then.",
+        "How much of own words and text: the share of targets in levels."
+      ],
+      "surprises": [
+        "Hide a real reward behind a rule: after a level, after minutes of training, after more levels or stars, or at random.",
+        "The companion asks the question before a level and tells the answer once the rule is met."
+      ],
+      "task": [
+        "For teachers: make a task with words or a text and a length. You get a link and a QR code.",
+        "The children open the link and, when done, send you a result link. You see the results with the For teachers button on the start page."
+      ],
+      "keys": [
+        "Automatic: keys come one by one, starting from the home row F and J. This is best.",
+        "By hand: pick the keys the child learns, punctuation too."
+      ],
+      "dashboard": [
+        "How each key goes, accuracy and rhythm over time, time per day and the levels finished.",
+        "You can print a progress card."
+      ],
+      "data": [
+        "Everything is stored only in this browser. When the browser's data is cleared or the computer breaks, the progress is lost unless you have a backup.",
+        "So export the profile to a file now and then. Import loads it back, or on another device.",
+        "Move to another computer: the whole profile is inside a link. A guest profile is forgotten when the tab closes."
+      ]
+    }
   },
   "tips": {
     "sit-straight": "Sit up straight and lean your back on the chair.",

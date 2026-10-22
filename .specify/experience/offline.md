@@ -8,7 +8,7 @@
 
 - **Install offer:** once, in the first three days of use, when the browser can install the
   game, the map offers to install it as a desktop web app (its own window, no whole browser
-  needed). Declined or ignored, it is not offered again. The about page says the game can be
+  needed). Declined or ignored, it is not offered again. The help page's about tab says the game can be
   installed this way.
 
 ## Why

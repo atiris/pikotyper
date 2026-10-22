@@ -63,11 +63,9 @@ export function fullscreenButton(): HTMLButtonElement | null {
   return b;
 }
 
-/** The round "?": the player's help page, or the about page before a player is chosen. */
+/** The round "?": the help page, on the buttons for a player, on the about tab before a player is chosen. */
 export function helpButton(): HTMLButtonElement {
-  const b = app.profile
-    ? roundButton('control', 'help', t('help.title'), () => go('help'))
-    : roundButton('control', 'help', t('about.title'), () => go('about'));
+  const b = roundButton('control', 'help', t('help.title'), () => go('help'));
   b.classList.add('help-btn');
   return b;
 }

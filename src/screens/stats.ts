@@ -13,6 +13,7 @@ import type { Profile } from '../storage/schema';
 import { lineChart } from '../ui/charts';
 import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
 import { button, h, modal } from '../ui/dom';
+import { tabBar } from '../ui/tabs';
 import { bigCode } from '../ui/big-code';
 import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
@@ -219,19 +220,8 @@ function exercisesTab(p: Profile): HTMLElement {
 export function openStats(): void {
   const p = app.profile!;
   let close = () => {};
-  const tabs: [StatsTab, string][] = [['progress', 'progress.tabProgress'], ['keys', 'progress.tabKeys'], ['exercises', 'progress.tabExercises']];
+  const tabs: [StatsTab, string][] = [['progress', t('progress.tabProgress')], ['keys', t('progress.tabKeys')], ['exercises', t('progress.tabExercises')]];
   const body = h('div', { class: 'stats-body' });
-  const nav = h('nav', { class: 'tabs', role: 'tablist' });
-  const show = (tab: StatsTab) => {
-    nav.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
-    body.replaceChildren(tab === 'progress' ? progressTab(p) : tab === 'keys' ? keysTab(p, close) : exercisesTab(p));
-  };
-  for (const [tab, label] of tabs) {
-    const b = button(t(label), () => show(tab), 'tab');
-    b.dataset.tab = tab;
-    b.setAttribute('role', 'tab');
-    nav.append(b);
-  }
-  show('progress');
+  const nav = tabBar(tabs, 'progress', (tab) => body.replaceChildren(tab === 'progress' ? progressTab(p) : tab === 'keys' ? keysTab(p, close) : exercisesTab(p)));
   close = modal(h('div', { class: 'stats' }, nav, body), { cls: 'stats-modal' });
 }
