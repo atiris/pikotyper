@@ -16,7 +16,7 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 11;
+export const STORE_VERSION = 12;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -41,7 +41,17 @@ const migrations: Record<number, (data: any) => any> = {
   9: (data) => data,
   // v11: surprises become rules with a trigger; own questions are gone. Old surprises are not kept.
   10: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV10toV11) : data.profiles }),
+  // v12: the finished levels and earned stars counters start from what the levels already hold.
+  11: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV11toV12) : data.profiles }),
 };
+
+/** Levels and stars played before the counters existed count as finished and earned. */
+function profileV11toV12(p: any): any {
+  if (!p || typeof p !== 'object' || !p.progress) return p;
+  const levels: unknown[] = Object.values(p.progress.levels ?? {});
+  const stars = levels.reduce<number>((a, v) => a + (Number(v) || 0), 0);
+  return { ...p, progress: { ...p.progress, levelsFinished: Math.max(p.progress.levelsFinished ?? 0, levels.length), starsEarned: Math.max(p.progress.starsEarned ?? 0, stars) } };
+}
 
 function profileV10toV11(p: any): any {
   if (!p || typeof p !== 'object') return p;

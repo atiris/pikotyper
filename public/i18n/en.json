@@ -72,7 +72,7 @@
     "ownText": "My text",
     "hello": "Hi, {name}!",
     "continue": "Continue",
-    "practice": "Free practice",
+    "practice": "Own practice",
     "wardrobe": "Buddy and wardrobe",
     "rescue": "Rescue missions",
     "switchProfile": "Players",
@@ -85,9 +85,9 @@
     "lockWorld": "Finish {world} first.",
     "lockKeys": "This story opens when you know {n} letters. Now you know {have}.",
     "friends": "Little friends",
-    "keysOne": "You need one more letter for this level. You get new letters by playing or in Free practice.",
-    "keysFew": "You need {n} more letters for this level. You get new letters by playing or in Free practice.",
-    "keysMany": "You need {n} more letters for this level. You get new letters by playing or in Free practice.",
+    "keysOne": "You need one more letter for this level. You get new letters by playing or in Own practice.",
+    "keysFew": "You need {n} more letters for this level. You get new letters by playing or in Own practice.",
+    "keysMany": "You need {n} more letters for this level. You get new letters by playing or in Own practice.",
     "keysLocked": "needs more letters",
     "storyFairy": "Piko and Melody the Fairy"
   },
@@ -106,7 +106,7 @@
       "Repeat a level until it has three stars.",
       "Take a break after a few levels."
     ],
-    "practice": "Free practice",
+    "practice": "Own practice",
     "rescue": "Rescue mission",
     "guide": "Show or hide the keyboard",
     "pause": "Pause",
@@ -906,7 +906,7 @@
     "skipOk": "Yes, skip"
   },
   "parent": {
-    "title": "Parent area: {name}",
+    "title": "Local profile settings",
     "checkTitle": "Settings for parents",
     "checkText": "Difficulty, keys and data are changed here. Do you really want to open the settings?",
     "tab": {
@@ -1027,7 +1027,7 @@
     "wordsCount": "Words: {n} of {max}.",
     "untypableWords": "Cannot be typed on this keyboard, left out: {list}",
     "text": "Text",
-    "textHint": "It is split by sentences and commas. In the story it comes piece by piece; on the map, the My text button types all of it in order as free practice.",
+    "textHint": "It is split by sentences and commas. In the story it comes piece by piece; on the map, the My text button types all of it in order as own practice.",
     "textPlaceholder": "Once there was a little dragon. He liked to fly over the meadow.",
     "textCount": "Characters: {n} of {max}.",
     "untypableChars": "Cannot be typed on this keyboard, left out: {list}",
@@ -1038,7 +1038,7 @@
       "half": "Half",
       "most": "Most"
     },
-    "mixHint": "The share of targets in levels and free practice; the rest are the usual words.",
+    "mixHint": "The share of targets in levels and own practice; the rest are the usual words.",
     "preview": "Five sample targets",
     "previewMore": "Another sample"
   },
@@ -1124,7 +1124,7 @@
     "intro": "PikoTyper is a free, peaceful game that teaches children to type with all ten fingers. Together with a companion they travel through worlds full of adventures. Nothing bad ever happens: obstacles are pushed away or helped, never destroyed.",
     "privacyTitle": "Our promise to parents",
     "privacy": [
-      "No sign-in, ads, purchases, tracking or cookies. This site has no server of its own in the background.",
+      "No ads, purchases, sign-in or cookies. This site has no server of its own in the background.",
       "All progress is stored only in this browser, but you can export it as a file.",
       "Works offline after the first visit.",
       "It can be installed as a desktop web app: it opens in its own window, with no need to start the whole browser."
@@ -1390,7 +1390,7 @@
     "whoTakes": "Who will do the task?",
     "untitled": "Task",
     "kind": {
-      "practice": "Free practice with the task's words",
+      "practice": "Own practice with the task's words",
       "story": "Story with the task's words"
     },
     "today": "Today's task",

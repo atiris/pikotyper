@@ -114,8 +114,8 @@ export function summaryRow(p: Profile): HTMLElement {
     chip(imageUrl('ui-key'), '⌨', `${m.mastered}/${m.total}`, t('progress.keys', { n: m.mastered, total: m.total })),
     chip(imageUrl('ui-level'), '▲', `${stories}/${STORIES.length}`, t('progress.stories', { n: stories, total: STORIES.length })),
     chip(imageUrl('ui-earth'), '●', `${p.progress.worldsDone.length}/${WORLDS.length}`, t('progress.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
-    m.mastered ? chip(null, '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
-    m.mastered ? chip(null, '»', String(m.cpm), t('progress.speed', { n: m.cpm })) : null,
+    m.mastered ? chip(imageUrl('ui-accuracy'), '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
+    m.mastered ? chip(imageUrl('ui-speed'), '»', String(m.cpm), t('progress.speed', { n: m.cpm })) : null,
     chip(imageUrl('ui-star'), '★', String(p.progress.starsEarned), t('progress.stars', { n: p.progress.starsEarned })));
 }
 

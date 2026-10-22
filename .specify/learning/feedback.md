@@ -12,6 +12,6 @@
 
 ## Why
 - Typing one key over and over in the middle of a story makes no sense to a child; the
-  hint with the finger is enough, and free practice is there for drills.
+  hint with the finger is enough, and own practice is there for drills.
 - Racing and rigid scoring push speed over accuracy and discourage children
   ([research](../../.research/features/accuracy-first-feedback.md)).

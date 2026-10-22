@@ -62,13 +62,13 @@ test('the parent area switches to another child and keeps the tab', async ({ pag
   await createProfile(page, 'Boris');
   await page.locator('.top-actions .round-btn').first().click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
-  await expect(page.locator('.parent-screen h1')).toContainText('Boris');
+  await expect(page.locator('.switch-btn')).toContainText('Boris');
   await page.locator('.tab[data-tab=dashboard]').click();
   await expect(page.locator('.level-cell').first().locator('.star')).toHaveCount(3);
   await page.locator('.switch-btn').click();
   await expect(page.locator('.switch-list .profile-card')).toHaveCount(1);
   await page.locator('.switch-list .profile-card', { hasText: 'Anna' }).click();
-  await expect(page.locator('.parent-screen h1')).toContainText('Anna');
+  await expect(page.locator('.switch-btn')).toContainText('Anna');
   await expect(page.locator('.tab[data-tab=dashboard]')).toHaveAttribute('aria-selected', 'true');
   await expect(page.locator('.lock-dialog, .confirm')).toHaveCount(0);
 });

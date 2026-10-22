@@ -119,7 +119,7 @@ export async function parentScreen(root: HTMLElement, params: { granted?: boolea
   }
   root.append(h('div', { class: 'screen parent-screen' },
     h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'),
-      others.length ? childSwitch(p, others, () => current) : null, h('h1', {}, t('parent.title', { name: p.name })), superStar(), soundButton()),
+      others.length ? childSwitch(p, others, () => current) : null, h('h1', {}, t('parent.title')), superStar(), soundButton()),
     nav, body));
   show(current);
 }

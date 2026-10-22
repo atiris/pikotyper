@@ -19,7 +19,7 @@ async function startRun(page: Page): Promise<void> {
 }
 
 async function openPicker(page: Page, style: string): Promise<void> {
-  await page.locator('.map-side .btn', { hasText: 'Free practice' }).click();
+  await page.locator('.map-side .btn', { hasText: 'Own practice' }).click();
   const picker = page.locator('.practice-keys-modal');
   await expect(picker.locator('.pk-styles .chip.on')).toHaveText('Copy');
   await picker.locator('.pk-styles .chip', { hasText: style }).click();

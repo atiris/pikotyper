@@ -13,7 +13,7 @@
   time); every three typed in a row bring the pace one step back. This is silent and lasts
   only for the level.
 - Progress comes only from typing. A target that floats by untyped (a goal, a splash) is
-  replaced by a new one; waiting never finishes a level. Timed free practice is the one
+  replaced by a new one; waiting never finishes a level. Timed own practice is the one
   chosen duration.
 - A goal text appears above the animal that scored. A closed world on the map tells, when
   clicked, what is still missing: the world before it, or how many letters its story needs.

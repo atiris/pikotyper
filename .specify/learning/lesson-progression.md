@@ -33,24 +33,24 @@
   keys count (space, punctuation and Shifts too);
   with the parent's own key choice, its keys count. A level reached (the one before has its
   star) but still short of keys shows a key on the map; tapping it, Piko says how many
-  letters are missing and offers free practice. "Continue" skips such levels: it replays
-  the last open one, or starts free practice when none is open. Rescue missions and the
+  letters are missing and offers own practice. "Continue" skips such levels: it replays
+  the last open one, or starts own practice when none is open. Rescue missions and the
   super profile have no key need.
-- Free practice mode: calm typing of words from the chosen keys, no story. Every way into
+- Own practice mode: calm typing of words from the chosen keys, no story. Every way into
   it (the practice button, "Continue" with nothing open, Piko's offer on the map) first
   opens a key picker; a task's practice, a drill from the stats and the parent's own text
   do not, they have their own targets. The picker shows the keyboard with the chosen keys
   lit in their finger colors, a slider over the lesson order (step 1 is `f j` and space,
   each step adds the next three keys, the last is the whole order) and opens with the
   child's active keys, on the smallest step that holds them. A click on a key adds or takes
-  it away ("own choice"). Free practice needs at least two letters. The parent's own words
+  it away ("own choice"). own practice needs at least two letters. The parent's own words
   are not mixed in, since they bring other letters. Above the keyboard three buttons pick
   the way to type: Copy (default), Dictation (only with a voice for the language) and
   Remember it ([mechanics](../game/mechanics.md)). Nothing is stored: the picker opens
   with the active keys and Copy each time.
 
 ## Why
-- Free practice is for practising exactly what the child (or parent) wants: the slider
+- Own practice is for practising exactly what the child (or parent) wants: the slider
   is quick, the lit keyboard shows what is in, single clicks fine-tune it. The way to type
   is a choice for one run, so it is not stored.
 - Gradual unlocking with weak-key weighting (Keybr, Typing.com) is what users praise most

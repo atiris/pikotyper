@@ -15,7 +15,7 @@
 - The first level asks one chunk per target, never two with a space; the second level is the
   first that asks for the space bar.
 - Once space is known, a target can be a phrase of known words: at most two (short words)
-  for targets that fly, fall or approach, two to four in calm modes (free practice, stepping
+  for targets that fly, fall or approach, two to four in calm modes (own practice, stepping
   stones, road signs). Right after space comes in, phrases are chunk pairs like `fj jf`.
   Small targets (boulder chunks, moles, shield groups) stay single words.
 - Punctuation only once its key is known: a period ends about one phrase in three, a comma
@@ -26,13 +26,13 @@
   mastered; while a Shift is the newest key, most targets start with a capital it serves.
 - A target with a capital gets 1.5 s more time. On screen, a space shows as a light dot.
 - **Own words and own text** from a parent (for example this week's spelling words, or a
-  short story) are mixed into the targets of story levels and free practice by a share the
+  short story) are mixed into the targets of story levels and own practice by a share the
   parent picks: none, a quarter, half or most. Own words come as typed (capitals too) and
   are used even with keys the child has not unlocked yet; the guide shows those keys. A word
   with a character the keyboard cannot type at all is left out, and characters of the text
   that cannot be typed are dropped; the editor lists both.
 - Own text is split by sentences and commas and comes in reading order, cut to the size
-  of the target (short pieces for moving targets). Free practice has a "My text" choice
+  of the target (short pieces for moving targets). own practice has a "My text" choice
   that types the whole text in order, piece by piece, without random words, and then ends.
 
 ## Why

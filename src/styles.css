@@ -123,7 +123,13 @@ p { line-height: 1.5; }
 .title { font-size: clamp(2rem, 7vh, 3.6rem); font-weight: 700; margin: 0; letter-spacing: -0.02em; color: var(--brand); text-shadow: 0 4px 0 #fff, 0 8px 16px rgba(229, 106, 27, 0.25); }
 .title-b { color: var(--green); }
 .tagline { font-size: clamp(0.95rem, 2.4vh, 1.2rem); color: var(--ink-soft); margin: 0.2em 0 0; }
-.start-screen .panel { width: 100%; text-align: center; flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }
+.start-screen .panel { width: 100%; text-align: center; flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; margin-block: auto; }
+@media (min-height: 860px) {
+  .logo { width: clamp(120px, 18vh, 220px); }
+  .title { font-size: clamp(3.6rem, 9vh, 6rem); }
+  .tagline { font-size: clamp(1.2rem, 2.6vh, 1.6rem); }
+  .hero { gap: 1.6rem; margin-top: 1.5rem; }
+}
 .start-screen .panel h2 { margin: 0 0 0.5rem; }
 .profile-list { display: flex; flex-direction: column; gap: 0.8rem; align-items: center; overflow-y: auto; min-height: 0; padding: 6px; }
 .profile-row { display: flex; gap: clamp(0.5rem, 1.5vw, 1rem); justify-content: center; }
@@ -445,6 +451,12 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 /* Modal */
 .modal-back { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(40, 30, 50, 0.4); padding: 1rem; animation: fade-in 0.2s; }
 .modal { position: relative; background: var(--paper); border-radius: 26px; padding: 1.6rem; width: min(760px, 100%); max-height: 92vh; overflow: auto; box-shadow: var(--shadow); animation: pop-in 0.25s ease; }
+.modal-back:has(.stats-modal) { align-items: start; }
+.modal::-webkit-scrollbar { width: 18px; }
+.modal::-webkit-scrollbar-track { background: var(--paper-2); border-radius: 999px; margin: 28px 0; }
+.modal::-webkit-scrollbar-thumb { background: var(--brand); border-radius: 999px; border: 4px solid var(--paper-2); }
+.modal::-webkit-scrollbar-thumb:hover { background: var(--brand-dark); }
+@supports not selector(::-webkit-scrollbar) { .modal { scrollbar-width: auto; scrollbar-color: var(--brand) var(--paper-2); } }
 .modal-x { position: absolute; top: 0.7rem; right: 0.7rem; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--paper-2); cursor: pointer; display: grid; place-items: center; }
 .stats-head { display: flex; align-items: center; gap: 1rem; }
 .stats-head h2 { margin: 0 0 0.3rem; }
@@ -597,6 +609,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 
 /* Parent */
 .tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.parent-screen .tabs { margin-bottom: 0; }
 .tab { border: 0; border-radius: 14px 14px 0 0; padding: 0.7em 1.2em; background: rgba(255, 255, 255, 0.5); cursor: pointer; font-weight: 600; min-height: 46px; }
 .tab[aria-selected='true'] { background: var(--paper); box-shadow: 0 -3px 0 var(--brand) inset; }
 .parent-body { background: var(--paper); border-radius: 0 var(--radius) var(--radius) var(--radius); padding: 1.4rem; box-shadow: var(--shadow); }

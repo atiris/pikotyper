@@ -7,8 +7,8 @@
 - An overlay opened by clicking Piko (on the map, or in a level, which pauses first)
   starts with "My progress": a row of icon and number chips (keys mastered of the
   layout's total, worlds finished, stories finished, and once a key is mastered the
-  accuracy and the speed in characters per minute of the mastered keys; the meaning is only
-  in the tooltip), then one row per story (all stories, closed ones grey) with its picture and
+  accuracy and the speed in characters per minute of the mastered keys, each with its own
+  picture; the meaning is only in the tooltip), then one row per story (all stories, closed ones grey) with its picture and
   name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
   shelf of world badges ([story](../game/story.md)), and when
   the child last trained (today, yesterday, n days ago) with the minutes of the last 7

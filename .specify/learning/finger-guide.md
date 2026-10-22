@@ -9,7 +9,7 @@
   color, idle fingers faint); the finger that presses the key lifts and is fully opaque.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. Colors also carry a pattern or label (colorblind-safe).
-- "Ready, steady, type!" card before every adventure (story level, rescue, free practice)
+- "Ready, steady, type!" card before every adventure (story level, rescue, own practice)
   and at breaks: a picture of good posture and **one** line - the session's preparation
   tip when one is due, else one random reminder (sit straight, feet on the floor, wrists
   relaxed, index fingers on the `F` and `J` bumps, eyes on the screen). It asks the child

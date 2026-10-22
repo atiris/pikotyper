@@ -147,7 +147,7 @@ describe('Store', () => {
 
   it('v9 -> v10 keeps the data and has no parent lock', () => {
     const out = migrate({ version: 9, profiles: [newProfile('Ema', 'sk')], lastProfileId: null, language: 'sk' });
-    expect(out.version).toBe(11);
+    expect(out.version).toBe(12);
     expect(out.profiles).toHaveLength(1);
     expect('parentLock' in out).toBe(false);
   });
@@ -164,6 +164,13 @@ describe('Store', () => {
     expect('ownQuestions' in out).toBe(false);
     for (const k of ['teasersAsked', 'ownQuestionNext', 'pendingQuestion']) expect(k in out.progress).toBe(false);
     expect(out.progress).toMatchObject({ trainedSeconds: 420, levelsFinished: 0, starsEarned: 0 });
+  });
+
+  it('v11 -> v12 starts the star and level counters from the levels already played', () => {
+    const p: any = newProfile('Ema', 'sk');
+    Object.assign(p.progress, { levels: { 'meadow-1': 3, 'meadow-2': 1 }, levelsFinished: 0, starsEarned: 2 });
+    const out: any = migrate({ version: 11, profiles: [p] }).profiles[0];
+    expect(out.progress).toMatchObject({ levelsFinished: 2, starsEarned: 4 });
   });
 
   it('keeps a parent lock and drops a broken one', () => {
