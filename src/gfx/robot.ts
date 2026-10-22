@@ -31,10 +31,6 @@ export function drawRobot(g: G, st: RobotState, mood: RobotMood, x: number, y: n
   const bob = Math.sin(t * 3) * size * 0.012;
   g.save();
   g.globalAlpha *= alpha;
-  g.fillStyle = 'rgba(30,20,10,0.16)';
-  g.beginPath();
-  g.ellipse(x, y, size * 0.22, size * 0.04, 0, 0, Math.PI * 2);
-  g.fill();
   g.translate(x, y + bob);
   if (mood === 'wet') g.rotate(Math.sin(t * 40) * 0.05);
   const img = sprite(robotImage(st.look, mood));

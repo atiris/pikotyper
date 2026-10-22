@@ -72,3 +72,12 @@ describe('no typing, no progress', () => {
     expect(mode.finished).toBe(false);
   });
 });
+
+describe('rain walk', () => {
+  it('Bolt walks from the street start to the sun as the rain thins', async () => {
+    const { rainWalkX } = await import('./raintown');
+    expect(rainWalkX(1000, 0)).toBeLessThan(rainWalkX(1000, 0.5));
+    expect(rainWalkX(1000, 0.5)).toBeLessThan(rainWalkX(1000, 1));
+    expect(rainWalkX(1000, 2)).toBe(rainWalkX(1000, 1));
+  });
+});

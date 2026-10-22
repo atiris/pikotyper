@@ -30,6 +30,15 @@ function drawUmbrella(g: G, x: number, y: number, size: number, open: number): v
   });
 }
 
+const SUN_X = 0.9;
+const WALK_FROM = 0.35;
+const WALK_TO = 0.72;
+
+/** Where Bolt stands: from the left of the street toward the sun as the rain thins (`walk` 0..1). */
+export function rainWalkX(vw: number, walk: number): number {
+  return vw * (WALK_FROM + (WALK_TO - WALK_FROM) * Math.min(1, Math.max(0, walk)));
+}
+
 /**
  * World 8: raindrops fall toward Bolt, who must not rust. A typed drop is caught under
  * Piko's umbrella; a missed one lands on Bolt, who shakes like a dog and giggles.
@@ -41,9 +50,11 @@ export class RainMode extends Mode {
   private spawnTimer = 0.8;
   private umbrella = 0;
   private lastTickle = -TICKLE_GAP;
+  /** 0..1: how far Bolt has walked toward the sun; follows the thinning rain smoothly. */
+  private walk = 0;
 
   friendSpot(): { x: number; y: number } {
-    return { x: this.L.vw * 0.5, y: VH - 6 };
+    return { x: rainWalkX(this.L.vw, this.walk), y: VH - 6 };
   }
 
   update(dt: number): void {
@@ -81,6 +92,7 @@ export class RainMode extends Mode {
       }
     }
     this.umbrella = Math.max(0, this.umbrella - dt * 0.9);
+    this.walk += (this.progress() - this.walk) * Math.min(1, dt * 2.5);
     core.prune((tg) => tg.data.fade < 1);
     this.scroll += dt * 10;
   }
@@ -110,6 +122,7 @@ export class RainMode extends Mode {
   }
 
   render(g: G): void {
+    this.drawSun(g);
     const b = this.friendSpot();
     if (this.umbrella > 0) {
       g.save();
@@ -125,6 +138,28 @@ export class RainMode extends Mode {
       g.restore();
     }
     for (const tg of this.L.core.targets) if (tg.data.state === 'fall') this.L.label(g, tg, tg.data.x, Math.max(40, tg.data.y - 70));
+  }
+
+  /** The sun waits at the end of the street and shines brighter as the rain thins. */
+  private drawSun(g: G): void {
+    const x = this.L.vw * SUN_X, y = VH * 0.24, k = this.walk;
+    g.save();
+    g.globalAlpha = 0.35 + 0.65 * k;
+    g.fillStyle = '#ffd84a';
+    g.beginPath();
+    g.arc(x, y, 50 + 14 * k, 0, Math.PI * 2);
+    g.fill();
+    g.strokeStyle = '#ffd84a';
+    g.lineWidth = 6;
+    g.lineCap = 'round';
+    for (let i = 0; i < 10; i++) {
+      const a = (i / 10) * Math.PI * 2 + this.t * 0.2;
+      g.beginPath();
+      g.moveTo(x + Math.cos(a) * 76, y + Math.sin(a) * 76);
+      g.lineTo(x + Math.cos(a) * (76 + 24 * k), y + Math.sin(a) * (76 + 24 * k));
+      g.stroke();
+    }
+    g.restore();
   }
 
   progress(): number {

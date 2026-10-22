@@ -14,9 +14,9 @@
       or event-driven progress; fix each. Unit test per mode where logic is testable: N
       seconds of no input leaves progress unchanged; goal events without a correct hit do not
       add progress.
-- [ ] 2. **Rain level.** The robot moves step by step closer to the sun as the rain thins
+- [x] 2. **Rain level.** The robot moves step by step closer to the sun as the rain thins
       (position is a function of remaining rain, 0..1). Smooth tween, no jumps.
-- [ ] 3. **Shadow under the robot.** On the junkyard the robot shows a shadow that does not
+- [x] 3. **Shadow under the robot.** On the junkyard the robot shows a shadow that does not
       belong. Find its source (sprite baked-in shadow vs. a drawn ellipse in `src/gfx/robot.ts`)
       and remove it. If it is baked into the sprite, fix it in `scripts/assets.mjs` (alpha edge)
       or list the sprite for regeneration in `assets-src/PROMPTS.md`.
@@ -45,3 +45,5 @@
 - Step 1: a missed target no longer counts (`spawned--` instead of `resolved++`, so it is replaced);
   hedgehog re-throws a goal leaf, asteroid mode re-sends a passed rock. Timed free practice
   (`PracticeMode` seconds) stays: it is a chosen duration, not a story level. Test: `src/game/modes/idle.test.ts`.
+- Step 2: `RainMode` has a sun (brighter as the rain thins); Bolt's x is `rainWalkX(vw, walk)`, `walk` eases toward progress.
+- Step 3: the shadow was an ellipse drawn in `drawRobot` (the sprite has none); removed for every robot.

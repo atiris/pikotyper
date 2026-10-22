@@ -182,8 +182,8 @@ export class AsteroidMode extends SpaceMode {
   }
 
   /** A passed rock does not count: a big one comes again, a piece returns from the right. */
-  protected onPass(m: Mover): void {
-    super.onPass(m);
+  protected onPass(m: Mover, tg: Target): void {
+    super.onPass(m, tg);
     if (m.big) this.bigs--;
     else this.addPiece(this.L.vw + 100, this.L.rng.range(130, VH * 0.72), 0);
   }
