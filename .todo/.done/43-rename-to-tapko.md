@@ -75,35 +75,35 @@ and "Tappy" are already used by children's typing games.
 - All git network commands use `GIT_TERMINAL_PROMPT=0` and `GCM_INTERACTIVE=never`.
 
 ## Steps
-- [ ] Copy the working tree to `D:\personalspace\tapkotyper` as described; `npm ci` there.
-- [ ] Rename files (assets, icons, `src/gfx/piko.ts`, `pikotyper.md`, `assets-src/` sources).
-- [ ] Replace names in code, config (`package.json` name `tapkotyper`, `vite.config.ts` base
+- [x] Copy the working tree to `D:\personalspace\tapkotyper` as described; `npm ci` there.
+- [x] Rename files (assets, icons, `src/gfx/piko.ts`, `pikotyper.md`, `assets-src/` sources).
+- [x] Replace names in code, config (`package.json` name `tapkotyper`, `vite.config.ts` base
       `/tapkotyper/` and plugin name, `playwright.config.ts` URLs, service worker cache names,
       `index.html` title/description/icons/noscript/goatcounter, manifest, `src/screens/help.ts`
       counter URL, `src/screens/teacher.ts`), then regenerate `package-lock.json` with
       `npm install`.
-- [ ] Storage reset: new keys, `STORE_VERSION = 1`, migrations and their tests removed,
+- [x] Storage reset: new keys, `STORE_VERSION = 1`, migrations and their tests removed,
       `app: 'tapkotyper'` in share/export/import.
-- [ ] i18n: `companion.defaultName`, `{tapko}` placeholder, `tapko` group, all texts; Slovak
+- [x] i18n: `companion.defaultName`, `{tapko}` placeholder, `tapko` group, all texts; Slovak
       sentences read through for correct grammar.
-- [ ] Docs: `.specify/`, `.research/`, `.scenarios/`, `.todo/`, `README.md`, `PROMPTS.md`,
+- [x] Docs: `.specify/`, `.research/`, `.scenarios/`, `.todo/`, `README.md`, `PROMPTS.md`,
       `tapkotyper.md`; name note in `.specify/index.md`; `.specify/architecture.md` URL.
-- [ ] `git grep -i piko` is empty, no `piko` in file names; `npm run build`, `npm test`,
+- [x] `git grep -i piko` is empty, no `piko` in file names; `npm run build`, `npm test`,
       `npx playwright test` pass.
-- [ ] Run the app (`vite preview`) and drive it with the playwright MCP: new player in Slovak
+- [x] Run the app (`vite preview`) and drive it with the playwright MCP: new player in Slovak
       shows "Ťapko" in the welcome and on the map, in English "Tapko"; title "TapkoTyper";
       companion pictures and icons load (no 404 in the network log); a level can be played.
-- [ ] In the new folder: `git init -b main`, one commit
+- [x] In the new folder: `git init -b main`, one commit
       `feat: TapkoTyper, fresh start of the touch-typing game`, create the public repository
       with `gh repo create atiris/tapkotyper --public --source . --push --description "<the
       README first sentence>"`, enable Pages with the Actions workflow
       (`gh api -X POST repos/atiris/tapkotyper/pages -f build_type=workflow`), wait for the
       deploy run to pass (`gh run watch`) and check the live URL answers 200.
-- [ ] Copy the Claude project memory to the new project path.
-- [ ] Old repository: notice commit (README + this plan in `.done/` with `## Done`), push,
+- [x] Copy the Claude project memory to the new project path.
+- [x] Old repository: notice commit (README + this plan in `.done/` with `## Done`), push,
       `gh api -X DELETE repos/atiris/pikotyper/pages`, then
       `gh repo archive atiris/pikotyper --yes`.
-- [~] Manual, by the user (needs their GoatCounter login): create the site code `tapkotyper`
+- [x] Manual, by the user (needs their GoatCounter login): create the site code `tapkotyper`
       on goatcounter.com with "Allow adding visitor counts on your website" enabled; until then
       the visit line in Help stays empty, which the code already handles.
 
@@ -112,3 +112,13 @@ This plan names the old name on purpose, so it is not copied to the new reposito
 `.todo/45-wardrobe-time-limit.md` and `.todo/46-teacher-and-mobile.md` are copied and, in the new repository, get their lines in
 `.todo/QUEUE.md` in this order (they are written to run after the rename). Its progress is kept here in the old repository
 and it moves to `.todo/.done/` with `## Done` in the notice commit.
+
+## Done
+2026-10-22. New repository https://github.com/atiris/tapkotyper (one commit), live at
+https://atiris.github.io/tapkotyper/, GoatCounter site `tapkotyper` created by the user.
+Changes from the plan: the user asked for no leftovers, so the new repository carries no done
+plans (`.todo/.done/`) and no original brief `pikotyper.md` (the spec in `.specify/` replaces
+it); the default companion name is `DEFAULT_COMPANION_NAME` in `src/storage/schema.ts` instead
+of an i18n key, because `newProfile` must use the chosen language, whose catalogue may not be
+loaded. `scripts/icons.mjs` was fixed to crop the 384 px art. Plans 44-46 moved to the new
+repository and are removed here.
