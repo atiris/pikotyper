@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { LAYOUTS, stepsFor } from '../src/keyboard/layouts';
 
 /** Plays the open level like a child reading the finger guide, until the results card; `typed` collects the characters. */
 export async function playLevel(page: Page, mistakes = true, typed: string[] = []): Promise<string> {
@@ -26,18 +27,27 @@ export async function playLevel(page: Page, mistakes = true, typed: string[] = [
   throw new Error('level did not finish');
 }
 
-/** One character as a child types it: a capital with Shift held. */
+/** One character as a child types it: a capital with Shift held; a letter off the US layout as a real key event of the Slovak key. */
 export async function typeChar(page: Page, ch: string): Promise<void> {
+  const [step, ...rest] = stepsFor(LAYOUTS['sk-qwertz'], ch);
+  if (step && !rest.length && !/^[ -~]$/.test(ch)) {
+    await page.evaluate(({ key, code, shiftKey }) => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key, code, shiftKey, bubbles: true, cancelable: true }));
+      window.dispatchEvent(new KeyboardEvent('keyup', { key, code, shiftKey, bubbles: true }));
+    }, { key: ch, code: step.code, shiftKey: step.shift });
+    return;
+  }
   const capital = ch !== ch.toLowerCase();
   if (capital) await page.keyboard.down('Shift');
   await page.keyboard.type(ch);
   if (capital) await page.keyboard.up('Shift');
 }
 
-export async function createProfile(page: Page, name: string): Promise<void> {
+export async function createProfile(page: Page, name: string, layout?: string): Promise<void> {
   await page.goto('./');
   await page.locator('.profile-card.new').click();
   await page.locator('#np-name').fill(name);
+  if (layout) await page.locator('#np-layout').selectOption(layout);
   await page.locator('form button[type=submit]').click();
   await page.locator('.story-screen').waitFor();
   await page.keyboard.press('Escape');

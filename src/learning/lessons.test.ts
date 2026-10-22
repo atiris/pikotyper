@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { LAYOUTS } from '../keyboard/layouts';
-import { advanceLesson, firstKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
+import { activeKeys, advanceLesson, firstKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
 import { STATS_WINDOW, keyReport, lastTraining, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
@@ -172,5 +172,24 @@ describe('free practice steps', () => {
     p.settings.noDiacritics = true;
     expect(practiceOrder(p)).not.toContain('á');
     expect(practiceOrder(p)).toContain('a');
+  });
+});
+
+describe('manual punctuation picking', () => {
+  it('offers the shifted Slovak punctuation with its key combination', () => {
+    const keys = punctuationKeys(LAYOUTS['sk-qwertz']);
+    expect(keys.find((k) => k.key === '?')).toEqual({ key: '?', base: ',', shift: true });
+    expect(keys.find((k) => k.key === '!')).toEqual({ key: '!', base: '§', shift: true });
+    expect(keys.find((k) => k.key === ':')).toEqual({ key: ':', base: '.', shift: true });
+    expect(keys.find((k) => k.key === '.')?.shift).toBe(false);
+    expect(keys.some((k) => k.key === "'")).toBe(false);
+    expect(punctuationKeys(LAYOUTS['us-qwerty']).some((k) => k.key === "'")).toBe(true);
+  });
+
+  it('puts a picked ? into the active keys', () => {
+    const p = newProfile('Ema', 'sk');
+    p.settings.activeKeysMode = 'manual';
+    p.settings.manualKeys = ['f', 'j', '?'];
+    expect(activeKeys(p)).toContain('?');
   });
 });

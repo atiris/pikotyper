@@ -941,6 +941,7 @@
     "keysAuto": "Automatic (new key when the last one is mastered)",
     "keysManual": "Picked by hand",
     "keysHint": "Automatic is best: keys come one by one, starting from the home row (F J).",
+    "punctuation": "Punctuation",
     "unlocked": "Unlocked so far: {keys}",
     "preset": {
       "home": "+ home row",

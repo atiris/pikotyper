@@ -16,7 +16,7 @@
   minutes of accurate play (90 %+) one of them goes up by one step, taking turns, up to a
   ceiling (difficulty 8, words of 9 letters); each step gives the child a numbered medal.
   A parent who sets the value by hand turns its automatic mode off.
-- Settings per profile: child name, companion name and kind, keyboard layout, active keys (pick by hand or "automatic"), word length range,
+- Settings per profile: child name, companion name and kind, keyboard layout, active keys (pick by hand, with a punctuation row for the shifted `? ! :`, or "automatic"), word length range,
   difficulty 1-10, words without diacritics, no time pressure, session length, guide
   visibility, sound and music volume, start in fullscreen. The help text says the start
   is slow and points to "no time pressure" for a child who still cannot keep up.

@@ -4,7 +4,7 @@ import { LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
 import { SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
-import { lessonKeyOf, lessonOrder } from '../learning/lessons';
+import { lessonKeyOf, lessonOrder, punctuationKeys } from '../learning/lessons';
 import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
 import { checkLock, makeLock } from '../storage/lock';
 import { linkOf } from '../share/codec';
@@ -487,21 +487,28 @@ function keysTab(p: Profile): HTMLElement {
   const kb = new KeyboardGuide(lay);
   kb.el.classList.add('picker');
   const picked = new Set(s.manualKeys.length ? s.manualKeys : p.progress.unlockedKeys);
+  const toggle = (key: string) => {
+    if (picked.has(key)) picked.delete(key); else picked.add(key);
+    s.manualKeys = [...picked];
+    paint();
+    saveProfile();
+  };
+  const marks = punctuationKeys(lay).map(({ key, base, shift }) => {
+    const chip = button(shift ? `${key} (Shift + ${base})` : key, () => toggle(key), 'chip');
+    chip.dataset.key = key;
+    return chip;
+  });
   const paint = () => {
     for (const def of allKeys(lay)) {
       const el = kb.keyEl(def.code);
       const key = lessonKeyOf(def);
       el?.classList.toggle('picked', !!key && picked.has(key));
     }
+    for (const chip of marks) chip.classList.toggle('on', picked.has(chip.dataset.key!));
   };
   kb.onKeyClick((code) => {
-    const def = allKeys(lay).find((d) => d.code === code)!;
-    const key = lessonKeyOf(def);
-    if (!key) return;
-    if (picked.has(key)) picked.delete(key); else picked.add(key);
-    s.manualKeys = [...picked];
-    paint();
-    saveProfile();
+    const key = lessonKeyOf(allKeys(lay).find((d) => d.code === code)!);
+    if (key) toggle(key);
   });
   paint();
   const mode = select(s.activeKeysMode, [['auto', t('parent.keysAuto')], ['manual', t('parent.keysManual')]], (v) => { s.activeKeysMode = v; if (v === 'manual') s.manualKeys = [...picked]; saveProfile(); kb.el.classList.toggle('disabled', v === 'auto'); });
@@ -511,6 +518,7 @@ function keysTab(p: Profile): HTMLElement {
     field(t('parent.keysMode'), mode, t('parent.keysHint')),
     h('p', { class: 'hint' }, t('parent.unlocked', { keys: p.progress.unlockedKeys.map(keyLabel).join(' ') })),
     kb.el,
+    h('div', { class: 'row picker-punct' }, h('b', {}, t('parent.punctuation')), ...marks),
     h('div', { class: 'row' },
       ...presets.filter(([id]) => (p.layout === 'us-qwerty' ? id !== 'home' : id !== 'homeUs')).map(([id, keys]) => button(t(`parent.preset.${id}`), () => {
         for (const c of keys) if (allKeys(lay).some((d) => d.base === c)) picked.add(c);

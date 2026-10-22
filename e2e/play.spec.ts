@@ -200,3 +200,32 @@ test('the fairy story is a third row; Melody floats with Piko, and dictation pla
   expect(text).not.toContain('By ear');
   expect(errors).toEqual([]);
 });
+
+test('free practice with a diacritic key is played to the results card', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await createProfile(page, 'Ema', 'sk-qwertz');
+  await page.locator('.map-side .btn', { hasText: 'Free practice' }).click();
+  const picker = page.locator('.practice-keys-modal');
+  await picker.locator('input[type=range]').fill('4');
+  await expect(picker.locator('.kb-key[aria-label="ô"]')).toHaveAttribute('aria-pressed', 'true');
+  await picker.getByRole('button', { name: 'Start' }).click();
+  const typed: string[] = [];
+  for (let i = 0; i < 600 && !typed.includes('ô'); i++) {
+    const state = await page.evaluate(() => ({
+      newkey: document.querySelector<HTMLElement>('.newkey-card')?.dataset.sample ?? '',
+      ready: !!document.querySelector('.posture-card'),
+      next: document.querySelector<HTMLElement>('.kb-guide')?.dataset.next ?? '',
+    }));
+    if (state.ready) await page.keyboard.press('Space');
+    else if (state.newkey || state.next) {
+      await typeChar(page, state.newkey || state.next);
+      if (!state.newkey) typed.push(state.next);
+    }
+    await page.waitForTimeout(90);
+  }
+  expect(typed).toContain('ô');
+  await page.locator('.hud .btn.small').click();
+  await expect(page.locator('.results-card')).toBeVisible();
+  expect(errors).toEqual([]);
+});

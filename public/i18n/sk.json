@@ -941,6 +941,7 @@
     "keysAuto": "Automaticky (nový kláves, keď je posledný zvládnutý)",
     "keysManual": "Vybrané ručne",
     "keysHint": "Automatický režim je najlepší: klávesy pribúdajú postupne od základného radu (F J).",
+    "punctuation": "Interpunkcia",
     "unlocked": "Zatiaľ odomknuté: {keys}",
     "preset": {
       "home": "+ základný rad",

@@ -107,6 +107,9 @@ export class KeyboardGuide {
         k.style.setProperty('--w', String(def.w ?? 1));
         k.style.setProperty('--finger', FINGER_COLORS[def.finger]);
         k.style.setProperty('--finger-ink', inkOn(FINGER_COLORS[def.finger]));
+        const [textBg, textInk] = textColorsOn(FINGER_COLORS[def.finger]);
+        k.style.setProperty('--next-bg', textBg);
+        k.style.setProperty('--next-ink', textInk);
         k.innerHTML = `<span class="kb-label">${label(def.base, def.shift)}</span>` +
           (def.base !== ' ' && def.base !== 'shift' ? `<span class="kb-shift">${def.base.startsWith('dead') || def.shift.toLowerCase() === def.base ? '' : def.shift}</span><span class="kb-num">${FINGER_NUMBER[def.finger]}</span>` : '');
         r.appendChild(k);

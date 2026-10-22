@@ -6,4 +6,3 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P3] 27-backlog-keys-contrast-e2e.md - three small backlog fixes; after 25 because the keyboard guide hands and highlight are redrawn there

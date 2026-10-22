@@ -13,3 +13,12 @@ describe('finger chip colors', () => {
     expect(textColorsOn('#f0c419')[0]).toBe('#f0c419');
   });
 });
+
+describe('next-key highlight', () => {
+  it('has AA label contrast on every finger color', () => {
+    for (const color of Object.values(FINGER_COLORS)) {
+      const [bg, ink] = textColorsOn(color);
+      expect(contrast(bg, ink)).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+});

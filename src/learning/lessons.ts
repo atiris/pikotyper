@@ -1,4 +1,4 @@
-import { type Layout, type KeyDef, fingerFor } from '../keyboard/layouts';
+import { type Layout, type KeyDef, fingerFor, stepsFor, keyByCode } from '../keyboard/layouts';
 import type { KeyStat, LayoutId, Profile } from '../storage/schema';
 
 /** Lesson key of the space bar (typed with a thumb). */
@@ -91,6 +91,15 @@ export function shiftKeyOf(layout: Layout, ch: string): string | null {
 export function lessonKeyOf(def: KeyDef): string | null {
   if (def.base === 'shift') return def.code === 'ShiftLeft' ? SHIFT_L : SHIFT_R;
   return [...def.base].length === 1 ? def.base : null;
+}
+
+/** Punctuation lesson keys the layout can type, each with the key (and Shift) that types it. */
+export function punctuationKeys(layout: Layout): { key: string; base: string; shift: boolean }[] {
+  return [...PUNCTUATION].flatMap((key) => {
+    const [step] = stepsFor(layout, key);
+    const def = step && keyByCode(layout, step.code);
+    return def ? [{ key, base: def.base, shift: step.shift }] : [];
+  });
 }
 
 /** Median reaction limit: 1600 ms at difficulty 1 down to 800 ms at 10. */

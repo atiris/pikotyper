@@ -3,7 +3,8 @@
 ## What
 - On-screen keyboard (matching the profile layout) with a color per finger and a
   highlight on the next key; for dead-key letters both steps are shown. The letter on a
-  highlighted key is dark or white, whichever reads better on that finger's color.
+  highlighted key is dark or white, whichever reads better on that finger's color, the color darkened a little when needed
+  to reach AA contrast.
 - Optional hands seen from above (soft palm, rounded fingers, a band in each finger's
   color, idle fingers faint); the finger that presses the key lifts and is fully opaque.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
