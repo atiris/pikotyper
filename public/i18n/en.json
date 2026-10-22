@@ -1129,6 +1129,13 @@
       "Works offline after the first visit.",
       "It can be installed as a desktop web app: it opens in its own window, with no need to start the whole browser."
     ],
+    "dataTitle": "Your data and the visit counter",
+    "data": [
+      "Because everything is only on your computer, we cannot recover a forgotten settings password, or your settings and progress when your computer breaks. So export your progress to a file now and then.",
+      "We only count anonymous visits, without cookies and without any data about users (of course nothing is counted if you use it offline). The counting is done by GoatCounter, which uses no cookies and collects no personal data."
+    ],
+    "visits": "Visits to this site so far: {n}",
+    "visitsLink": "Statistics on GoatCounter",
     "howTitle": "How it teaches",
     "how": [
       "Keys are learned one by one, starting from the home row (F and J).",
