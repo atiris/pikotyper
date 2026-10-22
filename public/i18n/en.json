@@ -150,7 +150,7 @@
     "escHint": "Esc: back to the map"
   },
   "newKey": {
-    "title": "A new key!",
+    "title": "New key “{key}”",
     "finger": "Press it with your {finger}, then go back home.",
     "typeIt": "Type {key} three times.",
     "shiftL": "Hold the left Shift with your left little finger and type the capital with your right hand. Type a capital {sample} three times.",

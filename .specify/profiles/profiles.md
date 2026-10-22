@@ -2,7 +2,7 @@
 
 ## What
 - Several local child profiles on one device, picked on the start screen (name and
-  avatar), plus a **Guest** mode that keeps nothing after the browser tab closes; the
+  avatar; "New player" is one more card up to four profiles, a button beside "Play as guest" with more), plus a **Guest** mode that keeps nothing after the browser tab closes; the
   guest is greeted in the game's language ("Hosť" / "Guest").
 - Profile data: child name, companion name and kind, custom messages, layout, settings,
   progress, unlocked items, statistics.

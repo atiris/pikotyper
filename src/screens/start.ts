@@ -7,6 +7,8 @@ import { LANGS, language, t } from '../i18n/i18n';
 import type { Lang } from '../storage/schema';
 import { button, h, icon } from '../ui/dom';
 import { soundButton } from '../ui/chrome';
+import { roundButton } from '../ui/hud';
+import { MAX_PER_ROW, rowSplit } from '../ui/rows';
 import { listenForSuperPassword, superProfile } from '../app/super';
 
 export function startScreen(root: HTMLElement): () => void {
@@ -23,38 +25,47 @@ export function startScreen(root: HTMLElement): () => void {
       if (root.dataset.screen === 'start') go('start');
     }, `chip ${language() === l ? 'on' : ''}`)));
 
-  const profiles = h('div', { class: 'profile-list' },
-    ...[...(app.superPlayer ? [app.superPlayer] : []), ...app.store.profiles].map((p) => {
-      const card = h('button', { class: 'profile-card', type: 'button', onClick: async () => { await selectProfile(p); go('map'); } },
-        pikoElement(p.companion, 'idle', 110),
-        h('span', { class: 'profile-name' }, p.name),
-        h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(p) })));
-      return card;
-    }),
-    h('button', { class: 'profile-card new', type: 'button', onClick: () => go('newProfile') },
+  const players = [...(app.superPlayer ? [app.superPlayer] : []), ...app.store.profiles];
+  const cards = players.map((p) =>
+    h('button', { class: 'profile-card', type: 'button', onClick: async () => { await selectProfile(p); go('map'); } },
+      pikoElement(p.companion, 'idle', 96),
+      h('span', { class: 'profile-name' }, p.name),
+      h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(p) }))));
+  // Up to four profiles the new player is one more card; with more it is a button by the guest button.
+  const newAsCard = players.length < MAX_PER_ROW;
+  if (newAsCard) {
+    cards.push(h('button', { class: 'profile-card new', type: 'button', onClick: () => go('newProfile') },
       h('span', { class: 'plus' }, icon('plus')), h('span', { class: 'profile-name' }, t('start.newProfile'))));
+  }
+  const profiles = h('div', { class: 'profile-list' });
+  let at = 0;
+  for (const size of rowSplit(cards.length)) {
+    profiles.append(h('div', { class: 'profile-row' }, ...cards.slice(at, at + size)));
+    at += size;
+  }
 
   root.append(h('div', { class: 'screen start-screen' },
-    h('div', { class: 'top-right' }, langSwitch, soundButton()),
+    h('div', { class: 'top-right' }, langSwitch,
+      roundButton('control', 'info', t('about.title'), () => go('about')),
+      roundButton('control', 'chart', t('teacher.title'), () => go('teacher')),
+      soundButton()),
     h('header', { class: 'hero' },
       logo ? h('img', { class: 'logo', src: logo, alt: '' }) : null,
-      h('h1', { class: 'title' }, h('span', {}, 'Piko'), h('span', { class: 'title-b' }, 'Typer')),
-      h('p', { class: 'tagline' }, t('start.tagline'))),
+      h('div', { class: 'hero-text' },
+        h('h1', { class: 'title' }, h('span', {}, 'Piko'), h('span', { class: 'title-b' }, 'Typer')),
+        h('p', { class: 'tagline' }, t('start.tagline')))),
     h('section', { class: 'panel' },
       h('h2', {}, t('start.whoPlays')),
       profiles,
       h('div', { class: 'row center' },
+        newAsCard ? null : button(t('start.newProfile'), () => go('newProfile'), 'btn', 'plus'),
         button(t('start.guest'), async () => {
           const g = app.store.startGuest(language());
           await selectProfile(g);
           go('map');
         }, 'btn ghost', 'user'),
         button(t('start.import'), () => void import('./parent').then((m) => m.importDialog(() => go('start'))), 'btn ghost', 'upload'))),
-    h('footer', { class: 'privacy-note' },
-      h('p', {}, t('privacy.short')),
-      h('div', { class: 'row center' },
-        button(t('about.title'), () => go('about'), 'link-btn', 'info'),
-        button(t('teacher.title'), () => go('teacher'), 'link-btn', 'chart')))));
+    h('footer', { class: 'privacy-note' }, h('p', {}, t('privacy.short')))));
   return listenForSuperPassword(async () => {
     app.superPlayer = superProfile(language());
     await selectProfile(app.superPlayer);

@@ -29,6 +29,13 @@
 - The world cards of a story stay in one row while the window is at least about 1000 px
   wide (they shrink with the space, the side column narrows below 1300 px); in a narrower
   window they go three and two.
+- Small laptop screens (1366 x 768, 1024 x 600) never scroll on the start screen, the new-key
+  card or the get-ready card: children use small screens, and a scrolling card hides the
+  button they need. The start screen has the logo beside the title, up to five profile cards
+  per row (more wrap in balanced rows, never one card alone), and the about and teacher
+  buttons among the round buttons at the top right so they stay reachable with any number
+  of profiles. The new-key card has its heading above Piko, the finger guide beside Piko and
+  Esc to skip. The get-ready card has the picture beside the text and always shows its button.
 - Back buttons in top bars have the same height as the round buttons beside them.
 - Fullscreen: a round button on the map and in levels; a parent can set a profile to
   start in fullscreen (browsers allow it only after the first key press or click).

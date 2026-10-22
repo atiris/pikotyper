@@ -150,7 +150,7 @@
     "escHint": "Esc: späť na mapu"
   },
   "newKey": {
-    "title": "Nový kláves!",
+    "title": "Nový kláves „{key}“",
     "finger": "Stláčaj ho {finger} a potom sa vráť domov.",
     "typeIt": "Napíš {key} trikrát.",
     "shiftL": "Ľavý Shift drž ľavým malíčkom a pravou rukou napíš veľké písmeno. Napíš trikrát veľké {sample}.",

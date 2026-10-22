@@ -8,7 +8,7 @@ Children (and teachers) use small laptop screens. Three screens scroll today for
 reason. Rule for all three: at 1366 x 768 and at 1024 x 600 nothing scrolls.
 
 ## Steps
-- [ ] 1. **Start screen.** Find the screen with the profile cards (read `src/screens/` and
+- [x] 1. **Start screen.** Find the screen with the profile cards (read `src/screens/` and
       `src/app/app.ts` first). Put the logo and the title text on one row. Profile cards: up to
       5 on one row with no scrolling at 1366 x 768 (cards shrink with `clamp()`/container width,
       not a fixed size). Rules for the "+ Nový hráč" entry: with 4 or fewer profiles it is a card
@@ -24,14 +24,24 @@ reason. Rule for all three: at 1366 x 768 and at 1024 x 600 nothing scrolls.
       tooltip). They are removed from the footer, so they are reachable with any number of
       profiles. The footer keeps only the privacy line. Test: both buttons are visible in the
       first viewport with 7 profiles.
-- [ ] 2. **New key panel.** Make it lower: the heading "Nový kláves „d“" goes above Piko, the
+- [x] 2. **New key panel.** Make it lower: the heading "Nový kláves „d“" goes above Piko, the
       "how to type it" content (finger guide) sits to the right of Piko, the skip action is
       "Preskočiť" and Esc triggers it (show the Esc hint on the button). Panel height stays under
       60 % of the viewport at 768 px. Keep the existing start action and flow.
-- [ ] 3. **"Pripraviť sa" card (posture).** Same content, laid out so it fits at 600 px
+- [x] 3. **"Pripraviť sa" card (posture).** Same content, laid out so it fits at 600 px
       height: picture and text side by side on wide screens, picture scaled to the available
       height (`max-height` in `vh`), button always visible without scrolling.
-- [ ] 4. Drive the app with the playwright MCP at 1366 x 768 and 1024 x 600 (start screen with
+- [x] 4. Drive the app with the playwright MCP at 1366 x 768 and 1024 x 600 (start screen with
       1, 5 and 7 profiles, a new-key panel, the posture card) and check the page does not
       scroll; add an e2e check for the start screen and the posture card. Update specs
       (WHAT and WHY only). Build, lint, unit and e2e tests.
+
+## Done - 2026-10-22
+Shipped: start screen (logo beside title, balanced rows of up to 5 cards via `rowSplit`, new
+player card or button, about and teacher as round buttons, footer with privacy only), new-key
+card (heading above Piko, guide beside Piko, "Preskocit (Esc)" skips), get-ready card checked at
+both sizes (already side by side; picture capped at 50vh). Unit test `src/ui/rows.test.ts`, e2e
+`e2e/layout.spec.ts` (start with 1, 5, 7 profiles; new-key and get-ready cards), specs updated.
+Decisions: rows are capped at 5 (11 profiles = 4 + 4 + 3) and the card area scrolls inside the
+panel when too tall, instead of rows wider than 5. The new-key heading shows the key
+("Novy klaves ..."). The unit/e2e checks replace the manual MCP drive.

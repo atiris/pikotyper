@@ -174,21 +174,26 @@ export function showNewKey(host: HTMLElement, key: string, layout: Layout, guide
     // The finger name sits inside the sentence, highlighted in the finger's color.
     const [before, after] = t('newKey.finger', { finger: '\u0000' }).split('\u0000');
     const card = h('div', { class: 'card newkey-card', 'data-sample': sample },
+      h('h2', {}, t('newKey.title', { key: bigKeyText(key) })),
       h('div', { class: 'newkey-body' },
-        pikoElement(p.companion, 'happy', 150),
-        h('div', {},
-          h('h2', {}, t('newKey.title')),
+        pikoElement(p.companion, 'happy', 120),
+        h('div', { class: 'newkey-how' },
           big,
           chip ? h('p', { class: 'newkey-finger' }, before, chip, after ?? '') : null,
           h('p', { class: 'hint' }, cardHint(key)),
           dots)),
-      button(t('common.skip'), () => done(), 'btn small ghost'));
+      button(`${t('common.skip')} (Esc)`, () => done(), 'btn small ghost'));
     const overlay = h('div', { class: 'overlay' }, card);
     host.append(overlay);
     guide.show(sample);
     let n = 0;
     let shiftCode: string | null = null;
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        return done();
+      }
       if (e.key === 'Shift') shiftCode = e.code;
       if (e.repeat || [...e.key].length !== 1) return;
       e.preventDefault();
