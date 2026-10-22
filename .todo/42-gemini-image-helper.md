@@ -2,7 +2,7 @@
 
 New folder `tools/gemini-gen/` (Chrome extension + small local Node server + prompt builder),
 `package.json` (script `gen`), `assets-src/PROMPTS.md` (only if a table needs a fix to be read
-by the builder), `.gitignore` (`/assets-src/.old/`), `.specify/architecture.md` (one line: asset
+by the builder), `.specify/architecture.md` (one line: asset
 tooling lives outside the app). No change to the game, its storage or `scripts/assets.mjs`.
 
 ## Why
@@ -38,8 +38,7 @@ sign-in in automated browsers, and a separate profile would need its own sign-in
        image). They show in the list greyed out with "manual".
    - The builder never edits `PROMPTS.md`. If a row cannot be read, it is listed with an
      `error` text instead of being skipped silently.
-   - Unit test `tools/gemini-gen/prompts.test.ts` (vitest; add `tools/**/*.test.ts` to the
-     vitest include if needed): `bg-junkyard-near` gives exactly the strip prompt with the
+   - Unit test `tools/gemini-gen/prompts.test.ts` (vitest): `bg-junkyard-near` gives exactly the strip prompt with the
      junkyard block; `obj-ladybug` gets green; `robot-happy` attaches `robot-idle`;
      `bg-space-mid` uses the far prompt; every `.jpg` named in a table appears once.
 2. **Local server** (`tools/gemini-gen/server.mjs`, `npm run gen`): Node `http`, no new
@@ -98,8 +97,7 @@ sign-in in automated browsers, and a separate profile would need its own sign-in
 ## Steps
 - [ ] Prompt builder and its unit tests; fix any `PROMPTS.md` table the builder cannot read.
 - [ ] Local server with `/queue`, `/file`, `/saved`, the Downloads path check and the `.old/`
-      move; `npm run gen`; `.gitignore` entry for `/assets-src/.old/` (already covered by
-      `/assets-src/*`, then only verify).
+      move; `npm run gen` (`/assets-src/*` in `.gitignore` already keeps `.old/` out of git).
 - [ ] Extension: manifest, side panel (list, filter, prompt view/edit, settings), background
       download naming and `/saved` report.
 - [ ] Content script run of one picture with attachments, follow-up, stop-on-failure, and
