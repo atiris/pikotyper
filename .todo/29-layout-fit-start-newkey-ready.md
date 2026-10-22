@@ -18,7 +18,7 @@ reason. Rule for all three: at 1366 x 768 and at 1024 x 600 nothing scrolls.
       11 = 6 + 5 where a row may exceed 5 only when width allows; otherwise wrap and allow
       vertical scroll of the card area only). Test (unit for the row split function, e2e for
       "5 profiles, no page scroll": `document.documentElement.scrollHeight <= innerHeight`).
-      The footer (privacy note, links "O aplikácii" and "Pre učiteľa") stays visible without
+      The footer (privacy note, links "O hre PikoTyper" and the teacher link) stays visible without
       scrolling and keeps both links; the owner could not find them when the page was long.
 - [ ] 2. **New key panel.** Make it lower: the heading "Nový kláves „d“" goes above Piko, the
       "how to type it" content (finger guide) sits to the right of Piko, the skip action is
