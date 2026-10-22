@@ -55,3 +55,5 @@
 - Mixed shapes in the top bar looked untidy; fullscreen hides the browser's distractions.
 - A sun in a repeating sky showed twice on wide screens. The image generator cannot keep
   a picture to the bottom part of an image, but draws a full close-up strip well.
+- A strip whose ground filled most of the picture showed an empty plane behind its objects;
+  objects standing on a low ground band with nothing behind them read as a real foreground.

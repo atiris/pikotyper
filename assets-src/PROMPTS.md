@@ -200,10 +200,12 @@ Every prompt is one self-contained text: paste the world's block from "World sty
 Each world needs 3 layers for a gentle parallax effect: `far` (full picture, 16:9) and
 `mid` and `near` (a close-up strip, 21:9). The far layer repeats horizontally, so its sky
 must be even: no sun, no moon, no single big planet (on a wide screen it would be seen
-twice). Gemini cannot keep a picture in the bottom part only, so `mid` and `near` ask for
-a strip that fills the whole image; `npm run assets` shrinks it to the target height in
-the table, repeats it across the width and places it at the bottom. Older `mid`/`near`
-files with the layer already in the lower part still work as they are.
+twice). `mid` and `near` ask for big pieces standing on a low ground band along the bottom
+edge, with flat magenta everywhere above and between them (a taller ground area turned
+into an empty plane behind the pieces). `npm run assets` cuts the strip from the top of
+the tallest piece down, shrinks it to the target height in the table, repeats it across
+the width and places it at the bottom. Older 16:9 `mid`/`near` files with the layer
+already in the lower part still work as they are.
 
 ### Common prompt for `*-far.jpg` (replace SCENE and WORLD STYLE)
 ```
@@ -216,7 +218,7 @@ Wide game background, landscape 16:9: SCENE. The sky is a small part of the imag
 
 ### Common prompt for `*-mid.jpg` and `*-near.jpg` (replace LAYER and WORLD STYLE)
 ```
-WORLD STYLE. Ultra-wide panoramic image, 21:9: one continuous close-up strip of LAYER that fills the whole image from the bottom edge up to an uneven top silhouette near the top edge. Above the silhouette only a thin band of one perfectly flat solid pure magenta color (#FF00FF), no sky, no gradient. Big, close objects: 6 to 12 large whole pieces that overlap a little, no tiny pieces, soft muted colors and little fine detail. The top silhouette is uneven: some pieces stick up higher than others, never a straight or flat top edge. Strong contrast between the objects and the ground behind them: objects clearly darker (or clearly more saturated) than the ground. Every object appears only once: do not repeat or copy any part of the image inside it. No white or light outline, halo or sticker border around the objects: their dark outlines meet the magenta directly. No characters, no text. Flat side view like a 2D platformer, no perspective and no vanishing point: the ground, floor and walkway are drawn straight from the side as a horizontal band, every line is either horizontal or vertical, nothing runs toward a point in the distance.
+WORLD STYLE. Ultra-wide panoramic image, 21:9, on a flat solid pure magenta (#FF00FF) background. Along the bottom edge a low band of ground in the ground color of the world, about the lowest fifth of the image. Standing on that ground band: LAYER, 6 to 12 large whole pieces that overlap a little, no tiny pieces, soft muted colors and little fine detail. The pieces reach up to different heights (the tallest almost to the top edge), so their tops form an uneven silhouette, never a straight or flat top edge. Between and above the pieces there is only the flat magenta: no ground, no wall, no sky, no distant objects, no silhouettes in the background, nothing behind the pieces except magenta. Strong contrast: pieces clearly darker or more saturated than the ground band. Every piece appears only once: do not repeat or copy any part of the image inside it. No piece is cut by the left or right edge of the image. No white or light outline, halo or sticker border around the pieces: their dark outlines meet the magenta directly. No characters, no text. Flat side view like a 2D platformer, no perspective and no vanishing point: the ground band is a straight horizontal band seen from the side, nothing runs toward a point in the distance.
 ```
 The height column is where the script places the strip (part of the screen height,
 counted from the bottom); it lives in `STRIP_HEIGHT` in `scripts/assets.mjs`.
@@ -242,19 +244,19 @@ counted from the bottom); it lives in `STRIP_HEIGHT` in `scripts/assets.mjs`.
 ### World style (fills `WORLD STYLE` in the far and strip prompts)
 Paste the block of the world into every prompt of that world (far, mid, near) in place of
 `WORLD STYLE`, so each picture is generated alone, with no attachment, and still lines up.
+The Ground line is for the far picture; the strip prompt sets its own low ground band.
 Common to all blocks: uniform outline about 2 px (stated per world), flat fills with at most
 one soft lighter band along the top of each shape, no gradients to white, no pale, white or
 pink rim around objects. The far picture keeps its sky small (about the top fifth: most of
 the picture is scenery), because the strips do not use the sky.
 
-What makes the junkyard strips (`bg-junkyard-mid/near`) the reference: one even dark
-brown-grey outline of the same weight on everything; 6 to 12 big whole objects, each drawn
-once, overlapping a little; warm rust, tan and teal fills clearly darker than the beige
-ground; an uneven top silhouette (a pipe, a gear, a bush grass tuft sticks up here and
-there, never a straight line); the dark outline meets the magenta directly. The flagged
-pictures fail on one of these: a flat top edge (planet-near), a pattern that repeats inside
-(junkyard-near), too many small pieces and pale fills on a pale ground (robocity), a light
-pink rim (workshop).
+What makes `bg-junkyard-near` the reference: one even dark brown-grey outline of the same
+weight on everything; 6 to 12 big whole objects, each drawn once, overlapping a little;
+warm rust, tan and teal fills clearly darker than the beige ground; a low ground band with
+only magenta behind the objects; an uneven top silhouette (a spring, a bolt, a grass tuft
+sticks up here and there, never a straight line); the dark outline meets the magenta
+directly. The flagged pictures fail on one of these: a flat top edge (planet-near), too
+many small pieces and pale fills on a pale ground (robocity), a light pink rim (workshop).
 
 **meadow**
 - Palette: sky #BFE3F5, grass #8CCB6A and #5FA84A, accents warm yellow #F6D55C and pink #F2A5B8, outline #3F5B3A.
@@ -536,7 +538,7 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 |---|---|---|---|
 | `bg-junkyard-far.jpg` | a friendly junkyard in soft daylight with soft hills of old things far away, a rusty but cheerful crane and a light blue sky | full | regenerate (was sunny) |
 | `bg-junkyard-mid.jpg` | soft piles of old tires, wooden crates and round metal cans | 45 % | |
-| `bg-junkyard-near.jpg` | scattered small springs, bolts and grass tufts on the ground | 25 % | regenerate: the pattern repeats inside the picture, fewer and larger pieces  |
+| `bg-junkyard-near.jpg` | a few big coiled metal springs, large bolts and nuts and thick grass tufts | 25 % | done 2026-10-22 (reference for the strip prompt) |
 | `bg-workshop-far.jpg` | the inside of a warm cozy workshop with wooden walls, shelves with jars of screws, hanging tools and a round window | full | |
 | `bg-workshop-mid.jpg` | a long workbench with drawers and small toolboxes | 45 % | regenerate: a pale pink outline around every object  |
 | `bg-workshop-near.jpg` | a conveyor belt running across the whole image with rollers below | 25 % | regenerate: a pale pink outline around every object  |

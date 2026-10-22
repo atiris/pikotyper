@@ -32,9 +32,9 @@ const STRIP_HEIGHT = {
   'bg-musictree-mid': 0.45, 'bg-musictree-near': 0.2,
   'bg-moonball-mid': 0.4, 'bg-moonball-near': 0.2,
 };
-// Content at least this tall (of the image height) marks a strip; older layer files
-// keep their content in the lower part (up to about 70 %) and are used as they are.
-const STRIP_MIN = 0.8;
+// A layer at least this wide (width / height) is a strip (generated at 21:9); older
+// 16:9 layer files keep their content in the lower part and are used as they are.
+const STRIP_ASPECT = 2;
 
 // Keying works on the RGB distance from the sampled background color.
 const D_FLOOD = 70; // border-connected background
@@ -273,10 +273,7 @@ async function processImage(name, file, manifest) {
   keyOut(data, w, h, { layer: name.startsWith('bg-') });
   // Bolt's pictures stay square, so the raincoat overlay fits every one of them; Melody's keep her size in every mood.
   if (name === 'base-template' || name.startsWith('piko-') || name.startsWith('robot') || name.startsWith('fairy-')) return writeSquare(name, data, w, h, manifest);
-  if (STRIP_HEIGHT[name]) {
-    const box = bbox(data, w, h);
-    if (box.height >= h * STRIP_MIN) return writeStrip(name, data, w, h, box, manifest);
-  }
+  if (STRIP_HEIGHT[name] && w >= h * STRIP_ASPECT) return writeStrip(name, data, w, h, bbox(data, w, h), manifest);
   if (name.startsWith('bg-')) {
     const info = await webp(sharp(data, { raw: { width: w, height: h, channels: 4 } }).resize({ width: BG_WIDTH, withoutEnlargement: true })).toFile(join(OUT, `${name}.webp`));
     manifest.images[name] = { w: info.width, h: info.height };
