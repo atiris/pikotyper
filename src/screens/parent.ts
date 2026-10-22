@@ -1,11 +1,11 @@
-import { app, applyProfileLook, go, saveProfile, useLanguage } from '../app/app';
+import { app, applyProfileLook, go, saveProfile, selectProfile, useLanguage } from '../app/app';
 import { t } from '../i18n/i18n';
 import { LAYOUTS, LAYOUT_IDS, allKeys } from '../keyboard/layouts';
 import { LEVELS, type LevelDef, WORLDS } from '../game/levels';
 import { SURPRISES_MAX, SURPRISE_LEN, SURPRISE_N_MAX, TRIGGERS, newSurprise, restartSurprise, surpriseCount } from '../game/own-content';
 import { wordSource } from '../game/runtime';
 import { lessonKeyOf, lessonOrder, punctuationKeys } from '../learning/lessons';
-import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type CompanionKind, type FontChoice, type Lang, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
+import { COMPANION_KINDS, GUEST_ID, SUPER_ID, type FontChoice, type Lang, type LayoutId, type OwnMix, type ParentLock, type Profile, type Surprise, type SurpriseTrigger, type TaskKind } from '../storage/schema';
 import { checkLock, makeLock } from '../storage/lock';
 import { linkOf } from '../share/codec';
 import { TASK_MINUTES, TASK_TITLE_MAX, type TaskSpec, addTask, taskCode } from '../share/task';
@@ -16,10 +16,10 @@ import { applyImport, parseImport, planImport } from '../storage/store';
 import { KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, confirmDialog, download, h, modal } from '../ui/dom';
 import { pikoElement } from '../gfx/piko';
-import { soundButton, superStar } from '../ui/chrome';
-import { clickableHeatmap } from './stats';
+import { soundButton, starRow, superStar } from '../ui/chrome';
+import { clickableHeatmap, summaryRow } from './stats';
 import { barChart, lineChart } from '../ui/charts';
-import { hasCompanion, masteredCount } from '../game/rewards';
+import { hasCompanion, masteredCount, totalStars } from '../game/rewards';
 import { OWN_TEXT_MAX, OWN_WORDS_MAX, parseOwnWords, typableText, untypableWords } from '../words/words';
 
 /**
@@ -96,15 +96,18 @@ function passwordDialog(lock: ParentLock): Promise<boolean> {
   });
 }
 
-/** `granted`: re-render inside the parent area without asking again. */
-export async function parentScreen(root: HTMLElement, params: { granted?: boolean }): Promise<void> {
+/** `granted`: re-render inside the parent area without asking again; `tab`: the tab to open. */
+export async function parentScreen(root: HTMLElement, params: { granted?: boolean; tab?: string }): Promise<void> {
   if (!params.granted && !(await parentAccess())) return go('map');
   const p = app.profile!;
+  const others = app.store.profiles.filter((q) => q.id !== p.id);
   const tabs = ['settings', 'own', 'surprises', 'task', 'keys', 'dashboard', 'data'] as const;
   type Tab = (typeof tabs)[number];
   const body = h('div', { class: 'parent-body' });
+  let current: Tab = tabs.find((x) => x === params.tab) ?? 'settings';
   const nav = h('nav', { class: 'tabs', role: 'tablist' });
   const show = (tab: Tab) => {
+    current = tab;
     nav.querySelectorAll('button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === tab)));
     body.replaceChildren(tab === 'settings' ? settingsTab(p) : tab === 'own' ? ownTab(p) : tab === 'surprises' ? surprisesTab(p) : tab === 'task' ? taskTab(p) : tab === 'keys' ? keysTab(p) : tab === 'dashboard' ? dashboardTab(p) : dataTab(p));
   };
@@ -115,9 +118,29 @@ export async function parentScreen(root: HTMLElement, params: { granted?: boolea
     nav.append(b);
   }
   root.append(h('div', { class: 'screen parent-screen' },
-    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'), h('h1', {}, t('parent.title', { name: p.name })), superStar(), soundButton()),
+    h('header', { class: 'bar' }, button(t('common.back'), () => go('map'), 'btn ghost small', 'back'),
+      others.length ? childSwitch(p, others, () => current) : null, h('h1', {}, t('parent.title', { name: p.name })), superStar(), soundButton()),
     nav, body));
-  show('settings');
+  show(current);
+}
+
+/** The button by "Back": the child, and a card list of the other profiles to switch to without leaving the parent area. */
+function childSwitch(p: Profile, others: Profile[], tab: () => string): HTMLElement {
+  const pick = async (q: Profile) => {
+    await selectProfile(q);
+    go('parent', { granted: true, tab: tab() });
+  };
+  const b = button(h('span', { class: 'switch-label' }, pikoElement(p.companion, 'idle', 28), h('span', {}, p.name)), () => {
+    const close = modal(h('div', { class: 'switch-dialog' },
+      h('h2', {}, t('parent.switchTitle')),
+      h('div', { class: 'switch-list' }, ...others.map((q) =>
+        h('button', { class: 'profile-card small', type: 'button', onClick: () => { close(); void pick(q); } },
+          pikoElement(q.companion, 'idle', 64),
+          h('span', { class: 'profile-name' }, q.name),
+          h('span', { class: 'profile-sub' }, t('start.stars', { n: totalStars(q) })))))), { cls: 'confirm-modal' });
+  }, 'btn small switch-btn');
+  b.title = t('parent.switchTitle');
+  return b;
 }
 
 function field(label: string, control: HTMLElement, hint?: string, tag: 'label' | 'div' = 'label'): HTMLElement {
@@ -159,11 +182,26 @@ function settingsTab(p: Profile): HTMLElement {
   name.addEventListener('change', () => { p.name = name.value.trim() || p.name; save(); });
   const pikoName = h('input', { type: 'text', value: p.companion.name, maxlength: 20 });
   pikoName.addEventListener('change', () => { p.companion.name = pikoName.value.trim() || 'Piko'; save(); });
+  const piko = h('span', { class: 'child-piko' });
+  const paintPiko = () => piko.replaceChildren(pikoElement(p.companion, 'happy', 96));
+  const kinds = h('div', { class: 'kind-picker', role: 'radiogroup', 'aria-label': t('parent.companionKind') },
+    ...COMPANION_KINDS.map((k) => h('button', { class: `kind ${k === p.companion.kind ? 'on' : ''}`, type: 'button', role: 'radio', 'aria-checked': String(k === p.companion.kind), 'aria-label': t(`kinds.${k}`), onClick: (e: Event) => {
+      p.companion.kind = k;
+      p.avatar = k;
+      if (!hasCompanion(p, k)) p.progress.companionsUnlocked.push(k);
+      save();
+      kinds.querySelectorAll('.kind').forEach((el) => { el.classList.remove('on'); el.setAttribute('aria-checked', 'false'); });
+      (e.currentTarget as HTMLElement).classList.add('on');
+      (e.currentTarget as HTMLElement).setAttribute('aria-checked', 'true');
+      paintPiko();
+    } }, pikoElement({ name: '', kind: k, accessories: [] }, 'idle', 64), h('span', {}, t(`kinds.${k}`)))));
+  paintPiko();
   return h('div', { class: 'settings-grid' },
     h('fieldset', {}, h('legend', {}, t('parent.group.child')),
       field(t('parent.childName'), name),
+      h('div', { class: 'child-summary' }, piko, summaryRow(p)),
+      field(t('parent.companionKind'), kinds, undefined, 'div'),
       field(t('parent.companionName'), pikoName),
-      field(t('parent.companionKind'), select<CompanionKind>(p.companion.kind, COMPANION_KINDS.map((k) => [k, t(`kinds.${k}`)]), (v) => { p.companion.kind = v; p.avatar = v; if (!hasCompanion(p, v)) p.progress.companionsUnlocked.push(v); save(); })),
       field(t('parent.language'), select<Lang>(p.language, [['sk', 'Slovenčina'], ['en', 'English']], async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
       field(t('parent.layout'), select<LayoutId>(p.layout, LAYOUT_IDS.map((id) => [id, t(`layouts.${id}`)]), (v) => {
         p.layout = v;
@@ -555,8 +593,8 @@ function dashboardTab(p: Profile): HTMLElement {
       h('section', {}, h('h3', {}, t('parent.timePerDay')),
         barChart(sessions.map((s) => Math.round(s.seconds / 60)), labels, 'min'))),
     h('h3', {}, t('parent.worlds')),
-    h('ul', { class: 'world-list' }, ...WORLDS.map((w, i) => h('li', {}, `${i + 1}. ${t(`worlds.${w}`)}: `,
-      ...LEVELS.filter((l) => l.world === i).map((l) => h('span', { class: 'lv' }, `${'★'.repeat(p.progress.levels[l.id] ?? 0) || '·'}`))))));
+    h('div', { class: 'level-grid' }, ...LEVELS.map((l) => h('div', { class: 'level-cell' },
+      h('span', { class: 'level-name' }, levelName(l)), starRow(p.progress.levels[l.id] ?? 0, 'stars cell-stars')))));
 }
 
 function dataTab(p: Profile): HTMLElement {

@@ -103,7 +103,7 @@ function chip(pic: string | null, glyph: string, text: string, label: string): H
 }
 
 /** The long-term picture: mastered keys, finished worlds and stories, and the quality and speed of the mastered keys. */
-function summaryRow(p: Profile): HTMLElement {
+export function summaryRow(p: Profile): HTMLElement {
   const m = masterySummary(p);
   const percent = Math.round(m.accuracy * 100);
   return h('ul', { class: 'progress-sum' },

@@ -1,7 +1,8 @@
 import { app, go } from '../app/app';
 import { audio, type SoundLevel } from '../audio/audio';
+import { imageUrl } from '../gfx/assets';
 import { t } from '../i18n/i18n';
-import { ICONS } from './dom';
+import { ICONS, h } from './dom';
 import { paintRound, roundButton } from './hud';
 
 /** Super mode is on: a round star in the top row; clicking it ends the mode. Nothing otherwise. */
@@ -76,4 +77,15 @@ export function watchAutoFullscreen(): void {
   };
   window.addEventListener('keydown', ask, true);
   window.addEventListener('pointerdown', ask, true);
+}
+
+/** Three stars, `n` of them filled: the same pictures as on the results card. */
+export function starRow(n: number, cls = 'stars'): HTMLElement {
+  const star = imageUrl('ui-star'), empty = imageUrl('ui-star-empty');
+  return h('div', { class: cls, role: 'img', 'aria-label': t('results.starsAria', { n }) },
+    ...[1, 2, 3].map((i) => {
+      const on = i <= n;
+      const src = on ? star : empty;
+      return src ? h('img', { class: `star ${on ? 'on' : ''}`, src, alt: '', style: `--i:${i}` }) : h('span', { class: `star-fallback ${on ? 'on' : ''}`, style: `--i:${i}` }, '★');
+    }));
 }

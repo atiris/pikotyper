@@ -6,6 +6,5 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P2] 34-parent-area-child-stats-switcher.md - reuses the components from plan 33
 - [P2] 36-teacher-camera-scan-and-groups.md - teacher can scan many result QR codes; independent of the child screens
 - [P3] 35-standalone-background-strips.md - prompt work only, the owner generates the pictures

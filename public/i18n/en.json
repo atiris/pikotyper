@@ -913,6 +913,7 @@
     },
     "childName": "Child's name",
     "companionName": "Companion's name",
+    "switchTitle": "Switch to another child",
     "companionKind": "Companion",
     "messages": "Your own encouraging messages",
     "messagesHint": "One per line. The companion mixes them in sometimes.",

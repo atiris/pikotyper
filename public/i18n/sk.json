@@ -913,6 +913,7 @@
     },
     "childName": "Meno dieťaťa",
     "companionName": "Meno kamaráta",
+    "switchTitle": "Prepnúť na iné dieťa",
     "companionKind": "Kamarát",
     "messages": "Vaše vlastné povzbudenia",
     "messagesHint": "Jedno na riadok. Kamarát ich občas použije.",

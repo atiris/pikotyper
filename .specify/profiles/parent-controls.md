@@ -16,6 +16,12 @@
   minutes of accurate play (90 %+) one of them goes up by one step, taking turns, up to a
   ceiling (difficulty 8, words of 9 letters); each step gives the child a numbered medal.
   A parent who sets the value by hand turns its automatic mode off.
+- The **child** section shows the name, the companion's picture with the same icon and
+  number summary as the child's "My progress", then the companion picked from a picture
+  list and its name.
+- A button by "Back" (the child's picture and name) switches the parent area to another
+  profile from a list of small profile cards, keeping the open tab and without asking for
+  the password again; with one profile it is hidden. The super player is never in the list.
 - Settings per profile: child name, companion name and kind, keyboard layout, active keys (pick by hand, with a punctuation row for the shifted `? ! :`, or "automatic"), word length range,
   difficulty 1-10, words without diacritics, no time pressure, session length, guide
   visibility, sound and music volume, start in fullscreen. The help text says the start
@@ -45,7 +51,7 @@
   narrow screen the rows become cards. Surprises never count in statistics. Free
   practice drills of chosen keys have no surprise.
 - Dashboard: per-key heat map on the keyboard, accuracy and rhythm trend, time played per
-  day, finished levels.
+  day, and a grid of all levels, each with its three stars (filled or empty) in a fixed place.
 - Printable progress card / certificate (browser print), instead of class codes.
 
 ## Why

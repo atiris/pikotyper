@@ -1,5 +1,5 @@
 import { app, go, pickLine, saveProfile } from '../app/app';
-import { imageUrl } from '../gfx/assets';
+import { starRow } from '../ui/chrome';
 import { pikoElement } from '../gfx/piko';
 import { t, tList } from '../i18n/i18n';
 import { LEVELS, type LevelDef, type StoryDef, WORLDS, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
@@ -89,13 +89,7 @@ function showResults(root: HTMLElement, def: LevelDef, r: LevelResult, params: L
     p.progress.friends.push(rescued);
     saveProfile();
   }
-  const star = imageUrl('ui-star'), empty = imageUrl('ui-star-empty');
-  const stars = h('div', { class: 'stars', role: 'img', 'aria-label': t('results.starsAria', { n: r.stars }) },
-    ...[1, 2, 3].map((i) => {
-      const on = i <= r.stars;
-      const src = on ? star : empty;
-      return src ? h('img', { class: `star ${on ? 'on' : ''}`, src, alt: '', style: `--i:${i}` }) : h('span', { class: `star-fallback ${on ? 'on' : ''}`, style: `--i:${i}` }, '★');
-    }));
+  const stars = starRow(r.stars);
   // The facts as small chips in one wrapping row, accuracy first.
   const chip = (cls: string, ...kids: Child[]) => h('span', { class: `fact ${cls}` }, ...kids);
   const facts: HTMLElement[] = [
