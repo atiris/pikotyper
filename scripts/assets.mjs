@@ -359,7 +359,7 @@ async function processOutfit(set, data, w, h, manifest) {
 
 async function processMusic(name, file, manifest) {
   const out = join(OUT, `${name}.mp3`);
-  await run(ffmpeg, ['-y', '-loglevel', 'error', '-i', file, '-ac', '1', '-b:a', '96k', '-af', 'loudnorm=I=-20:TP=-2:LRA=11', '-map_metadata', '-1', out]);
+  await run(ffmpeg, ['-y', '-loglevel', 'error', '-i', file, '-ac', '1', '-ar', '44100', '-b:a', '60k', '-af', 'loudnorm=I=-20:TP=-2:LRA=11', '-map_metadata', '-1', out]);
   manifest.music.push(name);
 }
 

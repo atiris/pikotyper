@@ -55,7 +55,8 @@ metric, or that makes the code clearly more complex, is reverted.
       Make sure the first frame of a level never shows a fallback and then jumps to a picture:
       preload everything a level needs before it starts (the loader already preloads the three
       background layers; check objects, characters, accessories).
-- [ ] 4. **Music.** The weight is almost all music. Re-encode with `ffmpeg-static` (already a
+- [x] 4. **Music.** The weight is almost all music. Re-encode with `ffmpeg-static` (already a
+      (Done: mono 44.1 kHz 60 kbps, 34 MB -> 21.6 MB, max 1.26 MB/track; loop point unchanged, see Done.)
       devDependency) in `scripts/assets.mjs` so every track is mono, 64 kbps or lower if the
       A/B listening test is not clearly worse (compare the same 20 s of two tracks and write
       what was heard), target at most 1.4 MB per track and at most 24 MB in total; keep names.
