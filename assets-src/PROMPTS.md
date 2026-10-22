@@ -725,3 +725,79 @@ the jetpack). The lines in `SINGLES` of `scripts/assets.mjs` are done with the p
 | `music-lilylake.mp3` | Still and dreamy, 66 BPM, D major, slow harp, glassy celesta and soft pads, a calm lake like a mirror. |
 | `music-musictree.mp3` | Warm and wondering, 76 BPM, C major, music-box melody, harp and soft strings, a magical tree that plays. |
 | `music-moonball.mp3` | Soft and enchanted, 72 BPM, A major, celesta, harp and a gentle flute waltz in 3/4, a quiet dance under the moon. |
+
+## 9. World rhythm: calm steps, twists and map icons
+
+New pictures for the calm step (level 2) and the twist (level 4) of every world, and one
+icon per activity for the level dots on the map
+([world rhythm](../.research/game/world-rhythm.md)). Each object stays alone and readable
+at a small size, since many of them stand still on screen with a word next to them.
+
+### Game objects (section 4 prompt)
+| File | OBJECT | BG |
+|---|---|---|
+| **Meadow** | | |
+| `obj-dewdrop.jpg` | a single round shiny dew drop resting on the tip of a small grass blade, soft light reflection, no face | magenta |
+| `obj-invitation.jpg` | a small folded paper party invitation card tied with a green ribbon and a tiny daisy, front view, no face | magenta |
+| **Space** | | |
+| `obj-star-dim.jpg` | a small round soft five-pointed star, pale grey-blue, not glowing, sleepy face | magenta |
+| `obj-star-bright.jpg` | the same small star, bright golden yellow and glowing softly, happy face | magenta |
+| `obj-radio.jpg` | a cute round retro space radio with a small antenna, a speaker grille and one green light, front view, no face | green |
+| **New planet** | | |
+| `obj-crystal.jpg` | a cluster of three rounded turquoise crystals growing from a small rock, calm, no face | magenta |
+| `obj-crystal-glow.jpg` | the same crystal cluster glowing softly from inside in light turquoise | magenta |
+| **Dragons** | | |
+| `obj-twig.jpg` | a single short curved brown twig with two small green leaves, no face | magenta |
+| `obj-nest.jpg` | a big round cozy nest of woven twigs and soft moss, empty, seen a little from above | magenta |
+| `obj-dragon-sleeping.jpg` | a chubby baby dragon, mint green, curled up asleep with closed eyes and a tiny smile | magenta |
+| **Egg journey** | | |
+| `obj-egg-glow.jpg` | the cream dragon egg with turquoise spots, glowing warmly like a little lantern at night | green |
+| **Junkyard** | | |
+| `obj-screw.jpg` | a single shiny silver screw lying on its side, no face | magenta |
+| `obj-nut.jpg` | a single hexagonal silver nut, front view, no face | magenta |
+| `obj-toolbox.jpg` | an open red metal toolbox with a handle, empty, front view, no face | green |
+| `obj-manual.jpg` | an open small booklet with simple drawings of a gear and a robot arm, no text, no letters | magenta |
+| **Workshop** | | |
+| `obj-blueprint.jpg` | a blue sheet of drafting paper with white line drawings of two robot legs and a small antenna, no text, no letters | magenta |
+| **Rain** | | |
+| `obj-puddle-stone.jpg` | a flat round grey stepping stone in a small rain puddle with a few ripples, seen a little from above | magenta |
+| `obj-fog.jpg` | a small soft round puff of light grey fog, calm sleepy face | green |
+| **City** | | |
+| `obj-timetable.jpg` | a friendly bus stop sign on a post with an empty white board below it, no text, no letters, no numbers | magenta |
+| `obj-door-speaker.jpg` | a round metal door speaker with a grille and a small blue light, front view, smiling | magenta |
+| **Home** | | |
+| `obj-box.jpg` | a closed brown cardboard moving box with tape on top and an empty white label on the front, no text | magenta |
+| `obj-photo-frame.jpg` | an empty wooden picture frame standing on a small foot, the inside a flat light cream color | magenta |
+| **Garden** | | |
+| `obj-seed.jpg` | a single big brown sunflower seed, a tiny green sprout coming out of it, happy face | magenta |
+| **Forest path** | | |
+| `obj-feather-falling.jpg` | a single soft blue and white feather drifting down at an angle, no face | magenta |
+| **Lily lake** | | |
+| `obj-frog-singing.jpg` | the small cute green frog sitting with its mouth open in a round "o", singing, eyes closed happily | magenta |
+| **Music tree** | | |
+| `obj-tree-leaf.jpg` | a single round bright green leaf glowing softly at the edges, no face | magenta |
+| `obj-song-sheet.jpg` | a small rolled-open sheet of music paper with a few colorful notes on lines, no text, no letters | magenta |
+| **Moonlight ball** | | |
+| `obj-leaf-card.jpg` | a big oval leaf used as an invitation card, a tiny firefly sitting on its corner, no text | magenta |
+| `obj-dance-step.jpg` | a single round glowing footprint shape in soft gold, seen from above, no face | magenta |
+
+### Activity icons: ui-act-*.jpg (level dots on the map)
+One icon per activity, shown small inside the level dot, so it must read at about 32 px:
+one bold shape, few details. Replace ACTIVITY with the text from the table.
+```
+Cute, soft 2D children's game icon, flat vector style with gentle gradients, soft dark-brown outline (not black), warm pastel palette, bold simple shapes that stay readable when very small. A single icon: ACTIVITY. Front view, centered, the whole icon visible, wide empty margin. No text, no letters, no numbers, no watermark. Background: one perfectly flat solid pure magenta color (#FF00FF), no gradient, no shadow, no other objects. Square image.
+```
+
+| File | ACTIVITY |
+|---|---|
+| `ui-act-chase.jpg` | a small leaf flying to the right with three short soft speed lines behind it (main game) |
+| `ui-act-letters.jpg` | a single round keyboard key with a small sparkle at its corner, the key top empty (catching letters) |
+| `ui-act-clean.jpg` | a short straight ribbon with a small round green check mark at its end (a clean line) |
+| `ui-act-build.jpg` | three small rounded building blocks stacked, the top one just landing (building) |
+| `ui-act-text.jpg` | an open book with a few soft grey lines on its pages, no letters (text page) |
+| `ui-act-crossroads.jpg` | a wooden signpost with two empty arrow boards pointing left and right (crossroads) |
+| `ui-act-listen.jpg` | a round soft ear with two small curved sound waves next to it (listening) |
+| `ui-act-remember.jpg` | a small round eye half closed with a tiny sparkle above it, like remembering (memory) |
+| `ui-act-rhythm.jpg` | a small round drum with two soft beat marks above it (rhythm) |
+| `ui-act-hide.jpg` | a small round hole in the ground with two curious eyes peeking out (hide and seek) |
+| `ui-act-super.jpg` | a small golden crown with three round tips (super-obstacle) |

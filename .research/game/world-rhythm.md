@@ -1,6 +1,6 @@
 # World rhythm: five different steps inside one world
 
-**Status:** brainstorm, open questions at the end (2026-10-22). **Prio:** P1. **Effort:** L
+**Status:** brainstorm, owner's decisions at the end (2026-10-22). **Prio:** P1. **Effort:** L
 (new level engines plus light art per world), can ship world by world.
 
 ## The problem
@@ -87,10 +87,10 @@ Level 1 and 3 stay the world's main game, level 5 the super-obstacle.
 | City | *Timetable*: copy the bus times and stop names (text page with digits) | *Voice door*: the door says its password (listen) |
 | Home | *Box labels*: label the moving boxes without a slip (clean line) | *Photo album*: short captions of Bolt's family photos (text page) |
 | Garden | *Seeds*: letters dropped into the soil (letter catch) | *Bee dance*: short groups to a buzzing beat (rhythm) |
-| Path | *Nest*: copy the words calmly, no voice (build) | *Echo*: the word sounds, then the bird repeats only half (listen and remember) |
+| Path | *Nest*: copy the words calmly, no voice (build) | *Falling feathers*: a word shows on a feather, then fades as it drifts down (remember) |
 | Lake | *Lily stones*: still words on lilies across the lake (clean line) | *Frog choir*: frogs sing the words (listen) instead of reflections |
 | Tree | *Falling leaves*: letters on leaves (letter catch) | *Song sheet*: the tree's song lyrics typed as a text (text page) |
-| Ball | *Invitations*: cards for the forest friends (clean line) | *Dance steps*: steps to a waltz beat (rhythm) |
+| Ball | *Invitations*: cards for the forest friends (clean line) | *Dance steps*: shown steps to a waltz beat, no voice (rhythm) |
 
 In the fairy story level 4 should *flip* the world's style (a dictation world gets a quiet
 copy or memory twist), so the story keeps its listening theme but each world still has a
@@ -98,12 +98,14 @@ change inside it.
 
 ### Rules that keep it PikoTyper
 - Nothing bad happens in any engine: no lives, no timer that ends a level. In the clean line
-  a slip clears one word only, never the line; Piko says so once.
+  a slip clears one word only, never the line, and the level grows a little (see Decisions).
 - Calm steps (level 2) are short, about one minute; the saw-tooth needs a short valley.
 - Stars still come from accuracy, so a world still has 5 levels x 3 stars and the badges do
   not change. Level ids stay the same.
 - Key needs per level stay as they are; the activity adapts to the keys (the meadow calm
-  step uses letters, not text, because three keys make no sentence).
+  step uses letters, not text, because three keys make no sentence). A replayed level
+  already takes words from every key the child knows now; the new key ceiling (see
+  Decisions) keeps early worlds easy.
 - Each level dot on the map shows a small icon of its activity, so the child sees there is
   something different ahead.
 - Rescue missions may draw from the new engines too, which also helps their variety.
@@ -113,8 +115,10 @@ change inside it.
   level-3 surprise), `learning/lesson-progression.md` (letter catch uses the new and weak
   keys), `game/super-obstacles.md` (no change), map icons in `experience/visuals.md`.
 - Code: `LevelKind` and `LEVELS` in `src/game/levels.ts`, new modes in `src/game/modes/`,
-  map dots, i18n lines for Piko per engine. No profile data change: ids and stars stay.
-- Art: per world one small object set for the calm step (drops, stars, twigs, labels).
+  the key set of a level in `wordSource` (`src/game/runtime.ts`), map dots, i18n lines for
+  Piko per engine. No profile data change: ids and stars stay.
+- Art: new object sets per world and activity icons for the map, prompts in
+  `assets-src/PROMPTS.md` section 9.
 
 ## Suggested order (if accepted)
 1. Pilot in the meadow: letter catch (level 2), the wind-turn surprise (level 3), clean line
@@ -123,25 +127,34 @@ change inside it.
 3. Build and text page engines, then the remaining worlds of story 1.
 4. Stories 2 and 3.
 
-## Open questions
-1. **Fixed roles or free mix?** Same roles in every world (calm 2, twist 4) as proposed, or a
-   different shape per world? Fixed roles are easier to read for a child and to build.
-2. **Where should letters be?** In the course above letter catching comes again and again.
-   Do you want it only in level 2, or also as a short warm-up at the start of level 1 and 3
-   (20 letters, 15 seconds)?
-3. **Clean line strictness:** a slip clears the word (proposed), or the child fixes the
-   wrong letter with Backspace (see [../learning/fix-with-backspace.md](../learning/fix-with-backspace.md)),
-   or just one star less?
-4. **Text in early worlds:** the meadow and space have too few keys for real sentences.
-   Is a "text" made of short chunks with spaces fine there, or should text pages start only
-   from the planet / the robot story?
-5. **Fairy story:** flip its style in level 4 (proposed), or leave the fairy story as it is,
-   since its worlds already differ more?
-6. **Level length:** keep 5 levels per world, or make the calm step an extra short level
-   (6 per world)? Five keeps the stars, badges and key tables as they are.
-7. **Map preview:** show the activity icon on each level dot, or keep it a surprise?
-8. **Art budget:** new small object sets per world, or reuse objects of the world (leaves,
-   gears, drops) in the new engines?
+## Decisions (owner, 2026-10-22)
+In the formulas below the story order is 1 for the dragon story, 2 for the robot story and
+3 for the fairy story.
+
+1. **Fixed roles.** Every world: main game, calm step, harder main game with a surprise,
+   twist, super-obstacle.
+2. **Letter catch only in level 2** (as one of the calm-step activities), no warm-ups
+   before other levels.
+3. **A slip in the clean line:** the word turns red and fades out, and the level gets 2
+   more words, so a slip means a bit more practice, not a loss. The faded word may come
+   back later in the level, but does not have to. The extra words have a ceiling of
+   (1 + story order) x 3: 6 in the dragon story, 9 in the robot story, 12 in the fairy
+   story, so a child with many slips never ends up in an endless level.
+4. **Text in early worlds and a key ceiling.** A replayed level already uses every key the
+   child knows now (checked in `wordSource`, `src/game/runtime.ts`), so a child who comes
+   back to the meadow with more letters gets richer words there, and simple text becomes
+   possible. New: each story level gets a key ceiling of its key need + 3 + 2 x story
+   order (dragon story need + 5, robot need + 7, fairy need + 9; the meadow 8 to 10 keys).
+   When the child knows more, the level takes the keys of its need in lesson order and
+   fills the rest with the child's weakest known keys. Text pages use whatever keys the
+   level has, so the text is simpler in early worlds.
+5. **Fairy story:** level 4 flips the world's style (a dictation world gets memory or a
+   quiet copy step, a memory world gets listening).
+6. **Five levels per world** as today; stars, badges and key tables stay.
+7. **Map icons:** each level dot shows the icon of its activity. The existing icons do not
+   fit, so new ones are in `assets-src/PROMPTS.md` section 9.
+8. **Art now:** new object sets for every world's calm step and twist, prompts in
+   `assets-src/PROMPTS.md` section 9.
 
 ## Sources
 - Four-step level design (introduce, develop, twist, conclude):
