@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createProfile, typeChar } from './helpers';
+import { createProfile, typeChar, skipStories } from './helpers';
 
 test('help opens from the map and from a paused level and goes back', async ({ page }) => {
   const errors: string[] = [];
@@ -22,8 +22,7 @@ test('help opens from the map and from a paused level and goes back', async ({ p
 
   // Level -> pause -> help -> back to the paused level.
   await page.locator('.map-side .btn.primary').click();
-  await page.locator('.story-screen').waitFor();
-  await page.keyboard.press('Escape');
+  await skipStories(page);
   for (let i = 0; i < 100; i++) {
     const state = await page.evaluate(() => {
       const nk = document.querySelector<HTMLElement>('.newkey-card');

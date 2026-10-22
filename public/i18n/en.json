@@ -32,7 +32,7 @@
     "companionName": "Companion's name",
     "language": "Language",
     "layout": "Keyboard",
-    "parentHint": "A parent can change everything later in the parent area (the lock button).",
+    "parentHint": "A parent can change everything later in the settings (the gear on the map).",
     "create": "Let's go!"
   },
   "layouts": {
@@ -69,6 +69,15 @@
     "moonball": "Ball"
   },
   "map": {
+    "welcome": {
+      "title": "Hi, {name}! I am {piko}.",
+      "lines": [
+        "Press “Continue”, you will learn the keys step by step, one by one.",
+        "When you are not sure what to do, click “?”.",
+        "A parent can set everything up with the gear at the top right."
+      ],
+      "start": "Start"
+    },
     "ownText": "My text",
     "hello": "Hi, {name}!",
     "continue": "Continue",

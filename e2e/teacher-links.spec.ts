@@ -32,8 +32,7 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
   await child.locator('.profile-card.new').click();
   await child.locator('#np-name').fill('Adam');
   await child.locator('form button[type=submit]').click();
-  await child.locator('.story-screen').waitFor();
-  await child.keyboard.press('Escape');
+  await child.locator('.map-screen').waitFor();
   await expect(child.locator('.task-card')).toContainText('Zvieratá');
   await child.locator('.task-card .btn.primary').click();
   const typed: string[] = [];

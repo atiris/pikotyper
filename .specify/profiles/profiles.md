@@ -4,6 +4,14 @@
 - Several local child profiles on one device, picked on the start screen (name and
   avatar; "New player" is one more card up to four profiles, a button beside "Play as guest" with more), plus a **Guest** mode that keeps nothing after the browser tab closes; the
   guest is greeted in the game's language ("Hosť" / "Guest").
+- The new player form is a window closed with the round X: the player's name on top, the nine
+  companions as a 3 x 3 grid with the companion's name, language and keyboard layout beside it
+  (below it on a narrow screen).
+- A new player lands on the map, not in a level, so a parent can set things up first. Above
+  the stories Piko greets the child once by name and says in a few lines what to do (Continue,
+  keys come step by step, "?" helps, the gear is for the parent); closing it or starting from
+  it hides it for good. Piko's own intro story plays before the first level. A guest and the
+  super player get no greeting.
 - Profile data: child name, companion name and kind, custom messages, layout, settings,
   progress, unlocked items, statistics.
 - Export a profile (or all of them) to a `.json` file and import it on another device.
@@ -21,6 +29,8 @@
 
 ## Why
 - Families and classrooms share devices; export/import gives portability without accounts.
+- The first screen after creating a player is shared by the parent and the child: the parent
+  may adjust settings, the child needs one clear way to start.
 - Children should not have to pick themselves on the start screen every time, and a stray
   back button or shortcut should not throw them out of a level.
 - Parents want to look at later worlds without playing through them or spoiling a child's

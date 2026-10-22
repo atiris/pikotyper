@@ -49,7 +49,14 @@ export async function createProfile(page: Page, name: string, layout?: string): 
   await page.locator('#np-name').fill(name);
   if (layout) await page.locator('#np-layout').selectOption(layout);
   await page.locator('form button[type=submit]').click();
-  await page.locator('.story-screen').waitFor();
-  await page.keyboard.press('Escape');
   await page.locator('.map-screen').waitFor();
+}
+
+/** Skips the story scenes before a level (the very first level has Piko's intro and the world's scene). */
+export async function skipStories(page: Page): Promise<void> {
+  await page.locator('.story-screen').waitFor();
+  while (await page.locator('.story-screen').count()) {
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(150);
+  }
 }

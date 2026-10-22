@@ -32,7 +32,7 @@
     "companionName": "Meno kamaráta",
     "language": "Jazyk",
     "layout": "Klávesnica",
-    "parentHint": "Rodič môže všetko neskôr zmeniť v rodičovskej časti (tlačidlo so zámkou).",
+    "parentHint": "Rodič môže všetko neskôr zmeniť v nastaveniach (ozubené koliesko na mape).",
     "create": "Poďme na to!"
   },
   "layouts": {
@@ -69,6 +69,15 @@
     "moonball": "Ples"
   },
   "map": {
+    "welcome": {
+      "title": "Ahoj, {name}! Ja som {piko}.",
+      "lines": [
+        "Stlač „Pokračovať“, klávesy sa budeš učiť postupne, jeden po druhom.",
+        "Keď nevieš ako ďalej, klikni na „?“.",
+        "Rodič si môže všetko nastaviť cez ozubené koliesko vpravo hore."
+      ],
+      "start": "Začať"
+    },
     "ownText": "Môj text",
     "hello": "Ahoj, {name}!",
     "continue": "Pokračovať",

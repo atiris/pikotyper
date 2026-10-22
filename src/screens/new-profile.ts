@@ -4,12 +4,14 @@ import { language, t } from '../i18n/i18n';
 import { COMPANION_KINDS, type CompanionKind, type Lang, type LayoutId } from '../storage/schema';
 import { newProfile } from '../storage/store';
 import { addTask } from '../share/task';
-import { button, h } from '../ui/dom';
+import { closeButton, h } from '../ui/dom';
 import { LAYOUT_IDS } from '../keyboard/layouts';
 import { cornerControls } from '../ui/chrome';
 
-export function newProfileScreen(root: HTMLElement): void {
+export function newProfileScreen(root: HTMLElement): () => void {
   let kind: CompanionKind = 'fox';
+  // Closing the form forgets a task link that brought the child here.
+  const cancel = () => { app.pendingTask = null; go('start'); };
   const name = h('input', { id: 'np-name', type: 'text', maxlength: 24, autocomplete: 'off', required: true, autofocus: true });
   const pikoName = h('input', { id: 'np-piko', type: 'text', maxlength: 20, value: 'Piko', autocomplete: 'off' });
   const lang = h('select', { id: 'np-lang' },
@@ -43,19 +45,27 @@ export function newProfileScreen(root: HTMLElement): void {
     app.pendingTask = null;
     app.store.add(p);
     await selectProfile(p);
-    go('story', { scene: 'intro', next: 'map' });
+    // The map, not a level: a parent may set the player up first; the map welcomes the child.
+    go('map');
   } },
+    closeButton(cancel),
     h('h1', {}, t('newProfile.title')),
     h('label', { for: 'np-name' }, t('newProfile.name')), name,
-    h('label', {}, t('newProfile.companion')), kinds,
-    h('label', { for: 'np-piko' }, t('newProfile.companionName')), pikoName,
-    h('div', { class: 'two' },
-      h('div', {}, h('label', { for: 'np-lang' }, t('newProfile.language')), lang),
-      h('div', {}, h('label', { for: 'np-layout' }, t('newProfile.layout')), lay)),
+    h('div', { class: 'np-pick' },
+      h('div', { class: 'np-col' }, h('label', {}, t('newProfile.companion')), kinds),
+      h('div', { class: 'np-col np-side' },
+        h('label', { for: 'np-piko' }, t('newProfile.companionName')), pikoName,
+        h('label', { for: 'np-lang' }, t('newProfile.language')), lang,
+        h('label', { for: 'np-layout' }, t('newProfile.layout')), lay)),
     h('p', { class: 'hint' }, t('newProfile.parentHint')),
     error,
-    h('div', { class: 'row' },
-      button(t('common.back'), () => { app.pendingTask = null; go('start'); }, 'btn ghost', 'back'),
-      h('button', { class: 'btn primary', type: 'submit' }, t('newProfile.create'))));
+    h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'submit' }, t('newProfile.create'))));
   root.append(h('div', { class: 'screen form-screen' }, cornerControls(), form));
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key !== 'Escape' || document.querySelector('.modal-back')) return;
+    e.preventDefault();
+    cancel();
+  };
+  window.addEventListener('keydown', onKey);
+  return () => window.removeEventListener('keydown', onKey);
 }

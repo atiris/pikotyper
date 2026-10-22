@@ -1,14 +1,14 @@
-import { app, go } from '../app/app';
+import { app, go, saveProfile } from '../app/app';
 import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
-import { t } from '../i18n/i18n';
+import { t, tList } from '../i18n/i18n';
 import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels, worldLock } from '../game/levels';
-import { type Profile, SUPER_ID } from '../storage/schema';
+import { GUEST_ID, type Profile, SUPER_ID } from '../storage/schema';
 import { activeKeys } from '../learning/lessons';
 import { badgeTier } from '../game/rewards';
 import { badge } from '../ui/badge';
-import { button, h, icon } from '../ui/dom';
+import { button, closeButton, h, icon } from '../ui/dom';
 import { cornerControls } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { ownTextPhrases } from '../game/modes/practice';
@@ -17,18 +17,45 @@ import { openPracticeKeys } from './practice-keys';
 import { openStats } from './stats';
 import { taskCard } from './task';
 
-/** Starts a level (for a task, with its words), showing the world's intro scene the first time. */
+/**
+ * Starts a level (for a task, with its words), showing the world's intro scene the first time;
+ * the very first level is introduced by Piko's own story before it.
+ */
 export function playLevel(id: string, task?: string): void {
   const p = app.profile!;
   const l = LEVELS.find((x) => x.id === id);
   if (l && l.index === 0) {
     const scene = `world${l.world + 1}`;
-    if (!p.progress.scenesSeen.includes(scene)) {
-      go('story', { scene, next: 'level', nextParams: { id, task } });
+    const level = { next: 'level', nextParams: { id, task } };
+    const world = p.progress.scenesSeen.includes(scene) ? null : { scene, ...level };
+    if (l.world === 0 && !p.progress.scenesSeen.includes('intro')) {
+      go('story', { scene: 'intro', ...(world ? { next: 'story', nextParams: world } : level) });
+      return;
+    }
+    if (world) {
+      go('story', world);
       return;
     }
   }
   go('level', { id, task });
+}
+
+/** The first greeting of a new player: what to do on the map; closing or starting marks it seen. */
+function welcomeCard(p: Profile, start: () => void): HTMLElement | null {
+  if (p.id === GUEST_ID || p.id === SUPER_ID || p.progress.scenesSeen.includes('welcome')) return null;
+  const done = () => {
+    p.progress.scenesSeen.push('welcome');
+    saveProfile();
+    card.remove();
+  };
+  const card = h('section', { class: 'panel welcome-card', 'aria-labelledby': 'welcome-title' },
+    closeButton(done),
+    h('div', { class: 'welcome-piko' }, pikoElement(p.companion, 'happy', 110)),
+    h('div', { class: 'welcome-text' },
+      h('h2', { id: 'welcome-title' }, t('map.welcome.title', { name: p.name, piko: p.companion.name })),
+      h('ul', {}, ...tList('map.welcome.lines').map((l) => h('li', {}, l))),
+      button(t('map.welcome.start'), () => { done(); start(); }, 'btn primary', 'play')));
+  return card;
 }
 
 function settingsButton(): HTMLButtonElement {
@@ -62,7 +89,9 @@ export function mapScreen(root: HTMLElement): void {
   const next = nextLevel(p);
   const rescue = rescueUnlocked(p);
   // Nothing open for the child's keys: continue means practice, which brings new keys.
-  const play = button(t('map.continue'), () => (next ? playLevel(next.id) : openPracticeKeys()), 'btn primary big', 'play');
+  const start = () => (next ? playLevel(next.id) : openPracticeKeys());
+  const play = button(t('map.continue'), start, 'btn primary big', 'play');
+  const welcome = welcomeCard(p, start);
   const nextName = next ? levelTitleWords(next.world, next.index) : t('map.practice');
   play.title = nextName;
   play.setAttribute('aria-label', `${t('map.continue')}: ${nextName}`);
@@ -83,9 +112,10 @@ export function mapScreen(root: HTMLElement): void {
         button(t('progress.title'), () => openStats(), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
-      h('div', { class: 'story-rows' }, ...STORIES.map((s) => storyRow(p, s, next?.id, keysBubble, lockBubble))))));
+      h('div', { class: 'story-rows' }, welcome, ...STORIES.map((s) => storyRow(p, s, next?.id, keysBubble, lockBubble))))));
   (root.querySelector('.btn.primary') as HTMLElement | null)?.focus();
-  if (p.id !== SUPER_ID) offerInstall(p.companion);
+  // One greeting at a time: the install offer waits for a map without the welcome.
+  if (p.id !== SUPER_ID && !welcome) offerInstall(p.companion);
 }
 
 /**

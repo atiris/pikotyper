@@ -177,6 +177,18 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .kind { border: 3px solid transparent; border-radius: 18px; background: var(--paper-2); cursor: pointer; padding: 0.4rem; display: flex; flex-direction: column; align-items: center; font-weight: 600; font-size: 0.9rem; }
 .kind.on { border-color: var(--brand); background: #fff1e3; }
 .kind .piko-stack { animation: none; }
+.form-screen .form { position: relative; }
+.form .error:empty { display: none; }
+/* The corner buttons would cover the form's X: the form starts below them. */
+@media (max-width: 1279px) { .form-screen { padding-top: calc(1rem + 52px + 0.8rem); } }
+.form > h1 { margin-right: 52px; }
+.np-pick { display: grid; grid-template-columns: auto minmax(220px, 1fr); gap: 0 var(--sp-5); align-items: start; }
+.np-pick .kind-picker { grid-template-columns: repeat(3, 108px); }
+.np-col { display: flex; flex-direction: column; gap: 0.4rem; }
+@media (max-width: 640px) {
+  .np-pick { grid-template-columns: 1fr; }
+  .np-pick .kind-picker { grid-template-columns: repeat(3, 1fr); }
+}
 
 /* ---------- Map ---------- */
 .map-screen { padding-top: var(--sp-3); }
@@ -190,6 +202,12 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .map-piko { border: 0; background: radial-gradient(circle at 50% 70%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0) 70%); cursor: pointer; align-self: center; border-radius: 50%; padding: 0; }
 .map-piko:hover .piko-stack { animation: jump-small 0.6s ease; }
 .story-rows { display: grid; gap: var(--sp-5); align-content: start; }
+.welcome-card { position: relative; margin: 0; max-width: none; display: flex; gap: var(--sp-4); align-items: center; }
+.welcome-card h2 { margin: 0 52px 0.4rem 0; font-size: 1.4rem; }
+.welcome-card ul { margin: 0 0 var(--sp-3); padding-left: 1.2rem; }
+.welcome-card li { margin: 0.2rem 0; }
+.welcome-piko { flex: none; }
+@media (max-width: 700px) { .welcome-piko { display: none; } }
 .story-row { display: grid; gap: var(--sp-3); align-content: start; container: story / inline-size; }
 .story-opens { margin: 0; color: var(--ink-soft); }
 .story-name { margin: 0; font-size: 1.5rem; color: var(--brand-dark); }

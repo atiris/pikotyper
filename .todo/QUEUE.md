@@ -6,7 +6,6 @@ each in its own clean session. One line per plan in `.todo/`:
 listed here is never run. Lines whose plan has moved to `.todo/.done/` are
 skipped, and the session that finishes a plan removes its line.
 
-- [P1] 38-new-player-and-welcome.md - the form and the first impression; the X pattern the help page then reuses
 - [P1] 37-unified-help.md - one help page with tabs; after 38 so both use the same close X
 - [P2] 39-just-typing-mode.md - new mode, independent of the two above
 - [P2] 41-settings-form-consistency.md - switches and the child's picture; after the corner/close rules (40)

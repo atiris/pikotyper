@@ -27,10 +27,25 @@ mark reuses `progress.scenesSeen` (an id string), so no migration.
 - A guest and the super player see no welcome.
 
 ## Steps
-- [ ] Rework the form markup and CSS: 3x3 picker, side column, narrow-width fallback.
-- [ ] X instead of "Späť" (reuse `closeButton`); keep the pending-task cleanup.
-- [ ] Go to the map after creating; welcome card with texts (sk, en), `scenesSeen` mark.
-- [ ] Remove the `intro` story scene from the creation path (keep it if a level still plays it).
-- [ ] Update `.specify/profiles/profiles.md`; adjust e2e that create a player and expect the
+- [x] Rework the form markup and CSS: 3x3 picker, side column, narrow-width fallback.
+- [x] X instead of "Späť" (reuse `closeButton`); keep the pending-task cleanup.
+- [x] Go to the map after creating; welcome card with texts (sk, en), `scenesSeen` mark.
+- [x] Remove the `intro` story scene from the creation path (keep it if a level still plays it).
+- [x] Update `.specify/profiles/profiles.md`; adjust e2e that create a player and expect the
       story (`e2e/*.spec.ts` helpers).
-- [ ] build, unit tests, e2e; check the form at wide, narrow and short screens in the browser.
+- [x] build, unit tests, e2e; check the form at wide, narrow and short screens in the browser.
+
+## Progress notes
+- The intro scene now plays from `playLevel` before the very first level (then the world 1
+  scene), so a guest and the super player get it too; e2e use a `skipStories` helper.
+- Escape also closes the form (ui-rules: a window closes with X and Escape).
+- Below 1280 px width the form starts under the corner buttons, which otherwise covered its X.
+- The install offer waits while the welcome card is shown, so the first map has one greeting.
+- The welcome has three lines (Continue and step-by-step keys merged into one).
+- The form's hint pointed to a lock button; it now names the gear on the map.
+
+## Done - 2026-10-22
+Shipped: 3 x 3 companion grid with a side column (single column under 640 px), the X and
+Escape instead of "Späť", the map after creating a player with a one-time welcome card
+(`scenesSeen` gets `welcome`), the intro story before the first level, spec and e2e updates
+(new layout test for the form and the welcome). Left out: nothing.

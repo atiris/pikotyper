@@ -1,13 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { createProfile, playLevel, typeChar } from './helpers';
+import { createProfile, playLevel, typeChar, skipStories } from './helpers';
 
 test('a new child plays the first level by typing and sees stars', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await createProfile(page, 'Ema');
   await page.locator('.map-side .btn.primary').click();
-  await page.locator('.story-screen').waitFor();
-  await page.keyboard.press('Escape');
+  await skipStories(page);
   const text = await playLevel(page);
   expect(text).toMatch(/%/);
   // Piko celebrated in place, not running off.
@@ -66,8 +65,7 @@ test('Enter sends Piko\'s paws to type a few words', async ({ page }) => {
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('superpikotyper', { delay: 40 });
   await page.locator('.map-side .btn.primary').click();
-  await page.locator('.story-screen').waitFor();
-  await page.keyboard.press('Escape');
+  await skipStories(page);
   await page.locator('.posture-card').waitFor();
   await page.keyboard.press('Space');
   await expect(page.locator('.paw-btn')).toHaveAttribute('data-charged', '3');
@@ -84,8 +82,7 @@ test('a level left during its get-ready card does not swallow the next level\'s 
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('superpikotyper', { delay: 40 });
   await page.locator('.map-side .btn.primary').click();
-  await page.locator('.story-screen').waitFor();
-  await page.keyboard.press('Escape');
+  await skipStories(page);
   await page.locator('.posture-card').waitFor();
   await page.goBack();
   await page.locator('.map-screen').waitFor();
@@ -115,8 +112,7 @@ test('Escape on the get-ready card goes back to the map', async ({ page }) => {
   await page.locator('.start-screen').waitFor();
   await page.keyboard.type('superpikotyper', { delay: 40 });
   await page.locator('.map-side .btn.primary').click();
-  await page.locator('.story-screen').waitFor();
-  await page.keyboard.press('Escape');
+  await skipStories(page);
   await page.locator('.posture-card').waitFor();
   await page.keyboard.press('Escape');
   await expect(page.locator('.map-screen')).toBeVisible();
@@ -167,8 +163,7 @@ test('world badges sit on the map, grow with stars and line up on the progress s
   await expect(page.locator('.island-planet .badge.bronze')).toBeVisible();
   await expect(page.locator('.island-dragons .badge')).toHaveCount(0);
   await page.locator('.island-meadow .level-node').first().click();
-  await page.locator('.story-screen').waitFor();
-  await page.keyboard.press('Escape');
+  await skipStories(page);
   expect(await playLevel(page, false)).toContain('Your badge is gold now!');
   await page.keyboard.press('Escape');
   await expect(page.locator('.island-meadow .badge.gold')).toBeVisible();
