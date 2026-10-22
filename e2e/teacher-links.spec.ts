@@ -16,7 +16,8 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
   await parent.locator('.top-actions .round-btn').first().click();
   await parent.locator('.confirm .btn:not(.primary)').last().click();
   await parent.locator('.tab[data-tab=task]').click();
-  await parent.locator('.task-new input[type=text]').fill('Zvieratá');
+  await parent.locator('.task-new input[type=text]').first().fill('Zvieratá');
+  await parent.locator('.task-new input[type=text]').nth(1).fill('5.A');
   await parent.locator('.task-new textarea').first().fill('lopta, ruka');
   await parent.locator('.task-new input[type=range]').fill('1');
   await parent.locator('.task-new .btn.primary').first().click();
@@ -47,9 +48,10 @@ test('a task travels by link to a child, and the result back to the teacher\'s t
   const teacher = await open();
   await teacher.goto(resultLink);
   await expect(teacher.locator('.teacher-screen [role=status]')).toContainText('Adam');
-  await expect(teacher.locator('.teacher-table tbody tr:not(.task-row)')).toHaveCount(1);
+  await expect(teacher.locator('.teacher-table tbody tr:not(.task-row):not(.group-row)')).toHaveCount(1);
   await expect(teacher.locator('.teacher-table .task-row')).toContainText('Zvieratá');
+  await expect(teacher.locator('.teacher-table .group-row')).toContainText('5.A');
   await teacher.reload();
-  await expect(teacher.locator('.teacher-table tbody tr:not(.task-row)')).toHaveCount(1);
+  await expect(teacher.locator('.teacher-table tbody tr:not(.task-row):not(.group-row)')).toHaveCount(1);
   expect(errors).toEqual([]);
 });

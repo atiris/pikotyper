@@ -1293,7 +1293,7 @@
   },
   "teacher": {
     "title": "Pre učiteľov",
-    "intro": "Sem pridajte odkazy s výsledkami, ktoré vám deti poslali. Odkaz stačí otvoriť v tomto prehliadači alebo ho vložiť sem.",
+    "intro": "Najrýchlejšie je skenovať QR kódy z obrazoviek detí kamerou: napíšte skupinu (napríklad triedu), zapnite skenovanie a obíďte triedu. Každý nový kód sa zapíše do tejto skupiny. Môžete tiež otvoriť alebo vložiť odkaz s výsledkom.",
     "paste": "Odkaz s výsledkom",
     "pastePlaceholder": "Vložte odkaz s výsledkom",
     "add": "Pridať",
@@ -1303,7 +1303,7 @@
     "removeTitle": "Odstrániť výsledok?",
     "removeText": "Výsledok {name} z úlohy {title} sa z tejto tabuľky odstráni.",
     "remove": "Odstrániť",
-    "empty": "Zatiaľ tu nie sú žiadne výsledky.",
+    "empty": "Zatiaľ tu nie sú žiadne výsledky. Pridajte ich jedným z troch spôsobov:",
     "csv": "Stiahnuť CSV",
     "privacy": "Výsledky sú uložené len v tomto prehliadači. Nie sú tu žiadne účty a nič sa neposiela na server. Kontrolný súčet odhalí poškodený odkaz, nie podvádzanie.",
     "col": {
@@ -1314,7 +1314,53 @@
       "accuracy": "Presnosť",
       "rhythm": "Rytmus (znaky za minútu)",
       "weak": "Najslabšie klávesy",
-      "broken": "Poškodený"
+      "broken": "Poškodený",
+      "group": "Skupina",
+      "level": "Levely",
+      "status": "Stav"
+    },
+    "count": "{n} výsledkov",
+    "all": "Všetky",
+    "noGroup": "Bez skupiny",
+    "groupFilter": "Filter skupiny",
+    "csvAll": "Stiahnuť CSV (všetko)",
+    "pick": "Vybrať: {name}",
+    "assign": "Priradiť do skupiny ({n})",
+    "assignPrompt": "Názov skupiny (prázdny ho zruší). Existujúce: {groups}",
+    "removePicked": "Odstrániť vybrané ({n})",
+    "removeManyTitle": "Odstrániť vybrané výsledky?",
+    "removeManyText": "Z tabuľky sa odstráni {n} výsledkov.",
+    "way": {
+      "scan": "Skenovať QR kódy z obrazoviek detí kamerou.",
+      "paste": "Vložiť odkaz s výsledkom do políčka vyššie.",
+      "open": "Otvoriť odkaz s výsledkom v tomto prehliadači."
+    },
+    "scan": {
+      "start": "Skenovať kamerou",
+      "privacy": "Obraz z kamery sa nikam neposiela ani neukladá.",
+      "preview": "Obraz z kamery",
+      "camera": "Kamera",
+      "starting": "Zapínam kameru...",
+      "many": "Namier kameru na jeden alebo viac QR kódov.",
+      "one": "Zamier na jeden kód.",
+      "done": "Hotovo",
+      "collected": "Načítané",
+      "updated": "aktualizované",
+      "unknown": "Neznámy kód",
+      "undo": "Zrušiť tento výsledok",
+      "error": {
+        "denied": "Prístup ku kamere nie je povolený. Povoľte ho v nastaveniach prehliadača.",
+        "none": "Nenašla sa žiadna kamera.",
+        "insecure": "Kamera funguje len na zabezpečenej stránke (HTTPS).",
+        "failed": "Kameru sa nepodarilo zapnúť."
+      },
+      "group": "Skupina pre tento sken",
+      "groupPlaceholder": "Skupina, napríklad 5.A"
+    },
+    "summary": "zvládli {ok} z {n}, presnosť {accuracy} %, rytmus {rhythm}, dokončené levely {levels}",
+    "status": {
+      "ok": "zvládnuté",
+      "practice": "viac cviku"
     }
   },
   "task": {
@@ -1336,10 +1382,7 @@
     "checksumNote": "Odkaz obsahuje meno, úlohu, čas, presnosť, rytmus a päť najslabších kláves. Kontrolný súčet odhalí poškodený odkaz, nie podvádzanie.",
     "doneLine": "Úloha „{title}“ je splnená. Odovzdaj ju učiteľovi.",
     "leftLine": "Úloha „{title}“: zostáva ešte {n} min.",
-    "group": {
-      "new": "Nová úloha",
-      "list": "Úlohy hráča {name}"
-    },
+    "group": "Skupina (nepovinné)",
     "intro": "Úloha je odkaz. Pošlite ho deťom (napríklad cez Edupage); kto ho otvorí, vyberie si hráča a na mape uvidí Úlohu na dnes. Po splnení vám dieťa pošle odkaz s výsledkom.",
     "title": "Názov úlohy",
     "titlePlaceholder": "Napríklad: Zvieratá na farme",
@@ -1352,7 +1395,10 @@
     "giveHere": "Dať úlohu aj hráčovi {name}",
     "doneAt": "splnená {date}",
     "played": "{n} z {total} min",
-    "none": "Tento hráč zatiaľ nemá žiadne úlohy."
+    "none": "Tento hráč zatiaľ nemá žiadne úlohy.",
+    "bigCode": "Ukázať veľký kód",
+    "groupPlaceholder": "Napríklad: 5.A",
+    "groupHint": "Učiteľ podľa nej v tabuľke zoskupí výsledky."
   },
   "move": {
     "button": "Preniesť na iný počítač",

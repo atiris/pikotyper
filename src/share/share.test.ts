@@ -84,6 +84,7 @@ describe('results', () => {
     recordTaskRun(task, { seconds: 60, chars: 90, errors: 10, cpm: 50 });
     const r = makeResult(p, task);
     expect(r.group).toBe('5.A');
+    expect(r.levels).toBe(0);
     expect(await parseResult(await resultCode(r))).toEqual({ result: r, intact: true });
     const spec = { id: 't1', title: 'x', words: ['a'], text: '', minutes: 1, kind: 'practice' as const };
     expect((await parseTask(await taskCode({ ...spec, group: ' 5.A ' }))).group).toBe('5.A');

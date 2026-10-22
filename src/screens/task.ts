@@ -8,7 +8,7 @@ import { makeResult, resultCode } from '../share/result';
 import { activeTask, taskLeft } from '../share/task';
 import type { Profile, Task } from '../storage/schema';
 import { button, h, modal } from '../ui/dom';
-import { linkBox } from '../ui/link-box';
+import { fitsQr, linkBox, qr } from '../ui/link-box';
 import { playLevel } from './map';
 
 /** Plays the task: a timed practice of what is left, or the next story level. */
@@ -50,6 +50,25 @@ export async function handInDialog(p: Profile, task: Task): Promise<void> {
     pikoElement(p.companion, 'happy', 100),
     h('h2', {}, t('task.handInTitle')),
     h('p', {}, t('task.handInText')),
+    fitsQr(link) ? button(t('task.bigCode'), () => bigCode(link, p.name), 'btn', 'fullscreen') : null,
     linkBox(link),
     h('p', { class: 'hint' }, t('task.checksumNote'))), { cls: 'share-modal' });
+}
+
+/** The QR code over the whole screen, readable by a camera across a desk; Esc or a click closes it. */
+function bigCode(link: string, name: string): void {
+  const view = h('div', { class: 'big-code', role: 'dialog', 'aria-modal': 'true', 'aria-label': t('task.bigCode') }, qr(link), h('p', {}, name));
+  const close = () => {
+    view.remove();
+    window.removeEventListener('keydown', onKey, true);
+  };
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key !== 'Escape') return;
+    e.stopPropagation();
+    e.preventDefault();
+    close();
+  };
+  window.addEventListener('keydown', onKey, true);
+  view.addEventListener('click', close);
+  document.body.append(view);
 }

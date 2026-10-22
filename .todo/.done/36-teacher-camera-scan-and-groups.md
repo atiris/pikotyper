@@ -61,27 +61,27 @@ Links stay as the alternative for children who work at home.
    button to undo a wrong read.
 
 ## Steps
-- [ ] 1. Add `group` to the task (form, link, `Task`), to `TaskResult` and to the stored result
+- [x] 1. Add `group` to the task (form, link, `Task`), to `TaskResult` and to the stored result
       (all optional), update `makeResult`, `parseResult`, `TeacherStore` (the replace rule
       stays task + name + group) and the CSV. Unit tests in `share.test.ts`: round trip with and
       without a group, old link without a group, checksum includes the group only when set (so
       older results keep verifying).
-- [ ] 2. `src/ui/qr-scanner.ts`: a small module `startScan(video, onCode)` that hides the
+- [x] 2. `src/ui/qr-scanner.ts`: a small module `startScan(video, onCode)` that hides the
       detector choice (BarcodeDetector or lazy `jsqr`), throttles, dedupes identical codes for
       3 s and stops cleanly. Unit test the dedupe/throttle with a fake detector (no camera).
-- [ ] 3. The scan card in the teacher view, the session list, the ticks, the error messages and
+- [x] 3. The scan card in the teacher view, the session list, the ticks, the error messages and
       the stream shutdown (screen leave, hidden tab, "Hotovo").
-- [ ] 4. The big code on the hand-in card.
-- [ ] 5. Group chips, group > task > child table, assigning a group to chosen rows, CSV with the
+- [x] 4. The big code on the hand-in card.
+- [x] 5. Group chips, group > task > child table, assigning a group to chosen rows, CSV with the
       group, "all/shown" export.
-- [ ] 6. Drive it with the playwright MCP: start Chromium with a fake camera feed
+- [x] 6. Drive it with the playwright MCP: start Chromium with a fake camera feed
       (`--use-fake-device-for-media-stream --use-fake-ui-for-media-stream
       --use-file-for-fake-video-capture=<y4m of a PikoTyper result QR>`), open `#/teacher`,
       scan, see the result added once; repeat with a video holding two codes if the browser
       has `BarcodeDetector`. Report what you saw. If the fake camera cannot be set up in the
       MCP, say that, test the scanner module and the table by unit/e2e tests with pasted links,
       and mark the camera part `unverified: [UI]`.
-- [ ] 7. Update the specs (WHAT and WHY only: teacher-links, privacy, architecture weight).
+- [x] 7. Update the specs (WHAT and WHY only: teacher-links, privacy, architecture weight).
       Build, lint, unit and e2e tests. Measure the first-load transfer to prove the scanner is
       not in it.
 
@@ -91,3 +91,23 @@ Links stay as the alternative for children who work at home.
 - The group is a plain label, not an entity with its own screen.
 - A second scanning device or live sync between teachers' devices is out of scope; the CSV and
   links cover sharing.
+
+## Decisions taken while implementing
+- The store keeps replacing by task + child (not group), so an assigned group is not lost or
+  duplicated; a later hand-in without a group keeps the assigned one.
+- `TeacherStore.add` returns `'added' | 'updated' | 'same'` (needed for the "aktualizované" line).
+- The fake-camera check ran as Playwright e2e (`e2e/teacher-scan.spec.ts`, a y4m feed made in
+  the test) instead of the MCP, so it also guards the feature in CI.
+
+## Done - 2026-10-22
+Shipped (owner's wish added during the run: the scan writes every code into the group typed for
+the scan, and the table summarises each group - mastered count, accuracy, rhythm, levels finished
+- with a levels column in the result): group in task form, link, result and store; camera scan card with a continuous scan,
+session list with undo, tick and flash, camera selector and clear error messages; `BarcodeDetector`
+with lazy `jsqr` fallback (`src/ui/qr-scanner.ts`); big QR on the hand-in; group chips, group >
+task > child table, assign to group, count, CSV with group column and "everything" export;
+specs updated. First load: the `jsqr` chunk (130 KB, 48 KB gzip) is a separate lazy chunk, the
+main bundle grew only by the teacher UI (+7.5 KB). Install cache about 6.8 MB (limit 10 MB).
+Verified: unit tests, build, e2e with a fake camera feed (one code read once, not added again).
+Left out (unverified): reading several codes in one frame - this Chromium has no
+`BarcodeDetector`, so only the one-code `jsqr` path ran.

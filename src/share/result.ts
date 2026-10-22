@@ -18,6 +18,8 @@ export interface TaskResult {
   accuracy: number;
   /** Rhythm, correct characters per minute. */
   cpm: number;
+  /** Levels the child has finished so far, their current level. */
+  levels?: number;
   /** The weakest keys now, with their recent accuracy in percent, weakest first. */
   weak: [string, number][];
 }
@@ -35,13 +37,14 @@ export function makeResult(p: Profile, task: Task): TaskResult {
     minutes: Math.round(task.seconds / 6) / 10,
     accuracy: total ? Math.round((task.chars / total) * 100) : 100,
     cpm: task.cpm,
+    levels: Object.keys(p.progress.levels).length,
     weak: weakKeys(p, Object.keys(p.stats.keys), RESULT_WEAK_KEYS).map((k) => [k.key, Math.round(k.accuracy * 100)]),
   };
 }
 
 /** Fields in a fixed order, so the checksum does not depend on how the object was built. */
-/** The group joins the sum only when set, so results without one keep verifying. */
-const sumOf = (r: TaskResult) => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : [])]));
+/** The group and the levels join the sum only when set, so results without one keep verifying. */
+const sumOf = (r: TaskResult) => checksum(JSON.stringify([r.taskId, r.title, r.name, r.date, r.minutes, r.accuracy, r.cpm, r.weak, ...(r.group ? [r.group] : []), ...(r.levels === undefined ? [] : [r.levels])]));
 
 export function resultCode(r: TaskResult): Promise<string> {
   return encode({ app: 'pikotyper', type: 'result', ...r, sum: sumOf(r) });
@@ -62,6 +65,7 @@ export async function parseResult(code: string): Promise<{ result: TaskResult; i
     minutes: num(v.minutes),
     accuracy: num(v.accuracy),
     cpm: num(v.cpm),
+    ...(typeof v.levels === 'number' && { levels: num(v.levels) }),
     weak: Array.isArray(v.weak) ? v.weak.filter((w: unknown) => Array.isArray(w) && typeof w[0] === 'string').slice(0, RESULT_WEAK_KEYS).map((w: any[]) => [w[0].slice(0, 12), num(w[1])]) : [],
   };
   if (!result.name || !result.taskId) throw new Error('share.broken');

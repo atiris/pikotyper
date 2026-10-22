@@ -1293,7 +1293,7 @@
   },
   "teacher": {
     "title": "For teachers",
-    "intro": "Add the result links children sent you here. Open a link in this browser or paste it below.",
+    "intro": "The fastest way is to scan the QR codes on the children's screens: type a group (for example a class), start scanning and walk around the room. Every new code is written into that group. You can also open or paste a result link.",
     "paste": "Result link",
     "pastePlaceholder": "Paste a result link",
     "add": "Add",
@@ -1303,7 +1303,7 @@
     "removeTitle": "Remove the result?",
     "removeText": "The result of {name} for {title} will be removed from this table.",
     "remove": "Remove",
-    "empty": "No results yet.",
+    "empty": "No results yet. Add them in one of three ways:",
     "csv": "Download CSV",
     "privacy": "Results are stored only in this browser. There are no accounts and nothing goes to a server. The checksum finds damaged links, not cheating.",
     "col": {
@@ -1314,7 +1314,53 @@
       "accuracy": "Accuracy",
       "rhythm": "Rhythm (characters per minute)",
       "weak": "Weakest keys",
-      "broken": "Damaged"
+      "broken": "Damaged",
+      "group": "Group",
+      "level": "Levels",
+      "status": "Status"
+    },
+    "count": "{n} results",
+    "all": "All",
+    "noGroup": "No group",
+    "groupFilter": "Group filter",
+    "csvAll": "Download CSV (everything)",
+    "pick": "Select: {name}",
+    "assign": "Assign to a group ({n})",
+    "assignPrompt": "Group name (empty clears it). Existing: {groups}",
+    "removePicked": "Remove selected ({n})",
+    "removeManyTitle": "Remove the selected results?",
+    "removeManyText": "{n} results will be removed from the table.",
+    "way": {
+      "scan": "Scan the QR codes on the children's screens with the camera.",
+      "paste": "Paste a result link into the field above.",
+      "open": "Open a result link in this browser."
+    },
+    "scan": {
+      "start": "Scan with camera",
+      "privacy": "The camera picture is never sent or stored.",
+      "preview": "Camera picture",
+      "camera": "Camera",
+      "starting": "Starting the camera...",
+      "many": "Point the camera at one or more QR codes.",
+      "one": "Point at one code.",
+      "done": "Done",
+      "collected": "Collected",
+      "updated": "updated",
+      "unknown": "Unknown code",
+      "undo": "Undo this result",
+      "error": {
+        "denied": "Camera access is not allowed. Allow it in the browser settings.",
+        "none": "No camera was found.",
+        "insecure": "The camera works only on a secure page (HTTPS).",
+        "failed": "The camera could not be started."
+      },
+      "group": "Group for this scan",
+      "groupPlaceholder": "Group, for example 5.A"
+    },
+    "summary": "{ok} of {n} mastered, accuracy {accuracy} %, rhythm {rhythm}, levels finished {levels}",
+    "status": {
+      "ok": "mastered",
+      "practice": "needs practice"
     }
   },
   "task": {
@@ -1336,10 +1382,7 @@
     "checksumNote": "The link holds the name, task, time, accuracy, rhythm and the five weakest keys. The checksum finds damaged links, not cheating.",
     "doneLine": "Task “{title}” is done. Hand it in to your teacher.",
     "leftLine": "Task “{title}”: {n} min left.",
-    "group": {
-      "new": "New task",
-      "list": "Tasks of {name}"
-    },
+    "group": "Group (optional)",
     "intro": "A task is a link. Send it to the children (for example in your school app); whoever opens it picks a player and sees Today's task on the map. When it is done, the child sends you a result link.",
     "title": "Task name",
     "titlePlaceholder": "For example: Farm animals",
@@ -1352,7 +1395,10 @@
     "giveHere": "Give the task to {name} too",
     "doneAt": "done {date}",
     "played": "{n} of {total} min",
-    "none": "This player has no tasks yet."
+    "none": "This player has no tasks yet.",
+    "bigCode": "Show big code",
+    "groupPlaceholder": "For example: 5.A",
+    "groupHint": "The teacher's table groups results by it."
   },
   "move": {
     "button": "Move to another computer",

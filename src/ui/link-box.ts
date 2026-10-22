@@ -5,6 +5,9 @@ import { button, h } from './dom';
 /** Bytes a QR code holds at most (version 40, low error correction). */
 const QR_MAX = 2900;
 
+/** True when the link fits in a QR code. */
+export const fitsQr = (link: string) => link.length <= QR_MAX;
+
 /** A link to copy, with a QR code when it fits in one. */
 export function linkBox(link: string): HTMLElement {
   const area = h('textarea', { class: 'link-text', rows: 3, readonly: true, 'aria-label': t('share.link') });
@@ -23,10 +26,10 @@ export function linkBox(link: string): HTMLElement {
   return h('div', { class: 'link-box' },
     area,
     h('div', { class: 'row' }, copy, done),
-    link.length <= QR_MAX ? qr(link) : h('p', { class: 'hint' }, t('share.noQr')));
+    fitsQr(link) ? qr(link) : h('p', { class: 'hint' }, t('share.noQr')));
 }
 
-function qr(link: string): HTMLElement {
+export function qr(link: string): HTMLElement {
   const code = qrcode(0, 'L');
   code.addData(link, 'Byte');
   code.make();
