@@ -227,7 +227,7 @@ counted from the bottom); it lives in `STRIP_HEIGHT` in `scripts/assets.mjs`.
 | `bg-space-near.jpg` | **use the far prompt instead**, SCENE: "only a few small soft star sparkles and tiny space dust on a flat pure magenta (#FF00FF) background" | full | not a strip |
 | `bg-planet-far.jpg` | a magical alien planet with a pastel mint sky with soft glowing clouds, purple and turquoise mushroom-shaped trees far away | full | regenerate (had two moons) |
 | `bg-planet-mid.jpg` | a magical forest edge with round turquoise and lilac trees and glowing flowers | 50 % | |
-| `bg-planet-near.jpg` | a calm green swamp with lily pads, reeds and soft mud | 30 % | |
+| `bg-planet-near.jpg` | a calm green swamp with lily pads, reeds and soft mud | 30 % | regenerate: the water band has a flat straight top edge, ask for an uneven top line  |
 | `bg-dragons-far.jpg` | a peaceful dragon valley at sunset, warm orange and pink colours in the sky, the sun hidden behind the mountains, soft rounded mountains and a waterfall | full | regenerate (had a sun) |
 | `bg-dragons-mid.jpg` | rounded rocky hills with cozy cave entrances and soft moss | 45 % | |
 | `bg-dragons-near.jpg` | soft grass, smooth round pebbles and small ferns | 25 % | |
@@ -410,16 +410,16 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 |---|---|---|---|
 | `bg-junkyard-far.jpg` | a friendly junkyard in soft daylight with soft hills of old things far away, a rusty but cheerful crane and a light blue sky | full | regenerate (was sunny) |
 | `bg-junkyard-mid.jpg` | soft piles of old tires, wooden crates and round metal cans | 45 % | |
-| `bg-junkyard-near.jpg` | scattered small springs, bolts and grass tufts on the ground | 25 % | |
+| `bg-junkyard-near.jpg` | scattered small springs, bolts and grass tufts on the ground | 25 % | regenerate: the pattern repeats inside the picture, fewer and larger pieces  |
 | `bg-workshop-far.jpg` | the inside of a warm cozy workshop with wooden walls, shelves with jars of screws, hanging tools and a round window | full | |
-| `bg-workshop-mid.jpg` | a long workbench with drawers and small toolboxes | 45 % | |
-| `bg-workshop-near.jpg` | a conveyor belt running across the whole image with rollers below | 25 % | |
+| `bg-workshop-mid.jpg` | a long workbench with drawers and small toolboxes | 45 % | regenerate: a pale pink outline around every object  |
+| `bg-workshop-near.jpg` | a conveyor belt running across the whole image with rollers below | 25 % | regenerate: a pale pink outline around every object  |
 | `bg-raintown-far.jpg` | a calm small town on a rainy afternoon, soft grey-blue sky with gentle rain lines, colorful rounded houses with lit windows | full | |
 | `bg-raintown-mid.jpg` | wet cobblestone street with small lamp posts and round bushes | 40 % | |
 | `bg-raintown-near.jpg` | shiny puddles with ripples and a few fallen leaves | 20 % | |
 | `bg-robocity-far.jpg` | a friendly futuristic city with rounded silver and pastel towers, soft light trails and a lilac evening sky | full | |
-| `bg-robocity-mid.jpg` | a friendly electric fence of rounded silver panels with glowing pastel lines, and in front of it small round power posts with glowing tops, thick cables and big round connectors | 40 % | |
-| `bg-robocity-near.jpg` | a low row of small round glowing lights, short thick cables and small rounded metal covers standing on a thin flat ground line | 20 % | |
+| `bg-robocity-mid.jpg` | a friendly electric fence of rounded silver panels with glowing pastel lines, and in front of it small round power posts with glowing tops, thick cables and big round connectors | 40 % | regenerate: busy and low contrast, hides the ground  |
+| `bg-robocity-near.jpg` | a low row of small round glowing lights, short thick cables and small rounded metal covers standing on a thin flat ground line | 20 % | regenerate: busy and low contrast  |
 | `bg-robohome-far.jpg` | the inside of a cozy robot home: round windows, warm lamps, soft sofa, shelves with little gadgets, pastel colors | full | |
 | `bg-robohome-mid.jpg` | a row of cozy furniture: a low cabinet, a plant in a pot, a round rug | 40 % | |
 | `bg-robohome-near.jpg` | a warm wooden floor with a soft round rug edge | 20 % | |
@@ -559,7 +559,8 @@ The far layers have no sun and no moon (they repeat); mid and near are strips (p
 | `obj-frog.jpg` | a small cute green frog sitting, big round eyes, a happy smile | magenta |
 | **Music tree** | | |
 | `obj-music-tree.jpg` | a big round friendly tree with a thick trunk and a wide round crown | magenta |
-| `obj-note.jpg` | a single colorful music note (an eighth note) with a soft glow | magenta |
+| `obj-note1.jpg` | a single colorful music note (an eighth note) with a soft glow | magenta |
+| `obj-note2.jpg` | a colorful pair of beamed eighth notes, a different look from note 1 | magenta |
 | **Moonlight ball** | | |
 | `obj-firefly.jpg` | a tiny cute firefly with a softly glowing yellow tail and small wings | magenta |
 | **Little friends** | | |

@@ -38,9 +38,9 @@ function drawTree(g: G, x: number, y: number, glow: number): void {
   });
 }
 
-/** A note: the picture, else a coloured eighth note. */
+/** A note: one of the two pictures (by colour), else a coloured eighth note. */
 function drawNote(g: G, x: number, y: number, size: number, color: string, rot = 0): void {
-  drawSprite(g, 'obj-note', x, y, size, { rot }, (g2, w, h) => {
+  drawSprite(g, `obj-note${1 + NOTE_COLORS.indexOf(color) % 2}`, x, y, size, { rot }, (g2, w, h) => {
     g2.fillStyle = color;
     g2.strokeStyle = color;
     g2.lineWidth = w * 0.09;
