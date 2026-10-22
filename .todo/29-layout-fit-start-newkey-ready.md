@@ -18,8 +18,12 @@ reason. Rule for all three: at 1366 x 768 and at 1024 x 600 nothing scrolls.
       11 = 6 + 5 where a row may exceed 5 only when width allows; otherwise wrap and allow
       vertical scroll of the card area only). Test (unit for the row split function, e2e for
       "5 profiles, no page scroll": `document.documentElement.scrollHeight <= innerHeight`).
-      The footer (privacy note, links "O hre PikoTyper" and the teacher link) stays visible without
-      scrolling and keeps both links; the owner could not find them when the page was long.
+      "O hre PikoTyper" (info icon) and the teacher link become round buttons in the top right
+      row next to the language switch and the sound button (`.top-right` in
+      `src/screens/start.ts`, use `roundButton` from `src/ui/hud.ts`, label in aria-label and
+      tooltip). They are removed from the footer, so they are reachable with any number of
+      profiles. The footer keeps only the privacy line. Test: both buttons are visible in the
+      first viewport with 7 profiles.
 - [ ] 2. **New key panel.** Make it lower: the heading "Nový kláves „d“" goes above Piko, the
       "how to type it" content (finger guide) sits to the right of Piko, the skip action is
       "Preskočiť" and Esc triggers it (show the Esc hint on the button). Panel height stays under
