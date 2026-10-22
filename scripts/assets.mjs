@@ -288,19 +288,24 @@ async function processImage(name, file, manifest) {
 }
 
 /**
- * A close-up strip: scaled to its target height, repeated across the frame (its edges
- * continue seamlessly, so a whole number of copies is fitted in) and placed at the
- * bottom of a transparent frame.
+ * A close-up strip: scaled to its target height, repeated across the frame (every
+ * other copy mirrored, so a whole, even number of copies is fitted in) and placed at
+ * the bottom of a transparent frame.
  */
 async function writeStrip(name, data, w, h, box, manifest) {
   const stripH = Math.round(FRAME_H * STRIP_HEIGHT[name]);
   // The 3 px bbox padding at the sides would leave gaps between the copies.
   const crop = { ...box, left: 0, width: w };
-  const copies = Math.max(1, Math.round(FRAME_W / (w * stripH / crop.height)));
+  // An even number of copies, every other one mirrored: the joins and the wrap-around
+  // of the frame are seamless whatever the edges of the picture look like.
+  const natural = FRAME_W / (w * stripH / crop.height);
+  let copies = 2;
+  for (let c = 4; c <= 12; c += 2) if (Math.abs(Math.log(c / natural)) < Math.abs(Math.log(copies / natural))) copies = c;
   const tileW = Math.round(FRAME_W / copies);
   const tile = await sharp(data, { raw: { width: w, height: h, channels: 4 } }).extract(crop).resize(tileW, stripH, { fit: 'fill' }).png().toBuffer();
+  const mirrored = await sharp(tile).flop().png().toBuffer();
   const row = await sharp({ create: { width: tileW * copies, height: stripH, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
-    .composite(Array.from({ length: copies }, (_, i) => ({ input: tile, left: i * tileW, top: 0 }))).png().toBuffer();
+    .composite(Array.from({ length: copies }, (_, i) => ({ input: i % 2 ? mirrored : tile, left: i * tileW, top: 0 }))).png().toBuffer();
   const fitted = await sharp(row).resize(FRAME_W, stripH, { fit: 'fill' }).png().toBuffer();
   const frame = await sharp({ create: { width: FRAME_W, height: FRAME_H, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
     .composite([{ input: fitted, left: 0, top: FRAME_H - stripH }]).raw().toBuffer();

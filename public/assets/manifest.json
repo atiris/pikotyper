@@ -1,5 +1,13 @@
 {
  "images": {
+  "acc-antenna-band": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-antenna-band-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-backpack-front": {
    "w": 512,
    "h": 512
@@ -36,6 +44,58 @@
    "w": 160,
    "h": 160
   },
+  "acc-fairy-wings": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-fairy-wings-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-feather": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-feather-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-goggles": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-goggles-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-hard-hat": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-hard-hat-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-harp": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-harp-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-jetpack-front": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-jetpack": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-jetpack-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-knit-vest": {
    "w": 512,
    "h": 512
@@ -49,6 +109,14 @@
    "h": 512
   },
   "acc-lantern-thumb": {
+   "w": 160,
+   "h": 160
+  },
+  "acc-raincoat": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-raincoat-thumb": {
    "w": 160,
    "h": 160
   },
@@ -88,6 +156,14 @@
    "w": 160,
    "h": 160
   },
+  "acc-umbrella": {
+   "w": 512,
+   "h": 512
+  },
+  "acc-umbrella-thumb": {
+   "w": 160,
+   "h": 160
+  },
   "acc-wand": {
    "w": 512,
    "h": 512
@@ -95,6 +171,66 @@
   "acc-wand-thumb": {
    "w": 160,
    "h": 160
+  },
+  "badge-dragons": {
+   "w": 512,
+   "h": 481
+  },
+  "badge-egg": {
+   "w": 485,
+   "h": 512
+  },
+  "badge-forestpath": {
+   "w": 407,
+   "h": 512
+  },
+  "badge-garden": {
+   "w": 512,
+   "h": 491
+  },
+  "badge-junkyard": {
+   "w": 473,
+   "h": 512
+  },
+  "badge-lilylake": {
+   "w": 512,
+   "h": 438
+  },
+  "badge-meadow": {
+   "w": 512,
+   "h": 432
+  },
+  "badge-moonball": {
+   "w": 512,
+   "h": 490
+  },
+  "badge-musictree": {
+   "w": 512,
+   "h": 490
+  },
+  "badge-planet": {
+   "w": 512,
+   "h": 510
+  },
+  "badge-raintown": {
+   "w": 493,
+   "h": 512
+  },
+  "badge-robocity": {
+   "w": 512,
+   "h": 483
+  },
+  "badge-robohome": {
+   "w": 512,
+   "h": 510
+  },
+  "badge-space": {
+   "w": 471,
+   "h": 512
+  },
+  "badge-workshop": {
+   "w": 425,
+   "h": 512
   },
   "base-template": {
    "w": 512,
@@ -124,6 +260,18 @@
    "w": 1376,
    "h": 768
   },
+  "bg-junkyard-far": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-junkyard-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-junkyard-near": {
+   "w": 1376,
+   "h": 768
+  },
   "bg-meadow-far": {
    "w": 1376,
    "h": 768
@@ -148,6 +296,30 @@
    "w": 1376,
    "h": 768
   },
+  "bg-raintown-far": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-raintown-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-raintown-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-robocity-far": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-robocity-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-robocity-near": {
+   "w": 1376,
+   "h": 768
+  },
   "bg-space-far": {
    "w": 1376,
    "h": 768
@@ -159,6 +331,34 @@
   "bg-space-near": {
    "w": 1376,
    "h": 768
+  },
+  "bg-workshop-far": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-workshop-mid": {
+   "w": 1376,
+   "h": 768
+  },
+  "bg-workshop-near": {
+   "w": 1376,
+   "h": 768
+  },
+  "fairy-curious": {
+   "w": 512,
+   "h": 512
+  },
+  "fairy-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "fairy-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "fairy-singing": {
+   "w": 512,
+   "h": 512
   },
   "obj-asteroid-big": {
    "w": 512,
@@ -560,6 +760,38 @@
    "w": 512,
    "h": 512
   },
+  "robot-broken": {
+   "w": 512,
+   "h": 512
+  },
+  "robot-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "robot-idle": {
+   "w": 512,
+   "h": 512
+  },
+  "robot-raincoat": {
+   "w": 512,
+   "h": 512
+  },
+  "robot-wet": {
+   "w": 512,
+   "h": 512
+  },
+  "robot-worried": {
+   "w": 512,
+   "h": 512
+  },
+  "robot2-happy": {
+   "w": 512,
+   "h": 512
+  },
+  "robot2-idle": {
+   "w": 512,
+   "h": 512
+  },
   "round-glasses": {
    "w": 512,
    "h": 203
@@ -576,17 +808,57 @@
    "w": 494,
    "h": 512
   },
+  "ui-map-forestpath": {
+   "w": 497,
+   "h": 512
+  },
+  "ui-map-garden": {
+   "w": 512,
+   "h": 500
+  },
+  "ui-map-junkyard": {
+   "w": 437,
+   "h": 512
+  },
+  "ui-map-lilylake": {
+   "w": 512,
+   "h": 445
+  },
   "ui-map-meadow": {
    "w": 512,
    "h": 422
+  },
+  "ui-map-moonball": {
+   "w": 501,
+   "h": 512
+  },
+  "ui-map-musictree": {
+   "w": 431,
+   "h": 512
   },
   "ui-map-planet": {
    "w": 460,
    "h": 512
   },
+  "ui-map-raintown": {
+   "w": 434,
+   "h": 512
+  },
+  "ui-map-robocity": {
+   "w": 441,
+   "h": 512
+  },
+  "ui-map-robohome": {
+   "w": 433,
+   "h": 512
+  },
   "ui-map-space": {
    "w": 512,
    "h": 500
+  },
+  "ui-map-workshop": {
+   "w": 453,
+   "h": 512
   },
   "ui-posture": {
    "w": 465,
@@ -602,6 +874,11 @@
   }
  },
  "accessories": [
+  {
+   "id": "antenna-band",
+   "slot": "head",
+   "set": "single"
+  },
   {
    "id": "backpack",
    "slot": "back",
@@ -623,6 +900,36 @@
    "set": "e"
   },
   {
+   "id": "fairy-wings",
+   "slot": "back",
+   "set": "single"
+  },
+  {
+   "id": "feather",
+   "slot": "head",
+   "set": "single"
+  },
+  {
+   "id": "goggles",
+   "slot": "eyes",
+   "set": "single"
+  },
+  {
+   "id": "hard-hat",
+   "slot": "head",
+   "set": "single"
+  },
+  {
+   "id": "harp",
+   "slot": "hand",
+   "set": "single"
+  },
+  {
+   "id": "jetpack",
+   "slot": "back",
+   "set": "single"
+  },
+  {
    "id": "knit-vest",
    "slot": "body",
    "set": "d"
@@ -631,6 +938,11 @@
    "id": "lantern",
    "slot": "hand",
    "set": "g"
+  },
+  {
+   "id": "raincoat",
+   "slot": "body",
+   "set": "single"
   },
   {
    "id": "round-glasses",
@@ -650,6 +962,11 @@
   {
    "id": "sunglasses",
    "slot": "eyes",
+   "set": "single"
+  },
+  {
+   "id": "umbrella",
+   "slot": "head",
    "set": "single"
   },
   {
@@ -752,10 +1069,20 @@
   "music-break",
   "music-dragons",
   "music-egg",
+  "music-forestpath",
+  "music-garden",
+  "music-junkyard",
+  "music-lilylake",
   "music-meadow",
   "music-menu",
+  "music-moonball",
+  "music-musictree",
   "music-planet",
+  "music-raintown",
   "music-relaxing",
-  "music-space"
+  "music-robocity",
+  "music-robohome",
+  "music-space",
+  "music-workshop"
  ]
 }

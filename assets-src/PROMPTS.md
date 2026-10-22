@@ -212,7 +212,7 @@ Wide game background, landscape 16:9: SCENE. Simple and uncluttered, soft colors
 
 ### Common prompt for `*-mid.jpg` and `*-near.jpg` (replace LAYER)
 ```
-Same style and palette as the previous background image. Ultra-wide panoramic image, 21:9: a close-up strip of LAYER that fills the whole image from the bottom edge up to an uneven top silhouette near the top edge. Above the silhouette only a thin band of one perfectly flat solid pure magenta color (#FF00FF), no sky, no gradient. Big, close objects. No characters, no text. The left and right edges continue smoothly so the strip can repeat.
+Same style and palette as the previous background image. Ultra-wide panoramic image, 21:9: one continuous close-up strip of LAYER that fills the whole image from the bottom edge up to an uneven top silhouette near the top edge. Above the silhouette only a thin band of one perfectly flat solid pure magenta color (#FF00FF), no sky, no gradient. Big, close objects, few large simple shapes, soft muted colors and little fine detail. Every object appears only once: do not repeat or copy any part of the image inside it. No white or light outline, halo or sticker border around the objects: their dark outlines meet the magenta directly. No characters, no text. Flat side view like a 2D platformer, no perspective and no vanishing point: the ground, floor and walkway are drawn straight from the side as a horizontal band, every line is either horizontal or vertical, nothing runs toward a point in the distance.
 ```
 The height column is where the script places the strip (part of the screen height,
 counted from the bottom); it lives in `STRIP_HEIGHT` in `scripts/assets.mjs`.
@@ -418,8 +418,8 @@ first, then attach it to the other prompts ("the same robot as in the attached i
 | `bg-raintown-mid.jpg` | wet cobblestone street with small lamp posts and round bushes | 40 % | |
 | `bg-raintown-near.jpg` | shiny puddles with ripples and a few fallen leaves | 20 % | |
 | `bg-robocity-far.jpg` | a friendly futuristic city with rounded silver and pastel towers, soft light trails and a lilac evening sky | full | |
-| `bg-robocity-mid.jpg` | a smooth metal walkway with glowing pastel lines and rounded railings | 40 % | |
-| `bg-robocity-near.jpg` | floor tiles with soft glowing seams and small round lights | 20 % | |
+| `bg-robocity-mid.jpg` | a friendly electric fence of rounded silver panels with glowing pastel lines, and in front of it small round power posts with glowing tops, thick cables and big round connectors | 40 % | |
+| `bg-robocity-near.jpg` | a low row of small round glowing lights, short thick cables and small rounded metal covers standing on a thin flat ground line | 20 % | |
 | `bg-robohome-far.jpg` | the inside of a cozy robot home: round windows, warm lamps, soft sofa, shelves with little gadgets, pastel colors | full | |
 | `bg-robohome-mid.jpg` | a row of cozy furniture: a low cabinet, a plant in a pot, a round rug | 40 % | |
 | `bg-robohome-near.jpg` | a warm wooden floor with a soft round rug edge | 20 % | |
