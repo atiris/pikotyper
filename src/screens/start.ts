@@ -7,7 +7,6 @@ import { LANGS, language, t } from '../i18n/i18n';
 import type { Lang } from '../storage/schema';
 import { button, h, icon } from '../ui/dom';
 import { soundButton } from '../ui/chrome';
-import { importDialog } from './parent';
 import { listenForSuperPassword, superProfile } from '../app/super';
 
 export function startScreen(root: HTMLElement): () => void {
@@ -50,7 +49,7 @@ export function startScreen(root: HTMLElement): () => void {
           await selectProfile(g);
           go('map');
         }, 'btn ghost', 'user'),
-        button(t('start.import'), () => importDialog(() => go('start')), 'btn ghost', 'upload'))),
+        button(t('start.import'), () => void import('./parent').then((m) => m.importDialog(() => go('start'))), 'btn ghost', 'upload'))),
     h('footer', { class: 'privacy-note' },
       h('p', {}, t('privacy.short')),
       h('div', { class: 'row center' },

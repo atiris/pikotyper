@@ -12,7 +12,6 @@ import { levelScreen } from './screens/level';
 import { moveImportScreen, taskImportScreen } from './screens/link-import';
 import { mapScreen } from './screens/map';
 import { newProfileScreen } from './screens/new-profile';
-import { parentScreen } from './screens/parent';
 import { startScreen } from './screens/start';
 import { storyScreen } from './screens/story';
 import { teacherScreen } from './screens/teacher';
@@ -33,7 +32,8 @@ registerScreen('moveImport', moveImportScreen);
 registerScreen('map', needsProfile(mapScreen));
 registerScreen('level', needsProfile(levelScreen));
 registerScreen('story', needsProfile(storyScreen));
-registerScreen('parent', needsProfile((root, params) => void parentScreen(root, params)));
+// The settings screen is the biggest and rarely opened: it loads on first use.
+registerScreen('parent', needsProfile((root, params) => void import('./screens/parent').then((m) => m.parentScreen(root, params))));
 registerScreen('wardrobe', needsProfile(wardrobeScreen));
 registerScreen('friends', needsProfile(friendsScreen));
 registerScreen('break', needsProfile(breakScreen));
