@@ -111,7 +111,7 @@ Chromium without a GPU. "Slow" = CPU 4x, 1.6 Mbit/s, 150 ms. 15 s of typing per 
 | JS heap in a level / DOM nodes | 3.6-3.9 MB / 661 | same |
 | 10 map <-> level round trips | nodes 661 -> 661, heap +0.4 MB | same (no leak: nodes constant, heap within GC noise) |
 | Key handler | 0.4 ms p50 fast, 1.6 ms slow | unchanged; key to next frame 9 ms fast, 55 ms slow (frame bound) |
-| Install cache | 6.6 MB, 266 files | about 6.2 MB |
+| Install cache | 6.6 MB (before the sprite change, est. 7.1) | 6.6 MB, 266 files |
 
 What changed
 - Music: `scripts/assets.mjs` encodes mono 44.1 kHz 60 kbps. Loop point unchanged: duration and
@@ -130,7 +130,7 @@ What changed
 - Specs: `.specify/architecture.md` (weight budget), `.specify/experience/offline.md`.
 
 Measured and left alone
-- Install cache is 6.2 MB (< 10 MB): lazy per-story pictures not needed. Fonts already use
+- Install cache is 6.6 MB (< 10 MB): lazy per-story pictures not needed. Fonts already use
   `font-display: swap` and unicode-range; i18n loads only the current language; words 10 kB.
 - Map and settings: no timers; the only infinite animations are transform-based (compositor) and
   `prefers-reduced-motion` is already honored. Hidden tab: rAF stops and the level pauses.
@@ -141,4 +141,4 @@ Measured and left alone
   `setOffline` (e2e passes, the cache logic is unchanged).
 
 Left out -> BACKLOG: sprites of objects are not preloaded per mode (a first spawn can flash its
-fallback); an update re-downloads the whole 6.2 MB cache.
+fallback); an update re-downloads the whole 6.6 MB cache.

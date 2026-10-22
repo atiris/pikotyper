@@ -9,4 +9,4 @@ Search before adding; an entry is worked only when it is named.
 - [P3] E2E typing helper cannot type accented letters - e2e/helpers.ts typeChar uses keyboard.type, which sends no keydown for `á ú ô`, so a test that reaches diacritic keys stalls
 - [P2] Regenerate flagged background art - six `regenerate:` rows in assets-src/PROMPTS.md (planet-near flat edge, junkyard-near repeat, robocity mid/near busy, workshop mid/near pink outline)
 - [P3] Objects can flash their fallback on first spawn - src/game/runtime.ts prepare() preloads only the three backgrounds; mode sprites load on first draw (declare them per mode)
-- [P3] An update re-downloads the whole install cache - scripts/sw-template.js addAll(CORE) fetches every file again when the version changes (about 6.2 MB)
+- [P3] An update re-downloads the whole install cache - scripts/sw-template.js addAll(CORE) fetches every file again when the version changes (about 6.6 MB)
