@@ -70,7 +70,7 @@ export class RainMode extends Mode {
         if (d.y >= HEAD) {
           d.state = 'splash';
           core.release(tg);
-          this.resolved++;
+          this.spawned--;
           this.wet(d);
         }
       } else {

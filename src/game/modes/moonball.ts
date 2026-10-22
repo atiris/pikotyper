@@ -94,7 +94,7 @@ export class FirefliesMode extends Mode {
         if (f.y >= FLOOR_Y) {
           f.state = 'landed';
           core.release(tg);
-          this.resolved++;
+          this.spawned--;
         }
       } else {
         f.y += (f.state === 'lit' ? 1 : 0) * (FLOOR_Y - f.y) * dt * 3;

@@ -69,7 +69,7 @@ export abstract class ApproachMode extends Mode {
         if (m.x < this.playerX) {
           m.state = 'pass';
           core.release(tg);
-          this.resolved++;
+          this.spawned--;
           this.onPass(m, tg);
         }
       } else this.moveGone(m, dt);

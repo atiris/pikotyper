@@ -94,7 +94,7 @@ export class SlopeMode extends Mode {
       else {
         // Not typed in time: the egg gently rolls around it.
         this.L.core.release(tg);
-        this.resolved++;
+        this.spawned--;
         this.wobble = 1;
         this.hop(0.45);
       }
@@ -195,7 +195,7 @@ export class MoleMode extends SlopeMode {
         m.state = 'hide';
         m.t = 0;
         this.L.core.release(tg);
-        this.resolved++;
+        this.spawned--;
       }
     } else if (m.state === 'hide') {
       if (m.t > 0.9) m.up = Math.max(0, m.up - dt * 3);

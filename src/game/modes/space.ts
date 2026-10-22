@@ -175,16 +175,26 @@ export class AsteroidMode extends SpaceMode {
     this.L.sfx('pop');
     const pieces = this.L.rng.int(3, 4);
     for (let i = 0; i < pieces; i++) {
-      const word = this.L.word(4, 1);
       const a = (i / pieces) * Math.PI * 2;
-      const x = m.x + Math.cos(a) * 60;
-      const piece: Mover = {
-        x, y: m.y + Math.sin(a) * 60, vx: this.speedFor(word, x) * 0.8, vy: Math.sin(a) * 40, rot: 0, vr: this.L.rng.range(-1, 1),
-        age: 0, state: 'come', fade: 0, sprite: 'obj-asteroid-small', size: 95,
-      };
-      this.L.core.add(word, piece);
+      this.addPiece(m.x + Math.cos(a) * 60, m.y + Math.sin(a) * 60, Math.sin(a) * 40);
     }
     this.L.particles.emit(m.x, m.y, 24, 'sparkle', ['#fff6a8', '#ffd1f5', '#a8f0ff'], 260, 10);
+  }
+
+  /** A passed rock does not count: a big one comes again, a piece returns from the right. */
+  protected onPass(m: Mover): void {
+    super.onPass(m);
+    if (m.big) this.bigs--;
+    else this.addPiece(this.L.vw + 100, this.L.rng.range(130, VH * 0.72), 0);
+  }
+
+  private addPiece(x: number, y: number, vy: number): void {
+    const word = this.L.word(4, 1);
+    const piece: Mover = {
+      x, y, vx: this.speedFor(word, x) * 0.8, vy, rot: 0, vr: this.L.rng.range(-1, 1),
+      age: 0, state: 'come', fade: 0, sprite: 'obj-asteroid-small', size: 95,
+    };
+    this.L.core.add(word, piece);
   }
 
   progress(): number {

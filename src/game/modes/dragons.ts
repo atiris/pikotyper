@@ -56,7 +56,7 @@ export class ShieldMode extends Mode {
           // Piko's soft bubble catches the rock: nothing bad happens.
           r.state = 'bounce';
           core.release(tg);
-          this.resolved++;
+          this.spawned--;
           this.bounce(r, true);
         }
       } else {

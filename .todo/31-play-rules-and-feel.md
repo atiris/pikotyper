@@ -6,7 +6,7 @@
 `.specify/experience/session-pacing.md`. No schema change.
 
 ## Steps
-- [ ] 1. **No typing, no progress (all modes, all worlds).** Today the robot on the junkyard
+- [x] 1. **No typing, no progress (all modes, all worlds).** Today the robot on the junkyard
       uncovers itself with no input. Rule: progress advances only through correct typing.
       Time alone, goals, or anything the child did not manage never advance progress. When the
       child types nothing, progress only slows (mode timers/obstacles may keep moving, but the
@@ -40,3 +40,8 @@
 - [ ] 8. Drive the app with the playwright MCP (idle on the junkyard for 30 s, rain level,
       goal text, right-click on sound, click a lock) and report what you saw. Update the specs.
       Build, lint, test.
+
+## Progress notes
+- Step 1: a missed target no longer counts (`spawned--` instead of `resolved++`, so it is replaced);
+  hedgehog re-throws a goal leaf, asteroid mode re-sends a passed rock. Timed free practice
+  (`PracticeMode` seconds) stays: it is a chosen duration, not a story level. Test: `src/game/modes/idle.test.ts`.

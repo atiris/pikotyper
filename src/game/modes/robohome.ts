@@ -184,7 +184,7 @@ export class WelcomeMode extends Mode {
         m.state = 'hide';
         m.t = 0;
         this.L.core.release(tg);
-        this.resolved++;
+        this.spawned--;
       }
     } else if (m.state === 'hide') {
       if (m.t > 0.9) m.up = Math.max(0, m.up - dt * 3);

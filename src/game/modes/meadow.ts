@@ -642,8 +642,11 @@ export class HedgehogMode extends MeadowMode {
     this.L.particles.emit(this.hx, this.hy - 70, 6, 'sparkle', ['#fff6a8', '#ffd25a'], 110, 7);
   }
 
+  /** A goal does not count: the leaf goes back on the pile and is shaken off again. */
   protected cheerGoal(): void {
     this.hop = 0.6;
+    this.pile++;
+    this.sizes.push(1);
   }
 
   protected drawExtras(g: G): void {
