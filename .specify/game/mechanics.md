@@ -12,6 +12,12 @@
 - When two targets pass by untyped in a row, new targets come slower (up to twice the
   time); every three typed in a row bring the pace one step back. This is silent and lasts
   only for the level.
+- Progress comes only from typing. A target that floats by untyped (a goal, a splash) is
+  replaced by a new one; waiting never finishes a level. Timed free practice is the one
+  chosen duration.
+- A goal text appears above the animal that scored. A closed world on the map tells, when
+  clicked, what is still missing: the world before it, or how many letters its story needs.
+- Rain street: Bolt walks toward the sun as the rain thins.
 - Automatic growth counts only levels where the child typed at least 85 % of the targets
   (and typed accurately); a level where many targets floated by unread adds no time.
 - The speedometer (space world; elsewhere a small round rhythm gauge, calm blue to green,
