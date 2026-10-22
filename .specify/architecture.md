@@ -19,6 +19,10 @@
 - Language data (UI texts, word lists) are separate JSON files loaded on demand per
   language, so adding a language does not grow the main bundle.
 - Installable offline PWA (a service worker caches the app after the first visit).
+- Weight budget for weak school devices: music at most 1.4 MB per track (mono, 60 kbps),
+  sprites at most 384 px, the install cache (everything except music) under about 10 MB,
+  the settings screen loaded on first use. A scaled copy of each background tile is cached
+  at the drawn pixel size, and the HUD is written only when a value changes.
 
 ## Why
 - GitHub Pages is free and needs no server, which also guarantees privacy.
