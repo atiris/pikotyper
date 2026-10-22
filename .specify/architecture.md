@@ -4,7 +4,7 @@
 - Static single-page app: HTML + CSS + TypeScript, built by Vite, hosted on GitHub Pages
   at `https://atiris.github.io/pikotyper/` (base path `/pikotyper/`).
 - Deployed by GitHub Actions on every push to `main` (build + unit tests must pass).
-- No backend, no external runtime services, no third-party scripts, no analytics.
+- No backend, no external runtime services, no third-party scripts.
 - Rendering: HTML5 Canvas 2D for game scenes, DOM for menus, overlays and forms. No 3D.
 - Graphics: illustrated sprites, backgrounds and background music are made by the owner in
   Gemini from the prompts in [`../assets-src/PROMPTS.md`](../assets-src/PROMPTS.md). Raw
