@@ -10,7 +10,7 @@ import ffmpeg from 'ffmpeg-static';
 
 const SRC = 'assets-src';
 const OUT = 'public/assets';
-const SPRITE_MAX = 512;
+const SPRITE_MAX = 384;
 const BG_WIDTH = 1920;
 // Parallax layers drawn as close-up strips are placed into a frame of this size.
 const FRAME_W = 1376;
