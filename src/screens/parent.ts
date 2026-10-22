@@ -154,6 +154,17 @@ function check(value: boolean, onChange: (v: boolean) => void): HTMLInputElement
   return c;
 }
 
+let switchIds = 0;
+
+/** A checkbox on the left, its bold title to the right and an optional short line under the title. */
+function switchField(title: string, box: HTMLInputElement, hint?: string): HTMLElement {
+  const id = hint ? `switch-hint-${++switchIds}` : '';
+  if (id) box.setAttribute('aria-describedby', id);
+  return h('div', { class: 'switch-field' },
+    h('label', {}, box, h('span', { class: 'switch-title' }, title)),
+    hint ? h('small', { id }, hint) : null);
+}
+
 function select<T extends string>(value: T, options: [T, string][], onChange: (v: T) => void): HTMLSelectElement {
   const s = h('select', {}, ...options.map(([v, l]) => h('option', { value: v, selected: v === value }, l)));
   s.addEventListener('change', () => onChange(s.value as T));
@@ -161,11 +172,11 @@ function select<T extends string>(value: T, options: [T, string][], onChange: (v
 }
 
 /** Sliders with an "automatic" switch: while automatic, the app moves them and they are read-only. */
-function autoField(ranges: HTMLElement[], auto: boolean, onAuto: (v: boolean) => void): HTMLElement {
+function autoField(ranges: HTMLElement[], auto: boolean, onAuto: (v: boolean) => void, title: string, hint: string): HTMLElement {
   const lock = (on: boolean) => ranges.forEach((r) => r.querySelectorAll('input').forEach((i) => (i.disabled = on)));
   lock(auto);
   return h('span', { class: 'auto-field' }, ...ranges,
-    h('label', { class: 'auto-check' }, check(auto, (v) => { lock(v); onAuto(v); }), t('parent.auto')));
+    switchField(title, check(auto, (v) => { lock(v); onAuto(v); }), hint));
 }
 
 function settingsTab(p: Profile): HTMLElement {
@@ -191,8 +202,7 @@ function settingsTab(p: Profile): HTMLElement {
   paintPiko();
   return h('div', { class: 'settings-grid' },
     h('fieldset', {}, h('legend', {}, t('parent.group.child')),
-      field(t('parent.childName'), name),
-      h('div', { class: 'child-summary' }, piko, summaryRow(p)),
+      h('div', { class: 'child-summary' }, piko, field(t('parent.childName'), name)),
       field(t('parent.companionKind'), kinds, undefined, 'div'),
       field(t('parent.companionName'), pikoName),
       field(t('parent.language'), select<Lang>(p.language, [['sk', 'Slovenčina'], ['en', 'English']], async (v) => { p.language = v; save(); await useLanguage(v); go('parent', { granted: true }); })),
@@ -206,25 +216,25 @@ function settingsTab(p: Profile): HTMLElement {
     h('fieldset', {}, h('legend', {}, t('parent.group.practice')),
       field(t('parent.difficulty'), autoField(
         [range(s.difficulty, 1, 10, 1, (v) => { s.difficulty = v; save(); })],
-        s.autoDifficulty, (v) => { s.autoDifficulty = v; save(); }), t('parent.autoHint'), 'div'),
+        s.autoDifficulty, (v) => { s.autoDifficulty = v; save(); }, t('parent.autoDifficulty'), t('parent.autoDifficultyHint')), t('parent.autoHint'), 'div'),
       field(t('parent.wordLen'), autoField([
         range(s.wordLen[0], 1, 8, 1, (v) => { s.wordLen = [v, Math.max(v, s.wordLen[1])]; save(); }, (v) => t('parent.min', { n: v })),
         range(s.wordLen[1], 2, 12, 1, (v) => { s.wordLen = [Math.min(v, s.wordLen[0]), v]; save(); }, (v) => t('parent.max', { n: v }))],
-        s.autoWordLen, (v) => { s.autoWordLen = v; save(); }), undefined, 'div'),
-      field(t('parent.noDiacritics'), check(s.noDiacritics, (v) => { s.noDiacritics = v; save(); }), t('parent.noDiacriticsHint')),
-      field(t('parent.noTimePressure'), check(s.noTimePressure, (v) => { s.noTimePressure = v; save(); }), t('parent.noTimePressureHint')),
+        s.autoWordLen, (v) => { s.autoWordLen = v; save(); }, t('parent.autoWordLen'), t('parent.autoWordLenHint')), undefined, 'div'),
+      switchField(t('parent.noDiacritics'), check(s.noDiacritics, (v) => { s.noDiacritics = v; save(); }), t('parent.noDiacriticsHint')),
+      switchField(t('parent.noTimePressure'), check(s.noTimePressure, (v) => { s.noTimePressure = v; save(); }), t('parent.noTimePressureHint')),
       field(t('parent.sessionMinutes'), range(s.sessionMinutes, 5, 30, 5, (v) => { s.sessionMinutes = v; save(); }, (v) => t('parent.minutes', { n: v }))),
       field(t('parent.guide'), select(s.guide, [['auto', t('parent.guideAuto')], ['on', t('parent.guideOn')], ['off', t('parent.guideOff')]], (v) => { s.guide = v; save(); })),
-      field(t('parent.guideLocked'), check(s.guideLocked, (v) => { s.guideLocked = v; save(); }))),
+      switchField(t('parent.guideLocked'), check(s.guideLocked, (v) => { s.guideLocked = v; save(); }))),
     h('fieldset', {}, h('legend', {}, t('parent.group.look')),
       field(t('parent.sfx'), range(s.sfxVolume, 0, 1, 0.1, (v) => { s.sfxVolume = v; save(); }, (v) => `${Math.round(v * 100)} %`)),
       field(t('parent.music'), range(s.musicVolume, 0, 1, 0.1, (v) => { s.musicVolume = v; save(); }, (v) => `${Math.round(v * 100)} %`)),
-      field(t('parent.speakTyped'), check(s.speakTyped, (v) => { s.speakTyped = v; save(); }), t('parent.speakTypedHint')),
+      switchField(t('parent.speakTyped'), check(s.speakTyped, (v) => { s.speakTyped = v; save(); }), t('parent.speakTypedHint')),
       field(t('parent.font'), select<FontChoice>(s.font, [['lexend', 'Lexend'], ['atkinson', 'Atkinson Hyperlegible'], ['opendyslexic', 'OpenDyslexic']], (v) => { s.font = v; save(); })),
-      field(t('parent.largeText'), check(s.largeText, (v) => { s.largeText = v; save(); })),
-      field(t('parent.reduceMotion'), check(s.reduceMotion, (v) => { s.reduceMotion = v; save(); })),
-      field(t('parent.highContrast'), check(s.highContrast, (v) => { s.highContrast = v; save(); })),
-      field(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint'))),
+      switchField(t('parent.largeText'), check(s.largeText, (v) => { s.largeText = v; save(); })),
+      switchField(t('parent.reduceMotion'), check(s.reduceMotion, (v) => { s.reduceMotion = v; save(); })),
+      switchField(t('parent.highContrast'), check(s.highContrast, (v) => { s.highContrast = v; save(); })),
+      switchField(t('parent.autoFullscreen'), check(s.autoFullscreen, (v) => { s.autoFullscreen = v; save(); }), t('parent.autoFullscreenHint'))),
     lockGroup());
 }
 
@@ -417,7 +427,7 @@ function surprisesTab(p: Profile): HTMLElement {
       field(t('surprises.q'), q),
       field(t('surprises.a'), a),
       h('div', { class: 'row' }, field(t('surprises.whenLabel'), trigger), levelField, nField,
-        h('label', { class: 'auto-check' }, repeat, t('surprises.repeat'))),
+        switchField(t('surprises.repeat'), repeat)),
       msg,
       h('div', { class: 'row' }, save, cancel)));
 }
@@ -574,6 +584,7 @@ function dashboardTab(p: Profile): HTMLElement {
   const levelsDone = LEVELS.filter((l) => p.progress.levels[l.id]).length;
   const totalChars = sessions.reduce((a, s) => a + s.chars, 0);
   return h('div', { class: 'dashboard' },
+    h('div', { class: 'child-summary' }, pikoElement(p.companion, 'happy', 96), summaryRow(p)),
     h('div', { class: 'cards' },
       h('div', { class: 'stat' }, h('b', {}, String(levelsDone)), h('span', {}, t('parent.levelsDone', { total: LEVELS.length }))),
       h('div', { class: 'stat' }, h('b', {}, String(p.progress.unlockedKeys.length)), h('span', {}, t('parent.keysUnlocked'))),

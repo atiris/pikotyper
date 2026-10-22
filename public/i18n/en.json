@@ -1012,8 +1012,11 @@
     "deleteConfirm": "Really delete the profile {name} with all its progress?",
     "checkOk": "Yes, open",
     "deleteOk": "Yes, delete",
-    "auto": "Automatic (grows with the child)",
-    "autoHint": "In automatic mode, difficulty and word length take turns going up after a few minutes of accurate typing; each step earns the child a medal. The start is slow: a short word takes about 10 seconds to reach the companion and at most two are on screen. If the child still cannot keep up, turn on No time pressure.",
+    "autoDifficulty": "Automatic difficulty",
+    "autoDifficultyHint": "Grows with the child after a few minutes of accurate typing. Each step is a medal.",
+    "autoWordLen": "Automatic word length",
+    "autoWordLenHint": "Grows with the child, together with difficulty.",
+    "autoHint": "The start is slow: a short word takes about 10 seconds to reach the companion and at most two are on screen. If the child still cannot keep up, turn on No time pressure.",
     "lock": {
       "ask": "The settings are locked with a password. Please enter it.",
       "password": "Password",

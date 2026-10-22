@@ -637,13 +637,16 @@ fieldset { border: 2px solid var(--line); border-radius: 18px; padding: 0.8rem 1
 legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .field { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.6rem; }
 .field small { color: var(--ink-soft); }
-.field input[type='checkbox'] { width: 26px; height: 26px; accent-color: var(--green); }
+.switch-field { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 0.6rem; align-items: center; margin-bottom: 0.6rem; }
+.switch-field label { display: contents; cursor: pointer; }
+.switch-field input { width: 26px; height: 26px; margin: 0; accent-color: var(--green); cursor: pointer; }
+.switch-title { font-weight: 600; }
+.switch-field small { grid-column: 2; color: var(--ink-soft); font-size: 0.9rem; }
 .range { display: flex; gap: 0.6rem; align-items: center; }
 .range input { flex: 1; accent-color: var(--brand); min-height: 36px; }
 .range output { min-width: 4.5em; font-weight: 600; }
 .range input:disabled + output { color: var(--ink-soft); }
 .auto-field { display: flex; flex-direction: column; gap: 0.2rem; }
-.auto-check { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; cursor: pointer; }
 .own-tab textarea, .task-tab textarea { width: 100%; resize: vertical; }
 .own-list { padding-left: 1.2rem; margin: 0.8rem 0 0; display: flex; flex-direction: column; gap: 0.5rem; }
 .own-list li { display: flex; gap: 0.5rem; align-items: flex-start; justify-content: space-between; }
@@ -653,7 +656,7 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .surprises-tab textarea { width: 100%; resize: vertical; }
 .surprises-tab [hidden] { display: none; }
 .surprises-tab .row { align-items: flex-end; flex-wrap: wrap; gap: 0.6rem 1rem; }
-.surprises-tab .auto-check { min-height: 44px; margin-bottom: 0.6rem; }
+.surprises-tab .switch-field { min-height: 44px; }
 .surprises-tab input[type='number'] { width: 7em; }
 .surprise-table { overflow-x: auto; margin: 0.6rem 0 1rem; }
 .surprise-table table { width: 100%; border-collapse: collapse; }
@@ -687,6 +690,7 @@ legend { font-weight: 700; padding: 0 0.4rem; color: var(--brand-dark); }
 .cell-stars .star-fallback { font-size: 1.5rem; width: 1.7rem; text-align: center; }
 .child-summary { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; margin: 0.6rem 0; }
 .child-piko { flex: none; }
+.child-summary > .field { flex: 1 1 8rem; margin-bottom: 0; }
 .switch-btn { height: 48px; min-height: 48px; }
 .switch-label { display: inline-flex; align-items: center; gap: 0.4rem; }
 .switch-list { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; max-height: 60vh; overflow-y: auto; padding: 6px; }

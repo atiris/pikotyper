@@ -35,7 +35,8 @@ One set of rules for where things sit and how they behave, so every screen feels
    padding and heading style; the page background is the world's sky gradient.
 10. **Switches.** A checkbox is always on the left; to its right the title in bold, and under
    the title a short explanation in normal, smaller text. A title is a name ("Automatická
-   náročnosť"), not a sentence with a bracket.
+   náročnosť"), not a sentence with a bracket. The same layout holds for every switch in
+   the parent area, including the surprises form.
 
 ## Why
 - A child learns where "sound" or "close" is once, and then it is there everywhere; buttons

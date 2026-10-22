@@ -15,10 +15,13 @@
 - Difficulty and word length each have an **automatic** mode (on by default): after a few
   minutes of accurate play (90 %+) one of them goes up by one step, taking turns, up to a
   ceiling (difficulty 8, words of 9 letters); each step gives the child a numbered medal.
-  A parent who sets the value by hand turns its automatic mode off.
-- The **child** section shows the name, the companion's picture with the same icon and
-  number summary as the child's "My progress", then the companion picked from a picture
-  list and its name.
+  A parent who sets the value by hand turns its automatic mode off. Each automatic mode is
+  its own switch with a title ("Automatic difficulty", "Automatic word length") and one short
+  line; the note about the slow start sits under the difficulty slider.
+- The **child** section shows the companion's picture (with its accessories) beside the
+  child's name, then the companion picked from a picture list and its name.
+- The **progress** tab starts with the same picture and the icon and number summary of the
+  child's "My progress", above the cards and charts.
 - A button by "Back" (the child's picture and name) switches the parent area to another
   profile from a list of small profile cards, keeping the open tab and without asking for
   the password again; with one profile it is hidden. The super player is never in the list.

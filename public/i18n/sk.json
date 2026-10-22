@@ -1012,8 +1012,11 @@
     "deleteConfirm": "Naozaj vymazať profil {name} aj so všetkými pokrokmi?",
     "checkOk": "Áno, otvoriť",
     "deleteOk": "Áno, vymazať",
-    "auto": "Automaticky (rastie s pokrokom dieťaťa)",
-    "autoHint": "Automaticky sa náročnosť a dĺžka slov striedavo zvyšujú po niekoľkých minútach presného písania; každý krok dieťa odmení medailou. Začiatok je pomalý: krátke slovo putuje ku kamarátovi asi 10 sekúnd a na obrazovke sú najviac dve. Ak dieťa ani tak nestíha, zapnite Bez časového tlaku.",
+    "autoDifficulty": "Automatická náročnosť",
+    "autoDifficultyHint": "Rastie s pokrokom dieťaťa po niekoľkých minútach presného písania. Každý krok je medaila.",
+    "autoWordLen": "Automatická dĺžka slov",
+    "autoWordLenHint": "Rastie s pokrokom dieťaťa, spolu s náročnosťou.",
+    "autoHint": "Začiatok je pomalý: krátke slovo putuje ku kamarátovi asi 10 sekúnd a na obrazovke sú najviac dve. Ak dieťa ani tak nestíha, zapnite Bez časového tlaku.",
     "lock": {
       "ask": "Nastavenia sú zamknuté heslom. Zadajte ho, prosím.",
       "password": "Heslo",

@@ -30,9 +30,22 @@
 - Texts in sk and en; the keys keep the same set in both (`i18n.test.ts`).
 
 ## Steps
-- [ ] `switchField` helper and CSS; convert every checkbox in `parent.ts` (settings, surprises,
+- [x] `switchField` helper and CSS; convert every checkbox in `parent.ts` (settings, surprises,
       own words, task form).
-- [ ] Split the automatic switch into two titled switches with their short lines; trim `autoHint`.
-- [ ] Move the summary row to Pokroky, keep the Piko picture in Dieťa and add it to Pokroky.
-- [ ] Update `.specify/profiles/parent-controls.md` and `ui-rules.md`.
-- [ ] build, unit tests, e2e parent; check the settings tab at 1024 and at phone width in the browser.
+- [x] Split the automatic switch into two titled switches with their short lines; trim `autoHint`.
+- [x] Move the summary row to Pokroky, keep the Piko picture in Dieťa and add it to Pokroky.
+- [x] Update `.specify/profiles/parent-controls.md` and `ui-rules.md`.
+- [x] build, unit tests, e2e parent; check the settings tab at 1024 and at phone width in the browser.
+
+## Progress
+- `switchField(title, box, hint?)` takes the checkbox from `check()` instead of
+  `(checked, onChange)`, so the surprises form can keep its `repeat` input to read and reset.
+- The hint is tied to the checkbox with `aria-describedby`; the accessible name is the title alone.
+- Own words and the task form have no checkboxes; the settings tab and the surprises form had all ten.
+- Rule 10 was already in `ui-rules.md`; it now also says it covers every switch in the parent area.
+- Checked in the browser at 1024 and 390 px: no horizontal overflow, no console errors.
+
+## Done - 2026-10-22
+Shipped: one switch layout for all parent-area checkboxes, two titled automatic switches with a
+shorter pace note, the Piko picture beside the child's name, the picture and progress summary at
+the top of Pokroky. Nothing was left out.
