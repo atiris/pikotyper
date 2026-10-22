@@ -18,7 +18,10 @@ function serviceWorker(): Plugin {
     apply: 'build',
     generateBundle(_options, bundle) {
       const files = ['./', ...Object.keys(bundle), ...publicFiles('public').filter((f) => !f.endsWith('.mp3') && !f.endsWith('.txt'))];
-      const version = createHash('sha256').update(files.join('\n')).digest('hex').slice(0, 12);
+      // Bundle names carry their content hash; public files keep their names, so their bytes go into the version.
+      const hash = createHash('sha256').update(files.join('\n'));
+      for (const f of publicFiles('public')) hash.update(readFileSync(join('public', f)));
+      const version = hash.digest('hex').slice(0, 12);
       const source = readFileSync('scripts/sw-template.js', 'utf8')
         .replace('__VERSION__', version)
         .replace('__FILES__', JSON.stringify(files));
