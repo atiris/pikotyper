@@ -58,7 +58,7 @@ export function startScreen(root: HTMLElement): () => void {
       h('h2', {}, t('start.whoPlays')),
       profiles,
       h('div', { class: 'row center' },
-        newAsCard ? null : button(t('start.newProfile'), () => go('newProfile'), 'btn', 'plus'),
+        newAsCard ? null : button(t('start.newProfile'), () => go('newProfile'), 'btn primary', 'plus'),
         button(t('start.guest'), async () => {
           const g = app.store.startGuest(language());
           await selectProfile(g);
