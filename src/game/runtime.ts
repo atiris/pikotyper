@@ -27,6 +27,7 @@ import { WORLDS, storyOf } from './levels';
 import type { Mode } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS, isHardMoment } from './paw';
 import { createMode } from './modes';
+import { FreeTypeMode } from './modes/freetype';
 import { PressureValve, perChar, sayTime } from './pace';
 import { type LevelResult, completeLevel } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
@@ -125,6 +126,8 @@ export class LevelRuntime {
   readonly rng = new Rng();
   readonly stage: Stage;
   readonly mode: Mode;
+  /** The mode of free typing ("just typing"): it takes every key itself; null in every other level. */
+  readonly free: FreeTypeMode | null;
   readonly words: WordSource;
   /** The parent's surprise rule asked on the get-ready card of this run, when one waits. */
   readonly surprise: Surprise | null;
@@ -158,6 +161,9 @@ export class LevelRuntime {
   /** Seconds until the gauge's spoken label may change again. */
   private gaugeLabelIn = 0;
   private pauseEl: HTMLElement | null = null;
+  /** Free typing: the text shown above Piko, for screen readers. */
+  private saidEl: HTMLElement | null = null;
+  private breakSaid = false;
   private paused = false;
   /** Play began (the preparation cards are done). */
   started = false;
@@ -223,19 +229,21 @@ export class LevelRuntime {
 
     // DOM: HUD, stage, Piko, bubble, guide.
     this.el = h('div', { class: `level-screen world-${WORLDS[def.world]}` });
-    this.robot = def.kind !== 'practice' && storyOf(def.world).id === 'robot' ? robotFor(def.id === 'rescue' ? WORLDS.length - 1 : def.world) : null;
+    const story = def.kind !== 'practice' && def.kind !== 'freetype';
+    this.robot = story && storyOf(def.world).id === 'robot' ? robotFor(def.id === 'rescue' ? WORLDS.length - 1 : def.world) : null;
     if (this.robot) this.el.dataset.bolt = this.robot.look;
-    this.fairy = def.kind !== 'practice' && storyOf(def.world).id === 'fairy';
+    this.fairy = story && storyOf(def.world).id === 'fairy';
     if (this.fairy) this.el.dataset.fairy = 'melody';
     this.progressFill = h('div', { class: 'progress-fill' });
-    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.id === 'rescue' ? t('level.rescue') : worldName(def);
+    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.kind === 'freetype' ? t('level.freeType') : def.id === 'rescue' ? t('level.rescue') : worldName(def);
     const guideBtn = roundButton('control', 'keyboard', t('level.guide'), () => this.toggleGuide());
     if (p.settings.guideLocked) guideBtn.disabled = true;
     const helpBtn = roundButton('control', 'help', t('level.help'), () => this.openHelpCard());
     this.readBtn = roundButton('control', 'read', t('level.read'), () => this.toggleRead());
     this.paintRead();
     this.offVoices = speech.onVoices(() => this.paintRead());
-    const pauseBtn = roundButton('control', 'pause', t('level.pause'), () => this.pause());
+    // Free typing has nothing to pause: its X leaves.
+    const pauseBtn = def.kind === 'freetype' ? roundButton('control', 'close', t('level.leave'), () => this.exit()) : roundButton('control', 'pause', t('level.pause'), () => this.pause());
     if (this.pawsAllowed) {
       this.pawBtn = roundButton('paw', 'paw', t('paw.title', { n: PAW_STREAK, words: PAW_WORDS, piko: p.companion.name }), () => this.startPaws());
       this.pawBtn.classList.add('paw-btn');
@@ -246,8 +254,7 @@ export class LevelRuntime {
       this.pawBtn,
       def.kind === 'practice' || def.index < 0 ? null : placeRing(def),
       h('b', { class: 'hud-title' }, title),
-      h('div', { class: 'progress', title: t('level.progress') }, this.progressFill),
-      this.gauge.el,
+      ...(def.kind === 'freetype' ? [] : [h('div', { class: 'progress', title: t('level.progress') }, this.progressFill), this.gauge.el]),
       h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
       guideBtn, this.readBtn, ...globalButtons(helpBtn));
     const stageWrap = h('div', { class: 'stage-wrap' });
@@ -272,6 +279,11 @@ export class LevelRuntime {
     this.onStageClick = this.onStageClick.bind(this);
     this.stage.canvas.addEventListener('pointerdown', this.onStageClick);
     this.mode = createMode(def, this);
+    this.free = this.mode instanceof FreeTypeMode ? this.mode : null;
+    if (this.free) {
+      this.saidEl = h('p', { class: 'sr-only', role: 'status', 'aria-live': 'polite' });
+      stageWrap.append(this.saidEl);
+    }
     this.piko.classList.toggle('hidden', this.pikoOnStage);
     this.loop = new Loop((dt) => this.update(dt), () => this.render());
     this.loop.start();
@@ -284,11 +296,11 @@ export class LevelRuntime {
 
   /** Story levels and rescue missions; free practice and drills count every key, and the main gate's code is the child's own. */
   get pawsAllowed(): boolean {
-    return this.def.kind !== 'practice' && this.def.kind !== 'gate' && !this.opts.keys;
+    return this.def.kind !== 'practice' && this.def.kind !== 'freetype' && this.def.kind !== 'gate' && !this.opts.keys;
   }
 
   get pikoOnStage(): boolean {
-    return ['swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection'].includes(this.def.kind);
+    return ['freetype', 'swamp', 'signs', 'boulder', 'doors', 'gate', 'rooms', 'buds', 'flower', 'owl', 'lilies', 'reflection'].includes(this.def.kind);
   }
 
   /** Preparation: assets, new keys, the get-ready card with the tip and its password, then play. */
@@ -297,6 +309,7 @@ export class LevelRuntime {
     await preload([`bg-${this.mode.world}-far`, `bg-${this.mode.world}-mid`, `bg-${this.mode.world}-near`]);
     if (this.disposed) return;
     audio.music(this.def.kind === 'practice' ? app.menuTrack : this.mode.world);
+    if (this.free) return this.begin();
     const host = this.el.querySelector<HTMLElement>('.stage-wrap')!;
     let tip: string | undefined;
     if (!app.tipShown && !this.opts.keys) {
@@ -322,6 +335,11 @@ export class LevelRuntime {
     const intro = this.mode.intro();
     if (intro) await showCard(host, h('p', {}, intro), { button: t('common.ok'), cls: 'mode-intro' });
     if (this.disposed) return;
+    this.begin();
+  }
+
+  /** Play starts: the mode, the friend's first line, the keys. */
+  private begin(): void {
     this.mode.start();
     this.started = true;
     if (this.fairy) this.say(pickLine('fairy.start'), 3);
@@ -335,10 +353,10 @@ export class LevelRuntime {
     return {
       onChar: (c) => this.onChar(c),
       onDead: () => { this.deadPending = true; this.updateGuide(); },
-      onEscape: () => (this.paused ? this.resume() : this.pause()),
+      onEscape: () => (this.paused ? this.resume() : this.free ? this.exit() : this.pause()),
       onRaw: (code, key, shift) => this.onRaw(code, key, shift),
-      onEnter: () => this.startPaws(),
-      onBackspace: () => this.togglePawAuto(),
+      onEnter: () => (this.free ? this.freeSend() : this.startPaws()),
+      onBackspace: () => (this.free ? this.freeErase() : this.togglePawAuto()),
     };
   }
 
@@ -425,6 +443,7 @@ export class LevelRuntime {
   }
 
   private onChar(c: TypedChar): void {
+    if (this.free) return this.freeChar(c, this.free);
     if (!this.started || this.paused || this.finished || this.pawWords) return;
     // A space between targets is a habit, not a mistake.
     if (c.ch === SPACE && !this.core.locked) return;
@@ -470,6 +489,49 @@ export class LevelRuntime {
       }
     }
     this.updateGuide();
+  }
+
+  // ---- free typing ----------------------------------------------------------------
+
+  /** Keys reach free typing only while it plays and no dialog (the place picker) is open. */
+  private get freeOpen(): boolean {
+    return this.started && !this.paused && !document.querySelector('.modal-back');
+  }
+
+  /**
+   * Every key of the layout counts as a correct press, so free typing never lowers accuracy;
+   * keys the layout does not type are ignored.
+   */
+  private freeChar(c: TypedChar, mode: FreeTypeMode): void {
+    if (!this.freeOpen || !stepsFor(layout(), c.ch).length) return;
+    this.deadPending = false;
+    const since = Math.max(this.lastKey, this.readySince);
+    const rt = since ? c.time - since : 1000;
+    this.lastKey = c.time;
+    recordPress(app.profile!, c.ch, c.ch, rt);
+    this.chars++;
+    this.ema = this.ema * 0.85 + (1 / Math.min(3, Math.max(0.12, rt / 1000))) * 0.15;
+    this.sfx('key');
+    mode.key(c.ch);
+    this.updateGuide();
+  }
+
+  private freeErase(): void {
+    if (this.freeOpen) this.free!.erase();
+  }
+
+  /** Enter shows the collected text at once; a focused button keeps its Enter while a dialog is open. */
+  private freeSend(): boolean {
+    if (!this.freeOpen) return false;
+    this.free!.send();
+    return true;
+  }
+
+  /** Free typing: the text shown is said when reading aloud is on and the parent allows typed words to be read. */
+  speakTyped(text: string): void {
+    if (this.saidEl) this.saidEl.textContent = text;
+    const p = app.profile!;
+    if (this.reading && p.settings.speakTyped) speech.say(text, p.language);
   }
 
   /** Once per level: a capital typed with the Shift of its own hand gets a short tip. */
@@ -545,7 +607,7 @@ export class LevelRuntime {
   /** The button shows only when the browser has a voice of the profile's language; in a dictation the voice is the task. */
   private paintRead(): void {
     const p = app.profile!;
-    this.readBtn.hidden = this.dictating || !speech.available(p.language);
+    this.readBtn.hidden = this.dictating || !speech.available(p.language) || (this.def.kind === 'freetype' && !p.settings.speakTyped);
     this.readBtn.setAttribute('aria-pressed', String(p.settings.readAloud));
   }
 
@@ -864,6 +926,11 @@ export class LevelRuntime {
     this.trackPace();
     if (this.pawsAllowed) this.updatePaws(dt);
     this.readFocus();
+    // Free typing has no end screen: Piko says himself when a break is due.
+    if (this.free && !this.breakSaid && app.sessionSeconds >= app.profile!.settings.sessionMinutes * 60) {
+      this.breakSaid = true;
+      this.say(pickLine('piko.break'), 6);
+    }
     // A line hidden behind a target waits for a free spot instead of running out.
     if (this.bubbleTimer > 0 && !this.bubble.classList.contains('covered') && (this.bubbleTimer -= dt) <= 0) this.hideBubble();
     if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) renderPikoInto(this.piko, app.profile!.companion, 'idle');

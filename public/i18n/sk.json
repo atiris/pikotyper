@@ -79,6 +79,7 @@
       "start": "Začať"
     },
     "ownText": "Môj text",
+    "freeType": "Len chcem písať",
     "hello": "Ahoj, {name}!",
     "continue": "Pokračovať",
     "practice": "Vlastné cvičenie",
@@ -102,6 +103,7 @@
   },
   "level": {
     "ownText": "Môj text",
+    "freeType": "Len chcem písať",
     "read": "Čítať nahlas",
     "titleWords": "{name} · úroveň {level}",
     "place": "Úroveň {n} z {total} v tomto svete",
@@ -125,6 +127,7 @@
     "slower": "Pomalšie",
     "slowerSaid": "Dobre, pôjdeme pomalšie.",
     "toMap": "Mapa",
+    "leave": "Späť na mapu",
     "progress": "Postup",
     "rhythm": "Rytmus: {n} písmen za minútu",
     "speed": "Rýchlosť",
@@ -190,6 +193,11 @@
     "dictation": "Diktát",
     "memory": "Zapamätaj si",
     "start": "Začať"
+  },
+  "freeType": {
+    "hint": "Píš, čo chceš. Keď prestaneš, ukážem to.",
+    "place": "Zmeniť miesto",
+    "pick": "Kde dnes budeme písať?"
   },
   "touch": {
     "title": "Potrebuješ klávesnicu",
@@ -961,6 +969,8 @@
     "guideLocked": "Dieťa nemôže nápovedu skryť ani zobraziť",
     "sfx": "Zvukové efekty",
     "music": "Hudba",
+    "speakTyped": "Čítať napísané slová",
+    "speakTypedHint": "Pri „Len chcem písať“ počítač nahlas prečíta, čo dieťa napísalo (keď je zapnuté čítanie nahlas). Číta sa iba v tomto prehliadači, nič sa neukladá ani neposiela. Zoznam zakázaných slov nemáme: nikdy nie je úplný a blokuje aj nevinné slová. Ak nechcete, aby sa čítalo, vypnite to tu.",
     "font": "Písmo",
     "largeText": "Veľké písmo",
     "reduceMotion": "Menej pohybu",
@@ -1199,6 +1209,7 @@
       "Pokračovať spustí ďalšiu úroveň príbehu.",
       "Vlastné cvičenie: krátke cvičenie na klávesy, ktoré si vyberieš.",
       "Môj text: keď ti rodič pridá vlastný text, napíšeš ho celý po poradí.",
+      "Len chcem písať: píš, čo chceš, Piko sa prechádza po svete, ktorý si vyberieš, a ukáže, čo si napísal.",
       "Kamarát a šatník: vyber si kamaráta a obleč ho do vecí, ktoré si získal.",
       "Záchranné misie a Malí priatelia: objavia sa po prvom dokončenom príbehu.",
       "Úloha na dnes: keď ti učiteľ pošle úlohu, nájdeš ju na karte. Po splnení ju odovzdáš."

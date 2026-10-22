@@ -30,7 +30,6 @@
   lesson path, so a child who knows it all plays everything. Keys come in groups, so a
   count between two groups (4 after `f j` and space) waits for the whole next group. All
   unlocked keys count (space, punctuation and Shifts too);
-  keys count (space, punctuation and Shifts too);
   with the parent's own key choice, its keys count. A level reached (the one before has its
   star) but still short of keys shows a key on the map; tapping it, Piko says how many
   letters are missing and offers own practice. "Continue" skips such levels: it replays
@@ -48,6 +47,9 @@
   the way to type: Copy (default), Dictation (only with a voice for the language) and
   Remember it ([mechanics](../game/mechanics.md)). Nothing is stored: the picker opens
   with the active keys and Copy each time.
+- Just typing ([free typing](../game/free-typing.md)) has no key choice: every key of the
+  layout may be typed and each one counts as a correct press in the statistics, like any
+  play; it has no end, so new keys still open only at the end of a level or practice.
 
 ## Why
 - Own practice is for practising exactly what the child (or parent) wants: the slider

@@ -2,7 +2,7 @@ import { app, go, pickLine, saveProfile } from '../app/app';
 import { starRow } from '../ui/chrome';
 import { pikoElement } from '../gfx/piko';
 import { t, tList } from '../i18n/i18n';
-import { LEVELS, type LevelDef, type StoryDef, WORLDS, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
+import { LEVELS, type LevelDef, type StoryDef, WORLDS, freeTypeLevel, isWorldUnlocked, levelById, practiceLevel, rescueLevel, storyOf } from '../game/levels';
 import type { LevelResult } from '../game/progress';
 import type { Style } from '../game/typing';
 import { WORLD_REWARDS } from '../game/rewards';
@@ -17,7 +17,9 @@ import { type Child, button, h } from '../ui/dom';
 import { keyLabel } from '../ui/keyboard-guide';
 import { badge } from '../ui/badge';
 import { medal } from '../ui/medal';
+import { roundButton } from '../ui/hud';
 import { playLevel } from './map';
+import { openPlacePicker, openWorlds } from './free-type';
 import { openHelp } from './help';
 import { openStats } from './stats';
 import { handInDialog, minutesLeft, startTask } from './task';
@@ -35,12 +37,15 @@ interface LevelParams {
   task?: string;
   /** Free practice: copy typing, dictation or memory, chosen in the key picker. */
   style?: Style;
+  /** Just typing: the world index chosen in the place picker. */
+  world?: number;
 }
 
 export function levelScreen(root: HTMLElement, params: LevelParams): () => void {
   const p = app.profile!;
   let def: LevelDef;
   if (params.id === 'practice') def = practiceLevel(params.seconds ?? null, params.text ? ownTextPhrases(p) : undefined);
+  else if (params.id === 'freetype') def = freeTypeLevel(params.world != null && isWorldUnlocked(p, params.world) ? params.world : 0);
   else if (params.id === 'rescue') def = rescueLevel(p, p.progress.friends.length * 7 + Math.floor(Math.random() * 5));
   else def = levelById(params.id) ?? LEVELS[0];
   const task = p.tasks.find((x) => x.id === params.task && !x.doneAt) ?? null;
@@ -64,6 +69,9 @@ export function levelScreen(root: HTMLElement, params: LevelParams): () => void 
       showResults(root, def, result, params, rt.surprise, task);
     },
   });
+  if (def.kind === 'freetype' && openWorlds(p).length > 1) {
+    root.querySelector('.hud-title')!.after(roundButton('control', 'map', t('freeType.place'), () => openPlacePicker(def.world)));
+  }
   if (def.kind === 'practice' && !params.seconds) {
     // Untimed practice ends when the child wants.
     root.querySelector('.hud')!.append(button(t('practice.finish'), () => rt.endPractice(), 'btn small'));

@@ -16,7 +16,7 @@ import {
 export const STORE_KEY = 'pikotyper:v1';
 const GUEST_KEY = 'pikotyper:guest';
 
-export const STORE_VERSION = 12;
+export const STORE_VERSION = 13;
 
 /** Migrations from older stored shapes, keyed by the version they upgrade from. */
 const migrations: Record<number, (data: any) => any> = {
@@ -43,7 +43,14 @@ const migrations: Record<number, (data: any) => any> = {
   10: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV10toV11) : data.profiles }),
   // v12: the finished levels and earned stars counters start from what the levels already hold.
   11: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV11toV12) : data.profiles }),
+  // v13: "just typing" may read the child's typed words aloud; on, reading still needs `readAloud`.
+  12: (data) => ({ ...data, profiles: Array.isArray(data.profiles) ? data.profiles.map(profileV12toV13) : data.profiles }),
 };
+
+function profileV12toV13(p: any): any {
+  if (!p || typeof p !== 'object' || !p.settings) return p;
+  return { ...p, settings: { ...p.settings, speakTyped: true } };
+}
 
 /** Levels and stars played before the counters existed count as finished and earned. */
 function profileV11toV12(p: any): any {

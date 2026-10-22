@@ -219,6 +219,7 @@ function settingsTab(p: Profile): HTMLElement {
     h('fieldset', {}, h('legend', {}, t('parent.group.look')),
       field(t('parent.sfx'), range(s.sfxVolume, 0, 1, 0.1, (v) => { s.sfxVolume = v; save(); }, (v) => `${Math.round(v * 100)} %`)),
       field(t('parent.music'), range(s.musicVolume, 0, 1, 0.1, (v) => { s.musicVolume = v; save(); }, (v) => `${Math.round(v * 100)} %`)),
+      field(t('parent.speakTyped'), check(s.speakTyped, (v) => { s.speakTyped = v; save(); }), t('parent.speakTypedHint')),
       field(t('parent.font'), select<FontChoice>(s.font, [['lexend', 'Lexend'], ['atkinson', 'Atkinson Hyperlegible'], ['opendyslexic', 'OpenDyslexic']], (v) => { s.font = v; save(); })),
       field(t('parent.largeText'), check(s.largeText, (v) => { s.largeText = v; save(); })),
       field(t('parent.reduceMotion'), check(s.reduceMotion, (v) => { s.reduceMotion = v; save(); })),

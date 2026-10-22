@@ -79,6 +79,7 @@
       "start": "Start"
     },
     "ownText": "My text",
+    "freeType": "Just typing",
     "hello": "Hi, {name}!",
     "continue": "Continue",
     "practice": "Own practice",
@@ -102,6 +103,7 @@
   },
   "level": {
     "ownText": "My text",
+    "freeType": "Just typing",
     "read": "Read aloud",
     "titleWords": "{name} · level {level}",
     "place": "Level {n} of {total} in this world",
@@ -125,6 +127,7 @@
     "slower": "Slower",
     "slowerSaid": "Okay, we will go slower.",
     "toMap": "Map",
+    "leave": "Back to the map",
     "progress": "Progress",
     "rhythm": "Rhythm: {n} letters per minute",
     "speed": "Speed",
@@ -190,6 +193,11 @@
     "dictation": "Dictation",
     "memory": "Remember it",
     "start": "Start"
+  },
+  "freeType": {
+    "hint": "Type anything. When you stop, I will show it.",
+    "place": "Change the place",
+    "pick": "Where shall we type today?"
   },
   "touch": {
     "title": "A keyboard is needed",
@@ -961,6 +969,8 @@
     "guideLocked": "The child cannot hide or show the guide",
     "sfx": "Sound effects",
     "music": "Music",
+    "speakTyped": "Read typed words aloud",
+    "speakTypedHint": "In “Just typing” the computer reads aloud what the child typed (when reading aloud is on). It is read only in this browser; nothing is stored or sent. There is no list of forbidden words: it is never complete and blocks innocent words too. Turn this off if you do not want it read.",
     "font": "Font",
     "largeText": "Large text",
     "reduceMotion": "Reduce motion",
@@ -1199,6 +1209,7 @@
       "Continue starts the next level of the story.",
       "Own practice: a short exercise on the keys you pick.",
       "My text: when a parent adds their own text, you type all of it in order.",
+      "Just typing: type anything, Piko walks through a world you choose and shows what you typed.",
       "Buddy and wardrobe: pick your buddy and dress it in the things you have earned.",
       "Rescue missions and Little friends: they appear after you finish your first story.",
       "Today's task: when your teacher sends a task, you find it on the card. When it is done, you hand it in."

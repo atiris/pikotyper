@@ -24,7 +24,8 @@
   the password again; with one profile it is hidden. The super player is never in the list.
 - Settings per profile: child name, companion name and kind, keyboard layout, active keys (pick by hand, with a punctuation row for the shifted `? ! :`, or "automatic"), word length range,
   difficulty 1-10, words without diacritics, no time pressure, session length, guide
-  visibility, sound and music volume, start in fullscreen. The help text says the start
+  visibility, sound and music volume, reading typed words aloud in "Just typing"
+  ([free typing](../game/free-typing.md)), start in fullscreen. The help text says the start
   is slow and points to "no time pressure" for a child who still cannot keep up.
 - An **own content** tab collects what the parent writes for the child:
   - own encouraging messages, mixed into the companion's lines;

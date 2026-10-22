@@ -6,6 +6,7 @@ import { BirdsMode, OwlMode } from './modes/forestpath';
 import { BudsMode, FlowerMode } from './modes/garden';
 import { JunkMode, KnotMode } from './modes/junkyard';
 import { LiliesMode, ReflectionMode } from './modes/lilylake';
+import { FreeTypeMode } from './modes/freetype';
 import { HedgehogMode, MeadowMode } from './modes/meadow';
 import { FirefliesMode, LastSongMode } from './modes/moonball';
 import { NotesMode, TreeSongMode } from './modes/musictree';
@@ -52,5 +53,6 @@ export function createMode(def: LevelDef & { seconds?: number | null }, L: Level
     case 'fireflies': return new FirefliesMode(L);
     case 'lastsong': return new LastSongMode(L);
     case 'practice': return new PracticeMode(L, def.seconds ?? null, def.phrases ?? null);
+    case 'freetype': return new FreeTypeMode(L);
   }
 }

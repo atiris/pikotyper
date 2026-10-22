@@ -13,6 +13,7 @@ import { cornerControls } from '../ui/chrome';
 import { offerInstall } from '../ui/install';
 import { ownTextPhrases } from '../game/modes/practice';
 import { levelTitleWords, roundButton } from '../ui/hud';
+import { startFreeType } from './free-type';
 import { openPracticeKeys } from './practice-keys';
 import { openStats } from './stats';
 import { taskCard } from './task';
@@ -108,6 +109,7 @@ export function mapScreen(root: HTMLElement): void {
         play,
         button(t('map.practice'), () => openPracticeKeys(), 'btn', 'practice'),
         ownTextPhrases(p).length ? button(t('map.ownText'), () => go('level', { id: 'practice', text: true }), 'btn', 'read') : null,
+        button(t('map.freeType'), startFreeType, 'btn', 'keyboard'),
         button(t('map.wardrobe'), () => go('wardrobe'), 'btn', 'shirt'),
         button(t('progress.title'), () => openStats(), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,

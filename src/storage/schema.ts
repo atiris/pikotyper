@@ -1,4 +1,4 @@
-// Storage schema v12. These types are the data contract of `localStorage['pikotyper:v1']`
+// Storage schema v13. These types are the data contract of `localStorage['pikotyper:v1']`
 // and of exported `.json` files. Older shapes are upgraded by the migrations in store.ts.
 
 export type Lang = 'sk' | 'en';
@@ -73,6 +73,8 @@ export interface Settings {
   ownMix: OwnMix;
   /** Read the target to type and Piko's lines aloud. */
   readAloud: boolean;
+  /** "Just typing" reads the child's own typed words aloud (with `readAloud` on). */
+  speakTyped: boolean;
 }
 
 /** A little friend helped in a rescue mission: a dragon (story 1), a robot (story 2) or a forest friend (story 3). */
@@ -198,7 +200,7 @@ export interface ParentLock {
 }
 
 export interface StoreData {
-  version: 12;
+  version: 13;
   profiles: Profile[];
   lastProfileId: string | null;
   language: Lang | null;
@@ -234,6 +236,7 @@ export function defaultSettings(): Settings {
     ownText: '',
     ownMix: 'some',
     readAloud: false,
+    speakTyped: true,
   };
 }
 

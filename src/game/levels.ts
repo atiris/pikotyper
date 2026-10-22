@@ -54,7 +54,7 @@ export type LevelKind =
   | 'lilies' | 'reflection'
   | 'notes' | 'treesong'
   | 'fireflies' | 'lastsong'
-  | 'practice';
+  | 'practice' | 'freetype';
 
 export interface LevelDef {
   id: string;
@@ -191,6 +191,11 @@ export function rescueLevel(p: Profile, seed: number): LevelDef {
   const pool = open.length ? open : RESCUE_KINDS.filter((r) => STORIES[0].worlds.includes(r.world));
   const r = pool[Math.abs(seed) % pool.length];
   return { id: 'rescue', world: r.world, index: -1, kind: r.kind, count: r.kind === 'fireflies' ? 8 : 14, variant: r.variant, isSuper: false, ...(r.style ? { style: r.style } : {}) };
+}
+
+/** Free typing ("just typing") in a world the child has opened. */
+export function freeTypeLevel(world: number): LevelDef {
+  return { id: 'freetype', world, index: -1, kind: 'freetype', count: 0, variant: '', isSuper: false };
 }
 
 export function practiceLevel(seconds: number | null, phrases?: string[]): LevelDef & { seconds: number | null } {
