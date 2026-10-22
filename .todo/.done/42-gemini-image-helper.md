@@ -111,3 +111,6 @@ sign-in in automated browsers, and a separate profile would need its own sign-in
       picture; any selector that fails is fixed in `selectors.js` in the same session.
 - [ ] After the live run: check whether free Gemini downloads carry a visible watermark in a
       corner; if they do, add a backlog line (the key/trim step cannot remove it).
+
+## Dropped - 2026-10-22
+Replaced by a project-independent tool: plan `gemini-bridge.md` in the claude-workflow repo (MCP server + Chrome extension). PikoTyper keeps no code for it.
