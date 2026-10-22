@@ -1,10 +1,9 @@
 import { app, go } from '../app/app';
-import { pawColors } from '../gfx/piko';
 import { t, tList } from '../i18n/i18n';
 import { captureKeys } from '../game/cards';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS } from '../game/paw';
 import { type Child, ICONS, button, h, icon } from '../ui/dom';
-import { pawRingSvg, rhythmGauge } from '../ui/hud';
+import { pawRing, rhythmPic, roundButton, roundPic } from '../ui/hud';
 
 /** A top icon as the child sees it (a picture, not a working button) with its one line. */
 function iconLine(pic: HTMLElement, text: string): HTMLElement {
@@ -12,7 +11,7 @@ function iconLine(pic: HTMLElement, text: string): HTMLElement {
 }
 
 function round(name: keyof typeof ICONS): HTMLElement {
-  return h('span', { class: 'icon-btn' }, icon(name));
+  return roundPic('control', name);
 }
 
 function mapIcons(): HTMLElement[] {
@@ -25,20 +24,22 @@ function mapIcons(): HTMLElement[] {
   ];
 }
 
-function levelIcons(): HTMLElement[] {
+export function levelIcons(): HTMLElement[] {
   const p = app.profile!;
-  const gauge = rhythmGauge();
+  const gauge = rhythmPic();
   gauge.set(0.6);
   return [
     iconLine(round('pause'), t('help.icons.pause')),
-    iconLine(h('span', { class: 'icon-btn paw-btn', html: pawRingSvg(2, PAW_MAX, pawColors(p.companion.kind)[0]) }),
+    iconLine(roundPic('paw', 'paw', pawRing(2, PAW_MAX)),
       t('help.icons.paw', { n: PAW_STREAK, words: PAW_WORDS, piko: p.companion.name })),
     iconLine(h('div', { class: 'progress' }, h('div', { class: 'progress-fill', style: 'width: 60%' })), t('help.icons.progress')),
     iconLine(gauge.el, t('help.icons.gauge')),
+    iconLine(round('help'), t('help.icons.levelHelp')),
     iconLine(round('read'), t('help.icons.read')),
     iconLine(round('keyboard'), t('help.icons.guide')),
     iconLine(round('sound'), t('help.icons.sound')),
     iconLine(round('fullscreen'), t('help.icons.fullscreen')),
+    iconLine(roundPic('super', 'star'), t('help.icons.super')),
   ];
 }
 
@@ -93,8 +94,7 @@ export function openHelp(host: HTMLElement, onBack: () => void): void {
 
 /** The round "?" button of the map's top actions. */
 export function helpButton(): HTMLButtonElement {
-  const b = button('', () => go('help'), 'icon-btn help-btn', 'help');
-  b.setAttribute('aria-label', t('help.title'));
-  b.title = t('help.title');
+  const b = roundButton('control', 'help', t('help.title'), () => go('help'));
+  b.classList.add('help-btn');
   return b;
 }

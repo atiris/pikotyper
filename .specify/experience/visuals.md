@@ -12,8 +12,15 @@
   along the bottom of the screen at a set height per world.
 - Big, readable words on targets, with high contrast against the scene; practice words
   and their info line keep a minimum on-screen size in small windows.
-- The level's top bar uses round buttons of one size with clear symbols (pause, paw help,
-  rhythm gauge, keyboard guide, sound, fullscreen).
+- One button set everywhere: every round button is the same white circle with a ring, a colored
+  disc and a white symbol (controls purple, paw orange with a ring of three charge segments and
+  no badge, rhythm green with a ring that fills from calm to excellent, the super star gold).
+  The rhythm is a picture, not a button. The help page shows these same buttons.
+- The level's top bar, left to right: pause, paw, title block, progress bar, rhythm, a divider,
+  help, keyboard, read aloud, sound, fullscreen. The title block is the world's name as a word
+  with one dot per level (done, this one, to come, a web for the super obstacle); no level
+  numbers anywhere, a level is named "Meadow · level 3".
+- The hands are the soft-palm kind: rounded fingers with the finger-color band, idle ones faint.
 - The map: a slim top bar ("Players" on the left; settings, sound and fullscreen as round
   buttons on the right). The left column holds the greeting, the companion (opens the
   statistics) and the buttons, all of one height; the first and biggest one just says

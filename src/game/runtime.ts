@@ -18,7 +18,8 @@ import { keyWeights, recordPress, recordSession } from '../learning/stats';
 import { FINGER_KEYS, KeyboardGuide, keyLabel } from '../ui/keyboard-guide';
 import { button, h } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
-import { pawRingSvg, rhythmGauge } from '../ui/hud';
+import { levelIcons } from '../screens/help';
+import { paintRound, pawRing, rhythmPic, roundButton, titleBlock, worldName } from '../ui/hud';
 import { OWN_SHARE, WordSource, type WordSourceOwn } from '../words/words';
 import type { Profile, Surprise } from '../storage/schema';
 import type { LevelDef } from './levels';
@@ -153,7 +154,7 @@ export class LevelRuntime {
   private bubble: HTMLElement;
   private bubbleTimer = 0;
   private progressFill: HTMLElement;
-  private gauge = rhythmGauge();
+  private gauge = rhythmPic();
   /** Seconds until the gauge's spoken label may change again. */
   private gaugeLabelIn = 0;
   private pauseEl: HTMLElement | null = null;
@@ -227,30 +228,27 @@ export class LevelRuntime {
     this.fairy = def.kind !== 'practice' && storyOf(def.world).id === 'fairy';
     if (this.fairy) this.el.dataset.fairy = 'melody';
     this.progressFill = h('div', { class: 'progress-fill' });
-    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.id === 'rescue' ? t('level.rescue') : t('level.title', { world: def.world + 1, level: def.index + 1 });
-    const guideBtn = button('', () => this.toggleGuide(), 'icon-btn', 'keyboard');
-    guideBtn.title = t('level.guide');
-    guideBtn.setAttribute('aria-label', t('level.guide'));
+    const title = def.kind === 'practice' ? t(def.phrases ? 'level.ownText' : 'level.practice') : def.id === 'rescue' ? t('level.rescue') : worldName(def);
+    const guideBtn = roundButton('control', 'keyboard', t('level.guide'), () => this.toggleGuide());
     if (p.settings.guideLocked) guideBtn.disabled = true;
-    this.readBtn = button('', () => this.toggleRead(), 'icon-btn read-btn', 'read');
-    this.readBtn.title = t('level.read');
-    this.readBtn.setAttribute('aria-label', t('level.read'));
+    const helpBtn = roundButton('control', 'help', t('level.help'), () => this.openHelpCard());
+    this.readBtn = roundButton('control', 'read', t('level.read'), () => this.toggleRead());
     this.paintRead();
     this.offVoices = speech.onVoices(() => this.paintRead());
-    const pauseBtn = button('', () => this.pause(), 'icon-btn', 'pause');
-    pauseBtn.setAttribute('aria-label', t('level.pause'));
+    const pauseBtn = roundButton('control', 'pause', t('level.pause'), () => this.pause());
     if (this.pawsAllowed) {
-      this.pawBtn = h('button', { class: 'icon-btn paw-btn', type: 'button', onClick: () => this.startPaws() });
-      this.pawBtn.title = t('paw.title', { n: PAW_STREAK, words: PAW_WORDS, piko: p.companion.name });
+      this.pawBtn = roundButton('paw', 'paw', t('paw.title', { n: PAW_STREAK, words: PAW_WORDS, piko: p.companion.name }), () => this.startPaws());
+      this.pawBtn.classList.add('paw-btn');
       this.renderPawBtn();
     }
     const hud = h('div', { class: 'hud' },
       pauseBtn,
       this.pawBtn,
-      h('div', { class: 'hud-title' }, title),
+      def.kind === 'practice' || def.id === 'rescue' ? h('div', { class: 'hud-title' }, h('b', {}, title)) : titleBlock(def, title),
       h('div', { class: 'progress', title: t('level.progress') }, this.progressFill),
       this.gauge.el,
-      this.readBtn, guideBtn, soundButton(), fullscreenButton());
+      h('span', { class: 'hud-divider', 'aria-hidden': 'true' }),
+      helpBtn, guideBtn, this.readBtn, soundButton(), fullscreenButton());
     const stageWrap = h('div', { class: 'stage-wrap' });
     this.piko = pikoElement(p.companion, 'idle', 150);
     // Piko joins the stage when play starts; the preparation cards show him themselves.
@@ -364,7 +362,7 @@ export class LevelRuntime {
   /** Next target (a word, a phrase of up to `words` words, or a sentence of at least `minWords`); avoids first letters already on screen. */
   word(maxLen?: number, words = this.mode.phraseWords, minWords = this.mode.phraseMin): string {
     const avoid = new Set(this.core.active.map((t) => t.word[0].toLowerCase()));
-    return this.words.next(avoid, maxLen, words, minWords);
+    return this.words.next(avoid, maxLen, this.def.noSpace ? 1 : words, minWords);
   }
 
   /**
@@ -664,7 +662,7 @@ export class LevelRuntime {
     this.pawBtn.classList.toggle('auto-helping', this.pawSelf && this.pawWords > 0);
     this.pawBtn.dataset.charged = String(pawHelp);
     this.pawBtn.setAttribute('aria-label', t('paw.aria', { n: pawHelp }));
-    this.pawBtn.innerHTML = pawRingSvg(pawHelp, PAW_MAX, pawColors(p.companion.kind)[0]);
+    paintRound(this.pawBtn, 'paw', pawRing(pawHelp, PAW_MAX));
   }
 
   /** A mistake-free streak charges one paw help. */
@@ -780,6 +778,27 @@ export class LevelRuntime {
         button(t('level.toMap'), () => this.exit(), 'btn', 'map')));
     this.el.querySelector('.stage-wrap')!.append(this.pauseEl);
     (this.pauseEl.querySelector('button') as HTMLButtonElement).focus();
+  }
+
+  /** The "?" button: pauses the level and shows what to do now, how to do best, and what the buttons are. */
+  private openHelpCard(): void {
+    this.pause();
+    if (!this.pauseEl) return;
+    const p = app.profile!;
+    const intro = this.mode.intro();
+    const tip = pickTip(p, this.style)?.text;
+    this.pauseEl.classList.add('help-card');
+    this.pauseEl.replaceChildren(
+      h('h2', {}, t('level.help')),
+      h('h3', {}, t('level.helpNow')),
+      ...(intro ? [h('p', {}, intro)] : []),
+      ...(tip ? [h('p', {}, tip)] : []),
+      h('h3', {}, t('level.helpBest')),
+      h('ol', {}, ...tList('level.helpSteps').map((s) => h('li', {}, s))),
+      h('h3', {}, t('level.helpButtons')),
+      h('ul', { class: 'help-icons' }, ...levelIcons()),
+      h('div', { class: 'row' }, button(t('level.resume'), () => this.resume(), 'btn primary', 'play')));
+    (this.pauseEl.querySelector('.btn.primary') as HTMLButtonElement).focus({ preventScroll: true });
   }
 
   /** One step lower difficulty from now on; automatic growth may raise it again after accurate play. */

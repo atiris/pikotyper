@@ -11,6 +11,10 @@
     stars come from accuracy, new letters come with good typing, Esc pauses.
 - A round "?" button in the map's top buttons opens it (with its own address); a "Help"
   button in a level's pause card opens it over the paused level.
+- A purple round "?" button in a level's top bar pauses the level and opens a card: what to do
+  now (the level's intro and one tip), how to do best (accuracy first, then a steady rhythm,
+  the paw when stuck, repeat for three stars, rest after a few levels) and the real buttons.
+  Escape or "Continue" closes it and resumes.
 - Back or Escape returns where the child came from: the map, or the paused level.
 - Works on a 1024x600 screen; the page scrolls, the back button stays in sight.
 

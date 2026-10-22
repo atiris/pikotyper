@@ -1,19 +1,21 @@
 import { app } from '../app/app';
 import { audio, type SoundLevel } from '../audio/audio';
 import { t } from '../i18n/i18n';
-import { ICONS, button, icon } from './dom';
+import { ICONS } from './dom';
+import { paintRound, roundButton } from './hud';
 
 const LEVEL_ICON: Record<SoundLevel, keyof typeof ICONS> = { normal: 'sound', quiet: 'soundLow', off: 'mute' };
 
 /** Quick sound switch (on every screen): normal, quiet, off. */
 export function soundButton(): HTMLButtonElement {
-  const b = button('', () => audio.cycleLevel(), 'icon-btn sound-btn', LEVEL_ICON[audio.level]);
+  const b = roundButton('control', LEVEL_ICON[audio.level], '', () => audio.cycleLevel());
+  b.classList.add('sound-btn');
   const paint = () => {
     const label = `${t('common.sound')}: ${t(`common.sound_${audio.level}`)}`;
     b.setAttribute('aria-label', label);
     b.title = label;
     b.dataset.level = audio.level;
-    b.replaceChildren(icon(LEVEL_ICON[audio.level]));
+    paintRound(b, LEVEL_ICON[audio.level]);
   };
   paint();
   const off = audio.onLevelChange(() => {
@@ -31,13 +33,14 @@ function toggleFullscreen(): void {
 /** Fullscreen switch (map and level screens); null where the browser has no fullscreen. */
 export function fullscreenButton(): HTMLButtonElement | null {
   if (!document.fullscreenEnabled) return null;
-  const b = button('', toggleFullscreen, 'icon-btn fullscreen-btn');
+  const b = roundButton('control', 'fullscreen', '', toggleFullscreen);
+  b.classList.add('fullscreen-btn');
   const paint = () => {
     const on = !!document.fullscreenElement;
     const label = t(on ? 'common.fullscreenExit' : 'common.fullscreen');
     b.setAttribute('aria-label', label);
     b.title = label;
-    b.replaceChildren(icon(on ? 'fullscreenExit' : 'fullscreen'));
+    paintRound(b, on ? 'fullscreenExit' : 'fullscreen');
   };
   const onChange = () => (b.isConnected ? paint() : document.removeEventListener('fullscreenchange', onChange));
   document.addEventListener('fullscreenchange', onChange);

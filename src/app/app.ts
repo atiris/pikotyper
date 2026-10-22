@@ -1,7 +1,7 @@
 import { audio } from '../audio/audio';
 import { resetFontFamily } from '../gfx/draw';
 import { language, setLanguage, t, tList } from '../i18n/i18n';
-import { h, icon } from '../ui/dom';
+import { roundButton } from '../ui/hud';
 import { LAYOUTS, type Layout } from '../keyboard/layouts';
 import { Store } from '../storage/store';
 import { GUEST_ID, type Lang, type Profile, SUPER_ID } from '../storage/schema';
@@ -100,10 +100,12 @@ function superBadge(): void {
   document.querySelector('.super-badge')?.remove();
   document.body.classList.toggle('super-on', !!app.superPlayer);
   if (!app.superPlayer) return;
-  document.body.append(h('button', { class: 'super-badge', type: 'button', title: t('super.badge'), 'aria-label': t('super.badge'), onClick: () => {
+  const b = roundButton('super', 'star', t('super.badge'), () => {
     app.superPlayer = null;
     go('start');
-  } }, icon('star')));
+  });
+  b.classList.add('super-badge');
+  document.body.append(b);
 }
 
 export function saveProfile(): void {

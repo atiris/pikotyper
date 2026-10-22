@@ -52,7 +52,7 @@
     "lion": "Levík"
   },
   "worlds": {
-    "meadow": "Cvičná lúka",
+    "meadow": "Medová lúka",
     "space": "Let raketou",
     "planet": "Nová planéta",
     "dragons": "Dračie údolie",
@@ -92,7 +92,18 @@
   "level": {
     "ownText": "Môj text",
     "read": "Čítať nahlas",
-    "title": "Svet {world} · Úroveň {level}",
+    "titleWords": "{name} · úroveň {level}",
+    "help": "Pomoc v úrovni",
+    "helpNow": "Teraz",
+    "helpBest": "Ako postupovať najlepšie",
+    "helpButtons": "Tlačidlá",
+    "helpSteps": [
+      "Najprv presne: hviezdičky dostaneš za málo chýb.",
+      "Potom plynulo: keď píšeš rovnomerne, zelený kruh sa naplní.",
+      "Keď si zaseknutý, použi labku: Piko napíše za teba pár slov.",
+      "Úroveň si zopakuj, kým nemáš tri hviezdičky.",
+      "Po niekoľkých úrovniach si oddýchni."
+    ],
     "practice": "Voľné cvičenie",
     "rescue": "Záchranná misia",
     "guide": "Ukázať alebo skryť klávesnicu",
@@ -1131,7 +1142,9 @@
       "pause": "Pauza. Rovnako ju zapne aj kláves Esc.",
       "paw": "Labková pomoc: {n} slov bez chyby nabije labku. Stlač Enter a {piko} napíše za teba {words} slová.",
       "progress": "Pásik ukazuje, koľko z úrovne už máš za sebou.",
-      "gauge": "Ručička ukazuje tvoj rytmus. Keď píšeš plynulo, ide doprava.",
+      "gauge": "Zelený kruh ukazuje tvoj rytmus. Keď píšeš plynulo, naplní sa.",
+      "levelHelp": "Pomoc k úrovni: čo robiť a ako sa zlepšiť.",
+      "super": "Hviezda v rohu: super režim. Kliknutím ho vypneš.",
       "read": "Čítanie nahlas: počítač ti slová prečíta.",
       "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst."
     },

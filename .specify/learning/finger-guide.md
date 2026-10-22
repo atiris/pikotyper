@@ -4,8 +4,8 @@
 - On-screen keyboard (matching the profile layout) with a color per finger and a
   highlight on the next key; for dead-key letters both steps are shown. The letter on a
   highlighted key is dark or white, whichever reads better on that finger's color.
-- Optional hands seen from above (natural fingers, a fingertip band in each finger's
-  color); the finger that presses the key lifts and is fully opaque.
+- Optional hands seen from above (soft palm, rounded fingers, a band in each finger's
+  color, idle fingers faint); the finger that presses the key lifts and is fully opaque.
 - The guide fades as the child improves (per-key mastery) and can be shown or hidden by
   the child, or locked by the parent. Colors also carry a pattern or label (colorblind-safe).
 - "Ready, steady, type!" card before every adventure (story level, rescue, free practice)

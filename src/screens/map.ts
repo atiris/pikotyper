@@ -11,6 +11,7 @@ import { badge } from '../ui/badge';
 import { button, h, icon } from '../ui/dom';
 import { fullscreenButton, soundButton } from '../ui/chrome';
 import { ownTextPhrases } from '../game/modes/practice';
+import { levelTitleWords, roundButton } from '../ui/hud';
 import { helpButton } from './help';
 import { openPracticeKeys } from './practice-keys';
 import { openStats } from './stats';
@@ -31,10 +32,7 @@ export function playLevel(id: string, task?: string): void {
 }
 
 function settingsButton(): HTMLButtonElement {
-  const b = button('', () => go('parent'), 'icon-btn', 'gear');
-  b.setAttribute('aria-label', t('map.settings'));
-  b.title = t('map.settings');
-  return b;
+  return roundButton('control', 'gear', t('map.settings'), () => go('parent'));
 }
 
 export function mapScreen(root: HTMLElement): void {
@@ -55,7 +53,7 @@ export function mapScreen(root: HTMLElement): void {
   const rescue = rescueUnlocked(p);
   // Nothing open for the child's keys: continue means practice, which brings new keys.
   const play = button(t('map.continue'), () => (next ? playLevel(next.id) : openPracticeKeys()), 'btn primary big', 'play');
-  const nextName = next ? t('level.title', { world: next.world + 1, level: next.index + 1 }) : t('map.practice');
+  const nextName = next ? levelTitleWords(next.world, next.index) : t('map.practice');
   play.title = nextName;
   play.setAttribute('aria-label', `${t('map.continue')}: ${nextName}`);
   root.append(h('div', { class: 'screen map-screen' },

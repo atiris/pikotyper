@@ -12,6 +12,8 @@
   small key sets (for example only `f j`), short letter patterns like `fff jjj fj jf` are
   used. Practice never stops for lack of words.
 - No word may be offensive or scary; pseudo-words are checked against a small block list.
+- The first level asks one chunk per target, never two with a space; the second level is the
+  first that asks for the space bar.
 - Once space is known, a target can be a phrase of known words: at most two (short words)
   for targets that fly, fall or approach, two to four in calm modes (free practice, stepping
   stones, road signs). Right after space comes in, phrases are chunk pairs like `fj jf`.

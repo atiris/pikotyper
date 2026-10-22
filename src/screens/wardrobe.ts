@@ -6,6 +6,7 @@ import { friendStars, grantCompanions, hasAccessory, hasCompanion, totalStars, u
 import { COMPANION_KINDS } from '../storage/schema';
 import { button, h, icon } from '../ui/dom';
 import { soundButton } from '../ui/chrome';
+import { levelTitleWords } from '../ui/hud';
 
 /** Longest companion name the child can type. */
 const NAME_MAX = 16;
@@ -35,7 +36,7 @@ export function wardrobeScreen(root: HTMLElement): void {
     if (!r) return '';
     if (r.kind === 'level') {
       const [w, l] = r.id.slice(1).split('-');
-      return t('wardrobe.byLevel', { level: t('level.title', { world: w, level: l }) });
+      return t('wardrobe.byLevel', { level: levelTitleWords(Number(w) - 1, Number(l) - 1) });
     }
     if (r.kind === 'world') return t('wardrobe.byWorld', { world: r.world + 1 });
     return t('wardrobe.byMastery', { n: r.keys });

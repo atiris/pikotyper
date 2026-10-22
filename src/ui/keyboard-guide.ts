@@ -218,19 +218,18 @@ export class KeyboardGuide {
 }
 
 function handsSvg(): string {
-  // Two hands seen from above: skin fingers of natural length with a fingertip band in the
-  // finger's color; each finger carries data-f with its finger index.
+  // Two hands seen from above ("soft palm"): rounded skin fingers with a band in the finger's
+  // color over a faint palm; each finger carries data-f with its finger index.
   const finger = (f: Finger, cx: number, top: number, rot: number, bx: number, by: number, bottom = 98) =>
     `<g class="finger" data-f="${f}"><g transform="rotate(${rot} ${bx} ${by})">` +
     `<rect class="skin" x="${cx - 10.5}" y="${top}" width="21" height="${bottom - top}" rx="10.5"/>` +
-    `<rect class="tip-band" x="${cx - 9.6}" y="${top + 13}" width="19.2" height="6" fill="${FINGER_COLORS[f]}"/>` +
-    `<ellipse class="nail" cx="${cx}" cy="${top + 7}" rx="5" ry="4.4"/></g></g>`;
+    `<rect class="tip-band" x="${cx - 9.6}" y="${top + 13}" width="19.2" height="6" fill="${FINGER_COLORS[f]}"/></g></g>`;
   const hand = (side: 'l' | 'r') => {
     const f = (left: Finger): Finger => (side === 'l' ? left : (9 - left) as Finger);
-    const body = finger(f(0), 22, 46, -7, 22, 96) + finger(f(1), 43, 22, -2, 43, 96) +
+    const body = '<path class="palm" d="M14 88C14 80 20 78 28 78L86 78C95 78 99 84 98 92C97 104 93 114 86 120C80 125 73 127 62 127L46 127C33 127 24 122 19 113C15 106 14 98 14 88Z"/>' +
+      finger(f(0), 22, 46, -7, 22, 96) + finger(f(1), 43, 22, -2, 43, 96) +
       finger(f(2), 64, 12, 1, 64, 96) + finger(f(3), 85, 26, 5, 85, 96) +
-      finger(f(4), 92, 62, 40, 92, 104, 108) +
-      '<path class="palm" d="M12 84C12 74 19 70 28 70L88 70C97 70 101 77 100 88C99 102 95 114 88 122C82 128 74 130 62 130L46 130C32 130 22 124 17 114C13 106 12 96 12 84Z"/>';
+      finger(f(4), 92, 62, 40, 92, 104, 108);
     return `<svg viewBox="0 0 130 132" class="hand hand-${side}"><g${side === 'r' ? ' transform="translate(130 0) scale(-1 1)"' : ''}>${body}</g></svg>`;
   };
   return hand('l') + hand('r');

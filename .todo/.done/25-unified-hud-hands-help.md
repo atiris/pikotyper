@@ -83,19 +83,19 @@ the Artifact tool (`action: read`, `paths` of `project/Main.dc.html`, `project/H
   `src/game/levels.test.ts`: every target of `w1-1` has no space, a target of `w1-2` may.
 
 ## Steps
-- [ ] 1. Shared round button, glyph set and colors (`hud.ts`, `dom.ts`, `styles.css`); paw
+- [x] 1. Shared round button, glyph set and colors (`hud.ts`, `dom.ts`, `styles.css`); paw
       without badge; rhythm as a ring; `soundButton` and `fullscreenButton` use it.
-- [ ] 2. Level HUD in `runtime.ts` as in decision 2; title block; `level.titleWords` in
+- [x] 2. Level HUD in `runtime.ts` as in decision 2; title block; `level.titleWords` in
       sk/en; fix every use of `level.title`.
-- [ ] 3. Map, other screens and `src/screens/help.ts` take the shared button.
-- [ ] 4. Hands variant B in `keyboard-guide.ts`; update `keyboard-guide.test.ts` if it checks
+- [x] 3. Map, other screens and `src/screens/help.ts` take the shared button.
+- [x] 4. Hands variant B in `keyboard-guide.ts`; update `keyboard-guide.test.ts` if it checks
       the old shapes.
-- [ ] 5. In-level help card and its texts (sk, en).
-- [ ] 6. First level without spaces (`LevelDef.noSpace`, runtime, test).
-- [ ] 7. Specs: `.specify/experience/visuals.md` (one button set, colors, title block),
+- [x] 5. In-level help card and its texts (sk, en).
+- [x] 6. First level without spaces (`LevelDef.noSpace`, runtime, test).
+- [x] 7. Specs: `.specify/experience/visuals.md` (one button set, colors, title block),
       `help.md` (in-level help), `learning/finger-guide.md` (hands),
       `learning/words.md` (level 1 without spaces); README if it lists the old look.
-- [ ] 8. `npm run build`, `npm test`, `npm run test:e2e`. Then drive the app with the
+- [x] 8. `npm run build`, `npm test`, `npm run test:e2e`. Then drive the app with the
       `playwright` MCP at 1366 x 768 as a child: superpikotyper code, map, a level; compare
       with the canvas board `Main`; check the console and the help card with Esc.
 
@@ -103,3 +103,8 @@ the Artifact tool (`action: read`, `paths` of `project/Main.dc.html`, `project/H
 - The in-level help is a "?" button with the card above (the canvas has no help drawing).
 - The meadow is called "Medová lúka" as in the canvas, not "Cvičná lúka".
 - Hands variant B is used (the canvas recommends it).
+
+## Done - 2026-10-22
+Shipped all 8 steps: shared `roundButton`/`roundSvg` in `src/ui/hud.ts` (map, level HUD, help page, sound, fullscreen, super star), paw ring without badge, rhythm as a filling ring, title block with level dots, `level.titleWords` (sk/en), meadow renamed "Medová lúka"/"Honey Meadow", hands variant B, "?" level help card (reuses the help page's button list), `LevelDef.noSpace` on `w1-1` with tests, specs updated. Build, unit and e2e tests pass; the app was driven at 1366 x 768 (super code, map, level, help card with Esc), no console errors.
+
+Decisions: the pause card's "Pomoc" button keeps opening the full help page; the help page gained two lines (level help, super star); the super star keeps its fixed top-right position and the HUD pads for it. The three assumptions in the plan were taken as written (the owner may still check them). Nothing left out.

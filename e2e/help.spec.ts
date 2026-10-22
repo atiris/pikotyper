@@ -10,7 +10,7 @@ test('help opens from the map and from a paused level and goes back', async ({ p
   await page.locator('.map-top .help-btn').click();
   const help = page.locator('.help-page');
   await expect(help.locator('h2', { hasText: 'How to type' })).toBeVisible();
-  await expect(help.locator('.help-icons li')).toHaveCount(13);
+  await expect(help.locator('.help-icons li')).toHaveCount(15);
   expect(page.url()).toMatch(/\/help$/);
   await help.getByRole('button', { name: 'Back' }).click();
   await page.locator('.map-screen').waitFor();

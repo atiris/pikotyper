@@ -52,7 +52,7 @@
     "lion": "Lion"
   },
   "worlds": {
-    "meadow": "Training Meadow",
+    "meadow": "Honey Meadow",
     "space": "Rocket Flight",
     "planet": "New Planet",
     "dragons": "Dragon Valley",
@@ -92,7 +92,18 @@
   "level": {
     "ownText": "My text",
     "read": "Read aloud",
-    "title": "World {world} · Level {level}",
+    "titleWords": "{name} · level {level}",
+    "help": "Help in the level",
+    "helpNow": "Now",
+    "helpBest": "How to do your best",
+    "helpButtons": "Buttons",
+    "helpSteps": [
+      "Accuracy first: stars come from few mistakes.",
+      "Then a steady rhythm: when you type evenly, the green ring fills up.",
+      "When you are stuck, use the paw: Piko types a few words for you.",
+      "Repeat a level until it has three stars.",
+      "Take a break after a few levels."
+    ],
     "practice": "Free practice",
     "rescue": "Rescue mission",
     "guide": "Show or hide the keyboard",
@@ -1131,7 +1142,9 @@
       "pause": "Pause. The Esc key pauses too.",
       "paw": "Paw help: {n} words without a mistake charge a paw. Press Enter and {piko} types {words} words for you.",
       "progress": "The bar shows how much of the level is behind you.",
-      "gauge": "The needle shows your rhythm. When you type smoothly, it moves right.",
+      "gauge": "The green ring shows your rhythm. When you type smoothly, it fills up.",
+      "levelHelp": "Help for this level: what to do and how to improve.",
+      "super": "The star in the corner: super mode. Click it to turn it off.",
       "read": "Read aloud: the computer reads the words to you.",
       "guide": "Shows or hides the keyboard that tells where the finger goes."
     },

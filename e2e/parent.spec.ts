@@ -3,7 +3,7 @@ import { createProfile } from './helpers';
 
 test('parent changes settings, exports and imports into a fresh browser', async ({ page, browser }) => {
   await createProfile(page, 'Tomas');
-  await page.locator('.top-actions .icon-btn').first().click();
+  await page.locator('.top-actions .round-btn').first().click();
   await page.locator('.confirm .btn.danger, .confirm .btn:not(.primary)').last().click();
   await expect(page.locator('.parent-screen')).toBeVisible();
   await page.getByRole('checkbox', { name: /^(Bez časového tlaku|No time pressure)/ }).check();
@@ -26,7 +26,7 @@ test('parent changes settings, exports and imports into a fresh browser', async 
 
 test('a settings password locks every way into the parent screen', async ({ page }) => {
   await createProfile(page, 'Ema');
-  await page.locator('.top-actions .icon-btn').first().click();
+  await page.locator('.top-actions .round-btn').first().click();
   await page.locator('.confirm .btn:not(.primary)').last().click();
   const group = page.locator('.lock-group');
   await group.locator('input[type=password]').nth(0).fill('mama1');
@@ -41,7 +41,7 @@ test('a settings password locks every way into the parent screen', async ({ page
   expect(JSON.stringify(stored)).not.toContain('mama1');
 
   await page.locator('.parent-screen .bar .btn').first().click();
-  await page.locator('.top-actions .icon-btn').first().click();
+  await page.locator('.top-actions .round-btn').first().click();
   await page.locator('.lock-input').fill('wrong');
   await page.keyboard.press('Enter');
   await expect(page.locator('.lock-dialog .error')).not.toBeEmpty();

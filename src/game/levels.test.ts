@@ -146,3 +146,10 @@ describe('rescue missions', () => {
     expect(styles()).toEqual(new Set(['copy', 'dictation', 'memory', 'mixed']));
   });
 });
+
+describe('first level', () => {
+  it('asks for single chunks; only the second level may need the space bar', () => {
+    expect(levelById('w1-1')?.noSpace).toBe(true);
+    expect(LEVELS.filter((l) => l.noSpace).map((l) => l.id)).toEqual(['w1-1']);
+  });
+});

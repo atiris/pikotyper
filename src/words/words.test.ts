@@ -5,6 +5,11 @@ import { WordSource, filterWords, isBlocked, parseOwnWords, textPhrases, typable
 const WORDS = ['sad', 'lak', 'las', 'les', 'kde', 'ide', 'šaty', 'ruka', 'noha', 'dom', 'kôň', 'ja', 'aha', 'jeseň', 'slnko'];
 
 describe('word filter', () => {
+  it('gives one chunk per target when one word is asked, even with the space known', () => {
+    const src = new WordSource(WORDS, { keys: ['f', 'j', ' '], len: [2, 6], noDiacritics: false, seed: 9, focus: [' '] });
+    for (let i = 0; i < 40; i++) expect(src.next(new Set(), undefined, 1)).not.toContain(' ');
+  });
+
   it('keeps only words made of allowed keys and in the length range', () => {
     expect(filterWords(WORDS, new Set([...'asdfjkl']), [2, 5])).toEqual(['sad', 'lak', 'las', 'ja']);
   });
