@@ -108,6 +108,7 @@ and "Tappy" are already used by children's typing games.
       the visit line in Help stays empty, which the code already handles.
 
 This plan names the old name on purpose, so it is not copied to the new repository (exclude
-`.todo/43-rename-to-tapko.md` when copying). Plan `.todo/44-player-is-the-character.md` is copied and, in the new
-repository, gets its line in `.todo/QUEUE.md` (it is written to run after the rename). Its progress is kept here in the old repository
+`.todo/43-rename-to-tapko.md` when copying). Plans `.todo/44-player-is-the-character.md` and
+`.todo/45-wardrobe-time-limit.md` are copied and, in the new repository, get their lines in
+`.todo/QUEUE.md` in this order (they are written to run after the rename). Its progress is kept here in the old repository
 and it moves to `.todo/.done/` with `## Done` in the notice commit.
