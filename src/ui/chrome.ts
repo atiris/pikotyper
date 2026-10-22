@@ -10,6 +10,11 @@ const LEVEL_ICON: Record<SoundLevel, keyof typeof ICONS> = { normal: 'sound', qu
 export function soundButton(): HTMLButtonElement {
   const b = roundButton('control', LEVEL_ICON[audio.level], '', () => audio.cycleLevel());
   b.classList.add('sound-btn');
+  // Right click: another track from the whole library.
+  b.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    audio.shuffleTrack();
+  });
   const paint = () => {
     const label = `${t('common.sound')}: ${t(`common.sound_${audio.level}`)}`;
     b.setAttribute('aria-label', label);

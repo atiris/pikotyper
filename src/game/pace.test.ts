@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { PACE_MAX, PACE_MIN, PressureValve, perChar } from './pace';
+import { PACE_MAX, PACE_MIN, PressureValve, perChar, sayTime } from './pace';
 
 describe('word pace', () => {
   it('uses the last session rhythm until five targets are finished', () => {
@@ -50,5 +50,12 @@ describe('pressure valve', () => {
     expect(v.factor).toBeCloseTo(1.25);
     for (let i = 0; i < 9; i++) v.hit();
     expect(v.factor).toBe(1);
+  });
+});
+
+describe('Piko line time', () => {
+  it('is at least 3.5 seconds and 0.08 seconds per character', () => {
+    expect(sayTime('Hi')).toBe(3.5);
+    expect(sayTime('x'.repeat(100))).toBeCloseTo(8);
   });
 });

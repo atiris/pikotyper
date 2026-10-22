@@ -1,4 +1,5 @@
-import { assetUrl, hasMusic } from '../gfx/assets';
+import { assetUrl, hasMusic, musicTracks } from '../gfx/assets';
+import { nextTrack } from './tracks';
 
 export type Sfx = 'key' | 'wrong' | 'word' | 'reward' | 'click' | 'whoosh' | 'pop' | 'beat' | 'cheer' | 'bzzt' | 'note';
 /** Quick sound switch: normal, quiet (20 % of normal) or off. */
@@ -111,6 +112,12 @@ class AudioEngine {
       const stop = synthLoop(ctx, gain, name);
       this.current = { gain, stop: () => { stop(); gain.disconnect(); } };
     }
+  }
+
+  /** Plays the next random track of the whole library; the next screen or level sets its own track again. */
+  shuffleTrack(): void {
+    const next = nextTrack(musicTracks(), this.track);
+    if (next) this.music(next);
   }
 
   sfx(kind: Sfx): void {

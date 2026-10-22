@@ -27,7 +27,7 @@ import { WORLDS, storyOf } from './levels';
 import type { Mode } from './mode';
 import { PAW_MAX, PAW_STREAK, PAW_WORDS, isHardMoment } from './paw';
 import { createMode } from './modes';
-import { PressureValve, perChar } from './pace';
+import { PressureValve, perChar, sayTime } from './pace';
 import { type LevelResult, completeLevel } from './progress';
 import { type Style, type Target, TypingCore } from './typing';
 import { pickTip, showCard, showNewKey, showPosture } from './cards';
@@ -596,11 +596,15 @@ export class LevelRuntime {
 
   // ---- Piko --------------------------------------------------------------------
 
-  /** Piko's line in the bubble; only screen readers hear it, the voice reads the targets alone. */
-  say(text: string, seconds = 3.5): void {
+  /**
+   * Piko's line in the bubble; only screen readers hear it, the voice reads the targets alone.
+   * It stays long enough to read (`seconds` is a minimum) and a line still shown is not replaced.
+   */
+  say(text: string, seconds = 0): void {
+    if (this.bubbleTimer > 0) return;
     this.bubble.replaceChildren(h('p', {}, text));
     this.bubble.classList.remove('hidden');
-    this.bubbleTimer = seconds;
+    this.bubbleTimer = Math.max(seconds, sayTime(text));
   }
 
   hideBubble(): void {
@@ -857,7 +861,8 @@ export class LevelRuntime {
     this.trackPace();
     if (this.pawsAllowed) this.updatePaws(dt);
     this.readFocus();
-    if (this.bubbleTimer > 0 && (this.bubbleTimer -= dt) <= 0) this.hideBubble();
+    // A line hidden behind a target waits for a free spot instead of running out.
+    if (this.bubbleTimer > 0 && !this.bubble.classList.contains('covered') && (this.bubbleTimer -= dt) <= 0) this.hideBubble();
     if (this.moodTimer > 0 && (this.moodTimer -= dt) <= 0) renderPikoInto(this.piko, app.profile!.companion, 'idle');
     if (this.robotMoodT > 0 && (this.robotMoodT -= dt) <= 0) this.robotMood = 'idle';
     if (this.fairyMoodT > 0 && (this.fairyMoodT -= dt) <= 0) this.fairyMood = 'idle';

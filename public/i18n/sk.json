@@ -82,6 +82,8 @@
     "settings": "Nastavenia pre rodičov",
     "storyRobot": "Piko a robot Šróbik",
     "storyOpens": "Otvorí sa, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
+    "lockWorld": "Najprv dokonči svet {world}.",
+    "lockKeys": "Tento príbeh sa otvorí, keď budeš vedieť {n} písmen. Teraz vieš {have}.",
     "friends": "Malí priatelia",
     "keysOne": "Na túto úroveň potrebuješ ešte jedno písmeno. Nové písmenká získaš hraním alebo vo Voľnom cvičení.",
     "keysFew": "Na túto úroveň potrebuješ ešte {n} písmená. Nové písmenká získaš hraním alebo vo Voľnom cvičení.",

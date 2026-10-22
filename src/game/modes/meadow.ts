@@ -482,8 +482,15 @@ export class MeadowMode extends ApproachMode {
     const color = LEAF_COLORS[m.kind as LeafKind];
     L.particles.emit(m.x, m.y, 14, 'leaf', [color, lighten(color, 0.4), '#ffd25a', '#9ccf7a'], 200, 7, 1.1);
     L.sfx('cheer');
-    this.pops.push({ x: this.playerX + 60, y: Math.max(70, this.pikoTop() - 110), age: 0 });
+    const spot = this.goalSpot(m);
+    this.pops.push({ ...spot, age: 0 });
     this.cheerGoal(m);
+  }
+
+  /** Above the animal that scored (where the leaf is when none stands there). */
+  protected goalSpot(m: Mover): { x: number; y: number } {
+    const c = m.critter as Critter | null;
+    return c ? { x: c.x, y: c.y - c.size * 0.7 } : { x: m.x, y: m.y - 60 };
   }
 
   /** The creature that sent the leaf jumps with joy, then goes home. */
@@ -531,16 +538,17 @@ export class MeadowMode extends ApproachMode {
     const a = Math.min(1, (POP_TIME - p.age) / 0.3);
     g.save();
     g.globalAlpha = Math.max(0, a);
-    g.translate(p.x, p.y - p.age * 12);
+    g.font = `800 58px ${fontFamily()}`;
+    const text = t('story.goalShout');
+    const half = g.measureText(text).width / 2 + 8;
+    g.translate(Math.min(this.L.vw - half, Math.max(half, p.x)), Math.max(50, p.y - p.age * 12));
     g.scale(s, s);
     g.rotate(-0.06);
-    g.font = `800 58px ${fontFamily()}`;
-    g.textAlign = 'left';
+    g.textAlign = 'center';
     g.textBaseline = 'middle';
     g.lineJoin = 'round';
     g.lineWidth = 8;
     g.strokeStyle = '#5a3d2b';
-    const text = t('story.goalShout');
     g.strokeText(text, 0, 0);
     g.fillStyle = '#ffd25a';
     g.fillText(text, 0, 0);
@@ -643,6 +651,10 @@ export class HedgehogMode extends MeadowMode {
   }
 
   /** A goal does not count: the leaf goes back on the pile and is shaken off again. */
+  protected goalSpot(): { x: number; y: number } {
+    return { x: this.hx, y: this.hy - 150 };
+  }
+
   protected cheerGoal(): void {
     this.hop = 0.6;
     this.pile++;

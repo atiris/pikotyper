@@ -82,6 +82,8 @@
     "settings": "Settings for parents",
     "storyRobot": "Piko and Bolt the Robot",
     "storyOpens": "Opens when you know {n} letters. Now you know {have}.",
+    "lockWorld": "Finish {world} first.",
+    "lockKeys": "This story opens when you know {n} letters. Now you know {have}.",
     "friends": "Little friends",
     "keysOne": "You need one more letter for this level. You get new letters by playing or in Free practice.",
     "keysFew": "You need {n} more letters for this level. You get new letters by playing or in Free practice.",

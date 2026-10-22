@@ -20,20 +20,20 @@
       belong. Find its source (sprite baked-in shadow vs. a drawn ellipse in `src/gfx/robot.ts`)
       and remove it. If it is baked into the sprite, fix it in `scripts/assets.mjs` (alpha edge)
       or list the sprite for regeneration in `assets-src/PROMPTS.md`.
-- [ ] 4. **"Gool" text.** The goal text appears next to the animal that scored, not at a fixed
+- [x] 4. **"Gool" text.** The goal text appears next to the animal that scored, not at a fixed
       place; it follows the animal's position at the moment of the goal and stays inside the
       stage.
-- [ ] 5. **Piko lines stay longer.** Children read them. Display time = max(3.5 s, 0.08 s per
+- [x] 5. **Piko lines stay longer.** Children read them. Display time = max(3.5 s, 0.08 s per
       character), never replaced by another line while shown, and shown only when no letter is
       about to collide with the bubble (place it where it does not cover falling/target
       letters, or delay it). Put the constants in one place (`src/game/pace.ts` or the Piko
       bubble code). Test the duration function.
-- [ ] 6. **Sound icon, right click.** A right click on the sound icon plays the next random
+- [x] 6. **Sound icon, right click.** A right click on the sound icon plays the next random
       track from the whole library (also from other stories) until the child leaves for the
       menu; no menu or the next level start restores the normal per-world track. Menu
       behaviour (already works until play starts) stays. Prevent the browser context menu on
       that button. Test the picker (never the same track twice in a row).
-- [ ] 7. **Locked world click.** Clicking a locked world island (for example "Let raketou")
+- [x] 7. **Locked world click.** Clicking a locked world island (for example "Let raketou")
       shows a small card or bubble with what is still needed (for example "Dokonči Medovú lúku"
       and/or the key/letter count from the unlock rule in `src/game/gate.ts`). Build the text
       from the real gate rule, never hard-coded. Test the text builder for each lock type.

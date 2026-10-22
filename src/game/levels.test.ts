@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
 import { SUPER_ID } from '../storage/schema';
 import { lessonOrder } from '../learning/lessons';
-import { LEVELS, STORIES, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, nextLevel, rescueLevel, rescueUnlocked, worldLevels } from './levels';
+import { LEVELS, STORIES, isLevelUnlocked, isWorldUnlocked, keysNeeded, levelById, nextLevel, rescueLevel, rescueUnlocked, worldLevels, worldLock } from './levels';
 
 const KEYS = ['f', 'j', 'd', 'k', 's', 'l', 'a', ';', 'g', 'h', 'r', 'u', 'e', 'i', 't', 'y', 'w', 'o', 'q', 'p', 'v', 'm', 'c', ',', 'x', '.'];
 
@@ -151,5 +151,23 @@ describe('first level', () => {
   it('asks for single chunks; only the second level may need the space bar', () => {
     expect(levelById('w1-1')?.noSpace).toBe(true);
     expect(LEVELS.filter((l) => l.noSpace).map((l) => l.id)).toEqual(['w1-1']);
+  });
+});
+
+describe('world locks', () => {
+  it('names the world before it that is not done', () => {
+    const p = newProfile('Ema', 'sk');
+    expect(worldLock(p, 0)).toBeNull();
+    expect(worldLock(p, 1)).toEqual({ kind: 'world', prev: 0 });
+    p.progress.worldsDone = [0];
+    expect(worldLock(p, 1)).toBeNull();
+  });
+
+  it('counts the keys a closed story still needs', () => {
+    const p = newProfile('Ema', 'sk');
+    p.progress.unlockedKeys = KEYS.slice(0, 7);
+    expect(worldLock(p, 5)).toEqual({ kind: 'keys', need: 10, have: 7 });
+    p.progress.unlockedKeys = KEYS.slice(0, 10);
+    expect(worldLock(p, 5)).toBeNull();
   });
 });

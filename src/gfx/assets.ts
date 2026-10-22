@@ -37,6 +37,11 @@ export function hasMusic(name: string): boolean {
   return manifest.music.includes(name);
 }
 
+/** Names of all music tracks (`audio.music` takes them without the `music-` prefix). */
+export function musicTracks(): string[] {
+  return manifest.music.map((m) => m.replace(/^music-/, ''));
+}
+
 export function accessories(): AccessoryInfo[] {
   return manifest.accessories;
 }

@@ -116,6 +116,16 @@ export function isWorldUnlocked(p: Profile, world: number): boolean {
   return storyOpen(p, story);
 }
 
+/** Why a world is closed: the world before it is not done, or its story needs more keys; null when open. */
+export type WorldLock = { kind: 'world'; prev: number } | { kind: 'keys'; need: number; have: number };
+
+export function worldLock(p: Profile, world: number): WorldLock | null {
+  if (isWorldUnlocked(p, world)) return null;
+  const story = storyOf(world);
+  if (world !== story.worlds[0]) return { kind: 'world', prev: world - 1 };
+  return { kind: 'keys', need: story.opensAtKeys!, have: activeKeys(p).length };
+}
+
 /**
  * Keys a story level needs, so its words are varied enough, again in every world: the
  * dragon story 2 / 4 / 6 / 8 / 10, the robot story 10 / 14 / 18 / 22 / 26, the fairy story

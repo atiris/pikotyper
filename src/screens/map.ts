@@ -3,7 +3,7 @@ import { audio } from '../audio/audio';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
 import { t } from '../i18n/i18n';
-import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels } from '../game/levels';
+import { LEVELS, STORIES, type StoryDef, WORLDS, isLevelReached, isWorldUnlocked, keysMissing, nextLevel, rescueUnlocked, storyOpen, worldLevels, worldLock } from '../game/levels';
 import type { Profile } from '../storage/schema';
 import { activeKeys } from '../learning/lessons';
 import { badgeTier } from '../game/rewards';
@@ -49,6 +49,16 @@ export function mapScreen(root: HTMLElement): void {
       h('div', { class: 'bubble-actions' }, button(t('map.practice'), () => openPracticeKeys(), 'btn small', 'practice')));
     bubble.hidden = false;
   };
+  // A closed world: what is still needed to open it.
+  const lockBubble = (world: number) => {
+    const lock = worldLock(p, world);
+    if (!lock) return;
+    bubble.replaceChildren(h('p', {}, lock.kind === 'world'
+      ? t('map.lockWorld', { world: t(`worlds.${WORLDS[lock.prev]}`) })
+      : t('map.lockKeys', { n: lock.need, have: lock.have })),
+    ...(lock.kind === 'keys' ? [h('div', { class: 'bubble-actions' }, button(t('map.practice'), () => openPracticeKeys(), 'btn small', 'practice'))] : []));
+    bubble.hidden = false;
+  };
   const next = nextLevel(p);
   const rescue = rescueUnlocked(p);
   // Nothing open for the child's keys: continue means practice, which brings new keys.
@@ -77,7 +87,7 @@ export function mapScreen(root: HTMLElement): void {
         button(t('progress.title'), () => openStats(), 'btn', 'chart'),
         rescue ? button(t('map.rescue'), () => go('level', { id: 'rescue' }), 'btn', 'rescue') : null,
         rescue ? button(t('map.friends'), () => go('friends'), 'btn', 'dragon') : null),
-      h('div', { class: 'story-rows' }, ...STORIES.map((s) => storyRow(p, s, next?.id, keysBubble))))));
+      h('div', { class: 'story-rows' }, ...STORIES.map((s) => storyRow(p, s, next?.id, keysBubble, lockBubble))))));
   (root.querySelector('.btn.primary') as HTMLElement | null)?.focus();
 }
 
@@ -85,7 +95,7 @@ export function mapScreen(root: HTMLElement): void {
  * One story: its title and its worlds as islands; a story still closed says when it opens.
  * A level reached without enough keys shows a key and lets Piko say how many are missing.
  */
-function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysBubble: (n: number) => void): HTMLElement {
+function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysBubble: (n: number) => void, lockBubble: (world: number) => void): HTMLElement {
   const islands = story.worlds.map((wi) => {
     const w = WORLDS[wi];
     const open = isWorldUnlocked(p, wi);
@@ -106,7 +116,13 @@ function storyRow(p: Profile, story: StoryDef, nextId: string | undefined, keysB
     });
     const tier = badgeTier(p, wi);
     return h('div', { class: `island ${open ? '' : 'locked'} island-${w}` },
-      h('div', { class: 'island-art' }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock' }, icon('lock')),
+      h('div', { class: 'island-art', ...(open ? {} : {
+        onClick: () => lockBubble(wi),
+        onKeydown: (e: KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') lockBubble(wi); },
+        role: 'button',
+        tabindex: '0',
+        'aria-label': t(`worlds.${w}`),
+      }) }, img ? h('img', { src: img, alt: '' }) : h('div', { class: 'island-fallback' }), open ? null : h('span', { class: 'lock' }, icon('lock')),
         tier ? badge(wi, tier, true) : null),
       h('h3', {}, `${wi + 1}. ${t(`worlds.${w}`)}`),
       h('div', { class: 'level-row' }, ...levels));

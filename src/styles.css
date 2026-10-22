@@ -192,6 +192,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .island:nth-child(3) .island-art img { animation-delay: -2s; }
 .island:nth-child(4) .island-art img { animation-delay: -3s; }
 .island-fallback { width: 120px; height: 80px; border-radius: 50% 50% 40% 40%; background: var(--green); }
+.island.locked .island-art { cursor: pointer; }
 .island.locked .island-art img { filter: grayscale(0.85) opacity(0.55); }
 .island.locked h3 { color: var(--ink-soft); }
 .lock { position: absolute; inset: auto; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); color: var(--ink-soft); }

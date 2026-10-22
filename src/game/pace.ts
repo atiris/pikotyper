@@ -46,3 +46,12 @@ export class PressureValve {
     this.factor = Math.max(1, this.factor / VALVE_STEP);
   }
 }
+
+/** Seconds a line of Piko stays in the bubble at least, and per character of it. */
+export const SAY_MIN = 3.5;
+export const SAY_PER_CHAR = 0.08;
+
+/** How long a line of Piko is shown, so a child can read it. */
+export function sayTime(text: string): number {
+  return Math.max(SAY_MIN, text.length * SAY_PER_CHAR);
+}
