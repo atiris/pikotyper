@@ -1,12 +1,12 @@
 import { app, go, layout } from '../app/app';
 import { imageUrl } from '../gfx/assets';
 import { pikoElement } from '../gfx/piko';
-import { STORIES, WORLDS, storyOpen, worldLevels } from '../game/levels';
-import { badgeTier, totalStars } from '../game/rewards';
+import { STORIES, type StoryDef, WORLDS, storyDone, storyOpen } from '../game/levels';
+import { badgeTier, worldStars } from '../game/rewards';
 import { t } from '../i18n/i18n';
 import { allKeys } from '../keyboard/layouts';
 import { activeKeys, lessonKeyOf } from '../learning/lessons';
-import { STATS_WINDOW, keyHistory, keyReport, lastTraining, weakKeys } from '../learning/stats';
+import { STATS_WINDOW, keyHistory, keyReport, lastTraining, masterySummary, weakKeys } from '../learning/stats';
 import type { Profile } from '../storage/schema';
 import { lineChart } from '../ui/charts';
 import { KeyboardGuide, fingerChip, keyLabel } from '../ui/keyboard-guide';
@@ -96,26 +96,53 @@ export function clickableHeatmap(p: Profile, detail: HTMLElement, practice?: (ke
   return h('div', { class: 'heat-host' }, toggle, kb.el);
 }
 
-/** Stars, the open stories' worlds and levels done, the badge shelf, and when the child last trained. */
-function progressSection(p: Profile): HTMLElement {
+/** An icon (or a glyph) with a number; the meaning is in the tooltip and the aria-label only. */
+function chip(pic: string | null, glyph: string, text: string, label: string): HTMLElement {
+  return h('li', { class: 'sum-chip', title: label, 'aria-label': label, role: 'img' },
+    pic ? h('img', { src: pic, alt: '' }) : h('span', { class: 'sum-glyph' }, glyph), h('b', {}, text));
+}
+
+/** The long-term picture: mastered keys, finished worlds and stories, and the quality and speed of the mastered keys. */
+function summaryRow(p: Profile): HTMLElement {
+  const m = masterySummary(p);
+  const percent = Math.round(m.accuracy * 100);
+  return h('ul', { class: 'progress-sum' },
+    chip(imageUrl('ui-key'), '⌨', `${m.mastered}/${m.total}`, t('progress.keys', { n: m.mastered, total: m.total })),
+    chip(imageUrl('ui-earth'), '●', `${p.progress.worldsDone.length}/${WORLDS.length}`, t('progress.worlds', { n: p.progress.worldsDone.length, total: WORLDS.length })),
+    chip(imageUrl('ui-level'), '▲', `${STORIES.filter((s) => storyDone(p, s)).length}/${STORIES.length}`, t('progress.stories', { n: STORIES.filter((s) => storyDone(p, s)).length, total: STORIES.length })),
+    m.mastered ? chip(null, '✓', `${percent} %`, t('progress.quality', { n: percent })) : null,
+    m.mastered ? chip(null, '»', String(m.cpm), t('progress.speed', { n: m.cpm })) : null);
+}
+
+/** Who a story is about, for its row. */
+function storyPicture(p: Profile, story: StoryDef): string | null {
+  return imageUrl(story.id === 'robot' ? 'robot-happy' : story.id === 'fairy' ? 'fairy-happy' : `piko-${p.companion.kind}-happy`);
+}
+
+/** One row per story: its picture and name, its worlds (done in colour), and its stars. */
+function storyRow(p: Profile, story: StoryDef): HTMLElement {
   const star = imageUrl('ui-star');
-  const stories = STORIES.filter((s) => storyOpen(p, s)).map((s) => {
-    const levels = s.worlds.flatMap((w) => worldLevels(w));
-    const done = s.worlds.filter((w) => p.progress.worldsDone.includes(w)).length;
-    return h('div', { class: 'progress-story' },
-      h('h4', {}, t(s.title)),
-      h('div', { class: 'world-icons' }, ...s.worlds.map((w) => {
-        const src = imageUrl(`ui-map-${WORLDS[w]}`);
-        const on = p.progress.worldsDone.includes(w);
-        return src ? h('img', { class: on ? 'done' : '', src, alt: '', title: t(`worlds.${WORLDS[w]}`) }) : h('span', { class: `world-dot ${on ? 'done' : ''}` });
-      })),
-      h('p', {}, t('progress.story', { done, worlds: s.worlds.length, levels: levels.filter((l) => (p.progress.levels[l.id] ?? 0) > 0).length, total: levels.length })));
-  });
+  const stars = story.worlds.reduce((a, w) => a + worldStars(p, w), 0);
+  const pic = storyPicture(p, story);
+  return h('div', { class: `progress-story ${storyOpen(p, story) ? '' : 'closed'}` },
+    h('div', { class: 'story-head' }, pic ? h('img', { class: 'story-pic', src: pic, alt: '' }) : null, h('h4', {}, t(story.title))),
+    h('div', { class: 'world-icons' }, ...story.worlds.map((w) => {
+      const src = imageUrl(`ui-map-${WORLDS[w]}`);
+      const on = p.progress.worldsDone.includes(w);
+      const name = t(`worlds.${WORLDS[w]}`);
+      return src ? h('img', { class: on ? 'done' : '', src, alt: '', title: name }) : h('span', { class: `world-dot ${on ? 'done' : ''}`, title: name });
+    })),
+    h('p', { class: 'story-stars', title: t('progress.storyStars', { n: stars }), 'aria-label': t('progress.storyStars', { n: stars }) },
+      h('b', {}, String(stars)), star ? h('img', { src: star, alt: '' }) : '★'));
+}
+
+/** The summary row, a row per story, the badge shelf, and when the child last trained. */
+function progressSection(p: Profile): HTMLElement {
   const { daysAgo, weekMinutes } = lastTraining(p);
   const last = daysAgo === null ? t('progress.never') : daysAgo === 0 ? t('progress.lastToday') : daysAgo === 1 ? t('progress.lastYesterday') : t('progress.lastDays', { n: daysAgo });
   return h('section', { class: 'progress-view' },
-    h('p', { class: 'progress-stars' }, star ? h('img', { src: star, alt: '' }) : '★', t('progress.stars', { n: totalStars(p) })),
-    ...stories,
+    summaryRow(p),
+    ...STORIES.map((s) => storyRow(p, s)),
     h('div', { class: 'badge-shelf' }, h('h4', {}, t('progress.badges')),
       h('div', { class: 'badge-row' }, ...WORLDS.map((_, w) => badge(w, badgeTier(p, w), true)))),
     h('p', { class: 'progress-last' }, last, daysAgo === null ? null : [' ', t('progress.week', { n: weekMinutes })]));

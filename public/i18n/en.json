@@ -758,8 +758,12 @@
   },
   "progress": {
     "title": "My progress",
-    "stars": "Stars in total: {n}",
-    "story": "Worlds {done} of {worlds} · levels with a star {levels} of {total}",
+    "keys": "Keys you type well and fast: {n} of {total}",
+    "worlds": "Finished worlds: {n} of {total}",
+    "stories": "Finished stories: {n} of {total}",
+    "quality": "Accuracy of the keys you know well: {n} %",
+    "speed": "Speed of the keys you know well: {n} characters per minute",
+    "storyStars": "Stars in this story: {n}",
     "lastToday": "We last trained today.",
     "lastYesterday": "We last trained yesterday.",
     "lastDays": "We last trained {n} days ago.",
@@ -1151,6 +1155,12 @@
       "read": "Read aloud: the computer reads the words to you.",
       "guide": "Shows or hides the keyboard that tells where the finger goes."
     },
+    "progressTitle": "My progress",
+    "progress": [
+      "Key, world and story: how many keys you type well and fast (at least 9 of 10 presses right), how many worlds and stories you have finished.",
+      "The tick is the accuracy of those keys in percent, the arrows are their speed in characters per minute.",
+      "Each story row shows its worlds: finished ones in colour, the rest grey, and the stars of that story."
+    ],
     "moreTitle": "Rescue mission and badge",
     "more": [
       "Rescue mission: a short task where you help a little friend. It opens when you finish the first story, and you find it on the map.",

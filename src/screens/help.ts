@@ -65,6 +65,7 @@ function helpPage(onBack: () => void): HTMLElement {
     section(t('help.typeTitle'), list('help.type')),
     section(t('help.mapTitle'), h('ul', { class: 'help-icons' }, ...mapIcons())),
     section(t('help.levelTitle'), h('ul', { class: 'help-icons' }, ...levelIcons(true))),
+    section(t('help.progressTitle'), list('help.progress')),
     section(t('help.moreTitle'), list('help.more')),
     section(t('help.playTitle'), list('help.play')));
 }

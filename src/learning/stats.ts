@@ -1,6 +1,6 @@
 import { LAYOUTS } from '../keyboard/layouts';
 import { type KeyStat, type Profile, type SessionRecord, emptyKeyStat } from '../storage/schema';
-import { MASTERY_WINDOW, median, shiftKeyOf } from './lessons';
+import { MASTERY_WINDOW, lessonOrder, median, reactionLimit, shiftKeyOf } from './lessons';
 
 const RECENT_KEEP = MASTERY_WINDOW * 2;
 export const RECENT_WRONG_KEEP = 30;
@@ -142,4 +142,49 @@ export function keyHistory(profile: Profile, key: string): KeyDayPoint[] {
     avgMs: d.rtCount ? d.rtSum / d.rtCount : 0,
     presses: d.presses,
   }));
+}
+
+/** Presses the long-term "mastered" verdict of a key looks at. */
+export const MASTERED_WINDOW = 30;
+/** Share of the last presses that must be right. */
+export const MASTERED_ACCURACY = 0.9;
+
+export interface KeyMastery {
+  /** Accuracy and median reaction time (ms) of the last MASTERED_WINDOW presses. */
+  accuracy: number;
+  medianMs: number;
+}
+
+/**
+ * A key is mastered when, over its last 30 recorded presses, accuracy is at least 90 %
+ * and the median reaction time is within the target of the child's difficulty
+ * (the same speed limit that readies a key for the next lesson). Null while it is not.
+ */
+export function keyMastery(profile: Profile, key: string): KeyMastery | null {
+  const recent = profile.stats.keys[key]?.recent;
+  if (!recent || recent.length < MASTERED_WINDOW) return null;
+  const win = recent.slice(-MASTERED_WINDOW);
+  const ok = win.filter((v) => v > 0);
+  const accuracy = ok.length / win.length;
+  const medianMs = ok.length ? median(ok) : Infinity;
+  if (accuracy < MASTERED_ACCURACY || medianMs > reactionLimit(profile.settings.difficulty)) return null;
+  return { accuracy, medianMs };
+}
+
+export interface MasterySummary {
+  mastered: number;
+  /** Keys of the layout's lessons. */
+  total: number;
+  /** Average accuracy (0..1) and median characters per minute of the mastered keys; 0 without any. */
+  accuracy: number;
+  cpm: number;
+}
+
+/** How many of the layout's keys the child can type well, over the long term. */
+export function masterySummary(profile: Profile): MasterySummary {
+  const keys = lessonOrder(profile.layout);
+  const found = keys.flatMap((k) => keyMastery(profile, k) ?? []);
+  const accuracy = found.length ? found.reduce((a, m) => a + m.accuracy, 0) / found.length : 0;
+  const cpm = found.length ? Math.round(60_000 / median(found.map((m) => m.medianMs))) : 0;
+  return { mastered: found.length, total: keys.length, accuracy, cpm };
 }

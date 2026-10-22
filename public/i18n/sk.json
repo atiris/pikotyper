@@ -758,8 +758,12 @@
   },
   "progress": {
     "title": "Môj postup",
-    "stars": "Hviezdičky spolu: {n}",
-    "story": "Svety {done} z {worlds} · úrovne s hviezdičkou {levels} z {total}",
+    "keys": "Klávesy, ktoré ti idú dobre a rýchlo: {n} z {total}",
+    "worlds": "Dokončené svety: {n} z {total}",
+    "stories": "Dokončené príbehy: {n} z {total}",
+    "quality": "Presnosť dobre zvládnutých kláves: {n} %",
+    "speed": "Rýchlosť dobre zvládnutých kláves: {n} znakov za minútu",
+    "storyStars": "Hviezdičky v tomto príbehu: {n}",
     "lastToday": "Naposledy sme trénovali dnes.",
     "lastYesterday": "Naposledy sme trénovali včera.",
     "lastDays": "Naposledy sme trénovali pred {n} dňami.",
@@ -1151,6 +1155,12 @@
       "read": "Čítanie nahlas: počítač ti slová prečíta.",
       "guide": "Ukáže alebo skryje klávesnicu, ktorá radí, kam ide prst."
     },
+    "progressTitle": "Môj postup",
+    "progress": [
+      "Kláves, svet a príbeh: koľko kláves ti ide dobre a rýchlo (aspoň 9 z 10 stlačení správne), koľko svetov a príbehov máš hotových.",
+      "Fajka je presnosť týchto kláves v percentách, šípky sú ich rýchlosť v znakoch za minútu.",
+      "V každom riadku príbehu sú jeho svety: hotové sú farebné, ostatné sivé, a hviezdičky z toho príbehu."
+    ],
     "moreTitle": "Záchranná misia a odznak",
     "more": [
       "Záchranná misia: krátka úloha, v ktorej pomôžeš malému kamarátovi. Otvorí sa, keď dokončíš prvý príbeh, a nájdeš ju na mape.",

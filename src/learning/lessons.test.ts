@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { newProfile } from '../storage/store';
+import { emptyKeyStat } from '../storage/schema';
 import { LAYOUTS } from '../keyboard/layouts';
 import { activeKeys, advanceLesson, firstKeys, isMastered, keysToIntroduce, lessonOrder, practiceOrder, practiceSteps, punctuationKeys, reactionLimit, shiftKeyOf, stepHolding } from './lessons';
-import { STATS_WINDOW, keyReport, lastTraining, recordPress, weakKeys } from './stats';
+import { STATS_WINDOW, keyMastery, keyReport, lastTraining, masterySummary, recordPress, weakKeys } from './stats';
 
 describe('lesson order', () => {
   it('starts on the home row with the index fingers', () => {
@@ -191,5 +192,35 @@ describe('manual punctuation picking', () => {
     p.settings.activeKeysMode = 'manual';
     p.settings.manualKeys = ['f', 'j', '?'];
     expect(activeKeys(p)).toContain('?');
+  });
+});
+
+describe('mastered key', () => {
+  const withRecent = (recent: number[]) => {
+    const p = newProfile('T', 'sk');
+    p.settings.difficulty = 3;
+    p.stats.keys.f = { ...emptyKeyStat(), recent };
+    return p;
+  };
+  const fast = (n: number) => Array(n).fill(600);
+
+  it('needs 30 presses', () => {
+    expect(keyMastery(withRecent(fast(29)), 'f')).toBeNull();
+    expect(keyMastery(withRecent(fast(30)), 'f')).not.toBeNull();
+  });
+
+  it('needs 90 % accuracy of the last 30 presses only', () => {
+    expect(keyMastery(withRecent([...fast(26), 0, 0, 0, 0]), 'f')).toBeNull();
+    expect(keyMastery(withRecent([0, 0, 0, 0, 0, ...fast(30)]), 'f')?.accuracy).toBe(1);
+  });
+
+  it('needs the median speed of the difficulty', () => {
+    expect(keyMastery(withRecent(Array(30).fill(reactionLimit(3) + 100)), 'f')).toBeNull();
+  });
+
+  it('sums up the mastered keys of the layout', () => {
+    const p = withRecent(fast(30));
+    expect(masterySummary(p)).toMatchObject({ mastered: 1, total: lessonOrder('sk-qwertz').length, accuracy: 1, cpm: 100 });
+    expect(masterySummary(newProfile('U', 'sk'))).toMatchObject({ mastered: 0, accuracy: 0, cpm: 0 });
   });
 });

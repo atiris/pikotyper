@@ -12,27 +12,41 @@ The basis of progress is how many letters the child can type with enough quality
 over the long term, not in one exercise.
 
 ## Steps
-- [ ] 1. **Process the new icons.** `ui-earth.jpg` (finished worlds), `ui-level.jpg` (finished
+- [x] 1. **Process the new icons.** `ui-earth.jpg` (finished worlds), `ui-level.jpg` (finished
       stories), `ui-key.jpg` (keys). Add them to `scripts/assets.mjs` and the asset table the
       same way the other `ui-*` are, keyed on their background colour; check the edge on a
       contact sheet.
-- [ ] 2. **Mastered key.** Define in `src/learning/stats.ts` (one function, documented in
+- [x] 2. **Mastered key.** Define in `src/learning/stats.ts` (one function, documented in
       `statistics.md`): a key is "mastered" when, over its last 30 recorded presses, accuracy
       is at least 90 % and median speed is at or above the target of the child's pace profile
       (use the existing pace in `src/game/pace.ts`; do not invent a second one). Counters per
       key: presses, accuracy, speed. Unit tests with fixtures: too few presses, low accuracy,
       slow, mastered.
-- [ ] 3. **Summary row.** At the top: three icon + number chips: `ui-key` mastered keys
+- [x] 3. **Summary row.** At the top: three icon + number chips: `ui-key` mastered keys
       (of the layout's total, for example "17/42"), `ui-earth` finished worlds, `ui-level`
       finished stories. Icon and number only; the meaning goes into the tooltip / aria-label.
       Add two more chips only if they fit the same pattern: quality (average accuracy of the
       mastered keys, in %) and speed (median characters per minute of the mastered keys).
       Explain them in one line each in the help page.
-- [ ] 4. **Story rows.** One row per story (Piko, Piko and Robot Šrobik, Piko and Melody,
+- [x] 4. **Story rows.** One row per story (Piko, Piko and Robot Šrobik, Piko and Melody,
       with the story's image), then the worlds of that story as icons: finished worlds in
       colour, not finished grey; then the star total of that story as a number and the star
       icon (for example 3 coloured, 2 grey worlds, "18 ★"). No text labels except the story
       name. Locked stories stay visible with grey worlds.
-- [ ] 5. Drive the panel with the playwright MCP with a fresh profile and with the
+- [x] 5. Drive the panel with the playwright MCP with a fresh profile and with the
       `superpikotyper` profile at 1366 x 768 and 360 px wide; report what you saw. Update the
       specs. Build, lint, test.
+
+## Done - 2026-10-22
+Shipped: the three icons in `public/assets` and the manifest (only the new files, other assets
+untouched); `keyMastery` and `masterySummary` in `src/learning/stats.ts` with tests; the summary
+chips (keys, worlds, stories, quality, speed) and one row per story in the "My progress" panel;
+help lines; the specs.
+
+Decisions: the speed target of "mastered" is the existing `reactionLimit(difficulty)` (the pace
+in `pace.ts` is the word travel time, not a per-key target). Total keys = the layout's lesson
+keys. Finished stories are shown as n/3. The old stars line and per-story text were removed;
+story stars replace them. The panel header stacks on screens up to 700 px wide.
+
+Verified: build, unit tests, playwright MCP at 1366 x 768 and 360 px with a fresh profile and a
+profile with stars. Not driven: the `superpikotyper` profile.

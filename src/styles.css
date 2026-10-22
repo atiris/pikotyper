@@ -448,14 +448,22 @@ input:focus, select:focus, textarea:focus { border-color: var(--brand); outline:
 .modal-x { position: absolute; top: 0.7rem; right: 0.7rem; width: 44px; height: 44px; border-radius: 50%; border: 0; background: var(--paper-2); cursor: pointer; display: grid; place-items: center; }
 .stats-head { display: flex; align-items: center; gap: 1rem; }
 .stats-head h2 { margin: 0 0 0.3rem; }
+.stats-head > div { min-width: 0; }
+@media (max-width: 700px) { .stats-head { flex-direction: column; align-items: flex-start; } .story-head { min-width: 0; } }
 .stats > h3 { margin: 1rem 0 0; }
 .progress-view { display: grid; gap: 0.4rem; }
 .progress-view p { margin: 0; }
-.progress-stars { display: flex; align-items: center; gap: 0.4rem; font-weight: 800; font-size: 1.15rem; }
-.progress-stars img { width: 28px; }
-.progress-story { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 0.1rem 0.8rem; }
-.progress-story h4 { margin: 0; grid-column: 1 / -1; font-size: 0.95rem; color: var(--ink-soft); }
-.progress-story p { font-size: 0.92rem; }
+.progress-sum { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem 0.9rem; }
+.sum-chip { display: flex; align-items: center; gap: 0.35rem; font-size: 1.15rem; }
+.sum-chip img { height: 32px; width: auto; max-width: 40px; object-fit: contain; }
+.sum-glyph { font-size: 1.3rem; color: var(--ink-soft); }
+.progress-story { display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem 0.8rem; }
+.progress-story.closed .story-pic { filter: grayscale(1); opacity: 0.6; }
+.story-head { display: flex; align-items: center; gap: 0.5rem; min-width: 14rem; }
+.story-head h4 { margin: 0; font-size: 0.95rem; color: var(--ink-soft); }
+.story-pic { width: 36px; height: 36px; object-fit: contain; }
+.story-stars { display: flex; align-items: center; gap: 0.25rem; font-size: 1.05rem; }
+.story-stars img { width: 24px; }
 .world-icons { display: flex; gap: 0.25rem; }
 .world-icons img, .world-dot { width: 34px; height: 34px; object-fit: contain; filter: grayscale(1); opacity: 0.45; }
 .world-icons .done { filter: none; opacity: 1; }

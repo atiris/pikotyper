@@ -5,9 +5,12 @@
   typed instead of it lately, total presses, and a day-by-day history (accuracy and time
   to press).
 - An overlay opened by clicking Piko (on the map, or in a level, which pauses first)
-  starts with "My progress": all stars earned, for each open story the worlds done and
-  the levels with a star (with the worlds' pictures, the done ones in colour), the shelf
-  of world badges ([story](../game/story.md)), and when
+  starts with "My progress": a row of icon and number chips (keys mastered of the
+  layout's total, worlds finished, stories finished, and once a key is mastered the
+  accuracy and the speed in characters per minute of the mastered keys; the meaning is only
+  in the tooltip), then one row per story (all stories, closed ones grey) with its picture and
+  name, its worlds' pictures (done in colour, the rest grey) and the stars earned in it, the
+  shelf of world badges ([story](../game/story.md)), and when
   the child last trained (today, yesterday, n days ago) with the minutes of the last 7
   days. Below it a friendly view of the keys: a keyboard colored
   by how well each key goes, the 3 keys to practice, the growth medals earned, and a
@@ -18,6 +21,11 @@
   statistics; capitals count for their letter and its Shift.
 - The parent dashboard has the same clickable key map, and the trends over sessions
   (accuracy, rhythm, time per day) as charts side by side on wide screens.
+
+- A key is **mastered** when, over its last 30 recorded presses, at least 90 % are right and
+  the median reaction time is within the speed limit of the child's difficulty (the same limit
+  that readies a key for the next lesson). This is long-term: it is computed from the stored
+  key statistics, so it fades when the child stops typing the key well.
 
 ## Why
 - A child asks "how am I doing?" in whole steps (stars, worlds, days), not per key; the
