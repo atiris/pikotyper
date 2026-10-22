@@ -69,8 +69,8 @@ describe('keys needed per level', () => {
   };
   const open = (p: ReturnType<typeof withKeys>) => worldLevels(1).map((l) => isLevelUnlocked(p, l));
 
-  it('opens the first three levels of a world with six keys', () => {
-    expect(open(withKeys(6))).toEqual([true, true, true, false, false]);
+  it('opens the first two levels of the rocket world with eight keys', () => {
+    expect(open(withKeys(8))).toEqual([true, true, false, false, false]);
   });
 
   it('opens every level with ten keys', () => {
@@ -81,25 +81,26 @@ describe('keys needed per level', () => {
     const p = withKeys(2);
     p.settings.activeKeysMode = 'manual';
     p.settings.manualKeys = KEYS.slice(0, 8);
-    expect(open(p)).toEqual([true, true, true, true, false]);
+    expect(open(p)).toEqual([true, true, false, false, false]);
   });
 
-  it('needs 10 / 14 / 18 / 22 / 26 keys in the robot story', () => {
+  it('climbs from 10 keys in the robot story', () => {
     const p = newProfile('Ema', 'sk');
     p.progress.worldsDone = [5];
     for (const l of LEVELS.filter((x) => x.world === 6)) p.progress.levels[l.id] = 2;
     const robot = () => worldLevels(6).map((l) => isLevelUnlocked(p, l));
-    p.progress.unlockedKeys = KEYS.slice(0, 10);
-    expect(robot()).toEqual([true, false, false, false, false]);
-    p.progress.unlockedKeys = KEYS.slice(0, 18);
+    expect(worldLevels(5).map((l) => keysNeeded(p, l))).toEqual([10, 11, 12, 13, 14]);
+    expect(worldLevels(6).map((l) => keysNeeded(p, l))).toEqual([15, 16, 17, 18, 19]);
+    p.progress.unlockedKeys = KEYS.slice(0, 17);
     expect(robot()).toEqual([true, true, true, false, false]);
-    p.progress.unlockedKeys = KEYS.slice(0, 26);
+    p.progress.unlockedKeys = KEYS.slice(0, 19);
     expect(robot()).toEqual([true, true, true, true, true]);
   });
 
-  it('needs 20 / 25 / 30 / 35 / 40 keys in the fairy story, never more than the whole lesson path', () => {
+  it('climbs from 20 keys to the whole lesson path in the fairy story', () => {
     const p = newProfile('Ema', 'sk');
-    expect(worldLevels(12).map((l) => keysNeeded(p, l))).toEqual([20, 25, 30, 35, 40]);
+    expect(worldLevels(10).map((l) => keysNeeded(p, l))).toEqual([20, 22, 24, 25, 27]);
+    expect(worldLevels(14).map((l) => keysNeeded(p, l))).toEqual([55, 57, 59, 60, 62]);
     p.layout = 'us-qwerty';
     const path = lessonOrder('us-qwerty').length;
     expect(Math.max(...LEVELS.map((l) => keysNeeded(p, l)))).toBeLessThanOrEqual(path);
@@ -107,6 +108,17 @@ describe('keys needed per level', () => {
     for (const l of worldLevels(11)) p.progress.levels[l.id] = 2;
     p.progress.unlockedKeys = lessonOrder('us-qwerty');
     expect(worldLevels(11).every((l) => isLevelUnlocked(p, l))).toBe(true);
+  });
+
+  it('starts the dragon story gently and keeps the counts growing', () => {
+    const p = newProfile('Ema', 'sk');
+    const world = (w: number) => worldLevels(w).slice(0, 4).map((l) => keysNeeded(p, l));
+    expect([0, 1, 2, 3, 4].map(world)).toEqual([[3, 3, 4, 5], [7, 8, 9, 10], [12, 13, 14, 15], [16, 17, 17, 18], [19, 19, 20, 20]]);
+    for (const s of STORIES) {
+      const counts = s.worlds.flatMap((w) => worldLevels(w).map((l) => keysNeeded(p, l)));
+      expect(counts).toEqual([...counts].sort((x, y) => x - y));
+      expect(counts[0]).toBeGreaterThanOrEqual(s.opensAtKeys ?? 0);
+    }
   });
 
   it('does not gate the super profile', () => {
@@ -117,9 +129,9 @@ describe('keys needed per level', () => {
 
   it('skips key-locked levels for the next level, and offers none when nothing is open', () => {
     const p = withKeys(4);
-    expect(nextLevel(p)?.id).toBe('w2-2');
-    p.progress.levels['w2-2'] = 3;
-    expect(nextLevel(p)?.id).toBe('w2-2');
+    expect(nextLevel(p)?.id).toBe('w1-3');
+    delete p.progress.levels['w1-3'];
+    expect(nextLevel(p)?.id).toBe('w1-3');
     p.progress.unlockedKeys = ['f'];
     expect(nextLevel(p)).toBeNull();
   });

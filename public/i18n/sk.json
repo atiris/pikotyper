@@ -52,11 +52,11 @@
     "lion": "Levík"
   },
   "worlds": {
-    "meadow": "Medová lúka",
-    "space": "Let raketou",
-    "planet": "Nová planéta",
-    "dragons": "Dračie údolie",
-    "egg": "Cesta vajíčka",
+    "meadow": "Lúka",
+    "space": "Raketa",
+    "planet": "Planéta",
+    "dragons": "Údolie",
+    "egg": "Vajíčko",
     "junkyard": "Šrotisko",
     "workshop": "Dielňa",
     "raintown": "Dážď",

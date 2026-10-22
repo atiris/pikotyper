@@ -106,8 +106,9 @@ story stays playable in any browser ([mechanics](mechanics.md)).
   story.
 - Every level can be finished by any child: obstacles that are not cleared in time just
   pass by or are helped by Piko; they never cause failure.
-- World names are short words a young child reads at once (Dážď, Mesto, Domov, Jazero);
-  the scenes use the longer names (the Lily Lake).
+- World names are short words a young child reads at once, at most 12 characters (Lúka,
+  Raketa, Planéta, Údolie, Vajíčko, Dážď, Mesto, Domov, Jazero); the scenes use the longer
+  names (the Lily Lake).
 
 ### World badges
 - Every finished world gives a badge to collect, a round medal with the world's picture:

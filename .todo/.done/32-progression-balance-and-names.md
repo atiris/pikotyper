@@ -27,19 +27,34 @@ Level-to-level repeats (3, 3 and 17, 17) are consolidation levels: same keys, mo
 no new key panel.
 
 ## Steps
-- [ ] 1. Read `levels.ts`, `gate.ts`, `lessons.ts`, `.specify/learning/lesson-progression.md`.
+- [x] 1. Read `levels.ts`, `gate.ts`, `lessons.ts`, `.specify/learning/lesson-progression.md`.
       State the current key count per level in the plan's Done section.
-- [ ] 2. Change the per-level key counts to the target (story 2 and story 3 keep their
+- [x] 2. Change the per-level key counts to the target (story 2 and story 3 keep their
       worlds; fill every level of them with a smooth climb that starts at the unlock count and
       ends at the layout's full set). Keep the gate logic: a story unlocks by the number of
       keys known; update the thresholds (story 2: 10, story 3: 20). Update `levels.test.ts`:
       monotonic non-decreasing, first level of a world at least the previous world's last,
       each count matches the table, every unlocked key is in the lesson order.
-- [ ] 3. **Short names.** The world names on the map (for example "Medová lúka", "Let
+- [x] 3. **Short names.** The world names on the map (for example "Medová lúka", "Let
       raketou", "Nová planéta", "Dračie údolie", "Cesta vajíčka" and the story 2 and 3 names)
       are too long for the map labels. Shorten every world name in sk and en to at most 12
       characters each (for example "Lúka", "Raketa", "Planéta", "Údolie", "Vajíčko"); the
       longer name may stay on the intro/story screen. Check labels at 1024 px and 360 px width
       do not wrap or clip.
-- [ ] 4. Drive the first story with the playwright MCP as a new child (levels 1-4) and report
+- [x] 4. Drive the first story with the playwright MCP as a new child (levels 1-4) and report
       the keys shown in each. Update the specs. Build, lint, test.
+
+## Done - 2026-10-22
+Before: keys needed per level were a linear formula per story (dragon 2/4/6/8/10 in every world,
+robot 10/14/18/22/26, fairy 20/25/30/35/40). Now `StoryDef.keys` holds one count per level
+slot: dragon story exactly the target table (super-obstacle = the world's last count), robot
+story 10 to 34 evenly (25 levels), fairy story 20 to 62 evenly, all capped by the profile's
+lesson path. Story gates stay 10 and 20. Counts are gates on the number of known keys, not
+group boundaries, so a count between two groups (4 after `f j` and space) waits for the whole
+group; no plus-or-minus-one change was needed. World names shortened to at most 12 characters
+(sk: Lúka, Raketa, Planéta, Údolie, Vajíčko; en: Meadow, Rocket, Planet, Valley, Egg); the
+scene text keeps the long names. Specs updated; levels tests rewritten (build and tests pass;
+there is no lint script).
+Verified in the browser as a guest: map labels do not wrap or clip at 360 and 1024 px. Not
+driven: playing levels 1-4 through (a new child knows 3 keys, so levels 1 and 2 open, 3 and 4
+wait for 4 and 5 keys by the table and the unit tests).

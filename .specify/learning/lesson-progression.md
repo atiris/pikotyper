@@ -21,10 +21,15 @@
   The parent can override and pick the active keys by hand.
 - Adaptive practice: keys with low accuracy or slow reaction appear more often in words.
 - Story levels use the child's current key set, so the story and the lessons move together.
-- Each story level needs a few known keys, again in every world of the story: in the
-  dragon story 2, 4, 6, 8 and 10 for the five levels of a world, in the robot story 10, 14,
-  18, 22 and 26, in the fairy story 20, 25, 30, 35 and 40, but never more than the
-  profile's whole lesson path, so a child who knows it all plays everything. All unlocked
+- Each story level needs a number of known keys that only grows: the dragon story starts
+  gently (Honey Meadow 3, 3, 4, 5; Rocket 7, 8, 9, 10; New Planet 12, 13, 14, 15; Dragon
+  Valley 16, 17, 17, 18; Egg 19, 19, 20, 20; a repeated count is a consolidation level with
+  more words and no new key, and a super-obstacle asks what the world's last level asks),
+  the robot story climbs evenly from 10 to 34 over its 25 levels, the fairy story from 20
+  to 62 (capitals, diacritics and digits last), but never more than the profile's whole
+  lesson path, so a child who knows it all plays everything. Keys come in groups, so a
+  count between two groups (4 after `f j` and space) waits for the whole next group. All
+  unlocked keys count (space, punctuation and Shifts too);
   keys count (space, punctuation and Shifts too);
   with the parent's own key choice, its keys count. A level reached (the one before has its
   star) but still short of keys shows a key on the map; tapping it, Piko says how many
@@ -55,10 +60,9 @@
   block every big course has, and Shift chords are hard for children, so each Shift comes
   alone at a middle point with plenty of known words
   ([research](../../.research/learning/space-punctuation-capitals.md)).
-- A level with only two letters makes dull words; a small key need per level keeps them
-  varied. Starting it again in every world means ten keys are enough for the whole dragon
-  story, so a child who knows few keys still plays a whole world, and one who knows more
-  is not held back. The robot story opens with ten keys and asks for more, so it grows
+- Seven keys in the first world were too hard for a beginner, so the first world asks for
+  three to five and the curve climbs from there; a small key need per level still keeps the
+  words varied, and a child who knows more is not held back. The robot story opens with ten keys and asks for more, so it grows
   with the child instead of waiting for finished worlds; the fairy story opens with
   twenty, since words heard or remembered need more letters to be worth it.
 - Mirrored pairs keep the hands balanced, and a lighter unlock target keeps the first

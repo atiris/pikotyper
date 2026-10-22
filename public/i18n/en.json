@@ -52,11 +52,11 @@
     "lion": "Lion"
   },
   "worlds": {
-    "meadow": "Honey Meadow",
-    "space": "Rocket Flight",
-    "planet": "New Planet",
-    "dragons": "Dragon Valley",
-    "egg": "Egg Journey",
+    "meadow": "Meadow",
+    "space": "Rocket",
+    "planet": "Planet",
+    "dragons": "Valley",
+    "egg": "Egg",
     "junkyard": "Junkyard",
     "workshop": "Workshop",
     "raintown": "Rain",

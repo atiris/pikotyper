@@ -15,16 +15,18 @@ export interface StoryDef {
   worlds: number[];
   /** The story opens when the child knows this many keys; null = open from the start. */
   opensAtKeys: number | null;
-  /** Keys its first level needs, and how many more each next level of a world needs. */
-  keysBase: number;
-  keysStep: number;
+  /** Keys each level needs, world after world (five levels per world, the super-obstacle last). */
+  keys: number[];
 }
+
+/** `n` key counts climbing evenly from `from` to `to`. */
+const ramp = (from: number, to: number, n: number): number[] => Array.from({ length: n }, (_, i) => Math.round(from + ((to - from) * i) / (n - 1)));
 
 /** Story rows on the map; each story goes on independently once it is open. */
 export const STORIES: StoryDef[] = [
-  { id: 'dragon', title: 'map.storyName', worlds: [0, 1, 2, 3, 4], opensAtKeys: null, keysBase: 2, keysStep: 2 },
-  { id: 'robot', title: 'map.storyRobot', worlds: [5, 6, 7, 8, 9], opensAtKeys: 10, keysBase: 10, keysStep: 4 },
-  { id: 'fairy', title: 'map.storyFairy', worlds: [10, 11, 12, 13, 14], opensAtKeys: 20, keysBase: 20, keysStep: 5 },
+  { id: 'dragon', title: 'map.storyName', worlds: [0, 1, 2, 3, 4], opensAtKeys: null, keys: [3, 3, 4, 5, 5, 7, 8, 9, 10, 10, 12, 13, 14, 15, 15, 16, 17, 17, 18, 18, 19, 19, 20, 20, 20] },
+  { id: 'robot', title: 'map.storyRobot', worlds: [5, 6, 7, 8, 9], opensAtKeys: 10, keys: ramp(10, 34, 25) },
+  { id: 'fairy', title: 'map.storyFairy', worlds: [10, 11, 12, 13, 14], opensAtKeys: 20, keys: ramp(20, 62, 25) },
 ];
 
 export function storyOf(world: number): StoryDef {
@@ -127,14 +129,15 @@ export function worldLock(p: Profile, world: number): WorldLock | null {
 }
 
 /**
- * Keys a story level needs, so its words are varied enough, again in every world: the
- * dragon story 2 / 4 / 6 / 8 / 10, the robot story 10 / 14 / 18 / 22 / 26, the fairy story
- * 20 / 25 / 30 / 35 / 40; never more than the profile's whole lesson path, so a child
- * who knows it all can play everything.
+ * Keys a story level needs, so its words are varied enough: the dragon story climbs 3 to 20
+ * (a gentle start, repeated counts are consolidation levels), the robot story 10 to 34 (the
+ * letters and punctuation), the fairy story 20 to 62 (capitals, diacritics and digits too);
+ * never more than the profile's whole lesson path, so a child who knows it all can play everything.
  */
 export function keysNeeded(p: Profile, l: LevelDef): number {
   const story = storyOf(l.world);
-  return Math.min(story.keysBase + story.keysStep * l.index, practiceOrder(p).length);
+  const need = story.keys[story.worlds.indexOf(l.world) * 5 + l.index];
+  return Math.min(need, practiceOrder(p).length);
 }
 
 /** Keys the child still needs for a level (0 = enough); the super profile needs none. */
